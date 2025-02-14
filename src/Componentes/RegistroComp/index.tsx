@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useContext, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { ContextoApp } from "@/context/AppContext";
@@ -44,17 +44,23 @@ const RegistroComp: React.FC = () => {
     if (id) {
       setIdUsuario(id);
       setUsuarioId(id);
+      console.log(usuarioId)
     }
   }, [setIdUsuario]);
 
-  // ✅ Manejo de errores centralizado
-  const manejarError = (error: any) => {
+  // ✅ Manejo de errores con tipado correcto
+  const manejarError = (error: unknown) => {
     console.error("Error:", error);
-    const errorMensaje = error.response?.data?.detail || "Hubo un error inesperado.";
-    setMensaje(errorMensaje);
+
+    if (error instanceof AxiosError) {
+      const errorMensaje = error.response?.data?.detail || "Hubo un error inesperado.";
+      setMensaje(errorMensaje);
+    } else {
+      setMensaje("Ocurrió un error desconocido.");
+    }
   };
 
-  // ✅ Manejo del login con Google
+  // ✅ Manejo del login con Google con tipado correcto
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse | undefined) => {
     if (!credentialResponse?.credential) {
       setMensaje("No se recibió el credencial de Google");
@@ -62,7 +68,7 @@ const RegistroComp: React.FC = () => {
     }
 
     try {
-      const decoded: any = jwtDecode(credentialResponse.credential);
+      const decoded = jwtDecode<{ name: string; email: string }>(credentialResponse.credential);
       const nombreUsuario = decoded.name;
       const emailUsuario = decoded.email;
 
@@ -74,12 +80,12 @@ const RegistroComp: React.FC = () => {
       });
 
       if (response.status === 200 && response.data) {
-        const usuario = response.data.usuario;
+        const usuario: { _id: string; nombre: string; email: string; telefono?: string } = response.data.usuario;
         Cookies.set("idUsuario", usuario._id, { expires: 7 });
         Cookies.set("nombreUsuario", usuario.nombre, { expires: 7 });
         Cookies.set("correoUsuario", usuario.email, { expires: 7 });
 
-        const telefono = usuario.telefono?.trim() !== "" ? usuario.telefono : "sintelefono";
+        const telefono: string = usuario.telefono?.trim() || "sintelefono";
         Cookies.set("telefonoUsuario", telefono, { expires: 7 });
 
         setIdUsuario(usuario._id);
@@ -89,8 +95,8 @@ const RegistroComp: React.FC = () => {
 
         router.push(usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil");
       }
-    } catch (error: any) {
-      if (error.response?.status === 400) {
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
         setMensaje("El correo ya está registrado. Intentando redirigir...");
         redirigirUsuarioExistente(error.response?.data?.usuario);
       } else {
@@ -100,14 +106,14 @@ const RegistroComp: React.FC = () => {
   };
 
   // ✅ Función para redirigir usuarios existentes
-  const redirigirUsuarioExistente = async (usuario: any) => {
+  const redirigirUsuarioExistente = async (usuario: { _id: string; nombre: string; email: string; telefono?: string }) => {
     if (!usuario) return;
 
     Cookies.set("idUsuario", usuario._id, { expires: 7 });
     Cookies.set("nombreUsuario", usuario.nombre, { expires: 7 });
     Cookies.set("correoUsuario", usuario.email, { expires: 7 });
 
-    const telefono = usuario.telefono?.trim() !== "" ? usuario.telefono : "sintelefono";
+    const telefono: string = usuario.telefono?.trim() || "sintelefono";
     Cookies.set("telefonoUsuario", telefono, { expires: 7 });
 
     setIdUsuario(usuario._id);
@@ -127,7 +133,6 @@ const RegistroComp: React.FC = () => {
     }
     if (redirigirExplorado) {
       setRedirigirExplorado(false);
-      console.log(usuarioId)
       return UrlActual;
     }
     return "/";
@@ -140,7 +145,7 @@ const RegistroComp: React.FC = () => {
 
   return (
     <div className="RegistroComp-contenedor">
-      <h1 className="RegistroComp-titulo">Ingreso y/o RegistroComp</h1>
+      <h1 className="RegistroComp-titulo">Ingreso y/o Registro</h1>
 
       {mensaje && <p className="Mensaje-error">{mensaje}</p>}
 

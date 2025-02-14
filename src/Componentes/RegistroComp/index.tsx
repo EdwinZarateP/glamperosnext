@@ -44,7 +44,7 @@ const RegistroComp: React.FC = () => {
     if (id) {
       setIdUsuario(id);
       setUsuarioId(id);
-      console.log(usuarioId)
+      
     }
   }, [setIdUsuario]);
 
@@ -92,10 +92,11 @@ const RegistroComp: React.FC = () => {
         setNombreUsuario(usuario.nombre);
         setCorreoUsuario(usuario.email);
         setLogueado(true);
+        console.log(usuarioId)
 
-        router.push(usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil");
+        router.push(!!usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil");
       }
-    } catch (error) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response?.status === 400) {
         setMensaje("El correo ya está registrado. Intentando redirigir...");
         redirigirUsuarioExistente(error.response?.data?.usuario);
@@ -121,7 +122,7 @@ const RegistroComp: React.FC = () => {
     setCorreoUsuario(usuario.email);
     setLogueado(true);
 
-    router.push(usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil");
+    router.push(!!usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil");
   };
 
   // ✅ Función para determinar la redirección

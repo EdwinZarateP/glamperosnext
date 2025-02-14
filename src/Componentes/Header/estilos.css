@@ -150,8 +150,8 @@
   /* Contenedor circular para el ícono de configuración */
   .Header-iconoSettingsWrapper {
     display: none; /* Oculto en pantallas grandes */
-    width: 45px;
-    height: 45px;
+    width: 32px;
+    height: 32px;
     border: 1px solid #d3d3d3;
     align-items: center;
     justify-content: center;
@@ -228,7 +228,7 @@
       justify-content: space-around;
       max-width: 100%; /* Barra de búsqueda ocupa todo el ancho */
       flex-direction: row-reverse; /* Invierte la disposición de los elementos */
-      height: 60px; /* Mantiene la altura constante */
+      height: 40px; /* Mantiene la altura constante */
       position: relative; /* Asegura que los hijos se posicionen correctamente */
       margin-left: 80px;
     }
@@ -276,7 +276,7 @@
     .Header-barraBusqueda {
       margin-left: 20px;
       min-width: 55%;
-      height: 50px; /* Mantiene la altura constante */
+      height: 40px; 
     }
     .Header-menuUsuario {
       padding: 0;
@@ -297,7 +297,7 @@
     .Header-barraBusqueda {
       min-width: 80%;
       margin-left: 10px;
-      height: 50px; /* Mantiene la altura constante */
+      height: 40px; /* Mantiene la altura constante */
     }
     .Header-menuUsuario {
       padding: 0;
@@ -320,7 +320,7 @@
       min-width: 80%;
       /* min-width: 320px; */
       margin-left: 20px;
-      height: 50px; /* Mantiene la altura constante */
+      height: 40px; /* Mantiene la altura constante */
     }
   
     .Header-opcionBusqueda {

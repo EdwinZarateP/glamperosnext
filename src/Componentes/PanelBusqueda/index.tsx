@@ -7,6 +7,7 @@ import CalendarioGeneral from "@/Componentes/CalendarioGeneral";
 import Visitantes from "@/Componentes/Visitantes/index";
 import { ContextoApp } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
+import municipios from "@/Componentes/Municipios/municipios.json";
 import "./estilos.css";
 
 /**
@@ -19,8 +20,7 @@ interface Municipio {
   LONGITUD: number;
 }
 
-// Importamos y tipeamos el JSON de municipios
-const municipios: Municipio[] = require("@/Componentes/Municipios/municipios.json");
+
 
 interface PanelBusquedaProps {
   onBuscar: (destino: string, fechas: string, huespedes: number) => void;

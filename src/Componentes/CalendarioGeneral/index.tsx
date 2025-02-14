@@ -48,7 +48,7 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
   // Cálculo de días libres entre fechaInicio y fechaFin
   useEffect(() => {
     if (fechaInicio && fechaFin) {
-      let diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
+      const diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
       let dias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
 
       // Restamos los días que coincidan con fechas ya separadas (reservadas)
@@ -101,7 +101,7 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
       setFechaInicio(fecha);
       setFechaFin(null);
     } else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
-      let nuevaFechaFin = new Date(fecha);
+      const nuevaFechaFin = new Date(fecha);
       // Evitar rango de un solo día igual al inicio
       if (nuevaFechaFin.toDateString() === fechaInicio.toDateString()) {
         nuevaFechaFin.setDate(nuevaFechaFin.getDate() + 1);

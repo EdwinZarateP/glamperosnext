@@ -127,6 +127,7 @@ const RegistroComp: React.FC = () => {
     }
     if (redirigirExplorado) {
       setRedirigirExplorado(false);
+      console.log(usuarioId)
       return UrlActual;
     }
     return "/";

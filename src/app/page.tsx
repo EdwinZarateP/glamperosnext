@@ -16,7 +16,7 @@ const Home: React.FC = () => {
     throw new Error("El contexto no está disponible. Asegúrate de envolver el componente con ProveedorContextoApp.");
   }
 
-  const { mostrarFiltros } = contexto;
+  // const { mostrarFiltros } = contexto;
 
   return (
     <div className="contenedor-principal">

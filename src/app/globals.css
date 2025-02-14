@@ -1,7 +1,10 @@
 /* styles/globals.css */
 body {
-  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  font-family: 'Lato','Open Sans','Montserrat','Pacifico','Merriweather',  'sans-serif', 'Playfair Display';
   margin: 0;
   padding: 0;
   background-color: #f8f8f8;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0;
 }

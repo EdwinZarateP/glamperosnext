@@ -1,11 +1,13 @@
-import RegistroComp from "@/Componentes/RegistroComp/index";
-import Link from "next/link";
+"use client"; 
+import RegistroComp from "@/Componentes/RegistroComp/index"; 
+import HeaderIcono from "@/Componentes/HeaderIcono/index";
+import "./estilos.css"; 
 
-export default function RegistroPag() {
+export default function RegistrarsePage() {
   return (
-    <main>
+    <div className="Registrarse-contenedor">
+      <HeaderIcono descripcion="Glamperos" />
       <RegistroComp />
-      <Link href="/">Volver al inicio</Link>
-    </main>
+    </div>
   );
 }

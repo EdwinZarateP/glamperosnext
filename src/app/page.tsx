@@ -1,16 +1,34 @@
-import Link from "next/link";
+"use client";
 
-export default function Home() {
+import { useContext } from "react";
+import Header from "@/Componentes/Header";
+// import ContenedorTarjetas from "@/Componentes/ContenedorTarjetas";
+// import MenuIconos from "@/Componentes/MenuIconos"; 
+// import FiltrosContenedor from "@/Componentes/FiltrosContenedor";
+import { ContextoApp } from "@/context/AppContext";
+// import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior"; 
+import "./globals.css"; 
+
+const Home: React.FC = () => {
+  const contexto = useContext(ContextoApp);
+
+  if (!contexto) {
+    throw new Error("El contexto no está disponible. Asegúrate de envolver el componente con ProveedorContextoApp.");
+  }
+
+  const { mostrarFiltros } = contexto;
+
   return (
-    <main>
-      <h1>🔥 ¡Bienvenido a Glamperos! 🔥</h1>
-      <p>Explora los mejores glampings.</p>
-      
-      <nav>
-        <ul>
-          <li><Link href="/RegistroPag">Ir a Registro</Link></li>
-        </ul>
-      </nav>
-    </main>
+    <div className="contenedor-principal">
+      <Header />
+      {/* <MenuIconos /> */}
+      {/* {mostrarFiltros && <FiltrosContenedor />} */}
+      <main>
+        {/* <ContenedorTarjetas /> */}
+      </main>
+      {/* <MenuUsuariosInferior /> */}
+    </div>
   );
-}
+};
+
+export default Home; // ✅ Ahora esta es la página principal (home)

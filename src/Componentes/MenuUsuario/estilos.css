@@ -1,0 +1,40 @@
+.MenuUsuario-contenedor {
+    background-color: #ffffff;
+    width: 250px;
+    border-radius: 8px;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
+    z-index: 10; 
+  }
+  
+  .MenuUsuario-lista {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .MenuUsuario-opcion {
+    font-size: 14px;
+    color: #333;
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .MenuUsuario-opcion:nth-child(1) {
+    font-weight: bold;
+  }
+
+  .MenuUsuario-opcion:nth-child(2) {
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+  }
+  
+  .MenuUsuario-opcion:hover {
+    background-color: #eceeef;
+    color: rgb(0, 0, 0);
+  }
+  
+  .MenuUsuario-opcion:last-child {
+    border-bottom: none;
+  }
+  

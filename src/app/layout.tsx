@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Script from "next/script";
 import "./globals.css";
 import { ProveedorVariables } from "@/context/AppContext";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "optional" });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "optional" });
+const openSans = Open_Sans({ subsets: ["latin"], weight: "400", display: "optional" });
 
 export const metadata: Metadata = {
   title: "Glamperos | Encuentra y reserva los mejores glampings",
@@ -30,8 +31,8 @@ export const metadata: Metadata = {
   },
   other: {
     "theme-color": "#ffffff",
-    "author": "Glamperos",
-    "fragment": "!",
+    author: "Glamperos",
+    fragment: "!",
   },
   icons: {
     icon: "/favicon.ico",
@@ -41,31 +42,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <head>
-        {/* Google Fonts */}
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400" rel="stylesheet" />
-        
-        {/* Leaflet CSS */}
-        <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
-
-        {/* Canonical URL */}
-        <link rel="canonical" href="https://glamperos.com" />
-
-        {/* Favicon */}
-        <link rel="icon" type="image/x-icon" href="/Imagenes/logoColor.ico" />
-      </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${openSans.className}`}>
         <GoogleOAuthProvider clientId="870542988514-rbpof111fdk5vlbn75vi62i06moko46s.apps.googleusercontent.com">
           <ProveedorVariables>{children}</ProveedorVariables>
         </GoogleOAuthProvider>
 
-        {/* Google Maps API */}
-        <Script 
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP8Es7GVLkm_qdCItKb60pGH7ov_tEif0&libraries=places"
-          strategy="lazyOnload"
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&libraries=places`}
+          strategy="afterInteractive"
         />
 
-        {/* Google Analytics (gtag.js) */}
         <Script async src="https://www.googletagmanager.com/gtag/js?id=G-NXB4CM5T4H" />
         <Script id="google-analytics" strategy="lazyOnload">
           {`

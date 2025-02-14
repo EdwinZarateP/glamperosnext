@@ -1,15 +1,26 @@
-
-"use client"; 
+"use client";
 
 import React, { useState, useContext, useCallback } from "react";
 import { FiSearch } from "react-icons/fi";
-import { MdClose } from "react-icons/md"; 
+import { MdClose } from "react-icons/md";
 import CalendarioGeneral from "@/Componentes/CalendarioGeneral";
 import Visitantes from "@/Componentes/Visitantes/index";
 import { ContextoApp } from "@/context/AppContext";
-import municipios from "@/Componentes/Municipios/municipios.json";
 import { useRouter } from "next/navigation";
 import "./estilos.css";
+
+/**
+ * 📌 Define el tipo de datos para cada municipio
+ * según el contenido de tu archivo municipios.json
+ */
+interface Municipio {
+  CIUDAD_DEPARTAMENTO: string;
+  LATITUD: number;
+  LONGITUD: number;
+}
+
+// Importamos y tipeamos el JSON de municipios
+const municipios: Municipio[] = require("@/Componentes/Municipios/municipios.json");
 
 interface PanelBusquedaProps {
   onBuscar: (destino: string, fechas: string, huespedes: number) => void;
@@ -17,15 +28,13 @@ interface PanelBusquedaProps {
 }
 
 const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => {
-  // Cantos de hechicería para inyectar el contexto
+  // 🔹 Accedemos al contexto
   const almacenVariables = useContext(ContextoApp);
-
   if (!almacenVariables) {
-    // Aullamos este error si no hay contexto
     throw new Error("El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto.");
   }
 
-  // Del dulce cofre del contexto extraemos todas las joyas que necesitamos
+  // 🔹 Extraemos variables y funciones del contexto
   const {
     fechaInicio,
     fechaFin,
@@ -75,25 +84,30 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     setActivarFiltrosJacuzzi,
     setActivarFiltrosUbicacionBogota,
     setActivarFiltrosUbicacionMedellin,
-    setActivarFiltrosUbicacionCali
+    setActivarFiltrosUbicacionCali,
   } = almacenVariables;
 
-  // Tomamos la hermosa varita del router de Next para navegar 
-  // en lugar de useNavigate
+  // 🔹 Router de Next para navegación
   const router = useRouter();
 
-  // Estado para las sugerencias y la posición activa en la lista
+  // 🔹 Estados locales: sugerencias, timeouts, índice de sugerencia activa
   const [sugerencias, setSugerencias] = useState<string[]>([]);
   const [timeoutId, setTimeoutId] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [sugerenciaActiva, setSugerenciaActiva] = useState<number>(-1);
+
+  /**
+   * 📌 Función principal para hacer la búsqueda
+   * Navega a "/", configura filtros y llama al callback `onBuscar`
+   */
   const manejarBuscar = () => {
     router.push("/");
 
-    // Aseguramos que, si estamos en el cliente, hagamos scroll al inicio
+    // 🔸 Asegura scroll al top
     if (typeof window !== "undefined") {
       window.scrollTo(0, 0);
     }
-    // Desactivamos filtros exóticos que aparecían en tu useNavigate
+
+    // 🔸 Desactiva distintos filtros especiales
     setActivarFiltrosTienda(false);
     setActivarFiltrosCasaArbol(false);
     setActivarFiltrosCabaña(false);
@@ -115,17 +129,17 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     setActivarFiltrosUbicacionMedellin(false);
     setActivarFiltrosUbicacionCali(false);
 
-    // Ajustamos el ícono seleccionado a un número neutral
+    // 🔸 Ajusta ícono seleccionado por defecto
     setIconoSeleccionado(100);
 
-    // Lógica para el destino (usamos ciudad_departamento en lugar de destino)
+    // 🔸 Lógica para ubicación
     if (ciudad_departamento) {
       setActivarFiltrosUbicacion(true);
     } else {
       setActivarFiltrosUbicacion(false);
     }
 
-    // Lógica para las fechas
+    // 🔸 Lógica para fechas
     if (fechaInicio && fechaFin) {
       setActivarFiltrosFechas(true);
       setFechaInicioConfirmado(fechaInicio);
@@ -134,7 +148,7 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
       setActivarFiltrosFechas(false);
     }
 
-    // Lógica para los huéspedes
+    // 🔸 Lógica para huéspedes
     if (totalHuespedes) {
       setHuespedesConfirmado(totalHuespedes);
       setActivarFiltrosHuespedes(true);
@@ -142,21 +156,23 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
       setActivarFiltrosHuespedes(false);
     }
 
-    // Lógica para las mascotas
+    // 🔸 Lógica para mascotas
     if (Cantidad_Mascotas > 0) {
       setActivarFiltrosMascotas(true);
     } else {
       setActivarFiltrosMascotas(false);
     }
 
-    // Preparar las fechas para tu búsqueda
+    // 🔸 Crea cadena de fechas
     const fechas =
-      fechaInicio && fechaFin ? `${formatFecha(fechaInicio)} - ${formatFecha(fechaFin)}` : "";
+      fechaInicio && fechaFin
+        ? `${formatFecha(fechaInicio)} - ${formatFecha(fechaFin)}`
+        : "";
 
-    // Ajustamos el estado de búsqueda
+    // 🔸 Actualiza la búsqueda global
     setBusqueda({ destino: ciudad_departamento || "", fechas });
 
-    // Asignar coordenadas predeterminadas si no están presentes
+    // 🔸 Si no hay coordenadas elegidas, usamos predeterminadas
     const coordenadasPredeterminadas = {
       LATITUD: 10.463433617,
       LONGITUD: -75.45889915,
@@ -166,19 +182,20 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
       setFiltros((prevFiltros) => ({
         ...prevFiltros,
         cordenadasFilter:
-          cordenadasElegidas.length > 0
-            ? cordenadasElegidas[0]
-            : coordenadasPredeterminadas,
+          cordenadasElegidas.length > 0 ? cordenadasElegidas[0] : coordenadasPredeterminadas,
       }));
     }
 
-    // Finalmente, llamamos al callback onBuscar que recibimos por props
-    onBuscar(ciudad_departamento, fechas, totalHuespedes);
+    // 🔸 Llamamos a la función onBuscar que viene en props
+    onBuscar(ciudad_departamento || "", fechas, totalHuespedes);
 
-    // Y cerramos el panel
+    // 🔸 Cerramos este panel
     onCerrar();
   };
 
+  /**
+   * 📌 Dar formato a las fechas (ej: "1 ene. 2024")
+   */
   const formatFecha = (fecha: Date): string => {
     return fecha.toLocaleDateString("es-ES", {
       day: "numeric",
@@ -187,25 +204,32 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     });
   };
 
+  /**
+   * 📌 Función para buscar sugerencias (municipios) según el `query`
+   * Usamos `useCallback` para memorizarla y evitar recreaciones innecesarias
+   */
   const buscarSugerenciasDesdeJSON = useCallback(
     (query: string) => {
-      // Si la longitud del query es mayor a 1, filtramos
       if (query.length > 1) {
-        const resultados = municipios.filter((municipio: any) =>
+        // 🔸 Filtra municipios por nombre
+        const resultados = municipios.filter((municipio: Municipio) =>
           municipio.CIUDAD_DEPARTAMENTO.toLowerCase().includes(query.toLowerCase())
         );
 
-        // Establecemos sugerencias y coordenadas
+        // 🔸 Llenamos sugerencias con el nombre, y guardamos coordenadas
         setSugerencias(
-          resultados.map((municipio: any) => municipio.CIUDAD_DEPARTAMENTO).slice(0, 10)
+          resultados.map((m: Municipio) => m.CIUDAD_DEPARTAMENTO).slice(0, 10)
         );
         setCordenadasElegidas(
           resultados
-            .map((municipio: any) => ({ LATITUD: municipio.LATITUD, LONGITUD: municipio.LONGITUD }))
+            .map((m: Municipio) => ({
+              LATITUD: m.LATITUD,
+              LONGITUD: m.LONGITUD,
+            }))
             .slice(0, 10)
         );
       } else {
-        // Si no, limpiamos
+        // 🔸 Si el query es muy corto, reseteamos
         setSugerencias([]);
         setCordenadasElegidas([]);
       }
@@ -213,48 +237,54 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     [setCordenadasElegidas]
   );
 
+  /**
+   * 📌 Maneja el cambio de texto en el input de destino
+   * Aplica un debounce con setTimeout para no filtrar en cada pulsación
+   */
   const manejarCambioDestino = (query: string) => {
     setCiudad_departamento(query);
     setSugerenciaActiva(-1);
 
-    // Si había un timeout previo, lo limpiamos
     if (timeoutId) clearTimeout(timeoutId);
-
-    // Creamos un nuevo timeout para buscar sugerencias
     const newTimeoutId = setTimeout(() => {
       buscarSugerenciasDesdeJSON(query);
     }, 0);
-
     setTimeoutId(newTimeoutId);
   };
 
-  const manejarSeleccionSugerencia = (sugerencia: string) => {
-    // Actualizamos ciudad_departamento
-    setCiudad_departamento(sugerencia);
-
-    // Ocultamos sugerencias
+  /**
+   * 📌 Al seleccionar una sugerencia, actualizamos ciudad y coordenadas
+   */
+  const manejarSeleccionSugerencia = (sug: string) => {
+    setCiudad_departamento(sug);
     setSugerencias([]);
     setSugerenciaActiva(-1);
 
-    // Buscamos la data en el JSON para coordenadas
+    // 🔸 Buscamos el municipio en el JSON
     const municipioSeleccionado = municipios.find(
-      (municipio: any) => municipio.CIUDAD_DEPARTAMENTO === sugerencia
+      (municipio: Municipio) => municipio.CIUDAD_DEPARTAMENTO === sug
     );
 
     if (municipioSeleccionado) {
       setCordenadasElegidas([
-        { LATITUD: municipioSeleccionado.LATITUD, LONGITUD: municipioSeleccionado.LONGITUD },
+        {
+          LATITUD: municipioSeleccionado.LATITUD,
+          LONGITUD: municipioSeleccionado.LONGITUD,
+        },
       ]);
     } else {
       setCordenadasElegidas([]);
     }
 
-    // Si no hay fechaFin, abrimos el calendario
+    // 🔸 Si no hay fechaFin, abrimos el calendario para que el usuario elija fechas
     if (!fechaFin) {
       setMostrarCalendario(true);
     }
   };
 
+  /**
+   * 📌 Maneja las teclas (flechas / Enter) en el input
+   */
   const manejarTecla = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (sugerencias.length === 0) return;
 
@@ -272,10 +302,10 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
 
   return (
     <>
-      {/* Fondo que oscurece y cierra al hacer clic */}
+      {/* 🔹 Fondo oscuro clicable para cerrar */}
       <div className="PanelBusqueda-fondo" onClick={onCerrar}></div>
 
-      {/* Contenedor principal */}
+      {/* 🔹 Contenedor principal */}
       <div className="PanelBusqueda-contenedor">
         <h2 className="PanelBusqueda-titulo">¿A dónde quieres viajar?</h2>
 
@@ -293,30 +323,28 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
                 onChange={(e) => manejarCambioDestino(e.target.value)}
                 onKeyDown={manejarTecla}
               />
-              {/* Botón para borrar texto */}
               {ciudad_departamento && (
                 <button
                   className="PanelBusqueda-botonBorrar"
-                  onClick={() => {
-                    setCiudad_departamento("");
-                  }}
+                  onClick={() => setCiudad_departamento("")}
                 >
                   <MdClose />
                 </button>
               )}
             </div>
+
             {/* Sugerencias dinámicas */}
             {sugerencias.length > 0 && (
               <div className="PanelBusqueda-sugerencias">
-                {sugerencias.map((sugerencia, index) => (
+                {sugerencias.map((sug, index) => (
                   <div
                     key={index}
                     className={`PanelBusqueda-sugerencia ${
                       sugerenciaActiva === index ? "activo" : ""
                     }`}
-                    onClick={() => manejarSeleccionSugerencia(sugerencia)}
+                    onClick={() => manejarSeleccionSugerencia(sug)}
                   >
-                    {sugerencia}
+                    {sug}
                   </div>
                 ))}
               </div>
@@ -324,10 +352,7 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
           </div>
 
           {/* Sección de Fechas */}
-          <div
-            className="PanelBusqueda-fechas"
-            onClick={() => setMostrarCalendario(true)}
-          >
+          <div className="PanelBusqueda-fechas" onClick={() => setMostrarCalendario(true)}>
             <span className="PanelBusqueda-fechas-titulo">Fechas</span>
             <span className="PanelBusqueda-fechas-valor">
               {fechaInicio && fechaFin
@@ -337,10 +362,7 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
           </div>
 
           {/* Sección de Huéspedes */}
-          <div
-            className="PanelBusqueda-huespedes"
-            onClick={() => setMostrarVisitantes(true)}
-          >
+          <div className="PanelBusqueda-huespedes" onClick={() => setMostrarVisitantes(true)}>
             <span className="PanelBusqueda-huespedes-titulo">Huéspedes</span>
             <span className="PanelBusqueda-huespedes-valor">
               {totalHuespedes > 0
@@ -350,12 +372,12 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
           </div>
         </div>
 
-        {/* Botones inferiores de Limpiar y Buscar */}
+        {/* Botones inferiores: Limpiar y Buscar */}
         <div className="PanelBusqueda-botones">
           <button
             className="PanelBusqueda-limpiar"
             onClick={() => {
-              // Con un giro de varita, devolvemos todo a su estado original
+              // 🔹 Resetea valores
               setCiudad_departamento("");
               setFechaInicio(null);
               setFechaFin(null);
@@ -382,25 +404,21 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
         </div>
       </div>
 
-      {/* Calendario flotante si mostrarCalendario es true */}
+      {/* Calendario flotante */}
       {mostrarCalendario && (
-        <CalendarioGeneral
-          cerrarCalendario={() => setMostrarCalendario(false)}
-        />
+        <CalendarioGeneral cerrarCalendario={() => setMostrarCalendario(false)} />
       )}
 
-      {/* Panel de Visitantes si mostrarVisitantes es true */}
+      {/* Panel de Visitantes */}
       {mostrarVisitantes && (
-        <div>
-          <Visitantes
-            max_adultos={10}
-            max_Ninos={10}
-            max_bebes={5}
-            max_mascotas={5}
-            max_huespedes={10}
-            onCerrar={() => setMostrarVisitantes(false)}
-          />
-        </div>
+        <Visitantes
+          max_adultos={10}
+          max_Ninos={10}
+          max_bebes={5}
+          max_mascotas={5}
+          max_huespedes={10}
+          onCerrar={() => setMostrarVisitantes(false)}
+        />
       )}
     </>
   );

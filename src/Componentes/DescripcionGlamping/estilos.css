@@ -1,0 +1,51 @@
+.descripcion-glamping-contenedor {
+    border-radius: 8px;
+    margin: 0;
+    font-family: inherit;    
+  }
+  
+  .descripcion-glamping-titulo {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .descripcion-glamping-texto {
+    font-size: 1.1em;
+    color: #555;
+    margin: 10px 0;
+    font-weight: bold;
+  }
+  
+  .descripcion-glamping-detalle {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Works in WebKit browsers like Chrome, Safari, and Edge */
+    line-clamp: 3;         /* Standard, but not widely supported yet */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: justify;
+    margin-top: 30px;
+  }  
+  
+  .mostrar-mas-texto {
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  
+  /* Pantallas pequeñas (móviles) */
+@media (max-width: 600px) {
+  .descripcion-glamping-contenedor {
+    width: 100%;
+  }
+
+  .descripcion-glamping-detalle{
+    margin-top:20px;
+    margin-left:10px;
+    margin-right:10px;
+  }
+
+  .mostrar-mas-texto {
+    padding-left: 10px;
+  }
+}

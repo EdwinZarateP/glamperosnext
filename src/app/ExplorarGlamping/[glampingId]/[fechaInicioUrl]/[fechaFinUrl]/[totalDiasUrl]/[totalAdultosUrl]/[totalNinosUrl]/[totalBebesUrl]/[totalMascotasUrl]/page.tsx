@@ -4,9 +4,9 @@ import { useEffect, useContext, useState } from "react";
 import Header from "@/Componentes/Header";
 import ImagenesExploradas from "@/Componentes/ImgExploradas/index";
 import EncabezadoExplorado from "@/Componentes/EncabezadoExplorado";
-// import ImgExploradasIndividual from "@/Componentes/ImgExploradasIndividual";
+import ImgExploradasIndividual from "@/Componentes/ImgExploradasIndividual/index";
 import NombreGlamping from "@/Componentes/NombreGlamping";
-// import DescripcionGlamping from "@/Componentes/DescripcionGlamping";
+import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
 // import FormularioFechas from "@/Componentes/FormularioFechas";
 // import LoQueOfrece from "@/Componentes/LoQueOfrece";
 // import Calendario from "@/Componentes/Calendario";
@@ -126,8 +126,8 @@ export default function ExplorarGlamping() {
   }, [glampingId, setFechasSeparadas]);
 
   // Estados para calificaciones
-//   const [calificacionEvaluaciones, setCalificacionEvaluaciones] = useState<number | null>(null);
-//   const [calificacionPromedio, setCalificacionPromedio] = useState<number>(4.5);
+  const [calificacionEvaluaciones, setCalificacionEvaluaciones] = useState<number | null>(null);
+  const [calificacionPromedio, setCalificacionPromedio] = useState<number>(4.5);
 
   useEffect(() => {
     if (glampingId) {
@@ -136,8 +136,8 @@ export default function ExplorarGlamping() {
           const response = await fetch(`https://glamperosapi.onrender.com/evaluaciones/glamping/${glampingId}/promedio`);
           const data = await response.json();
           if (data) {
-            // setCalificacionPromedio(data.calificacion_promedio || 4.5);
-            // setCalificacionEvaluaciones(data.calificacionEvaluaciones || 1);
+            setCalificacionPromedio(data.calificacion_promedio || 4.5);
+            setCalificacionEvaluaciones(data.calificacionEvaluaciones || 1);
           }
         } catch (error) {
           console.error("Error al obtener las calificaciones:", error);
@@ -193,8 +193,7 @@ export default function ExplorarGlamping() {
             </div>
             <div className="img-exploradas-individual-container">
               {informacionGlamping.imagenes && informacionGlamping.imagenes.length > 0 ? (
-                // <ImgExploradasIndividual imagenes={informacionGlamping.imagenes} />
-                <p>Borrar</p>
+                <ImgExploradasIndividual imagenes={informacionGlamping.imagenes} />                
               ) : null}
               {informacionGlamping.video_youtube &&
                 informacionGlamping.video_youtube.trim() !== "sin video" && (
@@ -216,12 +215,12 @@ export default function ExplorarGlamping() {
             </div>
             <div className="contenedor-descripcion-glamping">
               <div className="contenedor-descripcion-glamping-izq">
-                {/* <DescripcionGlamping
+                <DescripcionGlamping
                   calificacionNumero={calificacionPromedio || 4.5}
                   calificacionEvaluaciones={calificacionEvaluaciones || 1}
                   calificacionMasAlta="Su piscina fue lo mejor calificado"
                   descripcion_glamping={informacionGlamping.descripcionGlamping}  
-                /> */}
+                />
                 <div className="contenedor-lo-que-ofrece">
                   {/* <LoQueOfrece amenidades={informacionGlamping.amenidadesGlobal} /> */}
                 </div>

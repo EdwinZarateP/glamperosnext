@@ -1,0 +1,121 @@
+/* Contenedor principal del componente que ocupa todo el espacio disponible */
+.img-exploradas-individual-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  /* Contenedor del carrusel */
+  .imgExp-carrusel {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    overflow: hidden;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 0;
+  }
+  
+  /* Contenedor de imágenes en fila para el deslizamiento */
+  .imgExp-imagenes {
+    display: flex;
+    transition: transform 0.5s ease; /* Transición suave para el deslizamiento */
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Cada imagen ocupa todo el contenedor del carrusel */
+  .imgExp-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ajusta la imagen sin distorsionar, recortando si es necesario */
+    flex-shrink: 0; /* Evita que las imágenes se reduzcan más allá del ancho del contenedor */
+  }
+  
+  /* Controles superiores (corazón y compartir) */
+  .imgExp-controles {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 21px;
+    color: white;
+    transform: translate(0, 0); /* Corrige cualquier desplazamiento inesperado */
+    margin: 0; /* Resetea márgenes para asegurar compatibilidad */
+    padding: 0; /* Resetea padding para evitar inconsistencias */
+  }
+  
+  /* Ícono de compartir */
+  .imgExp-compartir {
+    font-size: 35px;
+    color: black;
+    cursor: pointer;
+    background-color: white; /* Fondo blanco */
+    border-radius: 50%; /* Hace que el fondo sea circular */
+    padding: 2px; /* Ajusta el tamaño del fondo alrededor del ícono */
+    border: 0.5px solid black; /* Borde negro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(0, 0); /* Previene problemas de Safari */
+  }
+  
+  /* Ícono de corazón */
+  .imgExp-corazon {
+    font-size: 35px;
+    cursor: pointer;
+    color: red; /* Color del corazón */
+    background: none; /* Sin fondo */
+    border: none; /* Sin bordes */
+    outline: none; /* Sin bordes de enfoque */
+    transform: translate(0, 0); /* Previene problemas en Safari */
+    margin: 0; /* Asegura que no haya márgenes predeterminados */
+    padding: 0; /* Asegura que no haya relleno predeterminado */
+  }
+  
+  /* Contador en la esquina inferior derecha */
+  .imgExp-contador {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: white;
+  }
+  
+  /* Puntos de navegación en la parte inferior central */
+  .imgExp-puntos {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+  }
+  
+  .imgExp-punto {
+    width: 6px;
+    height: 6px;
+    background-color: rgba(35, 34, 34, 0.7);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .imgExp-punto.imgExp-activo {
+    background-color: rgba(240, 233, 233, 0.9);
+    transform: scale(1.2);
+    
+  }
+  
+  
+  

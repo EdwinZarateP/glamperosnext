@@ -1,0 +1,93 @@
+/* Contenedor principal */
+.DescripcionGlampingTexto-contenedor {
+  max-height: 150px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Limita el párrafo a solo 3 líneas */
+.DescripcionGlampingTexto-parrafo {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Botón de Mostrar Más */
+.DescripcionGlampingTexto-mostrar-mas-texto {
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 8px;
+  font-size: 1rem;
+}
+
+/* Modal de la Descripción Completa */
+.DescripcionGlampingTexto-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+/* Contenido del Modal */
+.DescripcionGlampingTexto-modal-contenido {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 50%;
+  height: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow-y: auto; 
+}
+
+/* Título en el Modal */
+.DescripcionGlampingTexto-titulo {
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: left;
+}
+
+/* Botón de cerrar en el Modal */
+.DescripcionGlampingTexto-cerrar-boton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  background-color: transparent;
+  top: 10px;
+  right: 10px;
+  color: black;
+  border: none;
+  font-size: 1.5rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.DescripcionGlampingTexto-cerrar-boton:hover {
+  color: #555;
+}
+
+/* Contenido del Modal */
+
+
+@media (max-width: 600px) {
+  .DescripcionGlampingTexto-modal-contenido {  
+    width: 95%;
+  }
+}

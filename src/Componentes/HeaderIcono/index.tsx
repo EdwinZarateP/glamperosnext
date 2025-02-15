@@ -13,8 +13,10 @@ export default function HeaderIcono({ descripcion }: HeaderIconoProps) {
   const router = useRouter();
 
   const irAInicio = () => {
-    router.push("/"); // ✅ Navega sin necesidad de recargar manualmente
+    console.log("Ir al inicio");
+    router.push("/");
   };
+  
 
   return (
     <div className="HeaderIcono-contenedor">

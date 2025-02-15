@@ -99,10 +99,8 @@ const Header: React.FC = () => {
   };
 
   const irAInicio = () => {
-    router.push("/");
-    setTimeout(() => {
-      window.location.reload(); // ✅ Fuerza la recarga total de la página
-    }, 0);
+    console.log("Ir al inicio")
+    router.push("/");    
   };
   
 
@@ -122,7 +120,7 @@ const Header: React.FC = () => {
           className="Header-logo" 
           priority 
         />
-          <span className="Header-nombreMarca">Glamperos</span>
+          <span className="Header-nombreMarca" onClick={irAInicio} >Glamperos</span>
         </div>
 
         <div className="Header-barraBusqueda" onClick={manejarClickBusqueda}>

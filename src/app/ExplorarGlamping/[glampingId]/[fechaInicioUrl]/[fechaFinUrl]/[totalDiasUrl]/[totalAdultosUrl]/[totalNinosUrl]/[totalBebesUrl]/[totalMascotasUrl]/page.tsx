@@ -10,11 +10,11 @@ import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
 // import FormularioFechas from "@/Componentes/FormularioFechas";
 import LoQueOfrece from "@/Componentes/LoQueOfrece/index";
 // import Calendario from "@/Componentes/Calendario";
-// import MapaGlampings from "@/Componentes/Mapa";
+import MapaGlampings from "@/Componentes/Mapa/index";
 import Comentarios from "@/Componentes/Comentarios/index";
 // import ReservarBoton from "@/Componentes/BotonReservar";
 import { ContextoApp } from "@/context/AppContext";
-// import ManejoErrores from "@/Funciones/ManejoErrores";
+import ManejoErrores from "@/Funciones/ManejoErrores";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
 import Lottie from "lottie-react";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
@@ -242,12 +242,12 @@ export default function ExplorarGlamping() {
               </div>
             </div>
             <Comentarios glampingId={glampingId || ""} />
-            {/* <ManejoErrores>
+            <ManejoErrores>              
               <MapaGlampings 
                 lat={informacionGlamping.ubicacion?.lat ?? 0} 
                 lng={informacionGlamping.ubicacion?.lng ?? 0} 
               />
-            </ManejoErrores> */}
+            </ManejoErrores>
             {informacionGlamping.propietario_id ? (
             //   <PerfilUsuario propietario_id={informacionGlamping.propietario_id} />
               <p>Borrar</p>

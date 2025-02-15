@@ -1,0 +1,53 @@
+.MapaGlampings-contenedor {
+  width: 100%;
+  height: 100%; 
+  max-width: 100%;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box; 
+}
+
+.MapaGlampings-titulo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333; /* Color del título */
+  margin-bottom: 10px; /* Espacio entre el título y el mapa */
+  text-align: left; /* Alineación del título */
+}
+
+.MapaGlampings-mapa-container {
+  width: 100%;
+  height: 400px; /* Altura fija para el mapa */
+  border-radius: 20px; /* Bordes redondeados solo para el mapa */
+  overflow: hidden; /* Evita que el mapa se desborde fuera de los bordes redondeados */
+  position: relative; /* Asegura que el mapa ocupe el espacio total del contenedor */
+}
+
+.MapaGlampings-icono {
+  color: black; /* Color del ícono */
+  font-size: 50px; /* Tamaño del ícono */
+}
+
+.MapaGlampings-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000; /* Color personalizado para el marcador */
+  border-radius: 50%; /* Hacer el marcador redondo */
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombras para el marcador */
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .MapaGlampings-contenedor {
+    width: 95%; 
+  }
+
+  .MapaGlampings-mapa-container {
+    height: 250px; /* Altura fija para el mapa */
+    pointer-events: none;
+    }
+
+}

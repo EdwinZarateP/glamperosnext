@@ -1,0 +1,207 @@
+/* Estilo para el contenedor de las fotos */
+.fotosCollage-contenedor {
+  width: 55%;
+  margin-top: 60px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.fotosCollage-contenedor h1 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  pointer-events: none;
+}
+
+.fotosCollage-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Dos columnas por defecto */
+  gap: 7px;
+  grid-template-rows: auto;
+  grid-auto-rows: minmax(250px, auto); 
+  pointer-events: none;
+}
+
+/* El primer elemento en cada ciclo de tres ocupa dos columnas */
+.fotosCollage-item-span-2 {
+  grid-column: span 2; /* Primer elemento ocupa dos columnas */
+}
+
+/* Estilo para los demás elementos */
+.fotosCollage-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 15px; /* Bordes redondeados */
+  position: relative;
+  transition: transform 0.3s ease;
+  height: 100%;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Efecto al pasar el mouse */
+.fotosCollage-item:hover {
+  filter: brightness(0.8);
+  transition: filter 0.3s ease;
+}
+
+.fotosCollage-imagen {
+  width: 100%; /* Asegura que la imagen ocupe todo el contenedor */
+  height: auto; /* Mantiene la relación de aspecto original */
+  max-height: 400px; /* Limita la altura máxima de la imagen a 400px */
+  object-fit: cover; /* Asegura que las imágenes cubran el contenedor sin distorsionarse */
+  border-radius: 15px;
+}
+
+
+/* Estilo para el modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.modal-contenido {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
+  width: 60%;
+  pointer-events: auto;
+}
+
+.modal-imagen {
+  width: 100%;         /* Se ajusta al 100% del ancho del contenedor */
+  height: 100%;        /* Se ajusta al 100% de la altura del contenedor */
+  object-fit: cover;   /* Asegura que todas las imágenes llenen el contenedor sin distorsión */
+  border-radius: 8px;  /* Bordes redondeados */
+}
+
+.cerrar {
+  position: absolute;
+  top: -50px;
+  right: -100px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.navegar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  width: 42px;
+  height: 42px;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  border-radius: 50%;
+  border: 1px solid rgb(231, 231, 231);
+}
+
+.navegar svg {
+  width: 1em; 
+  height: 1em;
+}
+
+.navegar.izquierda {
+  position: absolute;
+  left: -100px;
+}
+.navegar.izquierda:hover {
+  transform: scale(1.2);
+}
+
+.navegar.derecha {
+  position: absolute;
+  right: -100px;
+}
+
+.navegar.derecha:hover{
+  transform: scale(1.2);
+}
+
+/* Flechas de navegación ocultas si están en el primer o último elemento */
+.oculta {
+  display: none;
+}
+
+/* Contador de imágenes */
+.contador-imagenes {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+@media (max-width: 600px) {
+  
+  .fotosCollage-contenedor {
+    width: 95%;
+    margin-top: 0;
+  }
+
+  .fotosCollage-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .modal {
+    pointer-events: auto; /* Bloquea clics sobre el fondo solo en pantallas pequeñas */
+  }
+  .modal-contenido {
+    width: 100%;
+    height: 50%;
+  }
+  .modal-imagen {
+    border-radius: 0 ;
+  }
+
+  .navegar {
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height:42px;
+    font-size: 32px;
+
+  }
+  .cerrar {
+    top: -70px;
+    right:14px;
+  }
+
+  .navegar.izquierda {
+    left: 20px;
+    bottom: -63px;
+  }
+  .navegar.izquierda:hover{
+    transform: none;
+  }
+  .navegar.derecha {
+    right: 20px;
+    bottom: -63px;
+  }
+  .navegar.derecha:hover{
+    transform: none;
+  }
+}

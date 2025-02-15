@@ -9,7 +9,7 @@ import NombreGlamping from "@/Componentes/NombreGlamping";
 import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
 // import FormularioFechas from "@/Componentes/FormularioFechas";
 import LoQueOfrece from "@/Componentes/LoQueOfrece/index";
-// import Calendario from "@/Componentes/Calendario";
+import Calendario from "@/Componentes/Calendario";
 import MapaGlampings from "@/Componentes/Mapa/index";
 import Comentarios from "@/Componentes/Comentarios/index";
 // import ReservarBoton from "@/Componentes/BotonReservar";
@@ -19,8 +19,8 @@ import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
 import Lottie from "lottie-react";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import { useParams, useRouter } from "next/navigation";
-// import VerVideo from "@/Componentes/Video";
-// import PerfilUsuario from "@/Componentes/PerfilUsuario";
+import VerVideo from "@/Componentes/VerVideo";
+import PerfilUsuario from "@/Componentes/PerfilUsuario";
 import { MdOndemandVideo } from "react-icons/md";
 import "./estilos.css";
 
@@ -205,7 +205,7 @@ export default function ExplorarGlamping() {
                   Video
                 </button>
               )}
-              {/* <VerVideo urlVideo={informacionGlamping.video_youtube} /> */}
+              <VerVideo urlVideo={informacionGlamping.video_youtube} />
               
             </div>
             <div className="nombre-glamping-container">
@@ -225,9 +225,9 @@ export default function ExplorarGlamping() {
                   <LoQueOfrece amenidades={informacionGlamping.amenidadesGlobal} />
                 </div>
                 <div className="contenedor-calendario">
-                  {/* <Calendario 
+                  <Calendario 
                     nombreGlamping={`${informacionGlamping.nombreGlamping} - ${informacionGlamping.ciudad_departamento.split(" - ")[0] || ""}`}
-                  /> */}
+                  />
                 </div>
               </div>
               <div className="contenedor-descripcion-glamping-der">
@@ -249,8 +249,7 @@ export default function ExplorarGlamping() {
               />
             </ManejoErrores>
             {informacionGlamping.propietario_id ? (
-            //   <PerfilUsuario propietario_id={informacionGlamping.propietario_id} />
-              <p>Borrar</p>
+            <PerfilUsuario propietario_id={informacionGlamping.propietario_id} />
             ) : (
               <p>El propietario no está disponible</p>
             )}

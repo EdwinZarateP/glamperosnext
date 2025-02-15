@@ -62,7 +62,7 @@ export default function Comentarios({ glampingId }: ComentariosProps) {
         ) : (
           <div className="comentarios-vacios">
             {/* Si usas next/image podrías reemplazarlo, pero aquí se usa img */}
-            <img src={"/imagenes/dameTiempo.png"} alt="Meme divertido" className="meme-dameTiempo" />
+            <img src={"https://storage.googleapis.com/glamperos-imagenes/Imagenes/dameTiempo.png"} alt="Meme divertido" className="meme-dameTiempo" />
             <p>Sin reseñas (por ahora)</p>
           </div>
         )}

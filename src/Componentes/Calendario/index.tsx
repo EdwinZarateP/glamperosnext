@@ -136,7 +136,7 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
   );
 
   const renderizarCalendario = (mes: number, anio: number) => {
-    const dias: JSX.Element[] = [];
+    const dias = [];
     const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
     const primerDiaDelMes = new Date(anio, mes, 1).getDay();
 

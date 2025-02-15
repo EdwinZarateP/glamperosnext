@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ContextoApp } from "@/context/AppContext"; 
 import FiltroPrecios from "@/Componentes/FiltrosPrecios/index"; 
 import "./estilos.css"; 
@@ -9,7 +9,7 @@ const FiltrosContenedor: React.FC = () => {
   const almacenVariables = useContext(ContextoApp);
 
   if (!almacenVariables) {
-    return null; // ✅ Evita errores de renderizado si el contexto no está disponible
+    throw new Error("El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto.");
   }
 
   const {
@@ -20,7 +20,7 @@ const FiltrosContenedor: React.FC = () => {
     setTipoGlamping,
     setFiltros,
     setCantiadfiltrosAplicados,
-    precioFiltrado, // ⬅️ Asegura que el estado global se actualice correctamente
+    precioFiltrado, // ⬅️ Se asegura de usar el estado global actualizado
   } = almacenVariables;
 
   // ✅ Valores por defecto de precios
@@ -29,17 +29,14 @@ const FiltrosContenedor: React.FC = () => {
   const aplicarFiltros = () => {
     let filtrosActivos = 0;
 
-    // ✅ Verifica si el precio fue modificado
+    if (tipoGlamping && tipoGlamping !== "") {
+      filtrosActivos++;
+    }
     if (JSON.stringify(precioFiltrado) !== JSON.stringify(precioPorDefecto)) {
       filtrosActivos++;
     }
 
-    // ✅ Verifica si el tipo de glamping fue seleccionado
-    if (tipoGlamping && tipoGlamping !== "") {
-      filtrosActivos++;
-    }
-
-    setCantiadfiltrosAplicados(filtrosActivos); // ✅ Actualiza el contador de filtros aplicados
+    setCantiadfiltrosAplicados(filtrosActivos);
 
     setFiltros((prevFiltros) => ({
       ...prevFiltros,
@@ -61,8 +58,13 @@ const FiltrosContenedor: React.FC = () => {
     setTipoGlamping("");
     setPrecioFiltrado(precioPorDefecto); // ✅ Restaura el estado global correctamente
     setActivarFiltros(false);
-    setCantiadfiltrosAplicados(0); // ✅ Borra el contador de filtros aplicados
+    setCantiadfiltrosAplicados(0);
   };
+
+  // ✅ Sincroniza `precioFiltrado` con el estado local de `FiltroPrecios`
+  useEffect(() => {
+    setPrecioFiltrado(precioPorDefecto);
+  }, []);
 
   return (
     <div

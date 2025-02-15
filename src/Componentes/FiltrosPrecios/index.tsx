@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { ContextoApp } from "@/context/AppContext";
 import "./estilos.css";
 
@@ -15,18 +15,36 @@ const FiltroPrecios: React.FC = () => {
   const min = 60000;
   const max = 2200000;
 
-  // ✅ Convertir `precioFiltrado` a una tupla segura
-  const valoresIniciales: [number, number] = [precioFiltrado[0] ?? min, precioFiltrado[1] ?? max];
+  // ✅ Garantiza que `precioFiltrado` sea una tupla válida
+  const valoresIniciales: [number, number] = (
+    precioFiltrado?.length === 2 ? precioFiltrado : [min, max]
+  ) as [number, number];
 
-  // ✅ Estado local inicializado correctamente como una tupla `[number, number]`
+  // ✅ Estado local inicializado correctamente
   const [valores, setValores] = useState<[number, number]>(valoresIniciales);
 
-  // ✅ Sincronizar estado local con contexto solo si hay un cambio real
+  // ✅ Ref para evitar la ejecución en el primer render
+  const isFirstRender = useRef(true);
+
+  // ✅ Actualizar `valores` cuando `precioFiltrado` cambia
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
     if (JSON.stringify(precioFiltrado) !== JSON.stringify(valores)) {
-      setValores([precioFiltrado[0] ?? min, precioFiltrado[1] ?? max]);
+      setValores(precioFiltrado as [number, number]);
     }
   }, [precioFiltrado]);
+
+  // ✅ Actualizar `precioFiltrado` cuando `valores` cambia
+  useEffect(() => {
+    if (!isFirstRender.current && JSON.stringify(valores) !== JSON.stringify(precioFiltrado)) {
+      setPrecioFiltrado([...valores] as [number, number]);
+      setCantiadfiltrosAplicados(valores[0] !== min || valores[1] !== max ? 1 : 0);
+    }
+  }, [valores]); // ✅ Solo depende de `valores`
 
   // ✅ Manejo del cambio en los sliders
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -43,14 +61,6 @@ const FiltroPrecios: React.FC = () => {
       return nuevosValores;
     });
   };
-
-  // ✅ Guardar valores en el contexto solo si realmente han cambiado
-  useEffect(() => {
-    if (JSON.stringify(valores) !== JSON.stringify(precioFiltrado)) {
-      setPrecioFiltrado([...valores] as [number, number]); // 🔥 Conversión explícita a tupla
-      setCantiadfiltrosAplicados(valores[0] !== min || valores[1] !== max ? 1 : 0);
-    }
-  }, [valores]);
 
   // ✅ Calcular porcentaje para el track del slider
   const porcentajeMin = ((valores[0] - min) / (max - min)) * 100;

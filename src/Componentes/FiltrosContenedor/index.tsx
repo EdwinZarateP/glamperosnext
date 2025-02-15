@@ -53,13 +53,14 @@ const FiltrosContenedor: React.FC = () => {
     setMostrarFiltros(false);
     document.body.style.overflow = "auto";
   };
-
+  
   const limpiarFiltros = () => {
     setTipoGlamping("");
-    setPrecioFiltrado(precioPorDefecto); // ✅ Restaura el estado global correctamente
+    setPrecioFiltrado([60000, 2200000]); // ✅ Asegurar que sea una tupla
     setActivarFiltros(false);
     setCantiadfiltrosAplicados(0);
   };
+  
 
   return (
     <div

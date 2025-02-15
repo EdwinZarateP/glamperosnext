@@ -1,0 +1,151 @@
+/* Estilos para el contenedor del overlay */
+.FiltrosContenedor-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* ✅ Asegura que esté por encima de otros elementos */
+}
+
+/* Estilos para el modal de filtros */
+.FiltrosContenedor-contenedor {
+  background-color: #fff;
+  width: 100%;
+  max-width: 600px; /* ✅ Evita que se extienda demasiado en pantallas grandes */
+  height: auto;
+  max-height: 80vh; /* ✅ Evita que sea demasiado alto en pantallas pequeñas */
+  position: relative;
+  padding: 20px;
+  border-radius: 12px;
+  overflow-y: auto;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para el título */
+.FiltrosContenedor-contenedor h1 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #e7e7e7;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+/* Contenedor de opciones de filtros */
+.FiltrosContenedor-contenedor-opciones {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  max-height: 60vh; /* ✅ Evita que el contenido desborde */
+  /* overflow-y: auto; */
+  padding-bottom: 10px; /* ✅ Espacio para los botones */
+}
+
+/* Botón para cerrar el modal */
+.FiltrosContenedor-boton-cerrar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.FiltrosContenedor-boton-cerrar:hover {
+  transform: scale(1.2);
+  color: #ff3b30;
+}
+
+/* ✅ Evita que el fondo se desplace cuando el modal está abierto */
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Contenedor de botones fijos en la parte inferior */
+.FiltrosContenedor-botones-fijos {
+  position: fixed;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border-top: 1px solid #e7e7e7;
+  padding: 12px 20px;
+  border-radius: 10px;
+  box-shadow: 0px -2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1050;
+}
+
+/* Estilos para el botón de "Aplicar filtros" */
+.FiltrosContenedor-boton-aplicar {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  background-color: #2F6B3E;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.FiltrosContenedor-boton-aplicar:hover {
+  background-color: #418f54;
+  transform: scale(1.05);
+}
+
+.FiltrosContenedor-boton-aplicar:active {
+  background-color: #1e4c2a;
+}
+
+/* Estilos para el botón de "Limpiar filtros" */
+.FiltrosContenedor-boton-limpiar {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  background-color: #626563;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.FiltrosContenedor-boton-limpiar:hover {
+  background-color: #aeb0ae;
+  transform: scale(1.05);
+}
+
+.FiltrosContenedor-boton-limpiar:active {
+  background-color: #4d4f4d;
+}
+
+/* ✅ Mejora de la responsividad */
+@media (max-width: 900px) {
+  .FiltrosContenedor-contenedor {
+      width: 90%;
+      max-height: 75vh;
+  }
+
+  .FiltrosContenedor-botones-fijos {
+      width: 95%;
+      padding: 10px;
+  }
+
+  .FiltrosContenedor-boton-aplicar,
+  .FiltrosContenedor-boton-limpiar {
+      padding: 8px 15px;
+      font-size: 14px;
+  }
+}

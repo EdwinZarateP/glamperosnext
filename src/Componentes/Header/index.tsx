@@ -100,7 +100,11 @@ const Header: React.FC = () => {
 
   const irAInicio = () => {
     router.push("/");
+    setTimeout(() => {
+      window.location.reload(); // ✅ Fuerza la recarga total de la página
+    }, 0);
   };
+  
 
   return (
     <div className="contenedor-Header">

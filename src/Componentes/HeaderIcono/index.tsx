@@ -1,7 +1,8 @@
-"use client"; // Indica que es un Client Component para que pueda usar hooks del cliente
+"use client"; // Indica que es un Client Component para usar hooks del cliente
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image"; // ✅ Optimización de imagen
 import "./estilos.css";
 
 interface HeaderIconoProps {
@@ -12,17 +13,21 @@ export default function HeaderIcono({ descripcion }: HeaderIconoProps) {
   const router = useRouter();
 
   const irAInicio = () => {
-    // Navega a la ruta raíz "/"
-    router.push("/");
-    // Evita el reload forzado a menos que realmente quieras recargar todo el sitio
-    // window.location.reload();
+    router.push("/"); // ✅ Navega sin necesidad de recargar manualmente
   };
 
   return (
     <div className="HeaderIcono-contenedor">
       <header className="HeaderIcono-Header">
         <div className="HeaderIcono-izquierda" onClick={irAInicio}>
-          <img src="/Imagenes/animal5.jpeg" alt="Logo" className="HeaderIcono-logo"/>
+          <Image
+            src="/Imagenes/animal5.jpeg"
+            alt="Logo"
+            width={100} // ✅ Ajusta el tamaño según necesites
+            height={50}
+            priority // ✅ Carga optimizada para mejor rendimiento
+            className="HeaderIcono-logo"
+          />
           <span className="HeaderIcono-nombreMarca">{descripcion}</span>
         </div>
       </header>

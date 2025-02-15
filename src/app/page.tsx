@@ -2,12 +2,12 @@
 
 import { useContext } from "react";
 import Header from "@/Componentes/Header";
-// import ContenedorTarjetas from "@/Componentes/ContenedorTarjetas";
+import ContenedorTarjetas from "@/Componentes/ContenedorTarjetas/index";
 import MenuIconos from "@/Componentes/MenuIconos"; 
 import FiltrosContenedor from "@/Componentes/FiltrosContenedor/index";
 import { ContextoApp } from "@/context/AppContext";
 // import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior"; 
-import "./globals.css"; 
+import "./page.css"; 
 
 const Home: React.FC = () => {
   const contexto = useContext(ContextoApp);
@@ -19,12 +19,12 @@ const Home: React.FC = () => {
   const { mostrarFiltros } = contexto;
 
   return (
-    <div className="contenedor-principal">
+    <div className="Home-principal">
       <Header />
       <MenuIconos />
       {mostrarFiltros && <FiltrosContenedor />}
       <main>
-        {/* <ContenedorTarjetas /> */}
+        <ContenedorTarjetas />
       </main>
       {/* <MenuUsuariosInferior /> */}
     </div>

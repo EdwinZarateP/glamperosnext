@@ -1,0 +1,301 @@
+/* Asegura que todos los elementos usen box-sizing: border-box */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Contenedor principal de la tarjeta */
+.tarjeta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  user-select: none;
+}
+
+/* Contenedor de la imagen */
+.tarjeta-imagen-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 0.9;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.tarjeta-icono-mascota {
+  position: absolute;
+  bottom: 10px; /* Ajusta según tus necesidades */
+  left: 10px; /* Ajusta según tus necesidades */
+  font-size: 1.5rem; /* Ajusta el tamaño del ícono según lo necesites */
+  color: white; /* O cualquier color que quieras */
+  z-index: 10; /* Para asegurarte de que esté encima de las imágenes */
+}
+
+/* Skeleton loader */
+.tarjeta-skeleton {
+  width: 100%;
+  height: 320px;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-animation 1.5s infinite;
+  border-radius: 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Animación del skeleton */
+@keyframes skeleton-animation {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Carrusel */
+.carrusel {
+  display: flex;
+  transition: transform 0.6s ease;
+}
+
+/* Imagen cargada */
+.tarjeta-imagen {
+  width: 100%;
+  aspect-ratio: 1 / 0.9;
+  object-fit: cover;
+  flex-shrink: 0;
+  min-width: 100%;
+  opacity: 0; /* Oculta la imagen inicialmente */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.tarjeta-imagen.visible {
+  opacity: 1; /* Hace visible la imagen */
+}
+
+.tarjeta-imagen.oculta {
+  display: none;
+}
+
+/* Flechas de navegación */
+.flecha {
+  position: absolute;
+  top: 40%; /* Centra verticalmente la flecha */
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.6);
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  transform: translateY(-50%);
+  z-index: 2;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0; /* Ocultas por defecto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Mostrar flechas solo cuando se hace hover sobre la tarjeta */
+.tarjeta:hover .flecha {
+  opacity: 1;
+}
+
+/* Oculta las flechas en la primera o última imagen */
+.flecha.oculta {
+  display: none;
+}
+
+/* Flecha izquierda */
+.flecha.izquierda {
+  left: 12px;
+}
+
+/* Flecha derecha */
+.flecha.derecha {
+  right: 12px;
+}
+
+/* Hover para flechas */
+.flecha:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Puntos de navegación */
+.puntos {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.punto {
+  width: 6px;
+  height: 6px;
+  background-color: rgba(35, 34, 34, 0.7);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.punto.activo {
+  background-color: rgba(240, 233, 233, 0.9);
+  transform: scale(1.2); /* Resalta el punto activo */
+}
+
+.punto:hover {
+  background-color: rgba(240, 233, 233, 0.9);
+  transform: scale(1.2); /* Similar al punto activo */
+}
+
+/* Responsividad */
+
+/* Pantallas pequeñas: oculta flechas y muestra puntos */
+@media (max-width: 600px) {
+  .flecha {
+    display: none;
+  }
+
+  .puntos {
+    visibility: visible;
+  }
+}
+
+/* Pantallas grandes: muestra flechas y oculta puntos */
+@media (min-width: 601px) {
+  .puntos {
+    visibility: hidden;
+  }
+}
+
+/* Información de la tarjeta */
+.tarjeta-info {
+  padding-top: 0;
+  background-color: #ffffff;
+  margin-top: 10px;
+}
+
+.tarjeta-contenido {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tarjeta-nombre {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 0;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  font-size: 16px;
+}
+
+.tarjeta-calificacion {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.tarjeta-calificacion.efecto {
+  transform: scale(1.5);
+}
+
+.tarjeta-estrella {
+  color: black;
+  margin-right: 4px;
+}
+
+.tarjeta-ciudad {
+  color: #555;
+  margin: 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
+.tarjeta-precio {
+  font-weight: bold;
+  color: #333;
+  font-size: 1em;
+  display: block;
+  margin-top: 4px;
+}
+
+.tarjeta-precio :nth-child(3) {
+  font-weight:400;
+  color: #333;
+  font-size: 0.8em;  
+}
+
+.tarjeta-precio-variosDias {
+  font-weight: bold;
+  color: #333;
+  font-size: 1em;
+  display: block;
+  margin-top: 4px;
+}
+
+.tarjeta-precio-variosDias span{
+  font-weight:400;
+  font-size: 0.8em;  
+}
+
+.tarjeta-precio-base {
+  color: #888;
+  font-size: 0.9em;
+  margin-right: 8px;
+}
+
+
+/* Botón de favorito (corazón) */
+.tarjeta-favorito {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+}
+
+.corazon {
+  transition: color 0.1s, transform 0.1s;
+  color: gray;
+}
+
+.corazon.activo {
+  color: red;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+  .tarjeta {
+    margin: 8px;
+    width: 95%;
+    margin-bottom: 25px;
+  }
+}

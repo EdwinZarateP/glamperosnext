@@ -248,7 +248,7 @@
   
     .Header-iconoSettingsWrapper {
       display: flex; /* Muestra el ícono de configuración */
-      margin-right: 5px;
+      margin-right: 10px;
     }
   
     .Header-opcionBusqueda {
@@ -282,6 +282,11 @@
       padding: 0;
       border: none;
     }
+
+    .Header-iconoSettingsWrapper {
+      display: flex; /* Muestra el ícono de configuración */
+      margin-right: 10px;
+    }
   }
   
   /* Pantallas muy pequeñas (menores a 540px) */
@@ -303,6 +308,11 @@
       padding: 0;
       border: none;
     }
+
+    .Header-iconoSettingsWrapper {
+      display: flex; /* Muestra el ícono de configuración */
+      margin-right: 10px;
+    }
   }
   
   /* Pantallas muy pequeñas (menores a 400px) */
@@ -321,17 +331,24 @@
       max-width: 80%;
       min-width: 250px;
       margin:0;
-      margin-left: 10px;
+      margin-left: 20px;
       height: 40px;
       /* padding: 0; */
     }
   
     .Header-opcionBusqueda {
       margin-left: 10px;
+ 
     }
     .Header-menuUsuario {
       padding: 0;
+
       border: none;
+    }
+
+    .Header-iconoSettingsWrapper {
+      display: flex; /* Muestra el ícono de configuración */
+      margin-right: 10px;
     }
   }
   

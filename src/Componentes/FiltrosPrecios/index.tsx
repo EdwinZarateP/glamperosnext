@@ -2,34 +2,30 @@
 
 import React, { useContext, useState, useEffect } from "react";
 import { ContextoApp } from "@/context/AppContext";
-import "./estilos.css"; 
+import "./estilos.css";
 
 const FiltroPrecios: React.FC = () => {
   const almacenVariables = useContext(ContextoApp);
 
   if (!almacenVariables) {
-    return null; // ✅ Evita errores de SSR si el contexto no está disponible
+    throw new Error("El contexto no está disponible. Asegúrate de que el componente está dentro del proveedor.");
   }
 
   const { precioFiltrado, setPrecioFiltrado, setCantiadfiltrosAplicados } = almacenVariables;
   const min = 60000;
   const max = 2200000;
 
-  // ✅ Asegurar que precioFiltrado tiene exactamente dos valores
-  const valoresIniciales: [number, number] = [
-    precioFiltrado?.[0] ?? min,
-    precioFiltrado?.[1] ?? max,
-  ];
+  // ✅ Convertir `precioFiltrado` a una tupla segura
+  const valoresIniciales: [number, number] = [precioFiltrado[0] ?? min, precioFiltrado[1] ?? max];
 
-  // ✅ Estado local para el slider
+  // ✅ Estado local inicializado correctamente como una tupla `[number, number]`
   const [valores, setValores] = useState<[number, number]>(valoresIniciales);
 
-  // ✅ Mantener sincronizado el estado local con el contexto
+  // ✅ Sincronizar estado local con contexto solo si hay un cambio real
   useEffect(() => {
-    setValores([
-      precioFiltrado?.[0] ?? min,
-      precioFiltrado?.[1] ?? max,
-    ]);
+    if (JSON.stringify(precioFiltrado) !== JSON.stringify(valores)) {
+      setValores([precioFiltrado[0] ?? min, precioFiltrado[1] ?? max]);
+    }
   }, [precioFiltrado]);
 
   // ✅ Manejo del cambio en los sliders
@@ -44,16 +40,17 @@ const FiltroPrecios: React.FC = () => {
         nuevosValores[1] = Math.max(value, nuevosValores[0]);
       }
 
-      setPrecioFiltrado(nuevosValores); // ✅ Actualiza el contexto global
-
-      // ✅ Actualiza el contador de filtros si se modificó el precio
-      if (nuevosValores[0] !== min || nuevosValores[1] !== max) {
-        setCantiadfiltrosAplicados((prev) => prev + 1);
-      }
-
       return nuevosValores;
     });
   };
+
+  // ✅ Guardar valores en el contexto solo si realmente han cambiado
+  useEffect(() => {
+    if (JSON.stringify(valores) !== JSON.stringify(precioFiltrado)) {
+      setPrecioFiltrado([...valores] as [number, number]); // 🔥 Conversión explícita a tupla
+      setCantiadfiltrosAplicados(valores[0] !== min || valores[1] !== max ? 1 : 0);
+    }
+  }, [valores]);
 
   // ✅ Calcular porcentaje para el track del slider
   const porcentajeMin = ((valores[0] - min) / (max - min)) * 100;

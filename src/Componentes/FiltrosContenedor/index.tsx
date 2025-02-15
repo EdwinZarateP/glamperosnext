@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ContextoApp } from "@/context/AppContext"; 
 import FiltroPrecios from "@/Componentes/FiltrosPrecios/index"; 
 import "./estilos.css"; 
@@ -20,10 +20,10 @@ const FiltrosContenedor: React.FC = () => {
     setTipoGlamping,
     setFiltros,
     setCantiadfiltrosAplicados,
-    precioFiltrado, // ⬅️ Se asegura de usar el estado global actualizado
+    precioFiltrado,
   } = almacenVariables;
 
-  // ✅ Valores por defecto de precios
+  // ✅ Valores por defecto de precios como tupla
   const precioPorDefecto: [number, number] = [60000, 2200000];
 
   const aplicarFiltros = () => {
@@ -40,7 +40,7 @@ const FiltrosContenedor: React.FC = () => {
 
     setFiltros((prevFiltros) => ({
       ...prevFiltros,
-      precioFilter: precioFiltrado, // ✅ Usa el estado global actualizado
+      precioFilter: [...precioFiltrado] as [number, number], // ✅ Se mantiene el filtro aplicado
       tipoFilter: tipoGlamping,
     }));
 
@@ -60,11 +60,6 @@ const FiltrosContenedor: React.FC = () => {
     setActivarFiltros(false);
     setCantiadfiltrosAplicados(0);
   };
-
-  // ✅ Sincroniza `precioFiltrado` con el estado local de `FiltroPrecios`
-  useEffect(() => {
-    setPrecioFiltrado(precioPorDefecto);
-  }, []);
 
   return (
     <div

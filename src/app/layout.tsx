@@ -1,13 +1,10 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
 import { Open_Sans } from "next/font/google";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import Script from "next/script";
 import "./globals.css";
-import { ProveedorVariables } from "@/context/AppContext";
+import ClientProviders from "@/Componentes/ClientProviders/index";
 
-// const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "optional" });
-// const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "optional" });
 const openSans = Open_Sans({ subsets: ["latin"], weight: "400", display: "optional" });
 
 export const metadata: Metadata = {
@@ -41,19 +38,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="es">
-      <body className={`${openSans.className}`}>
-        <GoogleOAuthProvider clientId="870542988514-rbpof111fdk5vlbn75vi62i06moko46s.apps.googleusercontent.com">
-          <ProveedorVariables>{children}</ProveedorVariables>
-        </GoogleOAuthProvider>
-
+      <head />
+      <body
+        className={`${openSans.className}`}
+      >
+        <ClientProviders>{children}</ClientProviders>
         <Script
           src={`https://maps.googleapis.com/maps/api/js?key=TU_API_KEY&libraries=places`}
           strategy="afterInteractive"
         />
-
         <Script async src="https://www.googletagmanager.com/gtag/js?id=G-NXB4CM5T4H" />
         <Script id="google-analytics" strategy="lazyOnload">
           {`

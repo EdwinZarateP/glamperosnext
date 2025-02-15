@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ContextoApp } from "@/context/AppContext";
 import "./estilos.css";
 
@@ -15,54 +15,42 @@ const FiltroPrecios: React.FC = () => {
   const min = 60000;
   const max = 2200000;
 
-  // ✅ Garantiza que `precioFiltrado` sea una tupla válida
-  const valoresIniciales: [number, number] = (
-    precioFiltrado?.length === 2 ? precioFiltrado : [min, max]
-  ) as [number, number];
+  // Garantiza que precioFiltrado sea una tupla válida
+  const valoresIniciales: [number, number] =
+  precioFiltrado && precioFiltrado.length === 2
+    ? [precioFiltrado[0], precioFiltrado[1]]
+    : [min, max];
 
-  // ✅ Estado local inicializado correctamente
+
+  // Estado local que representa los valores del slider
   const [valores, setValores] = useState<[number, number]>(valoresIniciales);
 
-  // ✅ Ref para evitar la ejecución en el primer render
-  const isFirstRender = useRef(true);
-
-  // ✅ Actualizar `valores` cuando `precioFiltrado` cambia
+  // Sincroniza el estado local cuando el contexto cambia (por ejemplo, al limpiar filtros)
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
-    if (JSON.stringify(precioFiltrado) !== JSON.stringify(valores)) {
-      setValores(precioFiltrado as [number, number]);
-    }
+    setValores(precioFiltrado as [number, number]);
   }, [precioFiltrado]);
 
-  // ✅ Actualizar `precioFiltrado` cuando `valores` cambia
-  useEffect(() => {
-    if (!isFirstRender.current && JSON.stringify(valores) !== JSON.stringify(precioFiltrado)) {
-      setPrecioFiltrado([...valores] as [number, number]);
-      setCantiadfiltrosAplicados(valores[0] !== min || valores[1] !== max ? 1 : 0);
-    }
-  }, [valores]); // ✅ Solo depende de `valores`
-
-  // ✅ Manejo del cambio en los sliders
+  // Manejo del cambio en los sliders (sin actualizar el contexto en cada pulsación)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const value = Number(e.target.value);
     setValores((prevValores) => {
       const nuevosValores: [number, number] = [...prevValores];
-
       if (index === 0) {
         nuevosValores[0] = Math.min(value, nuevosValores[1]);
       } else {
         nuevosValores[1] = Math.max(value, nuevosValores[0]);
       }
-
       return nuevosValores;
     });
   };
 
-  // ✅ Calcular porcentaje para el track del slider
+  // Al soltar el slider, se "comprometen" los cambios en el contexto
+  const commitChange = () => {
+    setPrecioFiltrado([...valores] as [number, number]);
+    setCantiadfiltrosAplicados(valores[0] !== min || valores[1] !== max ? 1 : 0);
+  };
+
+  // Calcula el porcentaje para el fondo del track del slider
   const porcentajeMin = ((valores[0] - min) / (max - min)) * 100;
   const porcentajeMax = ((valores[1] - min) / (max - min)) * 100;
 
@@ -88,6 +76,8 @@ const FiltroPrecios: React.FC = () => {
             max={max}
             value={valores[0]}
             onChange={(e) => handleChange(e, 0)}
+            onMouseUp={commitChange}
+            onTouchEnd={commitChange}
             className="slider-thumb left"
           />
           <input
@@ -96,6 +86,8 @@ const FiltroPrecios: React.FC = () => {
             max={max}
             value={valores[1]}
             onChange={(e) => handleChange(e, 1)}
+            onMouseUp={commitChange}
+            onTouchEnd={commitChange}
             className="slider-thumb right"
           />
         </div>

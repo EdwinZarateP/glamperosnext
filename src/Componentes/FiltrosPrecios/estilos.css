@@ -7,6 +7,7 @@
   width: 100%;
   max-width: 400px; /* ✅ Evita que el filtro se extienda demasiado */
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .precio-header {
@@ -32,7 +33,11 @@
   font-size: 0.9rem;
   border: 1px solid #e2e8f0;
   text-align: center;
-  white-space: nowrap; /* ✅ Evita que se corte en móviles */
+  /* Si el texto es demasiado largo, se muestra en una sola línea con puntos suspensivos */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 
 .slider-container {
@@ -105,28 +110,30 @@
 /* ✅ Mejor espaciado y adaptación a móviles */
 @media (max-width: 480px) {
   .precio-filtro {
-      padding: 0.8rem;
+    padding: 0.8rem;
   }
 
   .precio-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .precio-valores {
-      width: 100%;
-      text-align: center;
+    width: 100%;
+    text-align: center;
+    /* Aseguramos que respete el ancho del contenedor */
+    box-sizing: border-box;
   }
 
   .slider-track {
-      height: 5px;
+    height: 5px;
   }
 
   .slider-thumb::-webkit-slider-thumb,
   .slider-thumb::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
+    width: 18px;
+    height: 18px;
   }
 }
 

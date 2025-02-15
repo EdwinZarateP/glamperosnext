@@ -135,7 +135,7 @@ body.no-scroll {
 @media (max-width: 900px) {
   .FiltrosContenedor-contenedor {
       width: 90%;
-      max-height: 75vh;
+      /* max-height: 75vh; */
   }
 
   .FiltrosContenedor-botones-fijos {

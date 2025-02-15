@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { ContextoApp } from "@/context/AppContext"; 
 import FiltroPrecios from "@/Componentes/FiltrosPrecios/index"; 
 import "./estilos.css"; 
@@ -23,7 +23,7 @@ const FiltrosContenedor: React.FC = () => {
     precioFiltrado,
   } = almacenVariables;
 
-  // ✅ Valores por defecto de precios como tupla
+  // Valores por defecto de precios como tupla
   const precioPorDefecto: [number, number] = [60000, 2200000];
 
   const aplicarFiltros = () => {
@@ -40,7 +40,7 @@ const FiltrosContenedor: React.FC = () => {
 
     setFiltros((prevFiltros) => ({
       ...prevFiltros,
-      precioFilter: [...precioFiltrado] as [number, number], // ✅ Se mantiene el filtro aplicado
+      precioFilter: [...precioFiltrado] as [number, number],
       tipoFilter: tipoGlamping,
     }));
 
@@ -56,11 +56,10 @@ const FiltrosContenedor: React.FC = () => {
   
   const limpiarFiltros = () => {
     setTipoGlamping("");
-    setPrecioFiltrado([60000, 2200000]); // ✅ Asegurar que sea una tupla
+    setPrecioFiltrado([60000, 2200000]); 
     setActivarFiltros(false);
     setCantiadfiltrosAplicados(0);
   };
-  
 
   return (
     <div
@@ -80,7 +79,9 @@ const FiltrosContenedor: React.FC = () => {
           <div className="FiltrosContenedor-Rango-precios">
             <FiltroPrecios />
           </div>
-          <div className="FiltrosContenedor-Amenidades">{/* Aquí puedes agregar más filtros */}</div>
+          <div className="FiltrosContenedor-Amenidades">
+            {/* Aquí puedes agregar más filtros */}
+          </div>
         </div>
 
         <div className="FiltrosContenedor-botones-fijos">

@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
+// import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Script from "next/script";
 import "./globals.css";
 import { ProveedorVariables } from "@/context/AppContext";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "optional" });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "optional" });
+// const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "optional" });
+// const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "optional" });
 const openSans = Open_Sans({ subsets: ["latin"], weight: "400", display: "optional" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://glamperos.com"),
   title: "Glamperos | Encuentra y reserva los mejores glampings",
   description: "Explora y reserva glampings exclusivos en los mejores destinos naturales.",
   keywords: "glamping, camping de lujo, reservas de glamping, turismo, naturaleza",
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${openSans.className}`}>
+      <body className={`${openSans.className}`}>
         <GoogleOAuthProvider clientId="870542988514-rbpof111fdk5vlbn75vi62i06moko46s.apps.googleusercontent.com">
           <ProveedorVariables>{children}</ProveedorVariables>
         </GoogleOAuthProvider>

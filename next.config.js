@@ -11,4 +11,4 @@ const nextConfig = {
   reactStrictMode: true, // Opcional: habilita el modo estricto de React
 };
 
-export default nextConfig;
+module.exports = nextConfig;

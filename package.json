@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "npm install --legacy-peer-deps",
     "dev": "next dev -p 4000",
-    "build": "next build --legacy-peer-deps",
+    "build": "next build",
     "start": "next start -p $PORT",
     "lint": "next lint"
   },

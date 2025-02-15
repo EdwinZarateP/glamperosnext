@@ -8,10 +8,10 @@ import ImgExploradasIndividual from "@/Componentes/ImgExploradasIndividual/index
 import NombreGlamping from "@/Componentes/NombreGlamping";
 import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
 // import FormularioFechas from "@/Componentes/FormularioFechas";
-// import LoQueOfrece from "@/Componentes/LoQueOfrece";
+import LoQueOfrece from "@/Componentes/LoQueOfrece/index";
 // import Calendario from "@/Componentes/Calendario";
 // import MapaGlampings from "@/Componentes/Mapa";
-// import Comentarios from "@/Componentes/Comentarios";
+import Comentarios from "@/Componentes/Comentarios/index";
 // import ReservarBoton from "@/Componentes/BotonReservar";
 import { ContextoApp } from "@/context/AppContext";
 // import ManejoErrores from "@/Funciones/ManejoErrores";
@@ -222,7 +222,7 @@ export default function ExplorarGlamping() {
                   descripcion_glamping={informacionGlamping.descripcionGlamping}  
                 />
                 <div className="contenedor-lo-que-ofrece">
-                  {/* <LoQueOfrece amenidades={informacionGlamping.amenidadesGlobal} /> */}
+                  <LoQueOfrece amenidades={informacionGlamping.amenidadesGlobal} />
                 </div>
                 <div className="contenedor-calendario">
                   {/* <Calendario 
@@ -241,8 +241,8 @@ export default function ExplorarGlamping() {
                 /> */}
               </div>
             </div>
-            {/* <Comentarios glampingId={glampingId || ""} />
-            <ManejoErrores>
+            <Comentarios glampingId={glampingId || ""} />
+            {/* <ManejoErrores>
               <MapaGlampings 
                 lat={informacionGlamping.ubicacion?.lat ?? 0} 
                 lng={informacionGlamping.ubicacion?.lng ?? 0} 

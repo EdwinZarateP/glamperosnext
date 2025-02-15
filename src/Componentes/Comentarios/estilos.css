@@ -1,0 +1,119 @@
+/* Contenedor general */
+.Comentarios-contenedor {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.comentarios-vacios{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Estilo para el carrusel en pantallas pequeñas */
+.Comentarios-carrusel-con {
+  display: flex;
+  justify-content: left;
+  overflow-x: auto; /* Permite el desplazamiento horizontal */
+  gap: 16px; /* Espaciado entre comentarios */
+  scroll-snap-type: x mandatory; /* "Engancha" los comentarios al deslizar */
+}
+
+/* Estilo para el carrusel en pantallas pequeñas */
+.Comentarios-carrusel-sin {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto; /* Permite el desplazamiento horizontal */
+  gap: 16px; /* Espaciado entre comentarios */
+  scroll-snap-type: x mandatory; /* "Engancha" los comentarios al deslizar */
+}
+
+.Comentarios-carrusel-con::-webkit-scrollbar {
+  display: none; /* Oculta la barra de desplazamiento en navegadores Webkit */
+}
+
+.Comentarios-carrusel-con > * {
+  flex: 0 0 80%; /* Cada comentario ocupa el 80% del ancho visible */
+  scroll-snap-align: start; /* Asegura que cada comentario se alinee al inicio */
+  border-radius: 8px; /* Bordes redondeados */
+  box-sizing: border-box;
+}
+
+.Comentarios-carrusel-sin::-webkit-scrollbar {
+  display: none; /* Oculta la barra de desplazamiento en navegadores Webkit */
+}
+
+.Comentarios-carrusel-sin > * {
+  flex: 0 0 80%; /* Cada comentario ocupa el 80% del ancho visible */
+  scroll-snap-align: start; /* Asegura que cada comentario se alinee al inicio */
+  border-radius: 8px; /* Bordes redondeados */
+  box-sizing: border-box;
+}
+
+.meme-dameTiempo{
+  width: 100px;
+  margin-top: 14px;
+}
+
+/* Grid para pantallas grandes */
+@media (min-width: 601px) {
+  .Comentarios-carrusel-con {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    overflow: visible; /* Sin scroll horizontal */
+    padding: 0;
+  }
+
+  .Comentarios-carrusel-con > * {
+    flex: 0 0 calc(50% - 16px); /* Dos columnas con espaciado */
+    scroll-snap-align: unset; /* Sin comportamiento de "enganche" */
+  }
+
+  /* Overflow-y auto solo para pantallas grandes */
+  .Comentarios-contenedor {
+    overflow-y: auto; /* Solo aplica en pantallas grandes */
+    max-height: 250px; /* Puedes ajustar el max-height según lo que necesites */
+  }
+
+  .meme-dameTiempo{
+    width: 100px;
+    margin-top: 14px;
+  }
+}
+
+/* Regla para pantallas pequeñas */
+@media (max-width: 600px) {
+  .Comentarios-carrusel-con {
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 15px;
+  }
+
+  .Comentarios-carrusel-sin {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .Comentarios-titulo {
+    margin-left: 20px;
+  }
+
+  /* Para pantallas pequeñas, desactivar el overflow */
+  .Comentarios-contenedor {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    margin-top: 30px;
+    overflow-y: visible; 
+  }
+}

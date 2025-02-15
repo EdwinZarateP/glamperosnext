@@ -1,0 +1,91 @@
+.comentario-contenedor {
+  max-width:350px;
+  border-radius: 15px;
+  min-height: 200px;
+  padding: 10px;
+}
+
+.comentario-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.comentario-imagen {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 16px;
+  object-fit: cover;
+}
+
+.comentario-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 16px;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.comentario-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.comentario-nombre {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.comentario-detalles {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.comentario-calificacion {
+  font-size: 1rem;
+}
+
+.comentario-texto {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Prefijo para navegadores Webkit */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* Soporte para navegadores sin prefijo */
+  display: box;
+  line-clamp: 3; /* Estándar para navegadores compatibles */
+  box-orient: vertical;
+}
+
+.comentario-texto.expandido {
+  display: block; /* Muestra todo el texto si está expandido */
+}
+
+.comentario-mostrar {
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 8px;
+  text-decoration: underline;
+}
+
+
+/* Regla para pantallas pequeñas: elimina el borde */
+@media (max-width: 600px) {
+  .comentario-contenedor {
+    border: 1px solid #e0e0e0;
+  }
+}

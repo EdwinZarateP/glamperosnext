@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     fragment: "!",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg",
   },
 };
 

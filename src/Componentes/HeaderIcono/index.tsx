@@ -1,7 +1,7 @@
 "use client"; // Indica que es un Client Component para usar hooks del cliente
 
 import React from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import Image from "next/image"; // ✅ Optimización de imagen
 import "./estilos.css";
 
@@ -10,11 +10,10 @@ interface HeaderIconoProps {
 }
 
 export default function HeaderIcono({ descripcion }: HeaderIconoProps) {
-  const router = useRouter();
+  // const router = useRouter();
 
   const irAInicio = () => {
-    console.log("Ir al inicio");
-    router.push("/");
+    window.location.href = "/";
   };
   
 

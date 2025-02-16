@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FiGrid } from "react-icons/fi";
 import { MdOutlinePets, MdOndemandVideo } from "react-icons/md";
 import VerVideo from "@/Componentes/VerVideo/index";
@@ -19,11 +19,10 @@ const ImgExploradas: React.FC<ImgExploradasProps> = ({
   Acepta_Mascotas,
   video_youtube,
 }) => {
-  // Extraemos glampingId desde la URL
-  const params = useParams();
-  const glampingId = params?.glampingId as string;
-
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const glampingId = searchParams.get("glampingId") || ""; // Obtiene glampingId desde la URL
+
   const { setVerVideo } = useContext(ContextoApp)!;
 
   const imagenesMostrar = imagenes.slice(0, 5);

@@ -150,16 +150,41 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
       const reservada = esFechaReservada(fecha);
       const seleccionado = esFechaSeleccionada(fecha);
 
+      // Definir clases dinámicas
+      let clases = "calendario-dia";
+
+      if (seleccionado) {
+        if (fechaInicio && fechaFin) {
+          const fechaStr = fecha.toDateString();
+          const inicioStr = fechaInicio.toDateString();
+          const finStr = fechaFin.toDateString();
+          
+          if (fechaStr === inicioStr) {
+            clases += " calendario-dia-inicio"; // Fecha de inicio (verde oscuro)
+          } else if (fechaStr === finStr) {
+            clases += " calendario-dia-fin"; // Fecha de fin (verde oscuro)
+          } else if (fecha > fechaInicio && fecha < fechaFin) {
+            // Detectar primer y último día del rango para sombrearlos más oscuro
+            if (fecha.toDateString() === new Date(fechaInicio.getTime() + 86400000).toDateString()) {
+              clases += " calendario-dia-rango-inicio"; // Primer día del rango (más oscuro)
+            } else if (fecha.toDateString() === new Date(fechaFin.getTime() - 86400000).toDateString()) {
+              clases += " calendario-dia-rango-fin";
+            } else {
+              clases += " calendario-dia-rango"; // Rango intermedio (verde más claro)
+            }
+          }
+        } else {
+          clases += " calendario-dia-inicio"; // Si solo hay una fecha seleccionada
+        }
+      }
+
+      if (reservada) clases += " calendario-dia-reservada";
+      if (deshabilitada) clases += " calendario-dia-deshabilitada";
+
       dias.push(
         <button
           key={dia}
-          className={`calendario-dia ${
-            seleccionado ? "calendario-dia-seleccionado" : ""
-          } ${reservada ? "calendario-dia-reservada" : ""} ${
-            seleccionado && fechaInicio && fechaFin && fecha > fechaInicio && fecha < fechaFin
-              ? "calendario-dia-rango"
-              : ""
-          }`}
+          className={clases}
           onClick={() => !deshabilitada && !reservada && manejarClickFecha(fecha)}
           disabled={deshabilitada || reservada}
         >
@@ -169,7 +194,9 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
     }
 
     return dias;
-  };
+};
+
+  
 
   return (
     <div className="calendario">

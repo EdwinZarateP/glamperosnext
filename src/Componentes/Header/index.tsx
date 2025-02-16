@@ -99,9 +99,9 @@ const Header: React.FC = () => {
   };
 
   const irAInicio = () => {
-    console.log("Ir al inicio")
-    router.push("/");    
+    window.location.href = "/";
   };
+  
   
 
   return (

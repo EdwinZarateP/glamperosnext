@@ -7,7 +7,7 @@ import EncabezadoExplorado from "@/Componentes/EncabezadoExplorado";
 import ImgExploradasIndividual from "@/Componentes/ImgExploradasIndividual/index";
 import NombreGlamping from "@/Componentes/NombreGlamping";
 import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
-// import FormularioFechas from "@/Componentes/FormularioFechas";
+import FormularioFechas from "@/Componentes/FormularioFechas";
 import LoQueOfrece from "@/Componentes/LoQueOfrece/index";
 import Calendario from "@/Componentes/Calendario";
 import MapaGlampings from "@/Componentes/Mapa/index";
@@ -16,13 +16,33 @@ import Comentarios from "@/Componentes/Comentarios/index";
 import { ContextoApp } from "@/context/AppContext";
 import ManejoErrores from "@/Funciones/ManejoErrores";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
-import Lottie from "lottie-react";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
-import { useParams, useRouter } from "next/navigation";
+// import Lottie from "lottie-react";
+import { useSearchParams, useRouter } from "next/navigation";
 import VerVideo from "@/Componentes/VerVideo";
 import PerfilUsuario from "@/Componentes/PerfilUsuario";
 import { MdOndemandVideo } from "react-icons/md";
+import dynamic from "next/dynamic";
+import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";
+
+interface MyLottieProps {
+  animationData: unknown;
+  loop?: boolean;
+  autoplay?: boolean;
+  style?: React.CSSProperties;
+}
+
+// Transformamos la importación de `lottie-react` a un componente que acepte MyLottieProps
+const Lottie = dynamic<MyLottieProps>(
+  () =>
+    import("lottie-react").then((mod) => {
+      // forzamos el default a un componente tipado
+      return mod.default as React.ComponentType<MyLottieProps>;
+    }),
+  {
+    ssr: false,
+  }
+);
 
 interface Glamping {
   nombreGlamping: string;
@@ -47,14 +67,16 @@ interface Glamping {
   diasCancelacion: number;
 }
 
-// interface Ubicacion {
-//   lat: number;
-//   lng: number;
-// }
+//  interface Ubicacion {
+//    lat: number;
+//    lng: number;
+//  }
 
 export default function ExplorarGlamping() {
+
   const router = useRouter();
-  const { glampingId } = useParams() as { glampingId: string };
+  const searchParams = useSearchParams();
+  const glampingId = searchParams.get("glampingId") 
 
   const irAInicio = () => {
     window.scrollTo({ top: 0, behavior: "auto" });
@@ -184,9 +206,11 @@ export default function ExplorarGlamping() {
                 />
               ) : (
                 <div className="lottie-container">
-                  <Lottie 
-                    animationData={animationData} 
-                    style={{ height: 200, width: "100%", margin: "auto" }} 
+                  <Lottie
+                    animationData={animationData}
+                    loop={true}
+                    autoplay={true}
+                    style={{ height: 200, width: "100%", margin: "auto" }}
                   />
                 </div>
               )}
@@ -231,14 +255,14 @@ export default function ExplorarGlamping() {
                 </div>
               </div>
               <div className="contenedor-descripcion-glamping-der">
-                {/* <FormularioFechas
+                <FormularioFechas
                   precioPorNoche={informacionGlamping.precioEstandar || 0}
                   precioPersonaAdicional={informacionGlamping.precioEstandarAdicional || 0}
                   descuento={informacionGlamping.descuento || 0}
                   admiteMascotas={informacionGlamping.Acepta_Mascotas || false}
                   Cantidad_Huespedes={informacionGlamping.Cantidad_Huespedes || 10}
                   Cantidad_Huespedes_Adicional={informacionGlamping.Cantidad_Huespedes_Adicional || 0}
-                /> */}
+                />
               </div>
             </div>
             <Comentarios glampingId={glampingId || ""} />
@@ -265,9 +289,11 @@ export default function ExplorarGlamping() {
         </>
       ) : (
         <div className="lottie-cargando">
-          <Lottie 
-            animationData={animationData} 
-            style={{ height: 200, width: 200, margin: "auto" }} 
+          <Lottie
+            animationData={animationData}
+            loop={true}
+            autoplay={true}
+            style={{ height: 200, width: "100%", margin: "auto" }}
           />
         </div>
       )}

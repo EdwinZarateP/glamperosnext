@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, TouchEvent } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { AiTwotoneHeart } from "react-icons/ai";
@@ -27,13 +27,11 @@ export default function ImgExploradasIndividual({
   let touchEndX = 0;
 
   // Hooks de Next
-  const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const glampingId = searchParams.get("glampingId") || ""; // Obtiene glampingId de la URL
 
-  // Extraemos el ID de la URL (asumiendo que tu ruta tiene [glampingId])
-  const glampingId = params?.glampingId as string;
-
-  // Obtenemos la URL actual del navegador (en el cliente)
+  // Obtenemos la URL actual del navegador
   const currentUrl =
     typeof window !== "undefined" ? window.location.href : "http://example.com";
 

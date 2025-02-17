@@ -1,5 +1,3 @@
-"use server";
-
 interface EnviarCorreoProps {
   correo: string;
   nombre: string;

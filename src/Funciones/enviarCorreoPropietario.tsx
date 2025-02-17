@@ -1,4 +1,4 @@
-"use server";
+// "use server";
 
 interface EnviarCorreoPropietarioProps {
   correo: string;

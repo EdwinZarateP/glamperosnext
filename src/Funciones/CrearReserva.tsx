@@ -14,6 +14,33 @@ interface ReservaProps {
   mascotasDesencriptadas: string;
 }
 
+// 🔹 Definir correctamente el tipo de respuesta esperada de la API
+interface ReservaResponse {
+  mensaje: string;
+  reserva: {
+    id: string;
+    idCliente: string;
+    idPropietario: string;
+    idGlamping: string;
+    ciudad_departamento: string;
+    FechaIngreso: string;
+    FechaSalida: string;
+    Noches: number;
+    ValorReserva: number;
+    CostoGlamping: number;
+    ComisionGlamperos: number;
+    adultos: number;
+    ninos: number;
+    bebes: number;
+    mascotas: number;
+    EstadoReserva: string;
+    fechaCreacion: string;
+    codigoReserva: string;
+    ComentariosCancelacion?: string;
+  };
+}
+
+// ✅ Ahora retorna un **objeto de reserva**, no solo una URL
 export const CrearReserva = async ({
   idCliente,
   idPropietario,
@@ -28,7 +55,7 @@ export const CrearReserva = async ({
   ninosDesencriptados,
   bebesDesencriptados,
   mascotasDesencriptadas,
-}: ReservaProps) => {
+}: ReservaProps): Promise<ReservaResponse | null> => {
   try {
     const nuevaReserva = {
       idCliente: idCliente ?? "No tiene Id",
@@ -48,6 +75,7 @@ export const CrearReserva = async ({
       EstadoReserva: "Reservada",
       ComentariosCancelacion: "Sin comentario",
     };
+  
 
     const response = await fetch("https://glamperosapi.onrender.com/reservas", {
       method: "POST",
@@ -58,18 +86,21 @@ export const CrearReserva = async ({
     });
 
     if (!response.ok) {
+      console.error(`❌ Error en la respuesta del servidor: ${response.status} - ${response.statusText}`);
       throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data: ReservaResponse = await response.json();    
 
-    if (data?.reserva?.codigoReserva) {
-      return `/Gracias/${fechaInicio.toISOString()}/${fechaFin.toISOString()}`;
+    // ✅ Verificar si la API devolvió un objeto de reserva válido
+    if (!data || !data.reserva || !data.reserva.codigoReserva) {
+      console.error("❌ La API no devolvió una reserva válida.");
+      return null;
     }
 
-    return null;
+    return data; // 🔹 Ahora retorna el objeto completo con la reserva
   } catch (error) {
-    console.error("Error al crear la reserva:", error);
+    console.error("❌ Error al crear la reserva:", error);
     return null;
   }
 };

@@ -106,9 +106,18 @@
   color: #2d6a4f;
 }
 
+/* Botón de confirmación */
+.Reservacion-boton-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+}
+
 /* 🎯 Botón principal */
 .Reservacion-boton {
-  background-color: #2d6a4f;
+  background-color: #2F6B3E;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -121,8 +130,10 @@
 }
 
 .Reservacion-boton:hover {
-  background-color: #1b4332;
+  background-color: #255632;
 }
+
+
 
 .Reservacion-politicas {
   font-size: 14px;
@@ -131,8 +142,9 @@
   cursor: pointer;
   margin-top: 10px;
   text-align: center;
-
 }
+
+
 
 /* 📱 Diseño adaptable para móviles (menos de 900px) */
 @media (max-width: 900px) {

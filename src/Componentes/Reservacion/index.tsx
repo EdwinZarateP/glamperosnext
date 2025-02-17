@@ -6,15 +6,26 @@ import { decryptData } from "@/Funciones/Encryptacion";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
 import { CrearReserva } from "@/Funciones/CrearReserva";
 import { ObtenerUsuarioPorId } from "@/Funciones/ObtenerUsuario";
+import { ActualizarFechasReservadas } from "@/Funciones/ActualizarFechasReservadas";
+import { ObtenerFechasReservadas } from "@/Funciones/ObtenerFechasReservadas";
+import { enviarCorreoPropietario } from "@/Funciones/enviarCorreoPropietario";
+import { enviarCorreoCliente } from "@/Funciones/enviarCorreoCliente";
+import InputTelefono from "@/Componentes/InputTelefono/index";
 import { ContextoApp } from "@/context/AppContext";
 import Politicas from "@/Componentes/Politica/index";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 import "./estilos.css";
 
 interface Glamping {
   nombreGlamping: string;
   ciudad_departamento: string;
   imagenes: string[] | string | null;
+  ubicacion: {
+    lat: number;
+    lng: number;
+  };
+  direccion: string | null;
   propietario_id: string;
   diasCancelacion: number;
 }
@@ -30,6 +41,7 @@ const Reservacion = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const id_Cliente = Cookies.get("idUsuario");
+  const telefonoUsuarioCookie = Cookies.get('telefonoUsuario');
 
   if (!contexto) {
     throw new Error("ContextoApp no está disponible. Asegúrate de envolver tu aplicación con <ProveedorVariables>");
@@ -83,21 +95,69 @@ const Reservacion = () => {
     })}`;
   };
 
+  const generarFechasRango = (inicio: string, fin: string): string[] => {
+    const fechas: string[] = [];
+    let fechaActual = new Date(inicio);
+    const fechaFin = new Date(fin);
+
+    while (fechaActual <= fechaFin) {
+      fechas.push(fechaActual.toISOString().split("T")[0]); // Formato YYYY-MM-DD
+      fechaActual.setDate(fechaActual.getDate() + 1);
+    }
+
+    return fechas;
+  };
+
   const handleConfirmarReserva = async () => {
+
+    if (telefonoUsuarioCookie==="sintelefono") {
+      // Mostrar la alerta si no hay número de teléfono registrado
+      Swal.fire({
+        title: "😳 Estas muy cerca",
+        text: "Es necesario registrar tu número de WhatsApp para poder enviarte los detalles de tu reserva y compartir tu contacto con el anfitrión.",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+      return "No se ha registrado el teléfono";
+    }
+
     if (!glamping) {
       console.error("No se encontraron datos del glamping.");
       return;
     }
 
-    console.log(propietario?.nombreDueno)
-    
-    const rutaGracias = await CrearReserva({
-      idCliente: id_Cliente?? "sin id", 
+    // Obtener las fechas reservadas actuales del glamping
+    const fechasReservadas = await ObtenerFechasReservadas(glampingId);
+
+    // Generar las fechas del rango seleccionado por el usuario (sin incluir el día de salida)
+    const rangoSeleccionado = generarFechasRango(fechaInicioDesencriptada, fechaFinDesencriptada);
+    rangoSeleccionado.pop(); // Eliminar la última fecha (fecha de salida)
+
+    // Verificar si alguna de las fechas en el rango ya está reservada
+    if (fechasReservadas && fechasReservadas.some(fecha => rangoSeleccionado.includes(fecha))) {
+      Swal.fire({
+        title: "Fecha no disponible",
+        text: `No se puede reservar las fechas del ${new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString(
+          "es-ES",
+          { day: "numeric", month: "short", year: "numeric" }
+        )} al ${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString(
+          "es-ES",
+          { day: "numeric", month: "short", year: "numeric" }
+        )} porque ya están reservadas.`,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });      
+      return; // Detener la ejecución si alguna fecha está ocupada
+    }
+
+    // Si todas las fechas están disponibles, proceder con la reserva
+    const creacionReserva = await CrearReserva({
+      idCliente: id_Cliente ?? "sin id",
       idPropietario: glamping.propietario_id ?? "Propietario no registrado",
       idGlamping: glampingId,
       ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
-      fechaInicio: fechaInicioDesencriptada ? new Date(fechaInicioDesencriptada) : new Date(),
-      fechaFin: fechaFinDesencriptada ? new Date(fechaFinDesencriptada) : new Date(),
+      fechaInicio: new Date(fechaInicioDesencriptada),
+      fechaFin: new Date(fechaFinDesencriptada),
       totalDiasNum: Number(totalDiasDesencriptados),
       precioConTarifaNum: Number(totalFinalDesencriptado),
       TarifaGlamperosNum: Number(tarifaDesencriptada),
@@ -106,9 +166,44 @@ const Reservacion = () => {
       bebesDesencriptados,
       mascotasDesencriptadas,
     });
-  
-    if (rutaGracias) {
-      router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
+    
+    if (creacionReserva?.reserva) {
+      // Guardar las fechas reservadas en la base de datos
+      await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
+
+      // 🔹 **Enviar correo al propietario**
+      await enviarCorreoPropietario({
+        correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
+        nombre: propietario?.nombreDueno ?? "Propietario desconocido",
+        codigoReserva: creacionReserva.reserva.codigoReserva, 
+        fechaInicio: new Date(fechaInicioDesencriptada),
+        fechaFin: new Date(fechaFinDesencriptada),
+        Cantidad_Adultos: Number(adultosDesencriptados),
+        Cantidad_Ninos: Number(ninosDesencriptados),
+        Cantidad_Mascotas: Number(mascotasDesencriptadas),
+        telefonoUsuario: telefonoUsuarioCookie ?? "sin teléfono",
+        correoUsuario: Cookies.get("correoUsuario") ?? "sin_correo@glamperos.com",
+        glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
+      });
+
+      // 🔹 **Enviar correo al Cliente**
+      await enviarCorreoCliente({      
+        correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
+        nombre: propietario?.nombreDueno ?? "Propietario desconocido",
+        codigoReserva: creacionReserva.reserva.codigoReserva, 
+        fechaInicio: new Date(fechaInicioDesencriptada),
+        fechaFin: new Date(fechaFinDesencriptada),
+        Cantidad_Adultos: Number(adultosDesencriptados),
+        Cantidad_Ninos: Number(ninosDesencriptados),
+        Cantidad_Mascotas: Number(mascotasDesencriptadas),
+        usuarioWhatsapp: telefonoUsuarioCookie ?? "sin teléfono",        
+        glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",    
+        latitud: Number(glamping?.ubicacion?.lat),
+        longitud: Number(glamping?.ubicacion?.lng),
+
+      });
+
+        router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
     } else {
       console.error("Error al procesar la reserva.");
     }
@@ -153,7 +248,11 @@ const Reservacion = () => {
               <p className="Reservacion-total">Total: <strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado)))}</strong></p>
             </div>
 
-            <button className="Reservacion-boton" onClick={handleConfirmarReserva}>Confirmar y pagar</button>
+            <div className="Reservacion-boton-contenedor">
+              <InputTelefono/>
+              <button className="Reservacion-boton" onClick={handleConfirmarReserva}>Confirmar y pagar</button>
+            </div>
+            
 
             <div className="Reservacion-politicas">
               <span onClick={() => setVerPolitica(true)}>Ver Políticas de Cancelación</span>

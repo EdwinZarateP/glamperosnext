@@ -1,45 +1,75 @@
-
-export interface Reserva {
+interface ReservaProps {
   idCliente: string;
   idPropietario: string;
   idGlamping: string;
   ciudad_departamento: string;
-  FechaIngreso: string; // Formato ISO (YYYY-MM-DDTHH:mm:ss.sssZ)
-  FechaSalida: string;  // Formato ISO
-  Noches: number;
-  ValorReserva: number;
-  CostoGlamping: number;
-  ComisionGlamperos: number;
-  adultos: number;
-  ninos: number;
-  bebes: number;
-  mascotas: number;
-  EstadoReserva: string;
-  codigoReserva?: string;
-  ComentariosCancelacion: string;
+  fechaInicio: Date;
+  fechaFin: Date;
+  totalDiasNum: number;
+  precioConTarifaNum: number;
+  TarifaGlamperosNum: number;
+  adultosDesencriptados: string;
+  ninosDesencriptados: string;
+  bebesDesencriptados: string;
+  mascotasDesencriptadas: string;
 }
 
-// Función para crear una nueva reserva
-export async function crearReserva(reserva: Reserva): Promise<any> {
-  const API_URL = "https://glamperosapi.onrender.com/reservas";
-
+export const CrearReserva = async ({
+  idCliente,
+  idPropietario,
+  idGlamping,
+  ciudad_departamento,
+  fechaInicio,
+  fechaFin,
+  totalDiasNum,
+  precioConTarifaNum,
+  TarifaGlamperosNum,
+  adultosDesencriptados,
+  ninosDesencriptados,
+  bebesDesencriptados,
+  mascotasDesencriptadas,
+}: ReservaProps) => {
   try {
-    const response = await fetch(API_URL, {
+    const nuevaReserva = {
+      idCliente: idCliente ?? "No tiene Id",
+      idPropietario: idPropietario ?? "Propietario no registrado",
+      idGlamping: idGlamping ?? "No tiene GlampingId",
+      ciudad_departamento: ciudad_departamento ?? "No tiene ciudad_departamento",
+      FechaIngreso: fechaInicio.toISOString(),
+      FechaSalida: fechaFin.toISOString(),
+      Noches: totalDiasNum,
+      ValorReserva: precioConTarifaNum,
+      CostoGlamping: precioConTarifaNum - TarifaGlamperosNum,
+      ComisionGlamperos: TarifaGlamperosNum,
+      adultos: Number(adultosDesencriptados) || 1,
+      ninos: Number(ninosDesencriptados) || 0,
+      bebes: Number(bebesDesencriptados) || 0,
+      mascotas: Number(mascotasDesencriptadas) || 0,
+      EstadoReserva: "Reservada",
+      ComentariosCancelacion: "Sin comentario",
+    };
+
+    const response = await fetch("https://glamperosapi.onrender.com/reservas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(reserva),
+      body: JSON.stringify(nuevaReserva),
     });
 
     if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
+      throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
     }
 
     const data = await response.json();
-    return data; 
+
+    if (data?.reserva?.codigoReserva) {
+      return `/Gracias/${fechaInicio.toISOString()}/${fechaFin.toISOString()}`;
+    }
+
+    return null;
   } catch (error) {
     console.error("Error al crear la reserva:", error);
-    throw error;
+    return null;
   }
-}
+};

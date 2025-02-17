@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext} from "react";
 import { useParams } from "next/navigation";
 import { decryptData } from "@/Funciones/Encryptacion";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
+import { CrearReserva } from "@/Funciones/CrearReserva";
 import { ObtenerUsuarioPorId } from "@/Funciones/ObtenerUsuario";
+import { ContextoApp } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
+import Politicas from "@/Componentes/Politica/index";
 import "./estilos.css";
 
 interface Glamping {
@@ -12,6 +16,7 @@ interface Glamping {
   ciudad_departamento: string;
   imagenes: string[] | string | null;
   propietario_id: string;
+  diasCancelacion: number;
 }
 
 interface Propietario {
@@ -21,6 +26,7 @@ interface Propietario {
 }
 
 const Reservacion = () => {
+  const contexto = useContext(ContextoApp);
   const params = useParams();
   const parametros = Object.values(params);
 
@@ -36,7 +42,8 @@ const Reservacion = () => {
     bebesEncriptados = "",
     mascotasEncriptadas = "",
   ] = parametros.map(param => (Array.isArray(param) ? param[0] : param) ?? "");
-
+  
+  const router = useRouter();
   const fechaInicioDesencriptada = fechaInicioEncriptada ? decryptData(decodeURIComponent(fechaInicioEncriptada)) : "0";
   const fechaFinDesencriptada = fechaFinEncriptada ? decryptData(decodeURIComponent(fechaFinEncriptada)) : "0";
   const totalFinalDesencriptado = totalFinalEncriptado ? decryptData(decodeURIComponent(totalFinalEncriptado)) : "0";
@@ -48,6 +55,12 @@ const Reservacion = () => {
 
   const [glamping, setGlamping] = useState<Glamping | null>(null);
   const [propietario, setPropietario] = useState<Propietario | null>(null);
+  
+  if (!contexto) {
+    throw new Error("ContextoApp no está disponible. Asegúrate de envolver tu aplicación con <ProveedorVariables>");
+  }
+
+  const { verPolitica, setVerPolitica } = contexto;
 
   useEffect(() => {
     const fetchGlamping = async () => {
@@ -82,6 +95,37 @@ const Reservacion = () => {
     })}`;
   };
 
+  const handleConfirmarReserva = async () => {
+    if (!glamping) {
+      console.error("No se encontraron datos del glamping.");
+      return;
+    }
+  
+    const rutaGracias = await CrearReserva({
+      idCliente: "123456", // Reemplaza con el ID real del cliente
+      idPropietario: glamping.propietario_id ?? "Propietario no registrado",
+      idGlamping: glampingId,
+      ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
+      fechaInicio: fechaInicioDesencriptada ? new Date(fechaInicioDesencriptada) : new Date(),
+      fechaFin: fechaFinDesencriptada ? new Date(fechaFinDesencriptada) : new Date(),
+      totalDiasNum: Number(totalDiasEncriptados),
+      precioConTarifaNum: Number(totalFinalDesencriptado),
+      TarifaGlamperosNum: Number(tarifaDesencriptada),
+      adultosDesencriptados,
+      ninosDesencriptados,
+      bebesDesencriptados,
+      mascotasDesencriptadas,
+    });
+  
+    if (rutaGracias) {
+      // window.location.href = rutaGracias;
+      router.push(`/Gracias/${fechaInicioDesencriptada}/${fechaFinDesencriptada}`);
+    } else {
+      console.error("Error al procesar la reserva.");
+    }
+  };
+  
+
 return (
     <div className="Reservacion-contenedor">
       {glamping && (
@@ -103,27 +147,58 @@ return (
           <div className="Reservacion-detalles">
             <div className="Reservacion-factura">
               <h3>Detalles de la Reserva</h3>
-              <p><strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado) / Number(totalDiasEncriptados)))} / noche</strong></p>
-              <p>{new Date(fechaInicioDesencriptada).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })} - {new Date(fechaFinDesencriptada).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })}</p>
+              <p><strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado) / Number(totalDiasEncriptados)))} / noche</strong></p>              
               <p>
-
+                {new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })} -{" "}
+                {new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </p>
+              <p>
                 {adultosDesencriptados && `${Number(adultosDesencriptados)} ${Number(adultosDesencriptados) === 1 ? 'Adulto' : 'Adultos'}`}
                 {ninosDesencriptados && Number(ninosDesencriptados) > 0 && `, ${ninosDesencriptados} ${Number(ninosDesencriptados) === 1 ? 'Niño' : 'Niños'}`}
                 {bebesDesencriptados && Number(bebesDesencriptados) > 0 && `, ${bebesDesencriptados} ${Number(bebesDesencriptados) === 1 ? 'Bebé' : 'Bebés'}`}                  
                 {mascotasDesencriptadas && Number(mascotasDesencriptadas) > 0 && ` y ${mascotasDesencriptadas} Mascota${Number(mascotasDesencriptadas) > 1 ? "s" : ""}`}
               </p>
-              <p>Precio por {totalDiasEncriptados} noche(s): <strong>{formatoPesos(Math.round(parseFloat(totalFinalDesencriptado) - parseFloat(tarifaDesencriptada)))}</strong></p>
+              <p>
+                Precio por {totalDiasEncriptados} {Number(totalDiasEncriptados) > 1 ? "noches" : "noche"}: 
+                <strong> {formatoPesos(Math.round(parseFloat(totalFinalDesencriptado) - parseFloat(tarifaDesencriptada)))}</strong>
+              </p>
               <p>Tarifa de Glamperos: <strong>{formatoPesos(Math.round(Number(tarifaDesencriptada)))}</strong></p>
               <p className="Reservacion-total">Total: <strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado)))}</strong></p>
             </div>
 
-            <button className="Reservacion-boton">Confirmar y pagar</button>
-            <p className="Reservacion-politicas">Ver Políticas de Cancelación</p>
+            <button className="Reservacion-boton" 
+              onClick={handleConfirmarReserva}>Confirmar y pagar
+            </button>
+            
+            <div className="Reservacion-politicas">
+            <span  onClick={() => setVerPolitica(true)}>
+              Ver Políticas de Cancelación
+            </span>
+          </div>
+
           </div>
         </div>
       )}
-
-
+        
+      {/* Modal emergente de Políticas */}
+      {verPolitica && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+          <Politicas 
+            diasCancelacion={glamping?.diasCancelacion ?? 5} 
+            fechaInicio={fechaInicioDesencriptada ? new Date(fechaInicioDesencriptada) : new Date()}
+          />  
+          </div>
+        </div>
+      )}
 
     </div>
   );

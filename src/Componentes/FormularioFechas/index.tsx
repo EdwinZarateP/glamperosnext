@@ -342,6 +342,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
     const tarifaEncriptada = encodeURIComponent(encryptData(tarifaFinalGlamperos.toString()));
 
     const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasEncriptados}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;
+    console.log(fechaInicioReservada, fechaFinReservada)
     setUrlActual(nuevaUrl);
     setRedirigirExplorado(true);
 
@@ -379,6 +380,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
     if (!validarFechas()) return;
 
     const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasRender}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;
+    console.log(fechaInicioReservada, fechaFinReservada)
     router.push(nuevaUrl);
   };
 

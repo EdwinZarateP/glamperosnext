@@ -1,0 +1,60 @@
+.MenuUsuariosInferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #ffffff;
+  padding: 10px;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+/* Hacer que la barra solo sea visible en pantallas de máximo 900px */
+@media (max-width: 900px) {
+  .MenuUsuariosInferior {
+    display: flex;
+  }
+}
+
+/* Hacer que la barra no sea visible en pantallas mayores a 900px */
+@media (min-width: 901px) {
+  .MenuUsuariosInferior {
+    display: none;
+  }
+}
+
+.MenuUsuariosInferior-icono {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.MenuUsuariosInferior-enlace {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.MenuUsuariosInferior-iconoImagen {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.MenuUsuariosInferior-texto {
+  font-size: 12px;
+  color: #333;
+}
+
+/* Estilo adicional para los botones */
+.MenuUsuariosInferior .MenuUsuariosInferior-enlace:active {
+  background-color: #f0f0f0;
+}
+
+.MenuUsuariosInferior .MenuUsuariosInferior-enlace:hover {
+  background-color: #f8f8f8;
+}

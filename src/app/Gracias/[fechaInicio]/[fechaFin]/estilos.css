@@ -1,0 +1,95 @@
+
+.GraciasContenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.GraciasTitulo {
+  font-size: 3rem;
+  color: #388e3c;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+.GraciasMensaje {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 80%;
+  margin-bottom: 40px;
+  line-height: 1.5;
+  animation: slideUp 2s ease-out;
+}
+
+.fecha-destacada {
+  font-weight: bold;
+  color: #388e3c;
+}
+
+.Gracias-logo {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .GraciasTitulo {
+    font-size: 2.5rem;
+  }
+
+  .GraciasMensaje {
+    font-size: 1rem;
+    max-width: 90%;
+  }
+
+  .Gracias-logo {
+    max-width: 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .GraciasTitulo {
+    font-size: 2rem;
+  }
+
+  .GraciasMensaje {
+    font-size: 0.9rem;
+    max-width: 95%;
+  }
+
+  .Gracias-logo {
+    max-width: 300px;
+  }
+}

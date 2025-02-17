@@ -423,6 +423,7 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
         disabled={TotalFinal === null}
       >
         Reservar
+        <span className="formularioFechasMoviles-boton-efecto"></span>
       </button>
 
       {mostrarCalendario && <CalendarioGeneral cerrarCalendario={() => setMostrarCalendario(false)} />}

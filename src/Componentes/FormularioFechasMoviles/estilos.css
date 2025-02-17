@@ -58,7 +58,7 @@
 }
 
 /* ✨ Efecto de resplandor automático */
-.boton-efecto {
+.formularioFechasMoviles-boton-efecto {
   content: "";
   position: absolute;
   top: -100%;
@@ -72,7 +72,7 @@
     rgba(255, 255, 255, 0.2) 100%
   );
   transform: rotate(25deg);
-  animation: resplandor 3s infinite linear;
+  animation: resplandor 6s infinite linear;
 }
 
 @keyframes resplandor {

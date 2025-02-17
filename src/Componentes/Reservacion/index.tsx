@@ -8,6 +8,7 @@ import { CrearReserva } from "@/Funciones/CrearReserva";
 import { ObtenerUsuarioPorId } from "@/Funciones/ObtenerUsuario";
 import { ContextoApp } from "@/context/AppContext";
 import Politicas from "@/Componentes/Politica/index";
+import Cookies from "js-cookie";
 import "./estilos.css";
 
 interface Glamping {
@@ -28,6 +29,7 @@ const Reservacion = () => {
   const contexto = useContext(ContextoApp);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const id_Cliente = Cookies.get("idUsuario");
 
   if (!contexto) {
     throw new Error("ContextoApp no está disponible. Asegúrate de envolver tu aplicación con <ProveedorVariables>");
@@ -90,7 +92,7 @@ const Reservacion = () => {
     console.log(propietario?.nombreDueno)
     
     const rutaGracias = await CrearReserva({
-      idCliente: "123456", // Reemplaza con el ID real del cliente
+      idCliente: id_Cliente?? "sin id", 
       idPropietario: glamping.propietario_id ?? "Propietario no registrado",
       idGlamping: glampingId,
       ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",

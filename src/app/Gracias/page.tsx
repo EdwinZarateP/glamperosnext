@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import HeaderIcono from "@/Componentes/HeaderIcono/index";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior/index";
 import "./estilos.css";
 
 const Gracias: React.FC = () => {
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   // Estado para almacenar los datos
@@ -27,11 +27,9 @@ const Gracias: React.FC = () => {
   });
 
   useEffect(() => {
-    // Extraer parámetros
-    const parametros = Object.values(params);
-    const [fechaInicio = "", fechaFin = ""] = parametros.map(param =>
-      Array.isArray(param) ? param[0] : param ?? ""
-    );
+    // Extraer parámetros de la URL
+    const fechaInicio = searchParams.get("fechaInicio") ?? "Fecha no disponible";
+    const fechaFin = searchParams.get("fechaFin") ?? "Fecha no disponible";
 
     // Obtener datos de cookies
     const telefonoUsuario = Cookies.get("telefonoUsuario") || "No disponible";
@@ -45,7 +43,7 @@ const Gracias: React.FC = () => {
       correoUsuario,
       cargando: false,
     });
-  }, [params]);
+  }, [searchParams]);
 
   if (datos.cargando) {
     return <p className="GraciasMensaje">Cargando información...</p>;
@@ -58,25 +56,24 @@ const Gracias: React.FC = () => {
       <p className="GraciasMensaje">
         Tu estancia será del{" "}
         <span className="fecha-destacada">
-          {datos.fechaInicio
+          {datos.fechaInicio !== "Fecha no disponible"
             ? new Date(`${datos.fechaInicio}T12:00:00`).toLocaleDateString("es-ES", {
                 day: "numeric",
                 month: "short",
                 year: "numeric",
               })
-            : "Fecha no disponible"}
+            : datos.fechaInicio}
         </span>{" "}
         al{" "}
         <span className="fecha-destacada">
-          {datos.fechaFin
+          {datos.fechaFin !== "Fecha no disponible"
             ? new Date(`${datos.fechaFin}T12:00:00`).toLocaleDateString("es-ES", {
                 day: "numeric",
                 month: "short",
                 year: "numeric",
               })
-            : "Fecha no disponible"}
+            : datos.fechaFin}
         </span>
-
         . A tu WhatsApp <strong>{datos.telefonoUsuario}</strong> y correo{" "}
         <strong>{datos.correoUsuario}</strong> enviamos el código de reserva,
         ubicación del glamping y el contacto del anfitrión. ¡Gracias por

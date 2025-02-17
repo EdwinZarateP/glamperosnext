@@ -331,18 +331,21 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
 
   // Validar sesión antes de reservar
   const ValidarSesion = (email: string) => {
-    const fechaInicioEncriptada = encodeURIComponent(encryptData(fechaInicioReservada));
-    const fechaFinEncriptada = encodeURIComponent(encryptData(fechaFinReservada));
-    const mascotasEncriptadas = encodeURIComponent(encryptData(mascotasRender.toString()));
-    const adultosEncriptados = encodeURIComponent(encryptData(adultosRender.toString()));
-    const ninosEncriptados = encodeURIComponent(encryptData(ninosRender.toString()));
-    const bebesEncriptados = encodeURIComponent(encryptData(bebesRender.toString()));
-    const totalFinalEncriptado = encodeURIComponent(encryptData(TotalFinal.toString()));
-    const totalDiasEncriptados = encodeURIComponent(encryptData(totalDiasRender.toString()));
-    const tarifaEncriptada = encodeURIComponent(encryptData(tarifaFinalGlamperos.toString()));
+    // Construcción de parámetros encriptados
+    const queryParams = new URLSearchParams({
+      glampingId: glampingId || "",
+      fechaInicio: encodeURIComponent(encryptData(fechaInicioReservada)),
+      fechaFin: encodeURIComponent(encryptData(fechaFinReservada)),
+      totalFinal: encodeURIComponent(encryptData(TotalFinal.toString())),
+      tarifa: encodeURIComponent(encryptData(tarifaFinalGlamperos.toString())),
+      totalDias: encodeURIComponent(encryptData(totalDiasRender.toString())),
+      adultos: encodeURIComponent(encryptData(adultosRender.toString())),
+      ninos: encodeURIComponent(encryptData(ninosRender.toString())),
+      bebes: encodeURIComponent(encryptData(bebesRender.toString())),
+      mascotas: encodeURIComponent(encryptData(mascotasRender.toString())),
+    });
 
-    const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasEncriptados}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;
-    console.log(fechaInicioReservada, fechaFinReservada)
+    const nuevaUrl = `/Reservar?${queryParams.toString()}`;
     setUrlActual(nuevaUrl);
     setRedirigirExplorado(true);
 
@@ -362,16 +365,6 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
   const handleReservarClick = (e: React.MouseEvent) => {
     const emailUsuario = Cookies.get("correoUsuario");
 
-    const fechaInicioEncriptada = encodeURIComponent(encryptData(fechaInicioReservada));
-    const fechaFinEncriptada = encodeURIComponent(encryptData(fechaFinReservada));
-    const mascotasEncriptadas = encodeURIComponent(encryptData(mascotasRender.toString()));
-    const adultosEncriptados = encodeURIComponent(encryptData(adultosRender.toString()));
-    const ninosEncriptados = encodeURIComponent(encryptData(ninosRender.toString()));
-    const bebesEncriptados = encodeURIComponent(encryptData(bebesRender.toString()));
-    const totalFinalEncriptado = encodeURIComponent(encryptData(TotalFinal.toString()));
-    const totalDiasEncriptados = encodeURIComponent(encryptData(totalDiasRender.toString()));
-    const tarifaEncriptada = encodeURIComponent(encryptData(tarifaFinalGlamperos.toString()));
-
     if (!emailUsuario) {
       ValidarSesion("sesionCerrada");
       e.preventDefault();
@@ -380,9 +373,22 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
 
     if (!validarFechas()) return;
 
-    const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasEncriptados}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;    
-    console.log(fechaInicioReservada, fechaFinReservada)
-    router.push(nuevaUrl);
+  // Construcción de parámetros encriptados
+  const queryParams = new URLSearchParams({
+    glampingId: glampingId || "",
+    fechaInicio: encodeURIComponent(encryptData(fechaInicioReservada)),
+    fechaFin: encodeURIComponent(encryptData(fechaFinReservada)),
+    totalFinal: encodeURIComponent(encryptData(TotalFinal.toString())),
+    tarifa: encodeURIComponent(encryptData(tarifaFinalGlamperos.toString())),
+    totalDias: encodeURIComponent(encryptData(totalDiasRender.toString())),
+    adultos: encodeURIComponent(encryptData(adultosRender.toString())),
+    ninos: encodeURIComponent(encryptData(ninosRender.toString())),
+    bebes: encodeURIComponent(encryptData(bebesRender.toString())),
+    mascotas: encodeURIComponent(encryptData(mascotasRender.toString())),
+  });
+
+  const nuevaUrl = `/Reservar?${queryParams.toString()}`;
+  router.push(nuevaUrl);
   };
 
   // Render final

@@ -1,15 +1,14 @@
 /* Estilos generales para el contenedor */
 .PerfilUsuarioContenedor {
   display: flex;
-  width: 100%;
+  width: 50%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: #fff;
-  /* padding: 20px; */
+  padding-top: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
 }
 
 /* Estilos para la foto de perfil */
@@ -96,7 +95,7 @@
 /* Estilos para pantallas mayores a 600px */
 @media screen and (min-width: 601px) {
   .PerfilUsuarioContenedor {
-    padding: 20px;
+    /* padding: 20px; */
     width: 100%;
   }
 

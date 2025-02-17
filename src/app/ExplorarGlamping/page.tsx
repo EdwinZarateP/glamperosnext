@@ -16,7 +16,6 @@ import Comentarios from "@/Componentes/Comentarios/index";
 import { ContextoApp } from "@/context/AppContext";
 import ManejoErrores from "@/Funciones/ManejoErrores";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
-// import Lottie from "lottie-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import VerVideo from "@/Componentes/VerVideo";
 import PerfilUsuario from "@/Componentes/PerfilUsuario";

@@ -338,9 +338,10 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
     const ninosEncriptados = encodeURIComponent(encryptData(ninosRender.toString()));
     const bebesEncriptados = encodeURIComponent(encryptData(bebesRender.toString()));
     const totalFinalEncriptado = encodeURIComponent(encryptData(TotalFinal.toString()));
+    const totalDiasEncriptados = encodeURIComponent(encryptData(totalDiasRender.toString()));
     const tarifaEncriptada = encodeURIComponent(encryptData(tarifaFinalGlamperos.toString()));
 
-    const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasRender}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;
+    const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasEncriptados}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;
     setUrlActual(nuevaUrl);
     setRedirigirExplorado(true);
 

@@ -1,0 +1,50 @@
+.Politicas-contenedor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .Politicas-modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  .Politicas-titulo {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .Politicas-descripcion {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #555;
+    text-align: left;
+  }
+  
+  .Politicas-botonCerrar {
+    background-color: #2F6B3E;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .Politicas-botonCerrar:hover {
+    background-color: #1f4a2a;
+  }
+  

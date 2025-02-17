@@ -8,11 +8,11 @@ import ImgExploradasIndividual from "@/Componentes/ImgExploradasIndividual/index
 import NombreGlamping from "@/Componentes/NombreGlamping";
 import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
 import FormularioFechas from "@/Componentes/FormularioFechas";
+import FormularioFechasMoviles from "@/Componentes/FormularioFechasMoviles";
 import LoQueOfrece from "@/Componentes/LoQueOfrece/index";
 import Calendario from "@/Componentes/Calendario";
 import MapaGlampings from "@/Componentes/Mapa/index";
 import Comentarios from "@/Componentes/Comentarios/index";
-// import ReservarBoton from "@/Componentes/BotonReservar";
 import { ContextoApp } from "@/context/AppContext";
 import ManejoErrores from "@/Funciones/ManejoErrores";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
@@ -276,14 +276,14 @@ export default function ExplorarGlamping() {
             ) : (
               <p>El propietario no está disponible</p>
             )}
-            {/* <ReservarBoton 
-              precioPorNoche={informacionGlamping.precioEstandar || 0}
-              descuento={informacionGlamping.descuento || 0}
-              precioPersonaAdicional={informacionGlamping.precioEstandarAdicional || 0}
-              Cantidad_Huespedes={informacionGlamping.Cantidad_Huespedes || 10}
-              admiteMascotas={informacionGlamping.Acepta_Mascotas || false}
-              Cantidad_Huespedes_Adicional={informacionGlamping.Cantidad_Huespedes_Adicional || 0}
-            /> */}
+              <FormularioFechasMoviles
+                precioPorNoche={informacionGlamping.precioEstandar || 0}
+                precioPersonaAdicional={informacionGlamping.precioEstandarAdicional || 0}
+                descuento={informacionGlamping.descuento || 0}
+                admiteMascotas={informacionGlamping.Acepta_Mascotas || false}
+                Cantidad_Huespedes={informacionGlamping.Cantidad_Huespedes || 10}
+                Cantidad_Huespedes_Adicional={informacionGlamping.Cantidad_Huespedes_Adicional || 0}
+              />     
           </main>
         </>
       ) : (

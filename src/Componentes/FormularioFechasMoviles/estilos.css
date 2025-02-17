@@ -1,0 +1,87 @@
+.formularioFechasMoviles-contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgb(255, 255, 255);
+  border-top: 2px solid #ccc;
+  z-index: 100;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: row;
+  height: 120px;
+
+}
+
+/* Mostrar solo en móviles */
+@media (min-width: 900px) {
+  .formularioFechasMoviles-contenedor {
+    display: none;
+  }
+}
+
+.formularioFechasMoviles-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formularioFechasMoviles-precio {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.formularioFechasMoviles-huespedes,
+.formularioFechasMoviles-fechas {
+  font-size: 14px;
+  color: #000000;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.formularioFechasMoviles-botonReserva {
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ✨ Efecto de resplandor automático */
+.boton-efecto {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(25, 178, 56, 0.6) 50%,
+    rgba(255, 255, 255, 0.2) 100%
+  );
+  transform: rotate(25deg);
+  animation: resplandor 3s infinite linear;
+}
+
+@keyframes resplandor {
+  0% {
+    top: -100%;
+    left: -100%;
+  }
+  100% {
+    top: 100%;
+    left: 100%;
+  }
+}

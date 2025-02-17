@@ -369,6 +369,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
     const ninosEncriptados = encodeURIComponent(encryptData(ninosRender.toString()));
     const bebesEncriptados = encodeURIComponent(encryptData(bebesRender.toString()));
     const totalFinalEncriptado = encodeURIComponent(encryptData(TotalFinal.toString()));
+    const totalDiasEncriptados = encodeURIComponent(encryptData(totalDiasRender.toString()));
     const tarifaEncriptada = encodeURIComponent(encryptData(tarifaFinalGlamperos.toString()));
 
     if (!emailUsuario) {
@@ -379,7 +380,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
 
     if (!validarFechas()) return;
 
-    const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasRender}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;
+    const nuevaUrl = `/Reservar/${glampingId}/${fechaInicioEncriptada}/${fechaFinEncriptada}/${totalFinalEncriptado}/${tarifaEncriptada}/${totalDiasEncriptados}/${adultosEncriptados}/${ninosEncriptados}/${bebesEncriptados}/${mascotasEncriptadas}`;    
     console.log(fechaInicioReservada, fechaFinReservada)
     router.push(nuevaUrl);
   };

@@ -48,6 +48,7 @@ const Reservacion = () => {
   const fechaFinDesencriptada = fechaFinEncriptada ? decryptData(decodeURIComponent(fechaFinEncriptada)) : "0";
   const totalFinalDesencriptado = totalFinalEncriptado ? decryptData(decodeURIComponent(totalFinalEncriptado)) : "0";
   const tarifaDesencriptada = tarifaEncriptada ? decryptData(decodeURIComponent(tarifaEncriptada)) : "0";
+  const totalDiasDesencriptados = totalDiasEncriptados ? decryptData(decodeURIComponent(totalDiasEncriptados)) : "0";
   const adultosDesencriptados = adultosEncriptados ? decryptData(decodeURIComponent(adultosEncriptados)) : "0";
   const ninosDesencriptados = ninosEncriptados ? decryptData(decodeURIComponent(ninosEncriptados)) : "0";
   const bebesDesencriptados = bebesEncriptados ? decryptData(decodeURIComponent(bebesEncriptados)) : "0";
@@ -108,7 +109,7 @@ const Reservacion = () => {
       ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
       fechaInicio: fechaInicioDesencriptada ? new Date(fechaInicioDesencriptada) : new Date(),
       fechaFin: fechaFinDesencriptada ? new Date(fechaFinDesencriptada) : new Date(),
-      totalDiasNum: Number(totalDiasEncriptados),
+      totalDiasNum: Number(totalDiasDesencriptados),
       precioConTarifaNum: Number(totalFinalDesencriptado),
       TarifaGlamperosNum: Number(tarifaDesencriptada),
       adultosDesencriptados,
@@ -147,7 +148,7 @@ return (
           <div className="Reservacion-detalles">
             <div className="Reservacion-factura">
               <h3>Detalles de la Reserva</h3>
-              <p><strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado) / Number(totalDiasEncriptados)))} / noche</strong></p>              
+              <p><strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado) / Number(totalDiasDesencriptados)))} / noche</strong></p>              
               <p>
                 {new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
                   day: "numeric",
@@ -167,7 +168,7 @@ return (
                 {mascotasDesencriptadas && Number(mascotasDesencriptadas) > 0 && ` y ${mascotasDesencriptadas} Mascota${Number(mascotasDesencriptadas) > 1 ? "s" : ""}`}
               </p>
               <p>
-                Precio por {totalDiasEncriptados} {Number(totalDiasEncriptados) > 1 ? "noches" : "noche"}: 
+                Precio por {totalDiasDesencriptados} {Number(totalDiasDesencriptados) > 1 ? "noches" : "noche"}: 
                 <strong> {formatoPesos(Math.round(parseFloat(totalFinalDesencriptado) - parseFloat(tarifaDesencriptada)))}</strong>
               </p>
               <p>Tarifa de Glamperos: <strong>{formatoPesos(Math.round(Number(tarifaDesencriptada)))}</strong></p>

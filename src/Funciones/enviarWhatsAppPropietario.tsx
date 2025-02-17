@@ -1,35 +1,40 @@
-"use server";
-
 interface EnviarWhatsAppProps {
   numero: string;
-  mensaje1: string;
-  mensaje2: string;
-  mensaje3: string;
-  mensaje4: string;
+  nombrePropietario: string;
+  nombreGlamping: string;
+  fechaInicio: string;
+  fechaFin: string;
   imagenUrl?: string;
 }
 
 export const enviarWhatsAppPropietario = async ({
   numero,
-  mensaje1,
-  mensaje2,
-  mensaje3,
-  mensaje4,
+  nombrePropietario,
+  nombreGlamping,
+  fechaInicio,
+  fechaFin,
   imagenUrl = "https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal1.jpeg",
 }: EnviarWhatsAppProps) => {
   try {
     if (!numero) {
-      throw new Error("No has actualizado tu WhatsApp");
+      throw new Error("⚠️ Error: No has actualizado tu WhatsApp.");
+    }
+
+    // 🔹 Verifica que el token esté disponible
+    const whatsappApiToken = process.env.NEXT_PUBLIC_WHATSAPP_API_TOKEN;
+    if (!whatsappApiToken) {
+      throw new Error("⚠️ WHATSAPP_API_TOKEN no está definido en las variables de entorno.");
     }
 
     const url = "https://graph.facebook.com/v21.0/531912696676146/messages";
+
     const body = {
       messaging_product: "whatsapp",
       recipient_type: "individual",
-      to: numero,
+      to: numero, // 🔹 Asegúrate de que tenga formato internacional, ej: "+573001234567"
       type: "template",
       template: {
-        name: "confirmacionreserva",
+        name: "confirmacionreserva", // 🔹 Asegúrate de que este nombre es EXACTO al de Meta Business
         language: { code: "es_CO" },
         components: [
           {
@@ -44,10 +49,10 @@ export const enviarWhatsAppPropietario = async ({
           {
             type: "body",
             parameters: [
-              { type: "text", text: mensaje1 },
-              { type: "text", text: mensaje2 },
-              { type: "text", text: mensaje3 },
-              { type: "text", text: mensaje4 },
+              { type: "text", text: nombrePropietario },
+              { type: "text", text: nombreGlamping },
+              { type: "text", text: fechaInicio },
+              { type: "text", text: fechaFin },
             ],
           },
         ],
@@ -57,19 +62,20 @@ export const enviarWhatsAppPropietario = async ({
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.WHATSAPP_API_TOKEN}`,
+        Authorization: `Bearer ${whatsappApiToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Error al enviar el mensaje: ${errorData.error.message}`);
+      console.error("❌ Error al enviar mensaje de WhatsApp:", result);
+      throw new Error(`Error al enviar mensaje: ${result.error?.message || "Error desconocido"}`);
     }
 
-    console.log(`Mensaje enviado correctamente a ${numero}`);
   } catch (error) {
-    console.error("Error al enviar mensaje de WhatsApp:", error);
+    console.error("🚨 Error al enviar mensaje de WhatsApp:", error);
   }
 };

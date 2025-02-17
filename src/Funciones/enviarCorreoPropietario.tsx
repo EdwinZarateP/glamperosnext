@@ -73,8 +73,6 @@ export const enviarCorreoPropietario = async ({
     if (!response.ok) {
       throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
     }
-
-    console.log("Correo enviado exitosamente a:", correo);
   } catch (error) {
     console.error("Error al enviar el correo:", error);
   }

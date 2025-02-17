@@ -10,9 +10,12 @@ import { ActualizarFechasReservadas } from "@/Funciones/ActualizarFechasReservad
 import { ObtenerFechasReservadas } from "@/Funciones/ObtenerFechasReservadas";
 import { enviarCorreoPropietario } from "@/Funciones/enviarCorreoPropietario";
 import { enviarCorreoCliente } from "@/Funciones/enviarCorreoCliente";
+import { enviarWhatAppCliente } from "@/Funciones/enviarWhatAppCliente";
+import { enviarWhatsAppPropietario } from "@/Funciones/enviarWhatsAppPropietario";
 import InputTelefono from "@/Componentes/InputTelefono/index";
 import { ContextoApp } from "@/context/AppContext";
 import Politicas from "@/Componentes/Politica/index";
+import confetti from 'canvas-confetti'; 
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import "./estilos.css";
@@ -42,6 +45,7 @@ const Reservacion = () => {
   const router = useRouter();
   const id_Cliente = Cookies.get("idUsuario");
   const telefonoUsuarioCookie = Cookies.get('telefonoUsuario');
+  const nombreUsuarioCookie = Cookies.get('nombreUsuario');
 
   if (!contexto) {
     throw new Error("ContextoApp no está disponible. Asegúrate de envolver tu aplicación con <ProveedorVariables>");
@@ -108,6 +112,16 @@ const Reservacion = () => {
     return fechas;
   };
 
+  // Función para lanzar confetti (explosión)
+  const lanzarConfetti = () => {
+    confetti.create(undefined, { resize: true, useWorker: true })({
+      particleCount: 200,
+      spread: 120,
+      origin: { x: 0.5, y: 0.5 },
+      zIndex: 1001, // Asegúrate de usar un z-index alto
+    });
+  };
+  
   const handleConfirmarReserva = async () => {
 
     if (telefonoUsuarioCookie==="sintelefono") {
@@ -200,14 +214,36 @@ const Reservacion = () => {
         glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",    
         latitud: Number(glamping?.ubicacion?.lat),
         longitud: Number(glamping?.ubicacion?.lng),
-
+      });
+      
+      // 🔹 **Enviar WhatApp al Cliente**
+      await enviarWhatAppCliente({  
+        numero: telefonoUsuarioCookie ?? "sin teléfono",
+        codigoReserva: creacionReserva.reserva.codigoReserva,
+        whatsapp: propietario?.whatsapp ?? "Propietario sin telefono",
+        nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
+        direccionGlamping:  glamping.direccion ?? "Glamping sin direccion",
+        latitud: Number(glamping?.ubicacion?.lat),
+        longitud: Number(glamping?.ubicacion?.lng),
+        nombreCliente: (nombreUsuarioCookie ? nombreUsuarioCookie.split(' ')[0] : "Estimado(a)"),    
       });
 
+      // 🔹 **Enviar WhatApp al Propietario**
+      await enviarWhatsAppPropietario({
+        numero: propietario?.whatsapp ?? "sin teléfono",
+        nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
+        nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",      
+        fechaInicio: new Date(fechaInicioDesencriptada).toISOString().split("T")[0], 
+        fechaFin: new Date(fechaFinDesencriptada).toISOString().split("T")[0],
+      });
+        lanzarConfetti();
         router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
+
     } else {
       console.error("Error al procesar la reserva.");
     }
   };
+  
 
   return (
     <div className="Reservacion-contenedor">

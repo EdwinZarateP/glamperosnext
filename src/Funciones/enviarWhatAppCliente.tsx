@@ -1,6 +1,4 @@
-"use server";
-
-interface enviarWhatAppClienteProps {
+interface EnviarWhatAppClienteProps {
   numero: string;
   codigoReserva: string;
   whatsapp: string;
@@ -8,7 +6,7 @@ interface enviarWhatAppClienteProps {
   direccionGlamping: string;
   latitud: number;
   longitud: number;
-  mensaje5: string;
+  nombreCliente: string;
 }
 
 export const enviarWhatAppCliente = async ({
@@ -19,14 +17,22 @@ export const enviarWhatAppCliente = async ({
   direccionGlamping,
   latitud,
   longitud,
-  mensaje5,
-}: enviarWhatAppClienteProps) => {
+  nombreCliente,
+}: EnviarWhatAppClienteProps) => {
   try {
     if (!numero) {
       throw new Error("No has actualizado tu WhatsApp");
     }
 
+    // 🔹 Obtener el token de entorno (local o producción)
+    const whatsappApiToken = process.env.NEXT_PUBLIC_WHATSAPP_API_TOKEN;
+
+    if (!whatsappApiToken) {
+      throw new Error("⚠️ WHATSAPP_API_TOKEN no está definido en las variables de entorno.");
+    }
+
     const url = "https://graph.facebook.com/v21.0/531912696676146/messages";
+
     const body = {
       messaging_product: "whatsapp",
       recipient_type: "individual",
@@ -53,7 +59,7 @@ export const enviarWhatAppCliente = async ({
           {
             type: "body",
             parameters: [
-              { type: "text", text: mensaje5 },
+              { type: "text", text: nombreCliente },
               { type: "text", text: codigoReserva },
               { type: "text", text: whatsapp },
             ],
@@ -65,7 +71,7 @@ export const enviarWhatAppCliente = async ({
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.WHATSAPP_API_TOKEN}`,
+        Authorization: `Bearer ${whatsappApiToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
@@ -73,11 +79,10 @@ export const enviarWhatAppCliente = async ({
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(`Error al enviar el mensaje: ${errorData.error.message}`);
+      console.error("❌ Error al enviar mensaje de WhatsApp:", errorData);
+      throw new Error(`Error al enviar mensaje: ${errorData.error?.message || "Error desconocido"}`);
     }
-
-    console.log(`Mensaje enviado correctamente a ${numero}`);
   } catch (error) {
-    console.error("Error al enviar mensaje de WhatsApp:", error);
+    console.error("🚨 Error al enviar mensaje de WhatsApp:", error);
   }
 };

@@ -6,11 +6,8 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { ContextoApp } from "@/context/AppContext";
 import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import { useMediaQuery } from "@/Funciones/useMediaQuery";
 import "./estilos.css";
-
-interface ListadoConversacionesProps {
-  isMobile: boolean;
-}
 
 interface Conversacion {
   _id: string;
@@ -38,19 +35,16 @@ interface MyLottieProps {
 const Lottie = dynamic<MyLottieProps>(
   () =>
     import("lottie-react").then((mod) => {
-      // forzamos el default a un componente tipado
       return mod.default as React.ComponentType<MyLottieProps>;
     }),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
 
-const ListadoConversaciones: React.FC<ListadoConversacionesProps> = ({ isMobile }) => {
+const ListadoConversaciones: React.FC = () => {
   const [conversaciones, setConversaciones] = useState<(Conversacion & Usuario)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [cargando, setCargando] = useState<boolean>(true);
-
+  
   const almacenVariables = useContext(ContextoApp);
   if (!almacenVariables) {
     throw new Error("El contexto no está disponible.");
@@ -61,6 +55,9 @@ const ListadoConversaciones: React.FC<ListadoConversacionesProps> = ({ isMobile 
   const idUsuarioReceptorQuery = searchParams.get("idUsuarioReceptor") || "";
   const router = useRouter();
   const idEmisor = Cookies.get("idUsuario");
+  
+  // Detectar si es móvil
+  const isMobile = useMediaQuery("(max-width: 900px)");
 
   useEffect(() => {
     if (!idEmisor) {
@@ -99,12 +96,13 @@ const ListadoConversaciones: React.FC<ListadoConversacionesProps> = ({ isMobile 
 
         setConversaciones(conversacionesOrdenadas);
 
+        // Solo abrir automáticamente en pantallas grandes
         if (conversacionesOrdenadas.length > 0 && !idUsuarioReceptorQuery && !isMobile) {
           const ultimaConversacion = conversacionesOrdenadas[0];
           setIdUsuarioReceptor(ultimaConversacion.contacto);
           setNombreUsuarioChat(ultimaConversacion.nombre);
           setFotoUsuarioChat(ultimaConversacion.foto);
-          router.push(`/Mensajes?idUsuarioReceptor=${ultimaConversacion.contacto}`);
+          // router.push(`/Mensajes?idUsuarioReceptor=${ultimaConversacion.contacto}`);
         }
       } catch (e: any) {
         setError(e.message);

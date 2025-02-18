@@ -10,6 +10,7 @@ import "./estilos.css";
 
 const MenuUsuariosInferior: React.FC = () => {
   const correoUsuario = Cookies.get("correoUsuario");
+  // const idEmisor = Cookies.get("idUsuario") ?? "";
   const router = useRouter();
 
   const redirigir = (ruta: string) => {
@@ -32,7 +33,7 @@ const MenuUsuariosInferior: React.FC = () => {
         <FaRegHeart className="MenuUsuariosInferior-iconoImagen" />
         <span className="MenuUsuariosInferior-texto">Favoritos</span>
       </div>
-      <div className="MenuUsuariosInferior-icono" onClick={() => redirigir(`/Mensajes/${correoUsuario}`)}>
+      <div className="MenuUsuariosInferior-icono" onClick={() => redirigir(`/Mensajes`)}>
         <TiMessage className="MenuUsuariosInferior-iconoImagen" />
         <span className="MenuUsuariosInferior-texto">Mensajes</span>
       </div>

@@ -6,7 +6,7 @@ import ContenedorTarjetas from "@/Componentes/ContenedorTarjetas/index";
 import MenuIconos from "@/Componentes/MenuIconos"; 
 import FiltrosContenedor from "@/Componentes/FiltrosContenedor/index";
 import { ContextoApp } from "@/context/AppContext";
-// import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior"; 
+import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior"; 
 import "./page.css"; 
 
 const Home: React.FC = () => {
@@ -26,7 +26,7 @@ const Home: React.FC = () => {
       <main>
         <ContenedorTarjetas />
       </main>
-      {/* <MenuUsuariosInferior /> */}
+      <MenuUsuariosInferior />
     </div>
   );
 };

@@ -1,0 +1,46 @@
+/* Layout base */
+.Mensajes-contenedor {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Desktop */
+@media (min-width: 901px) {
+  .Mensajes-contenedor {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
+  
+  .Mensajes-ListadoConversaciones {
+    border-right: 1px solid #ccc;
+    height: calc(100vh - 180px); 
+    margin-top: 70px;
+    overflow-y: auto;
+  }
+  
+  .Mensajes-Conversaciones {
+    height: calc(100vh - 70px);
+    margin-top: 70px;
+    overflow-y: auto;
+  }
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .Mensajes-ListadoConversaciones {
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .Mensajes-Conversaciones-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 1000;
+    overflow-y: auto;
+}
+}

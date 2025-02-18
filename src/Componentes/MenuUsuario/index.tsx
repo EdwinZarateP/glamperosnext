@@ -1,14 +1,14 @@
 "use client";
 
 import { useContext, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { ContextoApp } from "@/context/AppContext";
 import Cookies from "js-cookie";
 import "./estilos.css";
 
 const MenuUsuario: React.FC = () => {
   const router = useRouter();
-  const idEmisor = Cookies.get("idUsuario") ?? ""; // ✅ Manejo seguro de cookies
+  const idEmisor = Cookies.get("idUsuario") ?? "";
   const almacenVariables = useContext(ContextoApp);
 
   if (!almacenVariables) {
@@ -44,9 +44,8 @@ const MenuUsuario: React.FC = () => {
     Cookies.remove("idUsuario");
     Cookies.remove("correoUsuario");
     Cookies.remove("telefonoUsuario");
-
     setMostrarMenuUsuarios(false);
-    router.push("/"); // ✅ Redirige correctamente sin recargar
+    router.push("/");
   };
 
   // ✅ Si el menú no está visible, no lo renderizamos
@@ -57,40 +56,57 @@ const MenuUsuario: React.FC = () => {
       <ul className="MenuUsuario-lista">
         {nombreUsuarioCookie && (
           <>
-            <li className="MenuUsuario-opcion" onClick={() => {
-              setMostrarMenuUsuarios(false);
-              router.push(`/Mensajes/${idEmisor}`);
-            }}>
+            <li
+              className="MenuUsuario-opcion"
+              onClick={() => {
+                setMostrarMenuUsuarios(false);
+                if (idEmisor) {
+                  router.push(`/Mensajes?idEmisor=${idEmisor}`);
+                } 
+              }}
+            >
               Mensajes
             </li>
-            <li className="MenuUsuario-opcion" onClick={() => {
-              setMostrarMenuUsuarios(false);
-              router.push("/ListaDeseos");
-            }}>
+            <li
+              className="MenuUsuario-opcion"
+              onClick={() => {
+                setMostrarMenuUsuarios(false);
+                router.push("/ListaDeseos");
+              }}
+            >
               Lista de favoritos
             </li>
-            <li className="MenuUsuario-opcion" onClick={() => {
-              setMostrarMenuUsuarios(false);
-              router.push("/GestionarCuenta");
-            }}>
+            <li
+              className="MenuUsuario-opcion"
+              onClick={() => {
+                setMostrarMenuUsuarios(false);
+                router.push("/GestionarCuenta");
+              }}
+            >
               Cuenta
             </li>
           </>
         )}
-        <li className="MenuUsuario-opcion" onClick={() => {
-          setMostrarMenuUsuarios(false);
-          router.push("/Ayuda");
-        }}>
+        <li
+          className="MenuUsuario-opcion"
+          onClick={() => {
+            setMostrarMenuUsuarios(false);
+            router.push("/Ayuda");
+          }}
+        >
           Centro de ayuda
         </li>
-        <li className="MenuUsuario-opcion" onClick={() => {
-          if (nombreUsuarioCookie) {
-            cerrarSesion();
-          } else {
+        <li
+          className="MenuUsuario-opcion"
+          onClick={() => {
             setMostrarMenuUsuarios(false);
-            router.push("/RegistroPag");
-          }
-        }}>
+            if (nombreUsuarioCookie) {
+              cerrarSesion();
+            } else {
+              router.push("/RegistroPag");
+            }
+          }}
+        >
           {nombreUsuarioCookie ? "Cerrar sesión" : "Registro/Iniciar sesión"}
         </li>
       </ul>

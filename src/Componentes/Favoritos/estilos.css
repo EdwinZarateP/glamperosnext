@@ -1,0 +1,85 @@
+.favoritos-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 80%;
+  height: 100vh;
+  padding: 20px; /* Espaciado interno */
+  box-sizing: border-box; /* Incluir padding en las dimensiones */
+  overflow: hidden;
+  margin-top: 90px;
+}
+
+.favoritos-contenedor-tarjetas {
+  display: flex;
+  flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente fila */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: center; /* Alinea los elementos al principio verticalmente */
+  height: 100%;
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  gap: 20px; /* Espacio entre las tarjetas */
+  overflow-y: auto; 
+  padding: 10px; /* Espaciado interno */
+  box-sizing: border-box; 
+  margin-bottom: 50px;
+}
+
+.favoritos-contenedor-tarjetas > * {
+  flex: 1 1 250px; /* Tamaño base de 250px, pero puede reducirse si no cabe */
+  max-width: 250px; /* Tamaño máximo de cada tarjeta */
+  box-sizing: border-box; /* Incluye padding y border en las dimensiones */
+}
+
+/* Estilo para el mensaje de error en favoritos */
+.favoritos-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno */
+  margin: 20px;
+  font-size: 1.8rem; /* Aumenta el tamaño del texto */
+  font-weight: 600; /* Textos en negrita para mayor énfasis */
+  text-align: center; /* Centrado del texto */
+  width: 80%;
+  max-width: 600px; /* Limita el ancho máximo del mensaje */
+  box-sizing: border-box; /* Asegura que el padding y border no afecten el tamaño */
+  transition: background-color 0.3s ease; /* Transición suave para el color de fondo */
+}
+
+.favoritos-logo{
+  width: 120px;
+  cursor: pointer;
+}
+
+.favoritos-logo-titulo{
+  width: 42px;
+  cursor: pointer;
+}
+
+
+@media (max-width: 600px) {
+  
+  .favoritos-contenedor {
+    width: 100%;
+    padding: 0;
+    margin-top: 70px;
+  }
+
+
+  .favoritos-contenedor-tarjetas > * {
+    flex: 1 1 100%; /* Tamaño base de 250px, pero puede reducirse si no cabe */
+    max-width: 100%; /* Tamaño máximo de cada tarjeta */
+    box-sizing: border-box; /* Incluye padding y border en las dimensiones */
+
+  }
+
+  .favoritos-titulo {
+    justify-content: center;
+    margin-top: 21px;
+  }
+
+}

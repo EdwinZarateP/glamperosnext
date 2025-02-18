@@ -1,0 +1,208 @@
+/* Variables de color y tipografía */
+:root {
+  --primary-color: #2A2D34;
+  --secondary-color: #5E6AD2;
+  --accent-color: #25D366;
+  --text-color: #4A4A4A;
+  --background-light: #F9FAFB;
+  --border-color: #E5E7EB;
+  --font-primary: 'Inter', Arial, sans-serif;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estilos base */
+.CentroAyuda-contenedor {
+  height: 100%;
+  width: 90%;
+  max-width: 900px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  font-family: var(--font-primary);
+  color: var(--text-color);
+  line-height: 1.6;
+  height: 100%;
+}
+
+.CentroAyuda-titulo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.CentroAyuda-opciones {
+  background: white;
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+/* Sección de contacto */
+.CentroAyuda-lista {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0;
+}
+
+.CentroAyuda-item {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Botón de WhatsApp */
+.CentroAyuda-boton {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.9rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  max-width: 320px;
+  justify-content: center;
+}
+
+.CentroAyuda-boton:hover {
+  background: #128C7E;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(18, 140, 126, 0.3);
+}
+
+.CentroAyuda-icono-whatsapp {
+  width: 24px;
+  height: 24px;
+}
+
+/* Sección de correo */
+.CentroAyuda-correo {
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--secondary-color);
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.CentroAyuda-correo:hover {
+  border-color: var(--secondary-color);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Preguntas frecuentes */
+.CentroAyuda-faq {
+  border-radius: 12px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.CentroAyuda-faq-titulo {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Estilo mejorado para listas */
+.CentroAyuda-faq ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.CentroAyuda-faq li {
+  margin-bottom: 0.75rem;
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.CentroAyuda-faq li::before {
+  content: "✔";
+  color: var(--secondary-color);
+  font-size: 1rem;
+}
+
+/* Sublistas */
+.CentroAyuda-faq ul ul {
+  margin-left: 16px;
+}
+
+.CentroAyuda-faq ul ul li::before {
+  content: "➜";
+  color: var(--accent-color);
+  font-size: 0.9rem;
+}
+
+/* Botón de navegación */
+.CentroAyuda-boton-navegar {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: underline;
+  padding: 5px;
+}
+
+.CentroAyuda-boton-navegar:hover {
+  color: #0056b3;
+}
+
+/* Diseño responsive */
+@media (max-width: 600px) {
+  .CentroAyuda-contenedor {
+    width: 95%;
+    padding: 0 0.5rem;
+  }
+
+  .CentroAyuda-titulo {
+    font-size: 1.8rem;
+  }
+
+  .CentroAyuda-opciones {
+    padding: 1rem;
+    margin-bottom: 320px;
+  }
+
+  .CentroAyuda-boton {
+    padding: 0.75rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .CentroAyuda-faq li {
+    font-size: 0.95rem;
+  }
+}
+
+/* Accesibilidad */
+.CentroAyuda-boton:focus,
+.CentroAyuda-correo:focus {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.CentroAyuda-opciones {
+  animation: fadeIn 0.6s ease-out;
+}

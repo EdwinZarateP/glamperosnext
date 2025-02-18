@@ -140,11 +140,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
           body: JSON.stringify(nuevoMensaje),
         });
 
-        if (window.innerWidth < 900) {
-          router.push(`/MensajesIndividuales/${propietario_id}`);
-        } else {
-          router.push(`/Mensajes/${propietario_id}`);
-        }
+        router.push(`/Mensajes?idUsuarioReceptor=/${propietario_id}`);
 
         setMensaje("");
 

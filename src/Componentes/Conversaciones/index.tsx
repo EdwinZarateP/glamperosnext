@@ -30,8 +30,6 @@ const Conversaciones: React.FC = () => {
     setIdUsuarioReceptor,
     nombreUsuarioChat,
     fotoUsuarioChat,
-    setActivarChat,
-    setIdUrlConversacion,
   } = almacenVariables;
 
   const [mensaje, setMensaje] = useState("");
@@ -40,14 +38,6 @@ const Conversaciones: React.FC = () => {
   const idEmisor = Cookies.get("idUsuario");
   const idReceptorURL = idUsuarioReceptor || idReceptor;
   const historialRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!idEmisor) {
-      setActivarChat(true);
-      setIdUrlConversacion(idReceptor);
-      router.push("/Registrarse");
-    }
-  }, [idEmisor, router, setActivarChat, setIdUrlConversacion, idReceptor]);
 
   useEffect(() => {
     if (!idUsuarioReceptor && idReceptor) {

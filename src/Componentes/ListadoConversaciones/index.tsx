@@ -50,7 +50,7 @@ const ListadoConversaciones: React.FC = () => {
     throw new Error("El contexto no está disponible.");
   }
 
-  const { setIdUsuarioReceptor, setNombreUsuarioChat, setFotoUsuarioChat } = almacenVariables;
+  const { setActivarChat, setIdUrlConversacion, setIdUsuarioReceptor, setNombreUsuarioChat, setFotoUsuarioChat } = almacenVariables;
   const searchParams = useSearchParams();
   const idUsuarioReceptorQuery = searchParams.get("idUsuarioReceptor") || "";
   const router = useRouter();
@@ -60,9 +60,11 @@ const ListadoConversaciones: React.FC = () => {
   const isMobile = useMediaQuery("(max-width: 900px)");
 
   useEffect(() => {
+    // Si el usuario no está autenticado, redirigir a la página de registro
     if (!idEmisor) {
-      setError("No se encontró el ID del usuario.");
-      setCargando(false);
+      setActivarChat(true);
+      setIdUrlConversacion(`/Mensajes?idUsuarioReceptor=${idUsuarioReceptorQuery}`);
+      router.push("/RegistroPag");
       return;
     }
 
@@ -96,14 +98,20 @@ const ListadoConversaciones: React.FC = () => {
 
         setConversaciones(conversacionesOrdenadas);
 
-        // Solo abrir automáticamente en pantallas grandes
-        if (conversacionesOrdenadas.length > 0 && !idUsuarioReceptorQuery && !isMobile) {
-          const ultimaConversacion = conversacionesOrdenadas[0];
+        // Solo abrir automáticamente en pantallas grandes o si hay un usuario en la URL
+        if (conversacionesOrdenadas.length > 0) {
+          const ultimaConversacion = conversacionesOrdenadas.find(c => c.contacto === idUsuarioReceptorQuery) || conversacionesOrdenadas[0];
+          
           setIdUsuarioReceptor(ultimaConversacion.contacto);
           setNombreUsuarioChat(ultimaConversacion.nombre);
           setFotoUsuarioChat(ultimaConversacion.foto);
-          // router.push(`/Mensajes?idUsuarioReceptor=${ultimaConversacion.contacto}`);
+        
+          // Asegurar que la URL refleje la conversación seleccionada en caso de que no coincida
+          if (idUsuarioReceptorQuery !== ultimaConversacion.contacto) {
+            router.push(`/Mensajes?idUsuarioReceptor=${ultimaConversacion.contacto}`);
+          }
         }
+        
       } catch (e: any) {
         setError(e.message);
       } finally {

@@ -13,8 +13,8 @@
   }
   
   .Mensajes-ListadoConversaciones {
-    border-right: 1px solid #ccc;
-    height: calc(100vh - 180px); 
+    /* border-right: 1px solid #ccc; */
+    height: calc(100vh - 70px); 
     margin-top: 70px;
     overflow-y: auto;
   }

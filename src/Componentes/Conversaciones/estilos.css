@@ -2,12 +2,13 @@
 .ConversacionesContenedor {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: calc(100vh - 70px);
   background-color: #e5ddd5;
 }
 
 /* Encabezado del chat */
 .ConversacionesHeader {
+  position: relative;
   display: flex;
   align-items: center;
   background-color: #075e54;
@@ -74,7 +75,7 @@
   font-size: 14px;
   display: flex;
   flex-direction: column;
-  position: relative;
+  /* position: relative; */
   word-wrap: break-word;
 }
 
@@ -139,6 +140,11 @@
 
 /* Modal en móviles */
 @media (max-width: 900px) {
+
+  .ConversacionesContenedor {
+    height: 100vh;
+  }
+
   .ModalConversaciones {
     position: fixed;
     top: 0;
@@ -154,7 +160,7 @@
   .CerrarModalBoton {
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 35%;
     background: none;
     border: none;
     color: white;

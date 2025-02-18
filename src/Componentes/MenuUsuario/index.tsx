@@ -46,6 +46,7 @@ const MenuUsuario: React.FC = () => {
     Cookies.remove("telefonoUsuario");
     setMostrarMenuUsuarios(false);
     router.push("/");
+    window.location.reload()
   };
 
   // ✅ Si el menú no está visible, no lo renderizamos

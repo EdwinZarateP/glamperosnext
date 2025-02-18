@@ -36,7 +36,7 @@ const BotonGuardar: React.FC = () => {
 
   const handleFavoritoChange = async () => {
     if (!idUsuarioCookie) {
-      router.push("/Registrarse");
+      router.push("/RegistroPag");
       return;
     }
 

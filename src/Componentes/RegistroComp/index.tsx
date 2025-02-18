@@ -130,7 +130,7 @@ const RegistroComp: React.FC = () => {
     if (siono) return "/CrearGlamping";
     if (activarChat) {
       setActivarChat(false);
-      return `/MensajesIndividuales/${idUrlConversacion}`;
+      return `${idUrlConversacion}`;
     }
     if (redirigirExplorado) {
       setRedirigirExplorado(false);

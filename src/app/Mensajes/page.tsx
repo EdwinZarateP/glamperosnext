@@ -18,7 +18,7 @@ function Mensajes() {
       
       {/* Listado de conversaciones (siempre visible) */}
       <div className="Mensajes-ListadoConversaciones">
-        <ListadoConversaciones isMobile={isMobile} />
+        <ListadoConversaciones/>
       </div>
 
       {/* Conversaciones (condicional según el tamaño de pantalla) */}

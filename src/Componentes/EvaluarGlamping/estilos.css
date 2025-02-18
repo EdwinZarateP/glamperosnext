@@ -1,0 +1,109 @@
+/* Fondo sombreado */
+.evaluarGlamping-fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* Contenedor principal */
+  .evaluarGlamping-contenedor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+
+  }
+  
+  /* Título */
+  .evaluarGlamping-titulo {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  /* Estrellas */
+  .evaluarGlamping-estrellas {
+    font-size: 30px;
+    margin-bottom: 15px;
+  }
+  
+  .evaluarGlamping-estrella {
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .evaluarGlamping-estrella.evaluarGlamping-activa {
+    color: #ffcc00;
+  }
+  
+  /* Campo de comentario */
+  .evaluarGlamping-comentario {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+  
+  /* Botones */
+  .evaluarGlamping-botones {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .evaluarGlamping-boton {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    width: 48%;
+  }
+  
+  .evaluarGlamping-enviar {
+    width: 100%;
+    background: #4caf50;
+    color: white;
+  }
+  
+  .evaluarGlamping-enviar:hover {
+    background: #388e3c;
+  }
+  
+  /* Responsividad */
+  @media (max-width: 500px) {
+    .evaluarGlamping-contenedor {
+      width: 95%;
+      padding: 15px;
+    }
+  
+    .evaluarGlamping-estrella {
+      font-size: 24px;
+    }
+  
+    .evaluarGlamping-boton {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+  }
+  

@@ -1,0 +1,121 @@
+
+/* Estilos generales */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.DatosEmpresa-contenedor {
+  width: 90%;
+  max-width: 1200px;
+  margin: 60px auto 0;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  max-height: calc(100vh - 100px); /* Ajusta la altura máxima restando el header */
+}
+
+.DatosEmpresa-titulo {
+  font-size: 2rem;
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.DatosEmpresa-subtitulo {
+  font-size: 1.5rem;
+  color: #555;
+  margin-top: 20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.DatosEmpresa-informacion,
+.DatosEmpresa-pagos,
+.DatosEmpresa-contacto,
+.DatosEmpresa-politicas {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.DatosEmpresa-informacion p,
+.DatosEmpresa-pagos p,
+.DatosEmpresa-contacto p,
+.DatosEmpresa-politicas p {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.6;
+  margin: 5px 0;
+}
+
+
+.DatosEmpresa-galeria {
+  display: grid;
+  grid-template-columns: 1fr; /* Dos columnas */
+  margin-top: 15px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.DatosEmpresa-galeria .imagen-principal {
+  grid-column: 1 / -1; /* Ocupa ambas columnas */
+  width: 500px;
+  max-width: 100%;
+  height: 200px; /* Tamaño uniforme */
+  border-radius: 6px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.DatosEmpresa-galeria .imagen-secundaria-contenedor {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.DatosEmpresa-galeria .imagen-secundaria {
+  width: 220px; /* Tamaño uniforme */
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* Responsividad */
+@media (max-width: 900px) {
+  .DatosEmpresa-contenedor {
+    width: 95%;
+    margin-top: 0;
+    margin-bottom: 50px;
+    padding: 15px;
+  }
+
+  .DatosEmpresa-titulo {
+    font-size: 1.8rem;
+  }
+
+  .DatosEmpresa-subtitulo {
+    font-size: 1.3rem;
+  }
+
+  .DatosEmpresa-galeria {
+    grid-template-columns: 1fr; /* Una columna en móviles */
+  }
+
+  .DatosEmpresa-galeria .imagen-principal {
+    width: 100%;
+    height: 180px; /* Tamaño ajustado */
+  }
+
+  .DatosEmpresa-galeria .imagen-secundaria {
+    width: 100px;
+    height: 100px;
+  }
+}

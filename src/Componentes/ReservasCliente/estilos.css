@@ -1,0 +1,284 @@
+/* estilos.css */
+.ReservasCliente-container {
+  width: 100%;
+  height: 100%;
+  padding: 0 20px;
+}
+
+.ReservasCliente-cargando {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.ReservasCliente-sinReservas {
+  text-align: center;
+  padding: 20px;
+}
+
+.ReservasCliente-imagen {
+  width: 150px;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.ReservasCliente-mensaje {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2d3436;
+  margin-top: 10px;
+}
+
+
+.ReservasCliente-lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+  padding:15px;
+}
+
+.ReservasCliente-tarjeta {
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  position: relative;
+  transition: transform 0.3s ease;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+  max-width:400px;
+  cursor: pointer;
+}
+
+.ReservasCliente-titulo {
+  color: #2d3436;
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #2F6B3E;
+  padding-bottom: 0.5rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.ReservasCliente-detalle {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 0.3rem 0;
+  line-height: 1.5;
+}
+
+.ReservasCliente-detalle strong {
+  color: #2d3436;
+  font-weight: 600;
+}
+
+.ReservasCliente-carrusel {
+  position: relative;
+  margin-top: 1rem;
+  border-radius: 15px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+
+.ReservasCliente-carrusel-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.ReservasCliente-carrusel-botones-izq {
+  position: absolute;
+  top: calc(50% - 24px);
+  left: 2px;
+  display: flex;
+  gap: 5px;
+}
+
+.ReservasCliente-carrusel-botones-der {
+  position: absolute;
+  top: calc(50% - 24px);
+  right: 2px;
+  display: flex;
+  gap: 5px;
+}
+
+.ReservasCliente-boton-carrusel-izq {
+  background: rgba(255, 255, 255, 1);
+  border: none;
+  padding: 5px;
+  width: 32px; /* Aumenta el ancho */
+  height:32px; /* Aumenta la altura */
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #2d3436;
+  font-weight: bold;
+  font-size: 24px; /* Ajusta el tamaño del icono */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Asegura que el icono se ajuste proporcionalmente */
+.ReservasCliente-boton-carrusel-izq svg {
+  width: 1em; 
+  height: 1em;
+}
+
+.ReservasCliente-boton-carrusel-izq:hover {
+  scale: 1.05;
+}
+
+.ReservasCliente-boton-carrusel-der {
+  background: rgba(255, 255, 255, 1);
+  border: none;
+  padding: 5px;
+  width: 32px; /* Aumenta el ancho */
+  height:32px; /* Aumenta la altura */
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #2d3436;
+  font-weight: bold;
+  font-size: 24px; /* Ajusta el tamaño del icono */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Asegura que el icono se ajuste proporcionalmente */
+.ReservasCliente-boton-carrusel-der svg {
+  width: 2em; 
+  height: 2em;
+}
+
+.ReservasCliente-boton-carrusel-der:hover {
+  scale: 1.05;
+}
+
+
+
+
+.ReservasCliente-icono-mascotas {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.8rem;
+  color: #000000;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 5px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Efectos para el estado de la reserva */
+.ReservasCliente-detalle[strong="Estado:"] {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+/* Colores según estado */
+.ReservasCliente-detalle[strong="Estado:"]:contains("Confirmada") {
+  background: #00b894;
+  color: white;
+}
+
+.ReservasCliente-detalle[strong="Estado:"]:contains("Pendiente") {
+  background: #fdcb6e;
+  color: white;
+}
+
+.ReservasCliente-detalle[strong="Estado:"]:contains("Cancelada") {
+  background: #d63031;
+  color: white;
+}
+
+/* Botón de Calificación Mejorado */
+.ReservasCliente-boton-calificar {
+  background: linear-gradient(135deg, #2F6B3E, #00b894);
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 250px;
+  margin: auto;
+  margin-top: 10px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.ReservasCliente-boton-calificar:hover {
+  background: linear-gradient(135deg, #00b894, #2F6B3E);
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ReservasCliente-boton-calificar:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/* Diseño responsivo */
+@media (max-width: 900px) {
+  .ReservasCliente-container {
+    padding: 0 15px;
+    
+  }
+  
+  .ReservasCliente-lista {
+    grid-template-columns: 1fr;
+    padding-bottom: 80px;
+  }
+  
+  .ReservasCliente-titulo {
+    font-size: 1.2rem;
+  }
+  
+  .ReservasCliente-detalle {
+    font-size: 0.9rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ReservasCliente-tarjeta {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Mejoras para el precio */
+.ReservasCliente-detalle[strong="Valor Total:"] {
+  font-size: 1.1rem;
+  color: #00b894;
+  font-weight: bold;
+  margin-top: 1.2rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #eee;
+}

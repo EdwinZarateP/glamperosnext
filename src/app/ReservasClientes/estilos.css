@@ -1,0 +1,13 @@
+.ReservasClientes-contenedor{
+    margin-top: 70px;
+    height: calc(100vh - 70px);
+}
+
+/* Media Queries para hacerlo responsive */
+@media (max-width: 900px) {
+  .ReservasClientes-contenedor{
+      margin-top: 0;
+      height: calc(100vh);
+      }
+  }
+  

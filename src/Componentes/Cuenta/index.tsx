@@ -4,10 +4,8 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Se agregó useSearchParams
 import "./estilos.css";
-
-
 
 interface MyLottieProps {
   animationData: unknown;
@@ -20,7 +18,6 @@ interface MyLottieProps {
 const Lottie = dynamic<MyLottieProps>(
   () =>
     import("lottie-react").then((mod) => {
-      // forzamos el default a un componente tipado
       return mod.default as React.ComponentType<MyLottieProps>;
     }),
   {
@@ -37,6 +34,7 @@ const Cuenta: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [modoPropietario, setModoPropietario] = useState<boolean>(false);
   const router = useRouter();
+
 
   useEffect(() => {
     const obtenerDatosUsuario = async () => {
@@ -89,7 +87,7 @@ const Cuenta: React.FC = () => {
   const manejarEditarGlamping = () => {
     const propietarioId = Cookies.get("idUsuario");
     if (propietarioId) {
-      router.push(`/EdicionGlamping/${propietarioId}`);
+      router.push(`/EdicionGlamping?propietarioId=${propietarioId}`); // Cambio de params a query params
     }
   };
 
@@ -163,7 +161,7 @@ const Cuenta: React.FC = () => {
             <p>Mira dónde has reservado.</p>
           </div>        
           <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
-              <h3>🆘 Centro de ayuda</h3>
+            <h3>🆘 Centro de ayuda</h3>
           </div>
         </div>
       ) : (
@@ -180,7 +178,7 @@ const Cuenta: React.FC = () => {
             </div>
             <div className="Cuenta-tarjeta" onClick={manejarBancos}>
               <h3>💰 Pagos y datos bancarios</h3>
-          </div>
+            </div>
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
               <h3>🆘 Centro de ayuda</h3>
             </div>

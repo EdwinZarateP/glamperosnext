@@ -1,0 +1,98 @@
+/* Estilos principales del contenedor */
+.ModificarFotos-contenedor {
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de la lista de imágenes */
+.ModificarFotos-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+/* Estilo de cada item en la lista */
+.ModificarFotos-item {
+  position: relative;
+  width: calc(33.33% - 10px);
+  height: auto;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: grab;
+}
+
+.ModificarFotos-item:active {
+  cursor: grabbing;
+}
+
+/* Contenedor de la imagen */
+.ModificarFotos-imagen-contenedor {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.ModificarFotos-imagen-contenedor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Botón de eliminar imagen */
+.ModificarFotos-boton-eliminar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  font-size: 20px;
+  color: #f44336;
+  cursor: pointer;
+  padding: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.ModificarFotos-boton-eliminar:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+/* Estilo del área para agregar nuevas imágenes */
+.ModificarFotos-agregar {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Texto de información */
+.ModificarFotos-contenedor p {
+  font-size: 16px;
+  color: #333;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Estilo cuando no hay imágenes */
+.ModificarFotos-contenedor p {
+  color: #999;
+  font-style: italic;
+}
+
+/* Cargando imágenes */
+.ModificarFotos-agregar p {
+  color: #007bff;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 10px;
+}

@@ -1,0 +1,181 @@
+/* Contenedor principal */
+.guardarGlampingP-contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80%;
+  margin: 2rem auto;
+  padding: 1.5rem;
+
+}
+
+/* Título principal */
+.guardarGlampingP-titulo {
+  text-align: center;
+  color: #555;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Formulario principal */
+.guardarGlampingP-formulario {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Estilo general para las etiquetas y campos de entrada */
+.guardarGlampingP-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #555;
+  width: 48%;
+  gap: 0.5rem;
+}
+
+/* Campos de texto, select y textarea */
+.guardarGlampingP-input,
+.guardarGlampingP-select,
+.guardarGlampingP-textarea {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Estilizar los campos activos */
+.guardarGlampingP-input:focus,
+.guardarGlampingP-select:focus,
+.guardarGlampingP-textarea:focus {
+  border-color:  #2F6B3E;
+  outline: none;
+  box-shadow: 0 0 5px rgba(92, 157, 237, 0.3);
+}
+
+/* Checkbox */
+.guardarGlampingP-checkbox {
+  width: 20px;
+}
+
+/* Botón */
+.guardarGlampingP-boton {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+  align-self: center;
+}
+
+.guardarGlampingP-boton:hover:not([disabled]) {
+  background-color: #555;
+}
+
+.guardarGlampingP-boton:disabled {
+  background-color:  #2F6B3E;
+  cursor: not-allowed;
+}
+
+/* Mensaje */
+.guardarGlampingP-mensaje {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: green;
+  font-size: 1rem;
+}
+
+/* Estilización para archivos cargados */
+.guardarGlampingP-file {
+  padding: 5px 0;
+  font-size: 0.9rem;
+}
+
+.popup-felicitaciones {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup-contenido {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  width: 650px;
+  height: 300px;
+}
+
+.popup-contenido h2 {
+  margin: 0 0 10px 0;
+  font-size: 3rem;
+}
+
+.popup-contenido p {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+}
+
+.popup-contenido button.cerrar-popup {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color:  #2F6B3E;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.popup-contenido button.cerrar-popup:hover {
+  background-color:  #1d4527;
+}
+
+.lottie-container {
+  background-color:transparent; /* Cambia el color según tu preferencia */
+  padding: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+}
+.cargando-mensaje {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+}
+
+
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .guardarGlampingP-label {
+    width: 100%;
+  }
+  
+  .guardarGlampingP-formulario {
+    justify-content: center;
+  }
+}

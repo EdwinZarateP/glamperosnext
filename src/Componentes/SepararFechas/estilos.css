@@ -1,0 +1,71 @@
+/* Contenedor principal */
+.SepararFechas-contenedor {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  z-index: 10;
+  margin-bottom: 30px;
+}
+
+/* Fechas */
+.SepararFechas-fechas {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.SepararFechas-fecha {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Botón Reserva */
+.SepararFechas-botonReserva {
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  font-weight: bold;
+  color: #fff;
+  background-color: #2F6B3E;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.SepararFechas-botonReserva:hover {
+  background-color: #218838;
+
+}
+
+.SepararFechas-botonReserva-icono {
+  font-size: 1.2em;
+}
+
+.SepararFechas-contenedor p{
+  font-size: 0.8rem;
+  margin-bottom: 14px;
+}
+
+/* Clase para desactivar el scroll del cuerpo */
+.no-scroll {
+  overflow: hidden;
+}

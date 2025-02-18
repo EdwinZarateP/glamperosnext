@@ -1,0 +1,170 @@
+/* Contenedor principal con diseño flexible */
+.Paso2C-contenedor {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  width: auto;
+  margin: 0 auto;
+  box-sizing: border-box;
+  height: 90%;
+  width: 90%;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  gap: 20px;
+
+}
+
+/* Contenedor principal de imágenes */
+.Paso2C-seccionPrincipal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Espacio entre elementos */
+  width: 30%;
+  padding: 10px;
+  height: 100%;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.Paso2C-botonAgregar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 140px;
+  background-color: #f9f9f9;
+  border: 2px dashed #888;
+  color: #555;
+  border-radius: 8px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  padding: 10px;
+}
+
+.Paso2C-seccionDerecha-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre elementos */
+  width: 70%;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  height: 100%;
+
+}
+
+/* Contenedor general */
+.Paso2C-seccionDerecha {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor de la imagen principal */
+.Paso2C-principal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height:100%;
+  padding-right: 5px;
+}
+
+/* Imagen principal */
+.Paso2C-seccionDerecha.principal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  aspect-ratio: 1 / 0.5; 
+}
+
+/* Contenedor de las imágenes secundarias */
+.Paso2C-secundaria {
+  display: grid;
+  grid-template-columns:repeat(2, 1fr); 
+  justify-content: center;
+  width: 50%;
+  height: 100%;
+  gap: 5px;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  overflow: hidden;
+}
+
+/* Imágenes secundarias */
+.Paso2C-seccionDerecha.secundaria img {
+  width: 100%;
+  height:100%;
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 1 / 0.5; 
+}
+
+
+
+
+
+
+
+/* Estilización de imágenes dentro del contenedor principal */
+.Paso2C-imagenContenedor {
+  width: 150px;
+  height: 140px;
+  position: relative;
+}
+
+.Paso2C-imagenContenedor:hover {
+  transform: scale(1.05);
+}
+
+.Paso2C-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+  cursor: grab;
+
+}
+
+/* Botones con estilos amigables */
+.Paso2C-boton-eliminar {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.Paso2C-boton-eliminar:hover {
+  background-color: #c0392b;
+}
+
+/* Estilización para la sección dinámica de arrastrar imágenes */
+.Paso2C-seccionPrincipal .Paso2C-imagenContenedor.dragging {
+  opacity: 0.6;
+}
+
+.Paso2C-instrucciones {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #555;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  padding: 5px 10px;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+}

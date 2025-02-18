@@ -1,0 +1,140 @@
+/* Contenedor principal */
+.paso1d-contenedor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 700px;
+  width: 95%;
+  height: 80%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+}
+
+/* Título principal */
+.paso1d-contenedor h1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Secciones */
+.paso1d-seccion {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 16px 0;
+  width: 100%;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.paso1d-seccion:last-child {
+  border-bottom: none;
+}
+
+/* Títulos de las secciones */
+.paso1d-titulo h2 {
+  color: #000000;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.paso1d-titulo p {
+  color: #000000;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Controles de cantidad de huéspedes */
+.paso1d-controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.paso1d-boton {
+  background-color: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.paso1d-boton:hover {
+  background-color: #dcdfe1;
+}
+
+.paso1d-boton:active {
+  background-color: #bdc7c1;
+}
+
+.paso1d-boton:disabled {
+  background-color: #ecf0f1;
+  cursor: not-allowed;
+}
+
+/* Contador de huéspedes */
+.paso1d-contador {
+  font-size: 1.5rem;
+  color: #34495e;
+  font-weight: 500;
+}
+
+/* Botones de aceptación de mascotas */
+.paso1d-boton-toggle {
+  background-color: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  color: #34495e;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.paso1d-boton-toggle.activo {
+  background-color: #2F6B3E;
+  color: white;
+}
+
+.paso1d-boton-toggle:hover {
+  background-color: #dcdfe1;
+}
+
+.paso1d-boton-toggle:active {
+  background-color: #bdc3c7;
+}
+
+.paso1d-boton-toggle:disabled {
+  background-color: #2F6B3E;
+  cursor: not-allowed;
+}
+
+/* Responsividad */
+@media (max-width: 480px) {
+  .paso1d-contenedor {
+    width: 100%;
+    padding: 16px;
+  }
+
+  .paso1d-boton {
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+  }
+}

@@ -1,0 +1,67 @@
+.Paso2B-contenedor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: inherit;
+    padding: 20px;
+    width: 90%;
+    height: 100%;
+    margin: 0 auto;
+    text-align: center;
+    box-sizing: border-box;
+    overflow: hidden; 
+  
+  }
+  
+  .Paso2B-titulo {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .Paso2B-grid {
+    display: grid;
+    width: 80%;
+    height: 100%; /* Asegura que ocupe la altura disponible */
+    max-height: 60%; /* Limita la altura para que no se desborde */
+    grid-template-columns: repeat(5, 1fr); /* Máximo 3 columnas */
+    gap: 20px;
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  .Paso2B-opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #fff;
+  }
+  
+  .Paso2B-opcion:hover {
+    border-color: #303030;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .Paso2B-seleccionado {
+    border-color: #303030;
+    background-color: #d9f4df;
+  }
+  
+  .Paso2B-icono {
+    font-size: 3rem;
+    margin-bottom: 10px;
+  }
+  
+  .Paso2B-label {
+    font-size: 1rem;
+    color: #333;
+  }
+  

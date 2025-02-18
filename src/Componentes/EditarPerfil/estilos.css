@@ -1,0 +1,231 @@
+/* Estilos generales */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.editar-perfil-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2.editar-perfil-titulo {
+  text-align: center;
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Imagen de perfil */
+.editar-perfil-imagen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  
+  margin-bottom: 20px;
+}
+
+.editar-perfil-imagen-contenedor {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 120px;
+  background-color: #dcdcdc;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editar-perfil-imagen-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.editar-perfil-inicial {
+  font-size: 48px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.editar-perfil-boton-editar {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.editar-perfil-boton-editar:hover {
+  background-color: #333;
+}
+
+.editar-perfil-boton-guardar {
+  display: block;
+  margin: 0;
+  height: auto;
+  padding: 5px;
+  background-color: #666;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;  
+
+}
+
+.editar-perfil-boton-guardar:hover {
+  background-color: #444;
+}
+
+/* Información de perfil */
+.editar-perfil-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.editar-perfil-info-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.editar-perfil-info-item p {
+  color: #555;
+  font-size: 16px;
+}
+
+.editar-perfil-telefono-contenedor {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.editar-perfil-telefono-contenedor p {
+  margin: 0;
+  color: #555;
+  font-size: 16px;
+}
+
+.editar-perfil-select,
+.editar-perfil-input {
+  width: 150px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.editar-perfil-select {
+  background-color: #fff;
+}
+
+.editar-perfil-input {
+  background-color: #f9f9f9;
+}
+
+.editar-perfil-boton-editar-tel {
+  background-color: #ccc;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.editar-perfil-boton-editar-tel:hover {
+  background-color: #999;
+}
+
+/* Botón de continuar */
+.editar-perfil-boton-regresar {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px;
+  background-color: #666;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.editar-perfil-boton-regresar:hover {
+  background-color: #444;
+}
+
+/* Responsividad */
+@media screen and (max-width: 600px) {
+  .editar-perfil-container {
+    padding: 15px;
+  }
+
+  .editar-perfil-imagen-contenedor {
+    width: 100px;
+    height: 100px;
+  }
+
+  .editar-perfil-imagen-foto {
+    width: 100%;
+    height: 100%;
+  }
+
+  .editar-perfil-info-item p {
+    font-size: 14px;
+  }
+
+  .editar-perfil-boton-editar {
+    font-size: 14px;
+  }
+
+  .editar-perfil-boton-guardar {
+    font-size: 14px;
+    max-width: 180px;
+  }
+
+  .editar-perfil-telefono-contenedor {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .editar-perfil-select {
+    width: 150px;
+  }
+
+  .editar-perfil-input {
+    width: 150px;
+  }
+
+  .editar-perfil-boton-editar-tel {
+    font-size: 14px;
+  }
+
+  .editar-perfil-boton-regresar {
+    font-size: 14px;
+  }
+}

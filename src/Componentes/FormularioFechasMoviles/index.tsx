@@ -344,7 +344,7 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
       mascotas: encodeURIComponent(encryptData(mascotasRender.toString())),
     });
 
-    const nuevaUrl = `/ReservarPag?${queryParams.toString()}`;
+    const nuevaUrl = `/Reservar?${queryParams.toString()}`;
     setUrlActual(nuevaUrl);
     setRedirigirExplorado(true);
 

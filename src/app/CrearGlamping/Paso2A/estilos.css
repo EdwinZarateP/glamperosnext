@@ -1,0 +1,66 @@
+.Paso2A-contenedor {
+    font-family: inherit;
+    padding: 20px;
+    width: 90%;
+    height: 100%;
+    margin: 0;
+  }
+  
+  .Paso2A-contenido {
+    display: grid;
+    grid-template-columns: 60% 40%; /* Dos columnas: 60% para el texto, 40% para el video */
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+    height: 90%;
+  
+  }
+  
+  .Paso2A-texto {
+    padding: 10px;
+  }
+  
+  .Paso2A-titulo-secundario {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .Paso2A-titulo-principal {
+    font-size: 3rem;
+    margin: 10px 0;
+    color: #222;
+  }
+  
+  .Paso2A-descripcion {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  .Paso2A-video-contenedor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 100%;
+  }
+  
+  .Paso2A-video {
+    width: auto;
+    height: 100%;
+    border-radius: 15px;
+  }
+  
+  /* Responsivo para pantallas de hasta 900px */
+  @media (max-width: 900px) {
+    .Paso2A-contenido {
+      grid-template-columns: 1fr; /* Una sola columna para pantallas pequeñas */
+      gap: 10px;
+    }
+  
+    .Paso2A-texto, .Paso2A-video-contenedor {
+      width: 100%; /* Ambos ocupan el ancho completo */
+    }
+  }
+  

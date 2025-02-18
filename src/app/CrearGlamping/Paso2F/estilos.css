@@ -1,0 +1,111 @@
+.Paso2F-contenedor {
+  font-family: inherit;
+  padding: 20px;
+  max-width: 1200px; /* Máximo ancho para evitar expansión en pantallas grandes */
+  margin: 0 auto;
+  height: auto;
+}
+
+.Paso2F-contenido {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Ajuste a dos columnas flexibles para balancear el diseño */
+  gap: 20px;
+  align-items: start;
+  width: 100%;
+  height: auto;
+}
+
+.Paso2F-texto {
+  padding: 10px;
+}
+
+.Paso2F-titulo-secundario {
+  font-size: 1.5rem;
+  color: #555;
+}
+
+.Paso2F-titulo-principal {
+  font-size: 2.5rem;
+  margin: 10px 0;
+  color: #333;
+}
+
+.Paso2F-descripcion {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.8;
+}
+
+.Paso2F-input-contenedor {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; /* Corregido para alinear el contenedor correctamente */
+}
+
+.Paso2F-input {
+  width: 100%;
+  height: 200px; /* Altura ajustable para permitir múltiples líneas de texto */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 10px;
+  line-height: 1.5;
+  resize: auto; /* Permite redimensionar el área de texto por el usuario */
+  overflow: auto; /* Activa el scroll si el contenido excede la altura */
+  word-wrap: break-word; /* Rompe las palabras para evitar desbordamiento horizontal */
+  box-sizing: border-box;
+}
+
+.Paso2F-caracteres {
+  font-size: 0.9rem;
+  color: #555;
+  margin-top: 5px;
+  text-align: left;
+}
+
+/* Responsivo para pantallas más pequeñas */
+@media (max-width: 1024px) {
+  .Paso2F-contenido {
+    grid-template-columns: 1fr; /* Una sola columna para mejor navegación en pantallas pequeñas */
+    gap: 15px;
+  }
+
+  .Paso2F-titulo-principal {
+    font-size: 2rem;
+  }
+
+  .Paso2F-titulo-secundario {
+    font-size: 1.2rem;
+  }
+
+  .Paso2F-descripcion {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .Paso2F-titulo-principal {
+    font-size: 1.8rem;
+  }
+
+  .Paso2F-descripcion {
+    font-size: 0.8rem;
+  }
+
+  .Paso2F-texto,
+  .Paso2F-input-contenedor {
+    padding: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .Paso2F-titulo-principal {
+    font-size: 1.5rem;
+  }
+
+  .Paso2F-descripcion {
+    font-size: 0.7rem;
+  }
+}

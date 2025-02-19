@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import { GiCampingTent } from "react-icons/gi";
 import { ContextoApp } from "@/context/AppContext";
-import CalendarioGeneral from "@/Componentes/CalendarioGeneral";
+import CalendarioSecundario from "@/Componentes/CalendarioSecundario";
 import Visitantes from "../Visitantes";
 import viernesysabadosyfestivos from "@/Componentes/BaseFinesSemana/fds.json";
 import { calcularTarifaServicio } from "@/Funciones/calcularTarifaServicio";
@@ -535,9 +535,9 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
         </div>
       </div>
 
-      {/* Componente CalendarioGeneral */}
+      {/* Componente CalendarioSecundario */}
       {mostrarCalendario && (
-        <CalendarioGeneral cerrarCalendario={() => setMostrarCalendario(false)} />
+        <CalendarioSecundario cerrarCalendario={() => setMostrarCalendario(false)} />
       )}
 
       {/* Componente Visitantes */}

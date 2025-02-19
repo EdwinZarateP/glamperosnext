@@ -60,14 +60,13 @@ const ListadoConversaciones: React.FC = () => {
   const isMobile = useMediaQuery("(max-width: 900px)");
 
   useEffect(() => {
-    // Si el usuario no está autenticado, redirigir a la página de registro
     if (!idEmisor) {
       setActivarChat(true);
       setIdUrlConversacion(`/Mensajes?idUsuarioReceptor=${idUsuarioReceptorQuery}`);
       router.push("/RegistroPag");
       return;
     }
-
+  
     const obtenerConversaciones = async () => {
       try {
         const respuesta = await fetch(
@@ -75,7 +74,7 @@ const ListadoConversaciones: React.FC = () => {
         );
         if (!respuesta.ok) throw new Error("No tienes conversaciones.");
         const data: RespuestaConversaciones = await respuesta.json();
-
+  
         const conversacionesConDetalles = await Promise.all(
           data.conversaciones.map(async (conversacion) => {
             try {
@@ -91,37 +90,45 @@ const ListadoConversaciones: React.FC = () => {
             }
           })
         );
-
+  
         const conversacionesOrdenadas = conversacionesConDetalles.sort((a, b) => {
           return new Date(b.ultima_fecha).getTime() - new Date(a.ultima_fecha).getTime();
         });
-
+  
         setConversaciones(conversacionesOrdenadas);
-
-        // Solo abrir automáticamente en pantallas grandes o si hay un usuario en la URL
+  
         if (conversacionesOrdenadas.length > 0) {
-          const ultimaConversacion = conversacionesOrdenadas.find(c => c.contacto === idUsuarioReceptorQuery) || conversacionesOrdenadas[0];
+          // Determinar de forma síncrona si es móvil
+          const isMobileNow = typeof window !== "undefined" ? window.innerWidth < 900 : false;
           
-          setIdUsuarioReceptor(ultimaConversacion.contacto);
-          setNombreUsuarioChat(ultimaConversacion.nombre);
-          setFotoUsuarioChat(ultimaConversacion.foto);
+          // Solo se hace auto-selección si NO estamos en móvil
+          // o si ya existe un idUsuarioReceptorQuery (usuario ya seleccionó una conversación)
+          if (!isMobileNow || idUsuarioReceptorQuery) {
+            const ultimaConversacion =
+              conversacionesOrdenadas.find((c) => c.contacto === idUsuarioReceptorQuery) ||
+              conversacionesOrdenadas[0];
         
-          // Asegurar que la URL refleje la conversación seleccionada en caso de que no coincida
-          if (idUsuarioReceptorQuery !== ultimaConversacion.contacto) {
-            router.push(`/Mensajes?idUsuarioReceptor=${ultimaConversacion.contacto}`);
+            setIdUsuarioReceptor(ultimaConversacion.contacto);
+            setNombreUsuarioChat(ultimaConversacion.nombre);
+            setFotoUsuarioChat(ultimaConversacion.foto);
+        
+            // Redirigir automáticamente solo en escritorio
+            if (!isMobileNow && idUsuarioReceptorQuery !== ultimaConversacion.contacto) {
+              router.push(`/Mensajes?idUsuarioReceptor=${ultimaConversacion.contacto}`);
+            }
           }
-        }
-        
+        }        
+              
       } catch (e: any) {
         setError(e.message);
       } finally {
         setCargando(false);
       }
     };
-
+  
     obtenerConversaciones();
   }, [idEmisor, idUsuarioReceptorQuery, isMobile, setIdUsuarioReceptor, setNombreUsuarioChat, setFotoUsuarioChat, router]);
-
+  
   const manejarClick = (conversacion: Conversacion & Usuario) => {
     setIdUsuarioReceptor(conversacion.contacto);
     setNombreUsuarioChat(conversacion.nombre);

@@ -93,10 +93,6 @@
   border: none;
 }
 
-.CalendarioGeneral-dia:hover {
-  background: #eee;
-}
-
 /* Día vacío para alinear la cuadrícula */
 .CalendarioGeneral-dia-vacio {
   visibility: hidden;
@@ -151,3 +147,14 @@
   background: #dbe0dd;
   cursor: not-allowed;
 }
+
+
+
+/* Diseño responsive */
+@media (max-width: 900px) {
+  .CalendarioGeneral-titulo {
+    text-align: left;
+    font-size: 1rem;
+  }
+  }
+

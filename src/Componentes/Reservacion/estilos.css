@@ -10,7 +10,7 @@
 .Reservacion-card {
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: flex-start;
   background: white;
   padding: 20px;
   border-radius: 12px;
@@ -87,10 +87,8 @@
 }
 
 .Reservacion-factura h3 {
-  /* margin-bottom: 10px;*/
   font-size: 16px;
   font-weight: bold;
-
   margin: 0;
 }
 
@@ -108,12 +106,13 @@
   color: #2d6a4f;
 }
 
-/* Botón de confirmación */
+/* 🔘 Contenedor del botón y del Lottie */
 .Reservacion-boton-contenedor {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 20px;
 }
 
 /* 🎯 Botón principal */
@@ -134,8 +133,7 @@
   background-color: #255632;
 }
 
-
-
+/* 📃 Políticas de cancelación */
 .Reservacion-politicas {
   font-size: 14px;
   color: #6c757d;
@@ -145,7 +143,19 @@
   text-align: center;
 }
 
+/* 🎬 Contenedor del Lottie cuando se carga la reserva */
+.lottie-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
+.loading-text {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
 
 /* 📱 Diseño adaptable para móviles (menos de 900px) */
 @media (max-width: 900px) {
@@ -156,7 +166,6 @@
     padding: 15px;
   }
 
-  /* Imagen ocupa toda la pantalla */
   .Reservacion-imagen-container {
     width: 100%;
   }
@@ -167,7 +176,6 @@
     border-radius: 8px;
   }
 
-  /* Ajuste de la info superpuesta */
   .Reservacion-info-superpuesta {
     bottom: 5px;
     left: 5px;
@@ -182,7 +190,6 @@
     font-size: 14px;
   }
 
-  /* Ajuste de detalles */
   .Reservacion-detalles {
     width: 100%;
     padding: 0;
@@ -200,7 +207,6 @@
 
   .Reservacion-factura {
     font-size: 13px;
-    /* padding: 10px; */
   }
 
   .Reservacion-boton {

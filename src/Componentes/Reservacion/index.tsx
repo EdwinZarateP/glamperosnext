@@ -15,10 +15,34 @@ import { enviarWhatsAppPropietario } from "@/Funciones/enviarWhatsAppPropietario
 import InputTelefono from "@/Componentes/InputTelefono/index";
 import { ContextoApp } from "@/context/AppContext";
 import Politicas from "@/Componentes/Politica/index";
-import confetti from 'canvas-confetti'; 
+import confetti from "canvas-confetti";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
+import dynamic from "next/dynamic";
+import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";
+
+// ------------------------------------------------------------------------------------
+// Definición de tipos para Lottie y otros componentes
+// ------------------------------------------------------------------------------------
+interface MyLottieProps {
+  animationData: unknown;
+  loop?: boolean;
+  autoplay?: boolean;
+  style?: React.CSSProperties;
+}
+
+// Importación dinámica de Lottie para evitar problemas en SSR
+const Lottie = dynamic<MyLottieProps>(
+  () =>
+    import("lottie-react").then((mod) => {
+      // Forzamos el default a un componente tipado
+      return mod.default as React.ComponentType<MyLottieProps>;
+    }),
+  {
+    ssr: false,
+  }
+);
 
 interface Glamping {
   nombreGlamping: string;
@@ -39,58 +63,107 @@ interface Propietario {
   correoPropietario: string;
 }
 
+// ------------------------------------------------------------------------------------
+// Componente principal: Reservacion
+// ------------------------------------------------------------------------------------
 const Reservacion = () => {
+  // Contexto global de la aplicación
   const contexto = useContext(ContextoApp);
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  // Extraer datos desde Cookies
   const id_Cliente = Cookies.get("idUsuario");
-  const telefonoUsuarioCookie = Cookies.get('telefonoUsuario');
-  const nombreUsuarioCookie = Cookies.get('nombreUsuario');
+  const telefonoUsuarioCookie = Cookies.get("telefonoUsuario");
+  const nombreUsuarioCookie = Cookies.get("nombreUsuario");
+
+  // Estado para mostrar la animación Lottie durante la carga
+  const [loading, setLoading] = useState(false);
 
   if (!contexto) {
-    throw new Error("ContextoApp no está disponible. Asegúrate de envolver tu aplicación con <ProveedorVariables>");
+    throw new Error(
+      "ContextoApp no está disponible. Asegúrate de envolver tu aplicación con <ProveedorVariables>"
+    );
   }
 
-  // Extraemos los valores de query parameters y los desencriptamos
+  // ------------------------------------------------------------------------------------
+  // Extracción y desencriptación de los query parameters
+  // ------------------------------------------------------------------------------------
   const glampingId = searchParams.get("glampingId") ?? "";
-  const fechaInicioDesencriptada = searchParams.get("fechaInicio") ? decryptData(decodeURIComponent(searchParams.get("fechaInicio")!)) : "";
-  const fechaFinDesencriptada = searchParams.get("fechaFin") ? decryptData(decodeURIComponent(searchParams.get("fechaFin")!)) : "";
-  const totalFinalDesencriptado = searchParams.get("totalFinal") ? decryptData(decodeURIComponent(searchParams.get("totalFinal")!)) : "0";
-  const tarifaDesencriptada = searchParams.get("tarifa") ? decryptData(decodeURIComponent(searchParams.get("tarifa")!)) : "0";
-  const totalDiasDesencriptados = searchParams.get("totalDias") ? decryptData(decodeURIComponent(searchParams.get("totalDias")!)) : "0";
-  const adultosDesencriptados = searchParams.get("adultos") ? decryptData(decodeURIComponent(searchParams.get("adultos")!)) : "0";
-  const ninosDesencriptados = searchParams.get("ninos") ? decryptData(decodeURIComponent(searchParams.get("ninos")!)) : "0";
-  const bebesDesencriptados = searchParams.get("bebes") ? decryptData(decodeURIComponent(searchParams.get("bebes")!)) : "0";
-  const mascotasDesencriptadas = searchParams.get("mascotas") ? decryptData(decodeURIComponent(searchParams.get("mascotas")!)) : "0";
+  const fechaInicioDesencriptada = searchParams.get("fechaInicio")
+    ? decryptData(decodeURIComponent(searchParams.get("fechaInicio")!))
+    : "";
+  const fechaFinDesencriptada = searchParams.get("fechaFin")
+    ? decryptData(decodeURIComponent(searchParams.get("fechaFin")!))
+    : "";
+  const totalFinalDesencriptado = searchParams.get("totalFinal")
+    ? decryptData(decodeURIComponent(searchParams.get("totalFinal")!))
+    : "0";
+  const tarifaDesencriptada = searchParams.get("tarifa")
+    ? decryptData(decodeURIComponent(searchParams.get("tarifa")!))
+    : "0";
+  const totalDiasDesencriptados = searchParams.get("totalDias")
+    ? decryptData(decodeURIComponent(searchParams.get("totalDias")!))
+    : "0";
+  const adultosDesencriptados = searchParams.get("adultos")
+    ? decryptData(decodeURIComponent(searchParams.get("adultos")!))
+    : "0";
+  const ninosDesencriptados = searchParams.get("ninos")
+    ? decryptData(decodeURIComponent(searchParams.get("ninos")!))
+    : "0";
+  const bebesDesencriptados = searchParams.get("bebes")
+    ? decryptData(decodeURIComponent(searchParams.get("bebes")!))
+    : "0";
+  const mascotasDesencriptadas = searchParams.get("mascotas")
+    ? decryptData(decodeURIComponent(searchParams.get("mascotas")!))
+    : "0";
 
+  // Estados para almacenar la información de glamping y propietario
   const [glamping, setGlamping] = useState<Glamping | null>(null);
   const [propietario, setPropietario] = useState<Propietario | null>(null);
   const { verPolitica, setVerPolitica } = contexto;
 
+  // ------------------------------------------------------------------------------------
+  // Efecto para obtener los datos del glamping
+  // ------------------------------------------------------------------------------------
   useEffect(() => {
     const fetchGlamping = async () => {
       if (glampingId) {
-        const data: Glamping = await ObtenerGlampingPorId(glampingId);
-        setGlamping(data);
+        try {
+          const data: Glamping = await ObtenerGlampingPorId(glampingId);
+          setGlamping(data);
+        } catch (error) {
+          console.error("Error fetching glamping:", error);
+        }
       }
     };
     fetchGlamping();
   }, [glampingId]);
 
+  // ------------------------------------------------------------------------------------
+  // Efecto para obtener los datos del propietario del glamping
+  // ------------------------------------------------------------------------------------
   useEffect(() => {
     const fetchPropietario = async () => {
       if (glamping?.propietario_id) {
-        const data = await ObtenerUsuarioPorId(glamping.propietario_id);
-        setPropietario({
-          nombreDueno: data.nombre || "Usuario sin nombre",
-          whatsapp: data.telefono || "Usuario sin teléfono",
-          correoPropietario: data.email || "Usuario sin correo",
-        });
+        try {
+          const data = await ObtenerUsuarioPorId(glamping.propietario_id);
+          setPropietario({
+            nombreDueno: data.nombre || "Usuario sin nombre",
+            whatsapp: data.telefono || "Usuario sin teléfono",
+            correoPropietario: data.email || "Usuario sin correo",
+          });
+        } catch (error) {
+          console.error("Error fetching propietario:", error);
+        }
       }
     };
     fetchPropietario();
   }, [glamping]);
 
+  // ------------------------------------------------------------------------------------
+  // Función para formatear números a moneda COP
+  // ------------------------------------------------------------------------------------
   const formatoPesos = (valor: number): string => {
     return `${valor.toLocaleString("es-CO", {
       style: "currency",
@@ -99,33 +172,39 @@ const Reservacion = () => {
     })}`;
   };
 
+  // ------------------------------------------------------------------------------------
+  // Función para generar un rango de fechas (formato YYYY-MM-DD)
+  // ------------------------------------------------------------------------------------
   const generarFechasRango = (inicio: string, fin: string): string[] => {
     const fechas: string[] = [];
     let fechaActual = new Date(inicio);
     const fechaFin = new Date(fin);
 
     while (fechaActual <= fechaFin) {
-      fechas.push(fechaActual.toISOString().split("T")[0]); // Formato YYYY-MM-DD
+      fechas.push(fechaActual.toISOString().split("T")[0]);
       fechaActual.setDate(fechaActual.getDate() + 1);
     }
 
     return fechas;
   };
 
-  // Función para lanzar confetti (explosión)
+  // ------------------------------------------------------------------------------------
+  // Función para lanzar confetti (explosión de celebración)
+  // ------------------------------------------------------------------------------------
   const lanzarConfetti = () => {
     confetti.create(undefined, { resize: true, useWorker: true })({
       particleCount: 200,
       spread: 120,
       origin: { x: 0.5, y: 0.5 },
-      zIndex: 1001, // Asegúrate de usar un z-index alto
+      zIndex: 1001,
     });
   };
-  
-  const handleConfirmarReserva = async () => {
 
-    if (telefonoUsuarioCookie==="sintelefono") {
-      // Mostrar la alerta si no hay número de teléfono registrado
+  // ------------------------------------------------------------------------------------
+  // Función principal: Manejo de la confirmación de la reserva
+  // ------------------------------------------------------------------------------------
+  const handleConfirmarReserva = async () => {
+    if (telefonoUsuarioCookie === "sintelefono") {
       Swal.fire({
         title: "😳 Estas muy cerca",
         text: "Es necesario registrar tu número de WhatsApp para poder enviarte los detalles de tu reserva y compartir tu contacto con el anfitrión.",
@@ -140,110 +219,105 @@ const Reservacion = () => {
       return;
     }
 
-    // Obtener las fechas reservadas actuales del glamping
-    const fechasReservadas = await ObtenerFechasReservadas(glampingId);
+    setLoading(true);
 
-    // Generar las fechas del rango seleccionado por el usuario (sin incluir el día de salida)
-    const rangoSeleccionado = generarFechasRango(fechaInicioDesencriptada, fechaFinDesencriptada);
-    rangoSeleccionado.pop(); // Eliminar la última fecha (fecha de salida)
+    try {
+      const fechasReservadas = await ObtenerFechasReservadas(glampingId);
+      const rangoSeleccionado = generarFechasRango(fechaInicioDesencriptada, fechaFinDesencriptada);
+      rangoSeleccionado.pop();
 
-    // Verificar si alguna de las fechas en el rango ya está reservada
-    if (fechasReservadas && fechasReservadas.some(fecha => rangoSeleccionado.includes(fecha))) {
-      Swal.fire({
-        title: "Fecha no disponible",
-        text: `No se puede reservar las fechas del ${new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString(
-          "es-ES",
-          { day: "numeric", month: "short", year: "numeric" }
-        )} al ${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString(
-          "es-ES",
-          { day: "numeric", month: "short", year: "numeric" }
-        )} porque ya están reservadas.`,
-        icon: "error",
-        confirmButtonText: "Aceptar",
-      });      
-      return; // Detener la ejecución si alguna fecha está ocupada
-    }
+      if (fechasReservadas && fechasReservadas.some((fecha) => rangoSeleccionado.includes(fecha))) {
+        Swal.fire({
+          title: "Fecha no disponible",
+          text: `No se puede reservar las fechas del ${new Date(
+            `${fechaInicioDesencriptada}T12:00:00`
+          ).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })} al ${new Date(
+            `${fechaFinDesencriptada}T12:00:00`
+          ).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })} porque ya están reservadas.`,
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+        return;
+      }
 
-    // Si todas las fechas están disponibles, proceder con la reserva
-    const creacionReserva = await CrearReserva({
-      idCliente: id_Cliente ?? "sin id",
-      idPropietario: glamping.propietario_id ?? "Propietario no registrado",
-      idGlamping: glampingId,
-      ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
-      fechaInicio: new Date(fechaInicioDesencriptada),
-      fechaFin: new Date(fechaFinDesencriptada),
-      totalDiasNum: Number(totalDiasDesencriptados),
-      precioConTarifaNum: Number(totalFinalDesencriptado),
-      TarifaGlamperosNum: Number(tarifaDesencriptada),
-      adultosDesencriptados,
-      ninosDesencriptados,
-      bebesDesencriptados,
-      mascotasDesencriptadas,
-    });
-    
-    if (creacionReserva?.reserva) {
-      // Guardar las fechas reservadas en la base de datos
-      await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
-
-      // 🔹 **Enviar correo al propietario**
-      await enviarCorreoPropietario({
-        correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
-        nombre: propietario?.nombreDueno ?? "Propietario desconocido",
-        codigoReserva: creacionReserva.reserva.codigoReserva, 
+      const creacionReserva = await CrearReserva({
+        idCliente: id_Cliente ?? "sin id",
+        idPropietario: glamping.propietario_id ?? "Propietario no registrado",
+        idGlamping: glampingId,
+        ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
         fechaInicio: new Date(fechaInicioDesencriptada),
         fechaFin: new Date(fechaFinDesencriptada),
-        Cantidad_Adultos: Number(adultosDesencriptados),
-        Cantidad_Ninos: Number(ninosDesencriptados),
-        Cantidad_Mascotas: Number(mascotasDesencriptadas),
-        telefonoUsuario: telefonoUsuarioCookie ?? "sin teléfono",
-        correoUsuario: Cookies.get("correoUsuario") ?? "sin_correo@glamperos.com",
-        glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
+        totalDiasNum: Number(totalDiasDesencriptados),
+        precioConTarifaNum: Number(totalFinalDesencriptado),
+        TarifaGlamperosNum: Number(tarifaDesencriptada),
+        adultosDesencriptados,
+        ninosDesencriptados,
+        bebesDesencriptados,
+        mascotasDesencriptadas,
       });
 
-      // 🔹 **Enviar correo al Cliente**
-      await enviarCorreoCliente({      
-        correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
-        nombre: propietario?.nombreDueno ?? "Propietario desconocido",
-        codigoReserva: creacionReserva.reserva.codigoReserva, 
-        fechaInicio: new Date(fechaInicioDesencriptada),
-        fechaFin: new Date(fechaFinDesencriptada),
-        Cantidad_Adultos: Number(adultosDesencriptados),
-        Cantidad_Ninos: Number(ninosDesencriptados),
-        Cantidad_Mascotas: Number(mascotasDesencriptadas),
-        usuarioWhatsapp: telefonoUsuarioCookie ?? "sin teléfono",        
-        glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",    
-        latitud: Number(glamping?.ubicacion?.lat),
-        longitud: Number(glamping?.ubicacion?.lng),
-      });
-      
-      // 🔹 **Enviar WhatApp al Cliente**
-      await enviarWhatAppCliente({  
-        numero: telefonoUsuarioCookie ?? "sin teléfono",
-        codigoReserva: creacionReserva.reserva.codigoReserva,
-        whatsapp: propietario?.whatsapp ?? "Propietario sin telefono",
-        nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
-        direccionGlamping:  glamping.direccion ?? "Glamping sin direccion",
-        latitud: Number(glamping?.ubicacion?.lat),
-        longitud: Number(glamping?.ubicacion?.lng),
-        nombreCliente: (nombreUsuarioCookie ? nombreUsuarioCookie.split(' ')[0] : "Estimado(a)"),    
-      });
+      if (creacionReserva?.reserva) {
+        await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
 
-      // 🔹 **Enviar WhatApp al Propietario**
-      await enviarWhatsAppPropietario({
-        numero: propietario?.whatsapp ?? "sin teléfono",
-        nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
-        nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",      
-        fechaInicio: new Date(fechaInicioDesencriptada).toISOString().split("T")[0], 
-        fechaFin: new Date(fechaFinDesencriptada).toISOString().split("T")[0],
-      });
+        await enviarCorreoPropietario({
+          correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
+          nombre: propietario?.nombreDueno ?? "Propietario desconocido",
+          codigoReserva: creacionReserva.reserva.codigoReserva,
+          fechaInicio: new Date(fechaInicioDesencriptada),
+          fechaFin: new Date(fechaFinDesencriptada),
+          Cantidad_Adultos: Number(adultosDesencriptados),
+          Cantidad_Ninos: Number(ninosDesencriptados),
+          Cantidad_Mascotas: Number(mascotasDesencriptadas),
+          telefonoUsuario: telefonoUsuarioCookie ?? "sin teléfono",
+          correoUsuario: Cookies.get("correoUsuario") ?? "sin_correo@glamperos.com",
+          glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
+        });
+
+        await enviarCorreoCliente({
+          correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
+          nombre: propietario?.nombreDueno ?? "Propietario desconocido",
+          codigoReserva: creacionReserva.reserva.codigoReserva,
+          fechaInicio: new Date(fechaInicioDesencriptada),
+          fechaFin: new Date(fechaFinDesencriptada),
+          Cantidad_Adultos: Number(adultosDesencriptados),
+          Cantidad_Ninos: Number(ninosDesencriptados),
+          Cantidad_Mascotas: Number(mascotasDesencriptadas),
+          usuarioWhatsapp: telefonoUsuarioCookie ?? "sin teléfono",
+          glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
+          latitud: Number(glamping?.ubicacion?.lat),
+          longitud: Number(glamping?.ubicacion?.lng),
+        });
+
+        await enviarWhatAppCliente({
+          numero: telefonoUsuarioCookie ?? "sin teléfono",
+          codigoReserva: creacionReserva.reserva.codigoReserva,
+          whatsapp: propietario?.whatsapp ?? "Propietario sin telefono",
+          nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
+          direccionGlamping: glamping.direccion ?? "Glamping sin direccion",
+          latitud: Number(glamping?.ubicacion?.lat),
+          longitud: Number(glamping?.ubicacion?.lng),
+          nombreCliente: nombreUsuarioCookie ? nombreUsuarioCookie.split(" ")[0] : "Estimado(a)",
+        });
+
+        await enviarWhatsAppPropietario({
+          numero: propietario?.whatsapp ?? "sin teléfono",
+          nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
+          nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
+          fechaInicio: new Date(fechaInicioDesencriptada).toISOString().split("T")[0],
+          fechaFin: new Date(fechaFinDesencriptada).toISOString().split("T")[0],
+        });
+
         lanzarConfetti();
         router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
-
-    } else {
-      console.error("Error al procesar la reserva.");
+      } else {
+        console.error("Error al procesar la reserva.");
+      }
+    } catch (error) {
+      console.error("Error en la reserva:", error);
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
     <div className="Reservacion-contenedor">
@@ -251,7 +325,11 @@ const Reservacion = () => {
         <div className="Reservacion-card">
           <div className="Reservacion-imagen-container">
             <img
-              src={Array.isArray(glamping.imagenes) ? glamping.imagenes[0] ?? undefined : glamping.imagenes ?? undefined}
+              src={
+                Array.isArray(glamping.imagenes)
+                  ? glamping.imagenes[0] ?? undefined
+                  : glamping.imagenes ?? undefined
+              }
               alt={glamping.nombreGlamping}
               className="Reservacion-imagen"
             />
@@ -264,41 +342,76 @@ const Reservacion = () => {
           <div className="Reservacion-detalles">
             <div className="Reservacion-factura">
               <h3>Detalles de la Reserva</h3>
-              <p><strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado) / Number(totalDiasDesencriptados)))} / noche</strong></p>              
               <p>
-                {new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })} -{" "}
-                {new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
+                <strong>
+                  {formatoPesos(
+                    Math.round(
+                      Number(totalFinalDesencriptado) / Number(totalDiasDesencriptados)
+                    )
+                  )}{" "}
+                  / noche
+                </strong>
               </p>
               <p>
-                {adultosDesencriptados} Adultos, {ninosDesencriptados} Niños, {bebesDesencriptados} Bebés, {mascotasDesencriptadas} Mascotas
+                {new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString(
+                  "es-ES",
+                  { day: "numeric", month: "short", year: "numeric" }
+                )}{" "}
+                -{" "}
+                {new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString(
+                  "es-ES",
+                  { day: "numeric", month: "short", year: "numeric" }
+                )}
               </p>
-              <p>Tarifa de Glamperos: <strong>{formatoPesos(Math.round(Number(tarifaDesencriptada)))}</strong></p>
-              <p className="Reservacion-total">Total: <strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado)))}</strong></p>
+              <p>
+                {adultosDesencriptados} Adultos, {ninosDesencriptados} Niños,{" "}
+                {bebesDesencriptados} Bebés, {mascotasDesencriptadas} Mascotas
+              </p>
+              <p>
+                Tarifa de Glamperos:{" "}
+                <strong>{formatoPesos(Math.round(Number(tarifaDesencriptada)))}</strong>
+              </p>
+              <p className="Reservacion-total">
+                Total:{" "}
+                <strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado)))}</strong>
+              </p>
             </div>
 
             <div className="Reservacion-boton-contenedor">
-              <InputTelefono/>
-              <button className="Reservacion-boton" onClick={handleConfirmarReserva}>Confirmar y pagar</button>
+              {loading ? (
+                <div className="lottie-container">
+                  <Lottie
+                    animationData={animationData}
+                    loop={true}
+                    autoplay={true}
+                    style={{ height: 150, width: 150 }}
+                  />
+                  <p className="loading-text">Procesando tu reserva...</p>
+                </div>
+              ) : (
+                <>
+                  <InputTelefono />
+                  <button className="Reservacion-boton" onClick={handleConfirmarReserva}>
+                    Confirmar y pagar
+                  </button>
+                </>
+              )}
             </div>
-            
 
             <div className="Reservacion-politicas">
-              <span onClick={() => setVerPolitica(true)}>Ver Políticas de Cancelación</span>
+              <span onClick={() => setVerPolitica(true)}>
+                Ver Políticas de Cancelación
+              </span>
             </div>
           </div>
         </div>
       )}
-      
+
       {verPolitica && (
-        <Politicas diasCancelacion={glamping?.diasCancelacion ?? 5} fechaInicio={new Date(fechaInicioDesencriptada)} />
+        <Politicas
+          diasCancelacion={glamping?.diasCancelacion ?? 5}
+          fechaInicio={new Date(fechaInicioDesencriptada)}
+        />
       )}
     </div>
   );

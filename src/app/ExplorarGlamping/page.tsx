@@ -66,16 +66,12 @@ interface Glamping {
   diasCancelacion: number;
 }
 
-//  interface Ubicacion {
-//    lat: number;
-//    lng: number;
-//  }
-
 export default function ExplorarGlamping() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId") 
+
 
   const irAInicio = () => {
     window.scrollTo({ top: 0, behavior: "auto" });

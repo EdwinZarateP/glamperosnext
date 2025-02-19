@@ -88,8 +88,8 @@
   padding: 8px;
   cursor: pointer;
   text-align: center;
-  border-radius: 50%;
-  background: #ffffff;
+  border-radius: 7px;
+  background: #f9f9f9;
   border: none;
 }
 

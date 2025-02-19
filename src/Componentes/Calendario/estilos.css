@@ -103,7 +103,7 @@
 
 /* Rango de fechas seleccionado */
 .calendario-dia-rango {
-  background-color: rgba(47, 58, 107, 0.2); /* Fondo sombreado */
+  background-color: rgba(47, 107, 62, 0.2); /* Fondo sombreado */
   border: none; /* Sin borde en los días del rango */
 }
 

@@ -93,11 +93,13 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
 
     // Si tenemos fechaFinUrl válida, actualizar fechaFin en el contexto
     if (fechaFinUrl) {
-      const parsed = new Date(fechaFinUrl);
+      // Agregamos T00:00:00 para que el Date la interprete a medianoche local
+      const fechaConHora = `${fechaFinUrl}T00:00:00`;  
+      const parsed = new Date(fechaConHora);
       if (!isNaN(parsed.getTime())) {
         setFechaFin(parsed);
       }
-    }
+    }    
 
     // Asignar variables de huéspedes (con parseo a int)
     const adultos = parseInt(totalAdultosUrl || "1", 10);

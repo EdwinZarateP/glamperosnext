@@ -134,11 +134,10 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
 
   const esFechaSeleccionada = (fecha: Date): boolean => {
     if (fechaInicio && fechaFin) {
-      return fecha >= fechaInicio && fecha <= new Date(fechaFin.getTime() + 1000 * 60 * 60 * 24); 
+      return fecha >= fechaInicio && fecha <= fechaFin;
     }
     return fechaInicio?.toDateString() === fecha.toDateString();
   };
- 
 
   const esFechasSeparada = (fecha: Date): boolean => {
     return FechasSeparadas.some(

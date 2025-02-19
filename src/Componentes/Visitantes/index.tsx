@@ -185,7 +185,7 @@ const Visitantes: React.FC<VisitantesProps> = ({
 
         <div className="Visitantes-versiculo-contenedor">
           <Image
-            src="/imagenes/pareja.png"
+            src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/pareja.png"
             alt="Icono de amistad"
             className="Visitantes-icono-amistad"
             width={30}

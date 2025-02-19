@@ -59,7 +59,7 @@ export default function ImgExploradasIndividual({
   // Navegación a colección de imágenes
   const handleNavigate = () => {
     if (glampingId) {
-      router.push(`/ColeccionImagenes/${glampingId}`);
+      router.push(`/ColeccionImagenes?glampingId=${glampingId}`);
     }
   };
 

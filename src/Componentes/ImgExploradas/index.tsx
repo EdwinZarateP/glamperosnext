@@ -29,7 +29,7 @@ const ImgExploradas: React.FC<ImgExploradasProps> = ({
 
   const handleNavigate = () => {
     if (glampingId) {
-      router.push(`/ColeccionImagenes/${glampingId}`);
+      router.push(`/ColeccionImagenes?glampingId=${glampingId}`);
     }
   };
 

@@ -1,14 +1,14 @@
 "use client"; // Asegura que el componente solo se renderiza en el cliente
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation"; // Usar useParams en lugar de useRouter().query
+import { useSearchParams } from "next/navigation"; 
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping"; // Uso del alias "@"
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md";
 import "./estilos.css";
 
 function FotosCollage() {
-  const params = useParams(); // Obtener los parámetros de la URL
-  const glampingId = params?.glampingId as string; // Obtener el ID dinámico
+  const searchParams = useSearchParams(); // Obtener los parámetros de la URL
+  const glampingId = searchParams.get("glampingId") || ""; // Obtener el ID desde query params
 
   const [imagenes, setImagenes] = useState<string[]>([]);
   const [ciudadDepartamento, setCiudadDepartamento] = useState<string>("");

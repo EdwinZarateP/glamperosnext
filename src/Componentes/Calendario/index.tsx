@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import "./estilos.css";
 import { ContextoApp } from "@/context/AppContext";
-import Swal from "sweetalert2";  // Importar SweetAlert2
+import Swal from "sweetalert2";  
 import { useSearchParams } from "next/navigation";  // Importar useSearchParams
 
 interface CalendarioProps {

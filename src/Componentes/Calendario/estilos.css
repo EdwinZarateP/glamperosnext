@@ -89,44 +89,23 @@
   transition: background-color 0.3s ease, transform 0.3s ease, border 0.3s ease;
 }
 
-/* Efecto hover para mejorar usabilidad */
 .calendario-dia:hover {
   background-color: rgba(47, 107, 62, 0.1); /* Fondo verde claro */
   color: black;
 }
 
-/* 🔥 Fecha de inicio y fin en verde oscuro */
-.calendario-dia-inicio,
-.calendario-dia-fin {
-  background-color: #2F6B3E !important;
-  color: white !important;
-  font-weight: bold;
-  border: 2px solid #2F6B3E !important;
-  border-radius: 50%;
+/* Día seleccionado */
+.calendario-dia-seleccionado {
+  background-color: #2F6B3E;
+  color: white;
+  border: 2px solid #2F6B3E; /* Borde visible */
 }
 
-/* 🌿 Rango intermedio en verde más claro */
-/* 🌿 Rango intermedio en verde claro */
+/* Rango de fechas seleccionado */
 .calendario-dia-rango {
-  background-color: rgba(47, 107, 62, 0.3) !important;
-  color: black !important;
-  border-radius: 50%;
+  background-color: rgba(47, 58, 107, 0.2); /* Fondo sombreado */
+  border: none; /* Sin borde en los días del rango */
 }
-
-/* 🌱 Primer día del rango (más oscuro que el intermedio) */
-.calendario-dia-rango-inicio {
-  background-color: rgba(47, 107, 62, 0.5) !important;
-  color: black !important;
-  border-radius: 50%;
-}
-
-/* 🍃 Último día del rango (más oscuro que el intermedio) */
-.calendario-dia-rango-fin {
-  background-color: rgba(47, 107, 62, 0.5) !important;
-  color: black !important;
-  border-radius: 50%;
-}
-
 
 /* Día reservado */
 .calendario-dia-reservada {

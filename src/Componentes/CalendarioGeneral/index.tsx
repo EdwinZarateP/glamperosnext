@@ -2,22 +2,23 @@
 
 import React, { useContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";  // Importamos SweetAlert2
-import "./estilos.css";          // Mantén tu estilos.css al mismo nivel de este archivo
-import { ContextoApp } from "@/context/AppContext"; // Ajusta la ruta de tu contexto según tu proyecto
+import "./estilos.css";          // Asegúrate de que estilos.css esté al mismo nivel
+import { ContextoApp } from "@/context/AppContext"; 
 
-interface CalendarioGeneralProps {
+interface PropiedadesCalendarioGeneral {
   cerrarCalendario: () => void;
 }
 
-const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario }) => {
+const CalendarioGeneral: React.FC<PropiedadesCalendarioGeneral> = ({ cerrarCalendario }) => {
   const almacenVariables = useContext(ContextoApp);
 
   if (!almacenVariables) {
     throw new Error(
-      "El almacenVariables no está disponible. Asegúrate de envolver el componente en un proveedor de almacenVariables."
+      "El almacenVariables no está disponible. Asegúrate de envolver el componente en un proveedor de ContextoApp."
     );
   }
 
+  // Extraemos las variables de nuestro contexto
   const {
     fechaInicio,
     setFechaInicio,
@@ -32,17 +33,17 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
   const [mesesVisibles, setMesesVisibles] = useState<{ mes: number; anio: number }[]>([]);
 
   // Preparamos la fecha de hoy sin horas
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
+  const fechaHoy = new Date();
+  fechaHoy.setHours(0, 0, 0, 0);
 
-  // Generamos 18 meses a partir de hoy (puedes ajustar la cantidad)
+  // Generamos 18 meses a partir de hoy (puedes ajustar la cantidad que necesites)
   useEffect(() => {
-    const meses = [];
+    const mesesCalculados: { mes: number; anio: number }[] = [];
     for (let i = 0; i < 18; i++) {
-      const nuevoMes = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
-      meses.push({ mes: nuevoMes.getMonth(), anio: nuevoMes.getFullYear() });
+      const nuevoMes = new Date(fechaHoy.getFullYear(), fechaHoy.getMonth() + i, 1);
+      mesesCalculados.push({ mes: nuevoMes.getMonth(), anio: nuevoMes.getFullYear() });
     }
-    setMesesVisibles(meses);
+    setMesesVisibles(mesesCalculados);
   }, []);
 
   // Cálculo de días libres entre fechaInicio y fechaFin
@@ -55,16 +56,13 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
       if (FechasSeparadas.length > 0) {
         const diasReservadosEnRango: Date[] = [];
         for (let i = 0; i < dias; i++) {
-          const dia = new Date(
-            fechaInicio.getTime() + i * (1000 * 60 * 60 * 24)
-          );
+          const diaIterado = new Date(fechaInicio.getTime() + i * (1000 * 60 * 60 * 24));
           if (
             FechasSeparadas.some(
-              (fechaReservada) =>
-                fechaReservada.toDateString() === dia.toDateString()
+              (fechaReservada) => fechaReservada.toDateString() === diaIterado.toDateString()
             )
           ) {
-            diasReservadosEnRango.push(dia);
+            diasReservadosEnRango.push(diaIterado);
           }
         }
         dias -= diasReservadosEnRango.length;
@@ -77,7 +75,7 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
   }, [fechaInicio, fechaFin, FechasSeparadas, setTotalDias]);
 
   // Validación para evitar fecha de inicio posterior a fecha de fin
-  const validarFechas = () => {
+  const validarFechas = (): boolean => {
     if (fechaInicio && fechaFin) {
       if (fechaInicio.getTime() === fechaFin.getTime() || fechaInicio > fechaFin) {
         Swal.fire({
@@ -91,9 +89,9 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
     return true;
   };
 
-  // Función para marcar el clic en la fecha seleccionada
+  // Función para manejar el clic en una fecha
   const manejarClickFecha = (fecha: Date) => {
-    // Si está reservada, no hacemos nada
+    // Si la fecha está reservada, no hacemos nada
     if (esFechaReservada(fecha)) return;
 
     // Si no hay fechaInicio o ambas están definidas, reiniciamos el rango
@@ -102,12 +100,13 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
       setFechaFin(null);
     } else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
       const nuevaFechaFin = new Date(fecha);
-      // Evitar rango de un solo día igual al inicio
+
+      // Evitar que sea un solo día (mismo día) — opcional
       if (nuevaFechaFin.toDateString() === fechaInicio.toDateString()) {
         nuevaFechaFin.setDate(nuevaFechaFin.getDate() + 1);
       }
 
-      // Verificamos que no haya fechas reservadas en el rango
+      // Verificamos que no existan fechas reservadas en el rango seleccionado
       if (verificarRango(fechaInicio, nuevaFechaFin)) {
         setFechaFin(nuevaFechaFin);
       } else {
@@ -123,14 +122,14 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
     }
   };
 
-  // Borrar el rango de fechas
+  // Borrar el rango de fechas seleccionado
   const manejarBorrarFechas = () => {
     setFechaInicio(null);
     setFechaFin(null);
     setTotalDias(1);
   };
 
-  // Identificar si la fecha está seleccionada
+  // Determina si la fecha está dentro del rango seleccionado
   const esFechaSeleccionada = (fecha: Date): boolean => {
     if (fechaInicio && fechaFin) {
       return fecha >= fechaInicio && fecha <= fechaFin;
@@ -138,34 +137,30 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
     return fechaInicio?.toDateString() === fecha.toDateString();
   };
 
-  // Identificar si la fecha está reservada
+  // Determina si la fecha ya fue reservada
   const esFechaReservada = (fecha: Date): boolean => {
     return FechasSeparadas.length > 0
       ? FechasSeparadas.some(
-          (fechaReservada) =>
-            fecha.toDateString() === fechaReservada.toDateString()
+          (fechaReservada) => fecha.toDateString() === fechaReservada.toDateString()
         )
       : false;
   };
 
-  // Determinar si la fecha está deshabilitada (por ser anterior a hoy)
+  // Determina si la fecha está deshabilitada (por ser anterior o igual al día de hoy)
   const esFechaDeshabilitada = (fecha: Date): boolean => {
-    if (fecha <= hoy) {
-      return true;
-    }
-    return false;
+    return fecha <= fechaHoy;
   };
 
-  // Verificar que no haya fechas reservadas en un rango
+  // Verifica que en todo el rango (inicio - fin) no haya fechas reservadas
   const verificarRango = (inicio: Date, fin: Date): boolean => {
     const diferenciaTiempo = fin.getTime() - inicio.getTime();
     const totalDiasRango = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
 
     for (let i = 0; i <= totalDiasRango; i++) {
-      const dia = new Date(inicio.getTime() + i * (1000 * 60 * 60 * 24));
+      const diaEnRango = new Date(inicio.getTime() + i * (1000 * 60 * 60 * 24));
       if (
         FechasSeparadas.some(
-          (fechaReservada) => fechaReservada.toDateString() === dia.toDateString()
+          (fechaReservada) => fechaReservada.toDateString() === diaEnRango.toDateString()
         )
       ) {
         return false; // Hay una fecha reservada dentro del rango
@@ -174,13 +169,13 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
     return true; // El rango está libre
   };
 
-  // Renderizado de los encabezados de días (domingo, lunes, etc.)
+  // Renderizamos los encabezados de los días de la semana
   const renderizarEncabezadoDias = () => {
     const diasSemana = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"];
     return (
       <div className="CalendarioGeneral-dias-semana">
-        {diasSemana.map((dia, index) => (
-          <div key={index} className="CalendarioGeneral-dia-semana">
+        {diasSemana.map((dia, i) => (
+          <div key={i} className="CalendarioGeneral-dia-semana">
             {dia}
           </div>
         ))}
@@ -188,69 +183,81 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
     );
   };
 
-  // Renderizamos el calendario de un mes
+  // Renderizamos el calendario de un mes (cuadrícula de días)
   const renderizarCalendario = (mes: number, anio: number) => {
-    const dias = [];
-    const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
+    const diasEnMes = [];
+    const totalDias = new Date(anio, mes + 1, 0).getDate();
     const primerDiaDelMes = new Date(anio, mes, 1).getDay();
 
-    // Creamos espacios vacíos para alinear correctamente el calendario
+    // Espacios vacíos para alinear el calendario al primer día
     for (let i = 0; i < primerDiaDelMes; i++) {
-      dias.push(<div key={`vacio-${i}`} className="CalendarioGeneral-dia-vacio" />);
+      diasEnMes.push(
+        <div key={`vacio-${i}`} className="CalendarioGeneral-dia-vacio" />
+      );
     }
 
-    // Agregamos cada día del mes
-    for (let dia = 1; dia <= totalDiasMes; dia++) {
-      const fecha = new Date(anio, mes, dia);
-      const deshabilitada = esFechaDeshabilitada(fecha);
-      const reservada = esFechaReservada(fecha);
-      const seleccionado = esFechaSeleccionada(fecha);
+    // Creamos un botón por cada día del mes
+    for (let dia = 1; dia <= totalDias; dia++) {
+      const fechaDia = new Date(anio, mes, dia);
+      const estaDeshabilitada = esFechaDeshabilitada(fechaDia);
+      const estaReservada = esFechaReservada(fechaDia);
+      const estaSeleccionada = esFechaSeleccionada(fechaDia);
 
-      dias.push(
+      diasEnMes.push(
         <button
           key={dia}
-          className={`CalendarioGeneral-dia ${
-            deshabilitada ? "CalendarioGeneral-dia-deshabilitado" : ""
-          } ${reservada ? "CalendarioGeneral-dia-reservada" : ""} ${
-            seleccionado ? "CalendarioGeneral-dia-seleccionado" : ""
-          } ${
-            seleccionado && fechaInicio && fechaFin && fecha > fechaInicio && fecha < fechaFin
-              ? "CalendarioGeneral-dia-rango"
-              : ""
-          }`}
-          onClick={() => !deshabilitada && !reservada && manejarClickFecha(fecha)}
-          disabled={deshabilitada || reservada}
+          className={`CalendarioGeneral-dia
+            ${estaDeshabilitada ? "CalendarioGeneral-dia-deshabilitado" : ""}
+            ${estaReservada ? "CalendarioGeneral-dia-reservada" : ""}
+            ${estaSeleccionada ? "CalendarioGeneral-dia-seleccionado" : ""}
+            ${
+              // Si está seleccionado y entre fechaInicio y fechaFin
+              estaSeleccionada && fechaInicio && fechaFin && fechaDia > fechaInicio && fechaDia < fechaFin
+                ? "CalendarioGeneral-dia-rango"
+                : ""
+            }
+          `}
+          onClick={() => !estaDeshabilitada && !estaReservada && manejarClickFecha(fechaDia)}
+          disabled={estaDeshabilitada || estaReservada}
         >
           {dia}
         </button>
       );
     }
 
-    return dias;
+    return diasEnMes;
   };
 
   return (
     <>
-      {/* Fondo para oscurecer, se cierra al hacer click */}
-      <div className="CalendarioGeneral-fondo" onClick={cerrarCalendario}></div>
+      {/* Fondo para oscurecer: se cierra al hacer click en él */}
+      <div
+        className="CalendarioGeneral-fondo"
+        onClick={cerrarCalendario}
+      ></div>
 
-      {/* El contenedor principal del calendario */}
-      <div className="CalendarioGeneral">
-        <button className="CalendarioGeneral-cerrar" onClick={cerrarCalendario}>
+      {/* Contenedor principal del calendario */}
+      <div className="CalendarioGeneral-contenedor">
+        <button
+          className="CalendarioGeneral-boton-cerrar"
+          onClick={cerrarCalendario}
+        >
           ✖
         </button>
-        <h2 className="CalendarioGeneral-titulo">Elige la fecha de tu viaje</h2>
+        <h2 className="CalendarioGeneral-titulo">
+          Escoge tu viaje en el susurro del tiempo
+        </h2>
 
-        {/* Sección que contiene todos los meses visibles */}
+        {/* Muestra todos los meses generados */}
         <div className="CalendarioGeneral-meses">
-          {mesesVisibles.map(({ mes, anio }, index) => (
-            <div key={index} className="CalendarioGeneral-mes">
-              <h2>
+          {mesesVisibles.map(({ mes, anio }, idx) => (
+            <div key={idx} className="CalendarioGeneral-mes">
+              <h3 className="CalendarioGeneral-mes-titulo">
                 {new Date(anio, mes).toLocaleDateString("es-ES", {
                   month: "long",
                   year: "numeric",
                 })}
-              </h2>
+              </h3>
               {renderizarEncabezadoDias()}
               <div className="CalendarioGeneral-grid">
                 {renderizarCalendario(mes, anio)}
@@ -259,7 +266,7 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
           ))}
         </div>
 
-        {/* Botones para borrar o confirmar fechas */}
+        {/* Botones finales */}
         <div className="CalendarioGeneral-botones">
           <button
             onClick={manejarBorrarFechas}
@@ -275,7 +282,7 @@ const CalendarioGeneral: React.FC<CalendarioGeneralProps> = ({ cerrarCalendario 
                 setFechaFinConfirmado(fechaFin);
               }
             }}
-            className="CalendarioGeneral-boton-siguiente"
+            className="CalendarioGeneral-boton-confirmar"
             disabled={!fechaInicio || !fechaFin}
           >
             Confirmar fechas

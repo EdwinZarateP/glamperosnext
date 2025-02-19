@@ -1,209 +1,153 @@
-/* Fondo opaco */
+/* Fondo semitransparente que oscurece el fondo al abrir el calendario */
 .CalendarioGeneral-fondo {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-  
-  /* Contenedor principal del calendario */
-  .CalendarioGeneral {
-    position: fixed;
-    top: 5%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    max-width: 450px;
-    min-width: 340px;
-    height: 90%;
-    padding: 20px;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    z-index: 1001;
-    border-radius: 12px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-  }
-  
-  @media (min-width: 600px) {
-    .CalendarioGeneral {
-      min-width: 340px; /* Cambiado a 450px */
-    }
-  }
-  
-  /* Título principal */
-  .CalendarioGeneral-titulo {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #2F6B3E;
-    text-align: left;
-    margin-left: 16px;
-    margin-bottom: 16px;
-  }
-  
-  /* Botón cerrar */
-  .CalendarioGeneral-cerrar {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #555;
-    cursor: pointer;
-    align-self: flex-end;
-    margin: 16px;
-  }
-  
-  /* Meses en lista */
-  .CalendarioGeneral-meses {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-  }
-  
-  .CalendarioGeneral-mes {
-    margin-bottom: 32px;
-  }
-  
-  /* Encabezados de los días de la semana */
-  .CalendarioGeneral-dias-semana {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 8px;
-    text-align: center;
-  }
-  
-  .CalendarioGeneral-dia-semana {
-    text-align: center;
-    font-weight: bold;
-    color: #2F6B3E;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-  }
-  
-  /* Contenedor de los días */
-  .CalendarioGeneral-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    justify-items: center;
-    align-items: center;
-  }
-  
-  /* Botones de los días (por defecto) */
-  .CalendarioGeneral-dia {
-    color: black;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: transparent;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    border: none;
-  }
-  
-  .CalendarioGeneral-dia:hover {
-    background: rgba(0, 0, 0, 0.01);
-    color: black;
-  }
-  
-  /* Día seleccionado */
-  .CalendarioGeneral-dia-seleccionado {
-    background: #2F6B3E;
-    color: white;
-    border: 2px solid #2F6B3E;
-  }
-  
-  /* Rango de fechas seleccionado */
-  .CalendarioGeneral-dia-rango {
-    background: rgba(47, 107, 62, 0.2);
-    border: none;
-  }
-  
-  /* Día reservado */
-  .CalendarioGeneral-dia-reservada {
-    background: transparent;
-    color: #bbb;
-    cursor: not-allowed;
-    text-decoration: line-through;
-    border: none;
-  }
-  
-  /* Día deshabilitado */
-  .CalendarioGeneral-dia-deshabilitado {
-    color: #bbb;
-    background: transparent;
-    text-decoration: line-through;
-    cursor: not-allowed;
-  }
-  
-  /* Días vacíos */
-  .CalendarioGeneral-dia-vacio {
-    visibility: hidden;
-  }
-  
-  /* Botones inferiores */
-  .CalendarioGeneral-botones {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px;
-    background: white;
-    border-top: 1px solid #ddd;
-    position: sticky;
-    bottom: 0;
-    z-index: 1001;
-  }
-  
-  .CalendarioGeneral-boton-borrar,
-  .CalendarioGeneral-boton-siguiente {
-    flex: 1;
-    margin: 0 8px;
-    padding: 12px;
-    background: #2F6B3E;
-    color: white;
-    border: none;
-    border-radius: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .CalendarioGeneral-boton-borrar {
-    background: #bbb;
-  }
-  
-  .CalendarioGeneral-boton-borrar:hover {
-    background: #aaa;
-  }
-  
-  .CalendarioGeneral-boton-siguiente:hover {
-    background: #347f47;
-  }
-  
-  /* Botón deshabilitado */
-  .CalendarioGeneral-boton-siguiente:disabled {
-    background: #bbb;
-    color: #fff;
-    cursor: not-allowed;
-  }
-  
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
 
-    
-  /* ============================
-     Responsividad
-  ============================ */
-  @media (max-width: 900px) {
-    .CalendarioGeneral {
-      padding: 0;
-    }
-  }
-  
+/* Contenedor principal del calendario */
+.CalendarioGeneral-contenedor {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  z-index: 1000;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.CalendarioGeneral-boton-cerrar {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  float: right;
+}
+
+.CalendarioGeneral-titulo {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+/* Sección que agrupa todos los meses */
+.CalendarioGeneral-meses {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* Encapsula un mes completo */
+.CalendarioGeneral-mes {
+  margin: 10px;
+  border: 1px solid #e2e2e2;
+  padding: 10px;
+  border-radius: 4px;
+  width: 280px;
+}
+
+.CalendarioGeneral-mes-titulo {
+  text-transform: capitalize;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Encabezado de días (Do, Lu, Ma, etc.) */
+.CalendarioGeneral-dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.CalendarioGeneral-dia-semana {
+  padding: 5px 0;
+}
+
+/* Contenedor grid para los días de un mes */
+.CalendarioGeneral-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+/* Cada cuadro/día */
+.CalendarioGeneral-dia {
+  width: 100%;
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+}
+
+.CalendarioGeneral-dia:hover {
+  background: #eee;
+}
+
+/* Día vacío para alinear la cuadrícula */
+.CalendarioGeneral-dia-vacio {
+  visibility: hidden;
+}
+
+/* Estados especiales de cada día */
+.CalendarioGeneral-dia-deshabilitado {
+  background: #ddd;
+  cursor: not-allowed;
+}
+
+.CalendarioGeneral-dia-reservada {
+  background: #ffcccc;
+  cursor: not-allowed;
+}
+
+.CalendarioGeneral-dia-seleccionado {
+  background: #8ade8f;
+  font-weight: bold;
+}
+
+/* Cuando está dentro del rango y no es la fechaInicio ni fechaFin exacta */
+.CalendarioGeneral-dia-rango {
+  background: #b2ebc2;
+}
+
+/* Botones finales */
+.CalendarioGeneral-botones {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.CalendarioGeneral-boton-borrar,
+.CalendarioGeneral-boton-confirmar {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.CalendarioGeneral-boton-borrar {
+  background: #ccc;
+}
+
+.CalendarioGeneral-boton-confirmar {
+  background: #2F6B3E;
+  color: #ffffff;
+}
+
+.CalendarioGeneral-boton-confirmar:disabled {
+  background: #dbe0dd;
+  cursor: not-allowed;
+}

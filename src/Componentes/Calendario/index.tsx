@@ -1,9 +1,9 @@
-"use client"; // Asegura que el componente solo se renderiza en el cliente
-
+"use client";
 import React, { useContext, useState, useEffect } from "react";
-import { ContextoApp } from "@/context/AppContext";
-import Swal from "sweetalert2";
 import "./estilos.css";
+import { ContextoApp } from "@/context/AppContext";
+import Swal from "sweetalert2";  // Importar SweetAlert2
+import { useSearchParams } from "next/navigation";  // Importar useSearchParams
 
 interface CalendarioProps {
   nombreGlamping: string;
@@ -14,7 +14,7 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
 
   if (!almacenVariables) {
     throw new Error(
-      "El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto."
+      "El almacenVariables no está disponible. Asegúrate de envolver el componente en un proveedor de almacenVariables."
     );
   }
 
@@ -29,49 +29,91 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
 
+  // Fecha límite definida (por ejemplo, un año a partir de hoy)
   const fechaLimite = new Date(hoy);
   fechaLimite.setFullYear(fechaLimite.getFullYear() + 1);
 
+  // Hook para obtener parámetros de la URL
+  const searchParams = useSearchParams();
+
   useEffect(() => {
+    // Si los estados aún no tienen fechas, revisamos si hay algo en query params
+    const paramStart = searchParams.get("start");
+    const paramEnd = searchParams.get("end");
+
+    if (!fechaInicio && paramStart) {
+      setFechaInicio(new Date(paramStart));
+    }
+    if (!fechaFin && paramEnd) {
+      setFechaFin(new Date(paramEnd));
+    }
+
+    // Resto de lógica para actualizar total de días
     if (fechaInicio && fechaFin) {
       let diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
       let dias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
+      
+      const diasReservadosEnRango = [];
+      for (let i = 0; i < dias; i++) {
+        const dia = new Date(fechaInicio.getTime() + i * (1000 * 60 * 60 * 24));
+        if (
+          FechasSeparadas.some(
+            (FechasSeparada) => FechasSeparada.toDateString() === dia.toDateString()
+          )
+        ) {
+          diasReservadosEnRango.push(dia);
+        }
+      }
+      dias -= diasReservadosEnRango.length;
 
-      const diasReservadosEnRango = FechasSeparadas.filter(
-        (reserva) => reserva >= fechaInicio && reserva <= fechaFin
-      ).length;
-
-      setTotalDias(dias - diasReservadosEnRango);
+      setTotalDias(dias);
     } else {
       setTotalDias(1);
     }
-  }, [fechaInicio, fechaFin, FechasSeparadas, setTotalDias]);
+  }, [fechaInicio, fechaFin, FechasSeparadas, setTotalDias, setFechaInicio, setFechaFin, searchParams]);
 
-  const formatearFecha = (fecha: Date): string =>
-    fecha.toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
+  const formatearFecha = (fecha: Date): string => {
+    const opciones: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    };
+    return new Intl.DateTimeFormat("es-ES", opciones).format(fecha);
+  };
 
   const manejarClickFecha = (fecha: Date) => {
     if (!fechaInicio || (fechaInicio && fechaFin)) {
       setFechaInicio(fecha);
       setFechaFin(null);
     } else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
+      // Si la fecha seleccionada es igual a fechaInicio, sumamos un día
       let nuevaFechaFin = new Date(fecha);
       if (nuevaFechaFin.toDateString() === fechaInicio.toDateString()) {
         nuevaFechaFin.setDate(nuevaFechaFin.getDate() + 1);
       }
-
-      const fechasEnRango = FechasSeparadas.filter(
-        (reserva) => reserva >= fechaInicio && reserva <= nuevaFechaFin
-      );
-
+  
+      // Comprobar si hay fechas reservadas dentro del rango
+      const fechasEnRango = [];
+      let dia = fechaInicio;
+      while (dia <= nuevaFechaFin) {
+        if (
+          FechasSeparadas.some(
+            (reserva) => reserva.toDateString() === dia.toDateString()
+          )
+        ) {
+          fechasEnRango.push(dia);
+        }
+        dia = new Date(dia.getTime() + 1000 * 60 * 60 * 24); // Avanzar un día
+      }
+  
       if (fechasEnRango.length > 0) {
         Swal.fire({
-          title: "Fechas reservadas",
+          title: 'Fechas reservadas',
           text: `El rango seleccionado tiene fechas reservadas: ${fechasEnRango
             .map((d) => formatearFecha(d))
             .join(", ")}`,
-          icon: "error",
-          confirmButtonText: "Aceptar",
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
         });
       } else {
         setFechaFin(nuevaFechaFin);
@@ -92,15 +134,72 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
 
   const esFechaSeleccionada = (fecha: Date): boolean => {
     if (fechaInicio && fechaFin) {
-      return fecha >= fechaInicio && fecha <= fechaFin;
+      return fecha >= fechaInicio && fecha <= new Date(fechaFin.getTime() + 1000 * 60 * 60 * 24); 
     }
     return fechaInicio?.toDateString() === fecha.toDateString();
   };
+ 
 
-  const esFechaReservada = (fecha: Date): boolean =>
-    FechasSeparadas.some((reserva) => fecha.toDateString() === reserva.toDateString());
+  const esFechasSeparada = (fecha: Date): boolean => {
+    return FechasSeparadas.some(
+      (FechasSeparada) => fecha.toDateString() === FechasSeparada.toDateString()
+    );
+  };
 
-  const esFechaDeshabilitada = (fecha: Date): boolean => fecha <= hoy || fecha > fechaLimite;
+  const esFechaDeshabilitada = (fecha: Date): boolean => {
+    return fecha <= hoy || fecha > fechaLimite;
+  };
+
+  const renderizarEncabezadoDias = () => {
+    const diasSemana = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"];
+    return (
+      <div className="calendario-dias-semana">
+        {diasSemana.map((dia, index) => (
+          <div key={index} className="calendario-dia-semana">
+            {dia}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderizarCalendario = (mes: number, anio: number) => {
+    const dias = [];
+    const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
+    const primerDiaDelMes = new Date(anio, mes, 1).getDay();
+
+    for (let i = 0; i < primerDiaDelMes; i++) {
+      dias.push(
+        <div key={`vacio-${i}`} className="calendario-dia calendario-dia-vacio"></div>
+      );
+    }
+
+    for (let dia = 1; dia <= totalDiasMes; dia++) {
+      const fecha = new Date(anio, mes, dia);
+      const deshabilitada = esFechaDeshabilitada(fecha);
+      const reservada = esFechasSeparada(fecha);
+      const seleccionado = esFechaSeleccionada(fecha);
+
+      dias.push(
+        <button
+          key={dia}
+          className={`calendario-dia ${
+            seleccionado ? "calendario-dia-seleccionado" : ""
+          } ${reservada ? "calendario-dia-reservada" : ""} ${
+            seleccionado && fechaInicio && fechaFin && fecha > fechaInicio && fecha < fechaFin
+              ? "calendario-dia-rango"
+              : ""
+          }`}
+          onClick={() => !deshabilitada && !reservada && manejarClickFecha(fecha)}
+          disabled={deshabilitada || reservada}
+        >
+          {dia}
+        </button>
+      );
+    }
+
+    return dias;
+  };
 
   const manejarMesAnterior = () => {
     if (mesActual === 0) {
@@ -120,106 +219,59 @@ const Calendario: React.FC<CalendarioProps> = ({ nombreGlamping }) => {
     }
   };
 
-  const obtenerNombreMes = (mes: number) => [
-    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-  ][mes];
-
-  const renderizarEncabezadoDias = () => (
-    <div className="calendario-dias-semana">
-      {["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"].map((dia, index) => (
-        <div key={index} className="calendario-dia-semana">
-          {dia}
-        </div>
-      ))}
-    </div>
-  );
-
-  const renderizarCalendario = (mes: number, anio: number) => {
-    const dias = [];
-    const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
-    const primerDiaDelMes = new Date(anio, mes, 1).getDay();
-
-    for (let i = 0; i < primerDiaDelMes; i++) {
-      dias.push(<div key={`vacio-${i}`} className="calendario-dia-vacio"></div>);
-    }
-
-    for (let dia = 1; dia <= totalDiasMes; dia++) {
-      const fecha = new Date(anio, mes, dia);
-      const deshabilitada = esFechaDeshabilitada(fecha);
-      const reservada = esFechaReservada(fecha);
-      const seleccionado = esFechaSeleccionada(fecha);
-
-      // Definir clases dinámicas
-      let clases = "calendario-dia";
-
-      if (seleccionado) {
-        if (fechaInicio && fechaFin) {
-          const fechaStr = fecha.toDateString();
-          const inicioStr = fechaInicio.toDateString();
-          const finStr = fechaFin.toDateString();
-          
-          if (fechaStr === inicioStr) {
-            clases += " calendario-dia-inicio"; // Fecha de inicio (verde oscuro)
-          } else if (fechaStr === finStr) {
-            clases += " calendario-dia-fin"; // Fecha de fin (verde oscuro)
-          } else if (fecha > fechaInicio && fecha < fechaFin) {
-            // Detectar primer y último día del rango para sombrearlos más oscuro
-            if (fecha.toDateString() === new Date(fechaInicio.getTime() + 86400000).toDateString()) {
-              clases += " calendario-dia-rango-inicio"; // Primer día del rango (más oscuro)
-            } else if (fecha.toDateString() === new Date(fechaFin.getTime() - 86400000).toDateString()) {
-              clases += " calendario-dia-rango-fin";
-            } else {
-              clases += " calendario-dia-rango"; // Rango intermedio (verde más claro)
-            }
-          }
-        } else {
-          clases += " calendario-dia-inicio"; // Si solo hay una fecha seleccionada
-        }
-      }
-
-      if (reservada) clases += " calendario-dia-reservada";
-      if (deshabilitada) clases += " calendario-dia-deshabilitada";
-
-      dias.push(
-        <button
-          key={dia}
-          className={clases}
-          onClick={() => !deshabilitada && !reservada && manejarClickFecha(fecha)}
-          disabled={deshabilitada || reservada}
-        >
-          {dia}
-        </button>
-      );
-    }
-
-    return dias;
-};
-
-  
+  const obtenerNombreMes = (mes: number) =>
+    [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ][mes];
 
   return (
     <div className="calendario">
       <h1>{nombreGlamping}</h1>
       <h2 className="calendario-subtitulo">
         {fechaInicio && fechaFin
-          ? `${formatearFecha(fechaInicio)} - ${formatearFecha(fechaFin)} (${totalDias} noche${totalDias === 1 ? "" : "s"})`
+          ? `${formatearFecha(fechaInicio)} - ${formatearFecha(fechaFin)} (${totalDias} noche${
+              totalDias === 1 ? "" : "s"
+            })`
           : "Selecciona tus fechas"}
       </h2>
       <div className="calendario-encabezado">
-        <button onClick={manejarMesAnterior}className="calendario-navegacion">&lt;</button>
-        <button onClick={manejarMesSiguiente}className="calendario-navegacion">&gt;</button>
+        <button onClick={manejarMesAnterior} className="calendario-navegacion">
+          &lt;
+        </button>
+        <button onClick={manejarMesSiguiente} className="calendario-navegacion">
+          &gt;
+        </button>
       </div>
       <div className="calendario-columnas">
         <div className="calendario-columna">
           <h2>{`${obtenerNombreMes(mesActual)} ${anioActual}`}</h2>
           {renderizarEncabezadoDias()}
-          <div className="calendario-grid">{renderizarCalendario(mesActual, anioActual)}</div>
+          <div className="calendario-grid">
+            {renderizarCalendario(mesActual, anioActual)}
+          </div>
         </div>
         <div className="calendario-columna">
-          <h2>{`${obtenerNombreMes((mesActual + 1) % 12)} ${mesActual === 11 ? anioActual + 1 : anioActual}`}</h2>
+          <h2>{`${obtenerNombreMes((mesActual + 1) % 12)} ${
+            mesActual === 11 ? anioActual + 1 : anioActual
+          }`}</h2>
           {renderizarEncabezadoDias()}
-          <div className="calendario-grid">{renderizarCalendario((mesActual + 1) % 12, mesActual === 11 ? anioActual + 1 : anioActual)}</div>
+          <div className="calendario-grid">
+            {renderizarCalendario(
+              (mesActual + 1) % 12,
+              mesActual === 11 ? anioActual + 1 : anioActual
+            )}
+          </div>
         </div>
       </div>
       <div className="calendario-boton-borrar">

@@ -121,6 +121,10 @@ const Tarjeta: React.FC<TarjetaProps> = ({
 
     try {
       const nuevoEstado = !esFavorito;
+      // Aquí se inserta el "pop" que da vida al clic, como el latido de un corazón:
+      // const audio = new Audio("https://freesound.org/people/Vilkas_Sound/sounds/463390/");      
+      const audio = new Audio("/Sonidos/Favorito.mp3")
+      audio.play();
       setEsFavorito(nuevoEstado);
       onFavoritoChange(nuevoEstado);
 

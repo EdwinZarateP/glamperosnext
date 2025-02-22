@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useContext } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { ContextoApp } from "@/context/AppContext";
 import Tarjeta from "@/Componentes/Tarjeta/index";
 import { precioConRecargo } from "@/Funciones/precioConRecargo";
@@ -32,7 +32,7 @@ interface GlampingData {
 }
 
 const ContenedorTarjetas: React.FC = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const almacenVariables = useContext(ContextoApp);
 
   if (!almacenVariables) {
@@ -84,11 +84,11 @@ const ContenedorTarjetas: React.FC = () => {
   const [isInitialLanding, setIsInitialLanding] = useState<boolean>(false);
 
   // Función para saber si un glamping está entre los favoritos
-  const esFavorito = (glampingId: string, favoritos: string[] = []): boolean => {
-    return Array.isArray(favoritos) && favoritos.includes(glampingId);
+  const esFavorito = (glampingId: string, favs: string[] = []): boolean => {
+    return Array.isArray(favs) && favs.includes(glampingId);
   };
 
-  // Al montar el componente, hacer scroll al tope y determinar si la URL es limpia
+  // Al montar el componente, hacer scroll al tope y determinar si la URL está limpia
   useEffect(() => {
     window.scrollTo(0, 0);
     const searchParams = new URLSearchParams(window.location.search);
@@ -147,30 +147,7 @@ const ContenedorTarjetas: React.FC = () => {
             ...prev,
             cordenadasFilter: { LATITUD: latitude, LONGITUD: longitude },
           }));
-          // Solo actualizamos la URL si no es el landing inicial
-          if (!isInitialLanding) {
-            const queryParams = new URLSearchParams();
-            if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
-              queryParams.append(
-                "precio",
-                `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
-              );
-            }
-            queryParams.append("ubicacion", `${latitude},${longitude}`);
-            if (fechaInicio) {
-              queryParams.append(
-                "fechaInicio",
-                new Date(fechaInicio).toISOString().split("T")[0]
-              );
-            }
-            if (fechaFin) {
-              queryParams.append(
-                "fechaFin",
-                new Date(fechaFin).toISOString().split("T")[0]
-              );
-            }
-            router.push(`/?${queryParams.toString()}`);
-          }
+          // Aquí ya se organiza la lista según la ubicación, pero no actualizamos la URL.
         },
         (error) => {
           console.error("Error al obtener la ubicación:", error);
@@ -179,7 +156,7 @@ const ContenedorTarjetas: React.FC = () => {
     } else {
       console.error("La geolocalización no es soportada por este navegador");
     }
-  }, [setFiltros, router, filtros?.precioFilter, fechaInicio, fechaFin, isInitialLanding]);
+  }, [setFiltros, filtros?.precioFilter, fechaInicio, fechaFin, isInitialLanding]);
 
   // Función para obtener datos de glampings de la API
   const fetchDataFromAPI = useCallback(async (page = 1, limit = 18) => {
@@ -236,7 +213,7 @@ const ContenedorTarjetas: React.FC = () => {
     }
   }, []);
 
-  // Obtener los glampings ya sea desde sessionStorage o de la API
+  // Obtener los glampings desde sessionStorage o la API
   useEffect(() => {
     const fetchGlampings = async () => {
       const storedData = sessionStorage.getItem("glampingsData");
@@ -254,6 +231,7 @@ const ContenedorTarjetas: React.FC = () => {
         await fetchDataFromAPI(page);
       }
     };
+
     fetchGlampings();
   }, [page, fetchDataFromAPI]);
 
@@ -265,7 +243,7 @@ const ContenedorTarjetas: React.FC = () => {
     }
   }, [loading, page, fetchDataFromAPI]);
 
-  // Manejar evento scroll para carga infinita
+  // Manejar scroll para carga infinita
   const handleScroll = useCallback(() => {
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
@@ -280,52 +258,20 @@ const ContenedorTarjetas: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // Actualización de la URL según los filtros (para SEO y compartición)
+  // En este efecto, originalmente se actualizaba la URL con query params; lo removemos para volver al estado original.
   useEffect(() => {
     console.log("Filtros actualizados:", filtros);
-    const queryParams = new URLSearchParams();
-    // Si es landing inicial y la URL está limpia, no actualizamos
-    if (isInitialLanding && !window.location.search) {
-      return;
-    }
-    if (
-      filtros?.cordenadasFilter?.LATITUD !== undefined &&
-      filtros?.cordenadasFilter?.LONGITUD !== undefined
-    ) {
-      queryParams.append(
-        "ubicacion",
-        `${filtros.cordenadasFilter.LATITUD},${filtros.cordenadasFilter.LONGITUD}`
-      );
-    }
-    if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
-      queryParams.append(
-        "precio",
-        `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
-      );
-    }
-    if (fechaInicio) {
-      queryParams.append(
-        "fechaInicio",
-        new Date(fechaInicio).toISOString().split("T")[0]
-      );
-    }
-    if (fechaFin) {
-      queryParams.append(
-        "fechaFin",
-        new Date(fechaFin).toISOString().split("T")[0]
-      );
-    }
-    router.push(`/?${queryParams.toString()}`);
-  }, [filtros, activarFiltros, activarFiltrosUbicacion, fechaInicio, fechaFin, router, isInitialLanding]);
+    // No se actualiza la URL; dejamos que la lógica interna organice los datos según la ubicación.
+  }, [filtros, activarFiltros, activarFiltrosUbicacion, fechaInicio, fechaFin, isInitialLanding]);
 
-  // Función para calcular distancia entre dos puntos (fórmula de Haversine)
+  // Función para calcular distancia (Fórmula de Haversine)
   function calcularDistancia(
     lat1: number,
     lng1: number,
     lat2: number,
     lng2: number
   ): number {
-    const R = 6371;
+    const R = 6371; // km
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLng = ((lng2 - lng1) * Math.PI) / 180;
     const a =
@@ -338,7 +284,7 @@ const ContenedorTarjetas: React.FC = () => {
     return R * c;
   }
 
-  // Función para verificar que no haya fechas reservadas en el rango
+  // Función para verificar fechas reservadas
   const noTieneFechasReservadasEnRango = (fechasReservadas: string[]) => {
     if (!fechaInicio || !fechaFin) return true;
     let inicio = new Date(fechaInicio);
@@ -351,7 +297,7 @@ const ContenedorTarjetas: React.FC = () => {
     });
   };
 
-  // Filtrar glampings según los filtros del contexto
+  // Filtrado de glampings
   const glampingsFiltrados = glampings.filter((glamping) => {
     const filtraHabilitados = glamping.habilitado === true;
     const cumplePrecio =

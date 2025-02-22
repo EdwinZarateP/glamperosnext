@@ -83,7 +83,8 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   if (!imagenes || imagenes.length === 0) {
     return <div>No hay imágenes para mostrar.</div>;
   }
-
+  
+  const audio = new Audio("/Sonidos/Favorito.mp3")
   const hoy = new Date();
   const fechaInicioPorDefecto = new Date();
   fechaInicioPorDefecto.setDate(hoy.getDate() + 1);
@@ -121,9 +122,8 @@ const Tarjeta: React.FC<TarjetaProps> = ({
 
     try {
       const nuevoEstado = !esFavorito;
-      // Aquí se inserta el "pop" que da vida al clic, como el latido de un corazón:
-      // const audio = new Audio("https://freesound.org/people/Vilkas_Sound/sounds/463390/");      
-      const audio = new Audio("/Sonidos/Favorito.mp3")
+      // Aquí se inserta el "pop" que da vida al clic, como el latido de un corazón      
+      
       audio.play();
       setEsFavorito(nuevoEstado);
       onFavoritoChange(nuevoEstado);

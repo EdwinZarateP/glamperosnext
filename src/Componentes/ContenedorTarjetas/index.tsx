@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useContext } from "react";
+import { useRouter } from "next/navigation";
 import { ContextoApp } from "@/context/AppContext";
 import Tarjeta from "@/Componentes/Tarjeta/index";
 import { precioConRecargo } from "@/Funciones/precioConRecargo";
@@ -31,6 +32,7 @@ interface GlampingData {
 }
 
 const ContenedorTarjetas: React.FC = () => {
+  const router = useRouter();
   const almacenVariables = useContext(ContextoApp);
 
   if (!almacenVariables) {
@@ -42,6 +44,7 @@ const ContenedorTarjetas: React.FC = () => {
   const {
     activarFiltros,
     filtros,
+    setFiltros, // Se asume que el contexto expone setFiltros para actualizar los filtros
     activarFiltrosUbicacion,
     activarFiltrosUbicacionBogota,
     activarFiltrosUbicacionMedellin,
@@ -70,7 +73,7 @@ const ContenedorTarjetas: React.FC = () => {
     activarFiltrosJacuzzi,
   } = almacenVariables;
 
-  const [glampings, setGlampings] = useState<GlampingData[]>([]);
+  const [glampings, setGlampingsLocal] = useState<GlampingData[]>([]);
   const [favoritos, setFavoritos] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [visibleCount, setVisibleCount] = useState(18);
@@ -104,6 +107,50 @@ const ContenedorTarjetas: React.FC = () => {
     };
     fetchFavoritos();
   }, [idUsuarioCookie]);
+
+  // Solicitar la ubicación del usuario y actualizar el filtro por defecto
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log("Ubicación obtenida:", latitude, longitude);
+          // Actualizamos el filtro con las coordenadas del usuario (incluso si ya existe un valor, para forzar el cambio)
+          setFiltros((prev: any) => ({
+            ...prev,
+            cordenadasFilter: { LATITUD: latitude, LONGITUD: longitude },
+          }));
+          // Forzamos la actualización de la URL con los nuevos valores
+          const queryParams = new URLSearchParams();
+          if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
+            queryParams.append(
+              "precio",
+              `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
+            );
+          }
+          queryParams.append("ubicacion", `${latitude},${longitude}`);
+          if (fechaInicio) {
+            queryParams.append(
+              "fechaInicio",
+              new Date(fechaInicio).toISOString().split("T")[0]
+            );
+          }
+          if (fechaFin) {
+            queryParams.append(
+              "fechaFin",
+              new Date(fechaFin).toISOString().split("T")[0]
+            );
+          }
+          router.push(`/?${queryParams.toString()}`);
+        },
+        (error) => {
+          console.error("Error al obtener la ubicación:", error);
+        }
+      );
+    } else {
+      console.error("La geolocalización no es soportada por este navegador");
+    }
+  }, [setFiltros, router, filtros?.precioFilter, fechaInicio, fechaFin]);
 
   // Función para obtener datos de glampings de la API
   const fetchDataFromAPI = useCallback(async (page = 1, limit = 18) => {
@@ -146,7 +193,7 @@ const ContenedorTarjetas: React.FC = () => {
           glamping.Cantidad_Huespedes_Adicional || 0,
       }));
 
-      setGlampings((prevData) => {
+      setGlampingsLocal((prevData) => {
         // Evitar duplicados
         const newData = parsedData.filter(
           (newGlamping) =>
@@ -171,7 +218,7 @@ const ContenedorTarjetas: React.FC = () => {
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData);
-          setGlampings(parsedData);
+          setGlampingsLocal(parsedData);
           setLoading(false);
         } catch (error) {
           console.error("Error al parsear los datos de sessionStorage:", error);
@@ -213,6 +260,47 @@ const ContenedorTarjetas: React.FC = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [handleScroll]);
+
+  // Actualización de la URL según los filtros (para SEO y compartición)
+  useEffect(() => {
+    console.log("Filtros actualizados:", filtros);
+    const queryParams = new URLSearchParams();
+
+    // Ejemplo: filtro de precio
+    if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
+      queryParams.append(
+        "precio",
+        `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
+      );
+    }
+    // Filtro de ubicación (coordenadas)
+    if (
+      filtros?.cordenadasFilter?.LATITUD !== undefined &&
+      filtros?.cordenadasFilter?.LONGITUD !== undefined
+    ) {
+      queryParams.append(
+        "ubicacion",
+        `${filtros.cordenadasFilter.LATITUD},${filtros.cordenadasFilter.LONGITUD}`
+      );
+    }
+    // Filtros de fechas
+    if (fechaInicio) {
+      queryParams.append(
+        "fechaInicio",
+        new Date(fechaInicio).toISOString().split("T")[0]
+      );
+    }
+    if (fechaFin) {
+      queryParams.append(
+        "fechaFin",
+        new Date(fechaFin).toISOString().split("T")[0]
+      );
+    }
+    // Puedes agregar aquí otros filtros que sean importantes
+
+    // Actualiza la URL sin recargar la página
+    router.push(`/?${queryParams.toString()}`);
+  }, [filtros, activarFiltros, activarFiltrosUbicacion, fechaInicio, fechaFin, router]);
 
   // Función para calcular distancia entre dos puntos (fórmula de Haversine)
   function calcularDistancia(
@@ -273,7 +361,7 @@ const ContenedorTarjetas: React.FC = () => {
           filtros.cordenadasFilter?.LONGITUD,
           glamping.ubicacion.lat ?? 0,
           glamping.ubicacion.lng ?? 0
-        ) <= 150);
+        ) <= 1500);
 
     const cumpleCoordenadasBogota =
       !activarFiltrosUbicacionBogota ||
@@ -282,7 +370,7 @@ const ContenedorTarjetas: React.FC = () => {
         -74.181072702,
         glamping.ubicacion.lat ?? 0,
         glamping.ubicacion.lng ?? 0
-      ) <= 150;
+      ) <= 1500;
 
     const cumpleCoordenadasMedellin =
       !activarFiltrosUbicacionMedellin ||
@@ -291,7 +379,7 @@ const ContenedorTarjetas: React.FC = () => {
         -75.611031065,
         glamping.ubicacion.lat ?? 0,
         glamping.ubicacion.lng ?? 0
-      ) <= 150;
+      ) <= 1500;
 
     const cumpleCoordenadasCali =
       !activarFiltrosUbicacionCali ||
@@ -300,7 +388,7 @@ const ContenedorTarjetas: React.FC = () => {
         -76.576492589,
         glamping.ubicacion.lat ?? 0,
         glamping.ubicacion.lng ?? 0
-      ) <= 150;
+      ) <= 1500;
 
     const cumpleFechasReservadas =
       !activarFiltrosFechas ||
@@ -385,19 +473,71 @@ const ContenedorTarjetas: React.FC = () => {
     );
   });
 
-  // Si se activa el filtro de ubicación y hay coordenadas, se ordenan por distancia (más cercano primero)
+  // Ordenamiento:
+  // - Si el filtro general de ubicación está activo y existen las coordenadas del usuario, se ordena por la distancia a esas coordenadas.
+  // - En caso contrario, se mantiene la ordenación por el filtro específico (Cali, Bogotá o Medellín) si están activos.
   const glampingsOrdenados =
-    activarFiltrosUbicacion && filtros?.cordenadasFilter
+    filtros?.cordenadasFilter && activarFiltrosUbicacion
       ? glampingsFiltrados.sort((a, b) => {
+          const userLat = filtros?.cordenadasFilter?.LATITUD ?? 0
+          const userLng = filtros?.cordenadasFilter?.LONGITUD ?? 0;
           const distanciaA = calcularDistancia(
-            filtros.cordenadasFilter?.LATITUD ?? 0,
-            filtros.cordenadasFilter?.LONGITUD ?? 0,
+            userLat,
+            userLng,
             a.ubicacion.lat ?? 0,
             a.ubicacion.lng ?? 0
           );
           const distanciaB = calcularDistancia(
-            filtros.cordenadasFilter?.LATITUD ?? 0,
-            filtros.cordenadasFilter?.LONGITUD ?? 0,
+            userLat,
+            userLng,
+            b.ubicacion.lat ?? 0,
+            b.ubicacion.lng ?? 0
+          );
+          return distanciaA - distanciaB;
+        })
+      : activarFiltrosUbicacionCali
+      ? glampingsFiltrados.sort((a, b) => {
+          const distanciaA = calcularDistancia(
+            3.399043723,
+            -76.576492589,
+            a.ubicacion.lat ?? 0,
+            a.ubicacion.lng ?? 0
+          );
+          const distanciaB = calcularDistancia(
+            3.399043723,
+            -76.576492589,
+            b.ubicacion.lat ?? 0,
+            b.ubicacion.lng ?? 0
+          );
+          return distanciaA - distanciaB;
+        })
+      : activarFiltrosUbicacionBogota
+      ? glampingsFiltrados.sort((a, b) => {
+          const distanciaA = calcularDistancia(
+            4.316107698,
+            -74.181072702,
+            a.ubicacion.lat ?? 0,
+            a.ubicacion.lng ?? 0
+          );
+          const distanciaB = calcularDistancia(
+            4.316107698,
+            -74.181072702,
+            b.ubicacion.lat ?? 0,
+            b.ubicacion.lng ?? 0
+          );
+          return distanciaA - distanciaB;
+        })
+      : activarFiltrosUbicacionMedellin
+      ? glampingsFiltrados.sort((a, b) => {
+          const distanciaA = calcularDistancia(
+            6.257590259,
+            -75.611031065,
+            a.ubicacion.lat ?? 0,
+            a.ubicacion.lng ?? 0
+          );
+          const distanciaB = calcularDistancia(
+            6.257590259,
+            -75.611031065,
             b.ubicacion.lat ?? 0,
             b.ubicacion.lng ?? 0
           );

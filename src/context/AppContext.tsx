@@ -319,7 +319,7 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
   
     // Estado para filtros
     const [activarFiltros, setActivarFiltros] = useState<boolean>(false);
-    const [activarFiltrosUbicacion, setActivarFiltrosUbicacion] = useState<boolean>(false);
+    const [activarFiltrosUbicacion, setActivarFiltrosUbicacion] = useState<boolean>(true);
     const [activarFiltrosUbicacionBogota, setActivarFiltrosUbicacionBogota] = useState<boolean>(false);
     const [activarFiltrosUbicacionMedellin,setActivarFiltrosUbicacionMedellin] = useState<boolean>(false);
     const [activarFiltrosUbicacionCali,setActivarFiltrosUbicacionCali] = useState<boolean>(false);

@@ -67,6 +67,7 @@ const MenuIconos: React.FC = () => {
     setActivarFiltrosUbicacionBogota,
     setActivarFiltrosUbicacionMedellin,
     setActivarFiltrosUbicacionCali,
+    setActivarFiltrosUbicacion
   } = almacenVariables;
 
   // 🔹 Lista de iconos con sus respectivas funciones de activación
@@ -119,6 +120,7 @@ const MenuIconos: React.FC = () => {
       setActivarFiltrosUbicacionBogota,
       setActivarFiltrosUbicacionMedellin,
       setActivarFiltrosUbicacionCali,
+      setActivarFiltrosUbicacion,
     ].forEach(fn => fn(false));
 
     // Activa el filtro correspondiente

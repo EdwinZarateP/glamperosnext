@@ -17,10 +17,9 @@ const FiltroPrecios: React.FC = () => {
 
   // Garantiza que precioFiltrado sea una tupla válida
   const valoresIniciales: [number, number] =
-  precioFiltrado && precioFiltrado.length === 2
-    ? [precioFiltrado[0], precioFiltrado[1]]
-    : [min, max];
-
+    precioFiltrado && precioFiltrado.length === 2
+      ? [precioFiltrado[0], precioFiltrado[1]]
+      : [min, max];
 
   // Estado local que representa los valores del slider
   const [valores, setValores] = useState<[number, number]>(valoresIniciales);
@@ -74,6 +73,7 @@ const FiltroPrecios: React.FC = () => {
             type="range"
             min={min}
             max={max}
+            step={10000}
             value={valores[0]}
             onChange={(e) => handleChange(e, 0)}
             onMouseUp={commitChange}
@@ -84,6 +84,7 @@ const FiltroPrecios: React.FC = () => {
             type="range"
             min={min}
             max={max}
+            step={10000}
             value={valores[1]}
             onChange={(e) => handleChange(e, 1)}
             onMouseUp={commitChange}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext } from "react";
+import Head from "next/head";
 import HeaderDinamico from "@/Componentes/HeaderDinamico";
 import ContenedorTarjetasDinamico from "@/Componentes/ContenedorTarjetasDinamico/index";
 import MenuIconos from "@/Componentes/MenuIconos";
@@ -13,26 +14,83 @@ const Medellin: React.FC = () => {
   const contexto = useContext(ContextoApp);
 
   if (!contexto) {
-    throw new Error("El contexto no está disponible. Asegúrate de envolver el componente con ProveedorContextoApp.");
+    throw new Error(
+      "El contexto no está disponible. Asegúrate de envolver el componente con ProveedorContextoApp."
+    );
   }
 
-  // Coordenadas aproximadas de Medellín
-  const MEDELLIN_LAT = 6.257590259;
-  const MEDELLIN_LNG = -75.611031065;
+  // Coordenadas de Medellin
+  const Medellin_LAT = 6.257590259;
+  const Medellin_LNG = -75.611031065;
 
   const { mostrarFiltros } = contexto;
 
   return (
-    <div className="Medellin-principal">
-      <HeaderDinamico title="Glamping cerca a Medellín" />
-      <MenuIconos />
-      {mostrarFiltros && <FiltrosContenedor />}
-      <main>
-        {/* Pasamos lat y lng de Medellín al componente reutilizable */}
-        <ContenedorTarjetasDinamico lat={MEDELLIN_LAT} lng={MEDELLIN_LNG} />
-      </main>
-      <MenuUsuariosInferior />
-    </div>
+    <>
+      {/* 🔹 HEAD SEO */}
+      <Head>
+        <title>Glamping cerca a Medellin | Vive la experiencia</title>
+        <meta
+          name="description"
+          content="Encuentra los mejores glampings cerca de Medellin. Disfruta la naturaleza con todas las comodidades. Reserva ahora."
+        />
+        <meta
+          name="keywords"
+          content="glamping Medellin, camping de lujo, turismo ecológico, alojamiento en la naturaleza"
+        />
+        <meta
+          property="og:title"
+          content="Glamping cerca a Medellin | Vive la experiencia"
+        />
+        <meta
+          property="og:description"
+          content="Encuentra los mejores glampings cerca de Medellin. Disfruta la naturaleza con todas las comodidades. Reserva ahora."
+        />
+        <meta property="og:url" content="https://glamperos.com/Medellin" />
+        <meta
+          property="og:image"
+          content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          name="twitter:title"
+          content="Glamping cerca a Medellin | Vive la experiencia"
+        />
+        <meta
+          name="twitter:description"
+          content="Encuentra los mejores glampings cerca de Medellin. Disfruta la naturaleza con todas las comodidades. Reserva ahora."
+        />
+        <meta
+          name="twitter:image"
+          content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://glamperos.com/Medellin" />
+      </Head>
+
+      <div className="Medellin-principal">
+        <HeaderDinamico title="Glamping cerca a Medellin" />
+        <MenuIconos />
+
+        {mostrarFiltros && <FiltrosContenedor />}
+
+        <main>
+          <section>
+            <h1 className="Medellin-titulo-principal">
+              Descubre los Mejores Glampings cerca de Medellin
+            </h1>
+            <p className="Medellin-descripcion">
+              Explora la naturaleza con comodidad y estilo. Encuentra el
+              glamping perfecto cerca de Medellin.
+            </p>
+          </section>
+
+          <ContenedorTarjetasDinamico lat={Medellin_LAT} lng={Medellin_LNG} />
+        </main>
+
+        <MenuUsuariosInferior />
+      </div>
+    </>
   );
 };
 

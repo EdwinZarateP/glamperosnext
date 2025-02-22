@@ -27,7 +27,7 @@ const MenuUsuariosInferior: React.FC = () => {
     <div className="MenuUsuariosInferior">
       <div className="MenuUsuariosInferior-icono" onClick={() => redirigir("/")}>
         <CiSearch className="MenuUsuariosInferior-iconoImagen" />
-        <span className="MenuUsuariosInferior-texto">Buscar</span>
+        <span className="MenuUsuariosInferior-texto">Todo Colombia</span>
       </div>
       <div className="MenuUsuariosInferior-icono" onClick={() => redirigir("/ListaDeseos")}>
         <FaRegHeart className="MenuUsuariosInferior-iconoImagen" />

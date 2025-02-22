@@ -1,0 +1,25 @@
+* {
+    margin: 0;
+    padding: 0;
+  }  
+
+  .Bogota-principal {
+    width: 90%;    
+    margin: 0 auto; 
+    margin-top: 150px; /* Espacio igual a la altura del Header */
+    position: relative;
+}
+
+/* Para pantallas pequeñas (móviles) */
+@media (max-width: 479px) {
+    .Bogota-principal {
+        width: 97%; /* Ancho del 95% en pantallas pequeñas */
+    }
+}
+
+/* Para pantallas medianas (tabletas) */
+@media (min-width: 480px) and (max-width: 540px) {
+    .Bogota-principal {
+        width: 97%; /* Ancho del 95% en pantallas medianas */
+    }
+}

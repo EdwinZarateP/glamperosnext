@@ -30,7 +30,7 @@ import {
 } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
 import { ContextoApp } from "@/context/AppContext";
-import "./estilos.css"; // ✅ Mantiene los estilos en CSS
+import "./estilos.css"; 
 
 const MenuIconos: React.FC = () => {
   const almacenVariables = useContext(ContextoApp);
@@ -41,7 +41,6 @@ const MenuIconos: React.FC = () => {
     );
   }
 
-  // 🔹 Extraer las funciones de actualización del contexto
   const {
     setMostrarFiltros,
     cantiadfiltrosAplicados,
@@ -64,17 +63,26 @@ const MenuIconos: React.FC = () => {
     setActivarFiltrosDesierto,
     setActivarFiltrosCaminata,
     setActivarFiltrosJacuzzi,
-    setActivarFiltrosUbicacionBogota,
-    setActivarFiltrosUbicacionMedellin,
-    setActivarFiltrosUbicacionCali,
-    setActivarFiltrosUbicacion
+    setActivarFiltrosUbicacion,
   } = almacenVariables;
 
-  // 🔹 Lista de iconos con sus respectivas funciones de activación
+  // Lista de iconos con sus acciones o links
   const iconos = [
-    { titulo: "Cerca Bogota", icono: <GiEagleEmblem />, accion: setActivarFiltrosUbicacionBogota },
-    { titulo: "Cerca Medellin", icono: <PiCoffeeBeanFill />, accion: setActivarFiltrosUbicacionMedellin },
-    { titulo: "Cerca Cali", icono: <FaCat />, accion: setActivarFiltrosUbicacionCali },
+    {
+      titulo: "Cerca Bogota",
+      icono: <GiEagleEmblem />,
+      link: "/Bogota",
+    },
+    {
+      titulo: "Cerca Medellin",
+      icono: <PiCoffeeBeanFill />,
+      link: "/Medellin",
+    },
+    {
+      titulo: "Cerca Cali",
+      icono: <FaCat/>,
+      link: "/Cali",
+    },
     { titulo: "Jacuzzi", icono: <FaHotTubPerson />, accion: setActivarFiltrosJacuzzi },
     { titulo: "Pet Friendly", icono: <MdOutlinePets />, accion: setActivarFiltrosMascotas },
     { titulo: "Domo", icono: <GiHabitatDome />, accion: setActivarFiltrosDomo },
@@ -94,11 +102,27 @@ const MenuIconos: React.FC = () => {
     { titulo: "Caminata", icono: <GiHiking />, accion: setActivarFiltrosCaminata },
   ];
 
-  // 🔹 Manejo de selección de iconos
+  /**
+   * Selecciona un icono. Si tiene link:
+   * - En pantallas menores de 900px => redirige en la misma pestaña
+   * - En pantallas mayores => abre nueva pestaña
+   */
   const seleccionarIcono = (indice: number) => {
     setIconoSeleccionado(indice);
-    
-    // Desactiva todos los filtros antes de activar el nuevo
+    const link = iconos[indice].link;
+
+    if (link) {
+      if (window.innerWidth < 900) {
+        // Móvil o pantallas pequeñas: redirige en la misma pestaña
+        window.location.href = link;
+      } else {
+        // Escritorio: abre en una nueva pestaña
+        window.open(link, "_blank");
+      }
+      return;
+    }
+
+    // Si no tiene link, entonces es un filtro interno:
     [
       setActivarFiltrosDomo,
       setActivarFiltrosTienda,
@@ -117,18 +141,15 @@ const MenuIconos: React.FC = () => {
       setActivarFiltrosDesierto,
       setActivarFiltrosCaminata,
       setActivarFiltrosJacuzzi,
-      setActivarFiltrosUbicacionBogota,
-      setActivarFiltrosUbicacionMedellin,
-      setActivarFiltrosUbicacionCali,
       setActivarFiltrosUbicacion,
-    ].forEach(fn => fn(false));
+    ].forEach((fn) => fn(false));
 
-    // Activa el filtro correspondiente
-    iconos[indice].accion(true);
+    iconos[indice].accion?.(true);
   };
 
-  // 🔹 Manejo del desplazamiento horizontal
+  // Manejo del desplazamiento horizontal
   const contenedorListaRef = useRef<HTMLDivElement | null>(null);
+
   const desplazar = (direccion: "izquierda" | "derecha") => {
     if (contenedorListaRef.current) {
       const desplazamiento = direccion === "izquierda" ? -100 : 100;
@@ -136,7 +157,7 @@ const MenuIconos: React.FC = () => {
     }
   };
 
-  // 🔹 Manejo de apertura de filtros
+  // Manejo de apertura de filtros
   const manejarClickAbrirFiltros = () => {
     setMostrarFiltros(true);
     document.body.style.overflow = "hidden";

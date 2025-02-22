@@ -1,0 +1,402 @@
+.contenedor-HeaderDinamico{
+    position: fixed; /* Fija el HeaderDinamico en la parte superior */
+    top: 0; /* Asegura que esté al borde superior */
+    left: 0; /* Asegura que esté alineado a la izquierda */
+    width: 100%; /* Ocupa todo el ancho de la pantalla */
+    z-index: 1000; /* Coloca el HeaderDinamico encima de otros elementos */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #e6e3df;
+    font-family: inherit;
+    height: 70px;
+    background-color: #ffffff; /* Fondo blanco para cubrir elementos detrás */
+  }
+  
+  /* Estilos generales del HeaderDinamico */
+  .HeaderDinamico {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: inherit;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten si el espacio es limitado */
+    width: 90%;
+    position: relative;
+
+  }
+  
+  
+  /* Logo y nombre de la marca */
+  .HeaderDinamico-izquierda {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .HeaderDinamico-logo {
+    width: 40px;
+    height: auto;
+  }
+  
+  .HeaderDinamico-nombreMarca {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2F6B3E;
+  }
+  
+  /* Barra de búsqueda */
+  .HeaderDinamico-barraBusqueda {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 24px;
+    padding: 0 10px;
+    padding-right: 5px;
+    gap: 8px;
+    max-width: 500px;
+    flex-grow: 1;
+    margin: 8px 0;
+    border: 0.5px solid #d3d3d3;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    height: 50px;
+
+  }
+  
+  /* Opciones dentro de la barra de búsqueda */
+  .HeaderDinamico-opcionBusqueda {
+    color: #2F6B3E;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+  
+  
+  
+  .HeaderDinamico-opcionBusquedaInvitados {
+    color: #73706d;
+    font-weight: normal;
+  }
+  
+  .HeaderDinamico-opcionCuando {
+    color: #2F6B3E;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+  
+  .HeaderDinamico-divisor {
+    color: #A68A64;
+  }
+  
+  /* Botón de búsqueda */
+  .HeaderDinamico-botonBusqueda {
+    background-color: #2F6B3E;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+  
+  /* HeaderDinamico derecho (opciones de usuario) */
+  .HeaderDinamico-derecha {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .HeaderDinamico-botonAnfitrion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 5px;
+    height: 50px;
+  }
+  
+  .HeaderDinamico-botonAnfitrion:hover{
+    background-color: #f8f8f8;
+    border-radius: 15px;
+  }
+  
+  .HeaderDinamico-icono {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .HeaderDinamico-menuUsuario {
+    display: flex;
+    align-items: center;
+    border-radius:50px;
+    padding: 7px;
+    border: 1px solid #d3d3d3;
+    cursor: pointer;
+  }
+  
+  .HeaderDinamico-iconoMenu {
+    font-size: 1.5rem;
+    color: #555;
+    margin-right: 8px;
+  }
+  
+  /* Contenedor circular para el ícono de configuración */
+  .HeaderDinamico-iconoSettingsWrapper {
+    display: none; /* Oculto en pantallas grandes */
+    width: 45px;
+    height: 45px;
+    border: 1px solid #d3d3d3;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    border-radius:50%;
+    padding: 7px;
+    cursor: pointer;
+  }
+  
+  .HeaderDinamico-iconoSettings {
+    font-size: 1.5rem;
+    color: #000000;
+  }
+  
+  .HeaderDinamico-badge {
+    position: absolute;
+    top: 0;
+    right: 6px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  
+  .HeaderDinamico-inicialUsuario {
+    width: 35px; 
+    height: 35px; 
+    border-radius: 50%; 
+    background-color:#000000;
+    color: #ffffff;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 14px; 
+  }
+  
+  .HeaderDinamico-inicialUsuario-incognito {
+    font-size: 24px;
+  }
+  
+  
+  .HeaderDinamico-menuUsuarioLista {
+    position: absolute; /* Se coloca encima del HeaderDinamico */
+    top: 70px; 
+    right: 0;
+    align-items: center;
+    border-radius: 50px;
+    cursor: pointer;
+  }
+  
+
+  .HeaderDinamico-centro {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-grow: 1;
+  }
+  
+  .HeaderDinamico-titulo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .HeaderDinamico-botonExplorar {
+    margin-top: 5px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    background-color: #2F6B3E;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .HeaderDinamico-botonExplorar:hover {
+    background-color: #3f8d52;
+  }
+
+  
+  /* Responsividad */
+  
+  /* Pantallas pequeñas (máximo ancho: 900px) */
+  @media (max-width: 900px) {
+    .HeaderDinamico-botonAnfitrion,
+    .HeaderDinamico-opcionCuando,
+    .HeaderDinamico-opcionCuando + .HeaderDinamico-divisor,
+    .HeaderDinamico-derecha > .HeaderDinamico-iconoGlobo,
+    .HeaderDinamico-opcionBusqueda:not(:first-child),
+    .HeaderDinamico-divisor:not(:first-child),
+    .HeaderDinamico-notificacion,
+    .HeaderDinamico-inicialUsuario{
+      display: none;
+    }
+    
+    .HeaderDinamico-barraBusqueda {
+      flex-grow: 1;
+      justify-content: space-around;
+      max-width: 100%; /* Barra de búsqueda ocupa todo el ancho */
+      flex-direction: row-reverse; /* Invierte la disposición de los elementos */
+      height: 50px; /* Mantiene la altura constante */
+      position: relative; /* Asegura que los hijos se posicionen correctamente */
+      margin-left: 80px;
+    }
+  
+    .HeaderDinamico-botonBusqueda {
+      position: absolute; /* Fija el botón dentro del contenedor */
+      left: 5px; /* Margen izquierdo */
+      margin-right: 10px;
+      top: 50%; /* Centra verticalmente */
+      transform: translateY(-50%); /* Ajusta el centrado vertical */
+      z-index: 10; /* Asegura que quede encima de otros elementos */
+    }
+  
+    .HeaderDinamico-iconoMenu {
+      display: none; /* Oculta el ícono del menú */
+    }
+  
+    .HeaderDinamico-iconoSettingsWrapper {
+      display: flex; /* Muestra el ícono de configuración */
+      margin-right: 10px;
+    }
+  
+    .HeaderDinamico-opcionBusqueda {
+      font-size: 0.9rem;
+    }
+  
+    .HeaderDinamico-derecha {
+      flex-grow: 1;
+      width: 1%;
+      justify-content: flex-end;
+    }
+    .HeaderDinamico-menuUsuario {
+      padding: 0;
+      border: none;
+    }
+    .HeaderDinamico-botonExplorar{
+      display: none;
+    }
+  }
+  
+  /* Pantallas medianas (entre 540px y 900px) */
+  @media (min-width: 540px) and (max-width: 900px) {
+    
+    .HeaderDinamico-izquierda {
+      display: flex; /* Muestra el logo */
+    }
+  
+    .HeaderDinamico-barraBusqueda {
+      margin-left: 20px;
+      min-width: 35%;
+      height: 50px; 
+    }
+    .HeaderDinamico-menuUsuario {
+      padding: 0;
+      border: none;
+    }
+
+    .HeaderDinamico-iconoSettingsWrapper {
+      display: flex; /* Muestra el ícono de configuración */
+      margin-right: 10px;
+    }
+
+    .HeaderDinamico-botonExplorar{
+      display: none;
+    }
+  }
+  
+  /* Pantallas muy pequeñas (menores a 540px) */
+  @media (max-width: 540px) {
+    .HeaderDinamico{
+      width: 100%;
+    }
+  
+    .HeaderDinamico-izquierda {
+      display: none; /* Oculta todo el contenedor izquierdo */
+    }
+  
+    .HeaderDinamico-barraBusqueda {
+      min-width: 80%;
+      margin-left: 10px;
+      height: 50px; /* Mantiene la altura constante */
+    }
+    .HeaderDinamico-menuUsuario {
+      padding: 0;
+      border: none;
+    }
+
+    .HeaderDinamico-iconoSettingsWrapper {
+      display: flex; /* Muestra el ícono de configuración */
+      margin-right: 10px;
+    }
+
+    .HeaderDinamico-botonExplorar{
+      display: none;
+    }
+  }
+  
+  /* Pantallas muy pequeñas (menores a 400px) */
+  @media (max-width: 400px) {
+    .HeaderDinamico{
+      width: 100%;
+    }
+  
+    .HeaderDinamico-izquierda {
+      display: none; /* Oculta todo el contenedor izquierdo */
+    }
+  
+    .HeaderDinamico-barraBusqueda {
+      max-width: 80%;
+      min-width: 250px;
+      margin:0;
+      margin-left: 20px;
+      height: 50px;
+      /* padding: 0; */
+    }
+  
+    .HeaderDinamico-opcionBusqueda {
+      margin-left: 10px;
+ 
+    }
+    .HeaderDinamico-menuUsuario {
+      padding: 0;
+      border: none;
+    }
+
+    .HeaderDinamico-iconoSettingsWrapper {
+      display: flex; /* Muestra el ícono de configuración */
+      margin-right: 10px;
+    }
+
+    .HeaderDinamico-botonExplorar{
+      display: none;
+    }
+  }
+  

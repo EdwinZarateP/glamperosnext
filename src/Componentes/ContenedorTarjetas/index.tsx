@@ -80,14 +80,21 @@ const ContenedorTarjetas: React.FC = () => {
   const [page, setPage] = useState(1);
   const idUsuarioCookie = Cookies.get("idUsuario");
 
+  // Bandera para saber si es el landing inicial (URL limpia)
+  const [isInitialLanding, setIsInitialLanding] = useState<boolean>(false);
+
   // Función para saber si un glamping está entre los favoritos
   const esFavorito = (glampingId: string, favoritos: string[] = []): boolean => {
     return Array.isArray(favoritos) && favoritos.includes(glampingId);
   };
 
-  // Al montar el componente, hacer scroll al tope
+  // Al montar el componente, hacer scroll al tope y determinar si la URL es limpia
   useEffect(() => {
     window.scrollTo(0, 0);
+    const searchParams = new URLSearchParams(window.location.search);
+    if (!searchParams.toString()) {
+      setIsInitialLanding(true);
+    }
   }, []);
 
   // Obtener favoritos desde la API (si hay usuario logueado)
@@ -108,40 +115,62 @@ const ContenedorTarjetas: React.FC = () => {
     fetchFavoritos();
   }, [idUsuarioCookie]);
 
-  // Solicitar la ubicación del usuario y actualizar el filtro por defecto
+  // Si la URL ya tiene "ubicacion", actualizamos el filtro con ese valor
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const ubicacionParam = searchParams.get("ubicacion");
+    if (ubicacionParam) {
+      console.log("La URL ya contiene una ubicación:", ubicacionParam);
+      const [latStr, lngStr] = ubicacionParam.split(",");
+      const lat = parseFloat(latStr);
+      const lng = parseFloat(lngStr);
+      setFiltros((prev: any) => ({
+        ...prev,
+        cordenadasFilter: { LATITUD: lat, LONGITUD: lng },
+      }));
+    }
+  }, [setFiltros]);
+
+  // Solicitar la ubicación del usuario solo si la URL no contiene ya "ubicacion"
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has("ubicacion")) {
+      return;
+    }
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           console.log("Ubicación obtenida:", latitude, longitude);
-          // Actualizamos el filtro con las coordenadas del usuario (incluso si ya existe un valor, para forzar el cambio)
+          // Actualizamos el filtro con las coordenadas del usuario
           setFiltros((prev: any) => ({
             ...prev,
             cordenadasFilter: { LATITUD: latitude, LONGITUD: longitude },
           }));
-          // Forzamos la actualización de la URL con los nuevos valores
-          const queryParams = new URLSearchParams();
-          if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
-            queryParams.append(
-              "precio",
-              `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
-            );
+          // Solo actualizamos la URL si no es el landing inicial
+          if (!isInitialLanding) {
+            const queryParams = new URLSearchParams();
+            if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
+              queryParams.append(
+                "precio",
+                `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
+              );
+            }
+            queryParams.append("ubicacion", `${latitude},${longitude}`);
+            if (fechaInicio) {
+              queryParams.append(
+                "fechaInicio",
+                new Date(fechaInicio).toISOString().split("T")[0]
+              );
+            }
+            if (fechaFin) {
+              queryParams.append(
+                "fechaFin",
+                new Date(fechaFin).toISOString().split("T")[0]
+              );
+            }
+            router.push(`/?${queryParams.toString()}`);
           }
-          queryParams.append("ubicacion", `${latitude},${longitude}`);
-          if (fechaInicio) {
-            queryParams.append(
-              "fechaInicio",
-              new Date(fechaInicio).toISOString().split("T")[0]
-            );
-          }
-          if (fechaFin) {
-            queryParams.append(
-              "fechaFin",
-              new Date(fechaFin).toISOString().split("T")[0]
-            );
-          }
-          router.push(`/?${queryParams.toString()}`);
         },
         (error) => {
           console.error("Error al obtener la ubicación:", error);
@@ -150,7 +179,7 @@ const ContenedorTarjetas: React.FC = () => {
     } else {
       console.error("La geolocalización no es soportada por este navegador");
     }
-  }, [setFiltros, router, filtros?.precioFilter, fechaInicio, fechaFin]);
+  }, [setFiltros, router, filtros?.precioFilter, fechaInicio, fechaFin, isInitialLanding]);
 
   // Función para obtener datos de glampings de la API
   const fetchDataFromAPI = useCallback(async (page = 1, limit = 18) => {
@@ -164,11 +193,9 @@ const ContenedorTarjetas: React.FC = () => {
       const data: GlampingData[] = await response.json();
 
       if (data.length === 0) {
-        // Si no hay más datos, no incrementamos la página
         return;
       }
 
-      // Parsear y dar valores por defecto a los datos recibidos
       const parsedData = data.map((glamping) => ({
         _id: glamping._id,
         habilitado: glamping.habilitado || false,
@@ -194,7 +221,6 @@ const ContenedorTarjetas: React.FC = () => {
       }));
 
       setGlampingsLocal((prevData) => {
-        // Evitar duplicados
         const newData = parsedData.filter(
           (newGlamping) =>
             !prevData.some((glamping) => glamping._id === newGlamping._id)
@@ -214,7 +240,6 @@ const ContenedorTarjetas: React.FC = () => {
   useEffect(() => {
     const fetchGlampings = async () => {
       const storedData = sessionStorage.getItem("glampingsData");
-
       if (storedData) {
         try {
           const parsedData = JSON.parse(storedData);
@@ -229,15 +254,14 @@ const ContenedorTarjetas: React.FC = () => {
         await fetchDataFromAPI(page);
       }
     };
-
     fetchGlampings();
   }, [page, fetchDataFromAPI]);
 
   // Función para cargar más resultados
   const handleLoadMore = useCallback(() => {
     if (!loading) {
-      fetchDataFromAPI(page, 18); // Cargar siempre 18 registros
-      setVisibleCount((prevCount) => prevCount + 18); // Incrementar en 18
+      fetchDataFromAPI(page, 18);
+      setVisibleCount((prevCount) => prevCount + 18);
     }
   }, [loading, page, fetchDataFromAPI]);
 
@@ -246,8 +270,6 @@ const ContenedorTarjetas: React.FC = () => {
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
     const fullHeight = document.body.scrollHeight;
-
-    // Si estamos cerca del final, carga más resultados
     if (scrollTop + windowHeight >= fullHeight - 200) {
       handleLoadMore();
     }
@@ -255,25 +277,17 @@ const ContenedorTarjetas: React.FC = () => {
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
   // Actualización de la URL según los filtros (para SEO y compartición)
   useEffect(() => {
     console.log("Filtros actualizados:", filtros);
     const queryParams = new URLSearchParams();
-
-    // Ejemplo: filtro de precio
-    if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
-      queryParams.append(
-        "precio",
-        `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
-      );
+    // Si es landing inicial y la URL está limpia, no actualizamos
+    if (isInitialLanding && !window.location.search) {
+      return;
     }
-    // Filtro de ubicación (coordenadas)
     if (
       filtros?.cordenadasFilter?.LATITUD !== undefined &&
       filtros?.cordenadasFilter?.LONGITUD !== undefined
@@ -283,7 +297,12 @@ const ContenedorTarjetas: React.FC = () => {
         `${filtros.cordenadasFilter.LATITUD},${filtros.cordenadasFilter.LONGITUD}`
       );
     }
-    // Filtros de fechas
+    if (filtros?.precioFilter && filtros.precioFilter.length === 2) {
+      queryParams.append(
+        "precio",
+        `${filtros.precioFilter[0]}-${filtros.precioFilter[1]}`
+      );
+    }
     if (fechaInicio) {
       queryParams.append(
         "fechaInicio",
@@ -296,11 +315,8 @@ const ContenedorTarjetas: React.FC = () => {
         new Date(fechaFin).toISOString().split("T")[0]
       );
     }
-    // Puedes agregar aquí otros filtros que sean importantes
-
-    // Actualiza la URL sin recargar la página
     router.push(`/?${queryParams.toString()}`);
-  }, [filtros, activarFiltros, activarFiltrosUbicacion, fechaInicio, fechaFin, router]);
+  }, [filtros, activarFiltros, activarFiltrosUbicacion, fechaInicio, fechaFin, router, isInitialLanding]);
 
   // Función para calcular distancia entre dos puntos (fórmula de Haversine)
   function calcularDistancia(
@@ -309,7 +325,7 @@ const ContenedorTarjetas: React.FC = () => {
     lat2: number,
     lng2: number
   ): number {
-    const R = 6371; // Radio de la Tierra en km
+    const R = 6371;
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLng = ((lng2 - lng1) * Math.PI) / 180;
     const a =
@@ -324,17 +340,11 @@ const ContenedorTarjetas: React.FC = () => {
 
   // Función para verificar que no haya fechas reservadas en el rango
   const noTieneFechasReservadasEnRango = (fechasReservadas: string[]) => {
-    if (!fechaInicio || !fechaFin) {
-      return true; // Si no se han definido fechas, no se filtra
-    }
-
+    if (!fechaInicio || !fechaFin) return true;
     let inicio = new Date(fechaInicio);
     let fin = new Date(fechaFin);
-
-    // Restar un día a las fechas
     inicio.setDate(inicio.getDate() - 1);
     fin.setDate(fin.getDate() - 1);
-
     return !fechasReservadas.some((fecha) => {
       const fechaReservada = new Date(fecha);
       return fechaReservada >= inicio && fechaReservada <= fin;
@@ -344,14 +354,12 @@ const ContenedorTarjetas: React.FC = () => {
   // Filtrar glampings según los filtros del contexto
   const glampingsFiltrados = glampings.filter((glamping) => {
     const filtraHabilitados = glamping.habilitado === true;
-
     const cumplePrecio =
       !activarFiltros ||
       (filtros?.precioFilter?.[0] !== undefined &&
         filtros?.precioFilter?.[1] !== undefined &&
         precioConRecargo(glamping.precioEstandar) >= filtros.precioFilter[0] &&
         precioConRecargo(glamping.precioEstandar) <= filtros.precioFilter[1]);
-
     const cumpleCoordenadas =
       !activarFiltrosUbicacion ||
       (filtros?.cordenadasFilter?.LATITUD !== undefined &&
@@ -362,7 +370,6 @@ const ContenedorTarjetas: React.FC = () => {
           glamping.ubicacion.lat ?? 0,
           glamping.ubicacion.lng ?? 0
         ) <= 1500);
-
     const cumpleCoordenadasBogota =
       !activarFiltrosUbicacionBogota ||
       calcularDistancia(
@@ -371,7 +378,6 @@ const ContenedorTarjetas: React.FC = () => {
         glamping.ubicacion.lat ?? 0,
         glamping.ubicacion.lng ?? 0
       ) <= 1500;
-
     const cumpleCoordenadasMedellin =
       !activarFiltrosUbicacionMedellin ||
       calcularDistancia(
@@ -380,7 +386,6 @@ const ContenedorTarjetas: React.FC = () => {
         glamping.ubicacion.lat ?? 0,
         glamping.ubicacion.lng ?? 0
       ) <= 1500;
-
     const cumpleCoordenadasCali =
       !activarFiltrosUbicacionCali ||
       calcularDistancia(
@@ -389,17 +394,14 @@ const ContenedorTarjetas: React.FC = () => {
         glamping.ubicacion.lat ?? 0,
         glamping.ubicacion.lng ?? 0
       ) <= 1500;
-
     const cumpleFechasReservadas =
       !activarFiltrosFechas ||
       noTieneFechasReservadasEnRango(glamping.fechasReservadas);
-
     const cumpleHuespedes =
       !activarFiltrosHuespedes ||
       (huespedesConfirmado &&
         glamping.Cantidad_Huespedes + glamping.Cantidad_Huespedes_Adicional >=
           huespedesConfirmado);
-
     const filtraDomo = !activarFiltrosDomo || glamping.tipoGlamping === "Domo";
     const filtraTienda =
       !activarFiltrosTienda || glamping.tipoGlamping === "Tienda";
@@ -474,13 +476,13 @@ const ContenedorTarjetas: React.FC = () => {
   });
 
   // Ordenamiento:
-  // - Si el filtro general de ubicación está activo y existen las coordenadas del usuario, se ordena por la distancia a esas coordenadas.
-  // - En caso contrario, se mantiene la ordenación por el filtro específico (Cali, Bogotá o Medellín) si están activos.
+  // - Si se activa el filtro general de ubicación y existen las coordenadas del usuario, se ordena por la distancia a esas coordenadas.
+  // - De lo contrario, se usa el ordenamiento de los filtros específicos (Cali, Bogotá o Medellín) si están activos.
   const glampingsOrdenados =
     filtros?.cordenadasFilter && activarFiltrosUbicacion
       ? glampingsFiltrados.sort((a, b) => {
-          const userLat = filtros?.cordenadasFilter?.LATITUD ?? 0
-          const userLng = filtros?.cordenadasFilter?.LONGITUD ?? 0;
+          const userLat = filtros.cordenadasFilter?.LATITUD ?? 0;
+          const userLng = filtros.cordenadasFilter?.LONGITUD ?? 0;
           const distanciaA = calcularDistancia(
             userLat,
             userLng,
@@ -545,7 +547,6 @@ const ContenedorTarjetas: React.FC = () => {
         })
       : glampingsFiltrados;
 
-  // Limitar la cantidad de glampings mostrados según visibleCount
   const glampingsMostrados = glampingsOrdenados.slice(0, visibleCount);
 
   if (loading) {

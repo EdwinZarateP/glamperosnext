@@ -46,7 +46,7 @@ const medellin: React.FC = () => {
           property="og:description"
           content="Encuentra los mejores glampings cerca de Medellin. Disfruta la naturaleza con todas las comodidades. Reserva ahora."
         />
-        <meta property="og:url" content="https://glamperos.com/Medellin" />
+        <meta property="og:url" content="https://glamperos.com/medellin" />
         <meta
           property="og:image"
           content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
@@ -65,7 +65,7 @@ const medellin: React.FC = () => {
           content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://glamperos.com/Medellin" />
+        <link rel="canonical" href="https://glamperos.com/medellin" />
       </Head>
 
       <div className="Medellin-principal">

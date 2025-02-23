@@ -46,7 +46,7 @@ const bogota: React.FC = () => {
           property="og:description"
           content="Encuentra los mejores glampings cerca de Bogota. Disfruta la naturaleza con todas las comodidades. Reserva ahora."
         />
-        <meta property="og:url" content="https://glamperos.com/Bogota" />
+        <meta property="og:url" content="https://glamperos.com/bogota" />
         <meta
           property="og:image"
           content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"

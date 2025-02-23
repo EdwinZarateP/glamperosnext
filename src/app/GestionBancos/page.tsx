@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import DatosBancarios from "@/Componentes/DatosBancarios/index";
 import HeaderIcono from "@/Componentes/HeaderIcono";

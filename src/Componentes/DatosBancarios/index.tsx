@@ -4,10 +4,30 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import TraerDatosBancarios, { DatosBancariosProps } from "@/Funciones/TraerDatosBancarios";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import Swal from "sweetalert2";
 import "./estilos.css";
+
+
+interface MyLottieProps {
+  animationData: unknown;
+  loop?: boolean;
+  autoplay?: boolean;
+  style?: React.CSSProperties;
+}
+
+// Transformamos la importación de `lottie-react` a un componente que acepte MyLottieProps
+const Lottie = dynamic<MyLottieProps>(
+  () =>
+    import("lottie-react").then((mod) => {
+      // forzamos el default a un componente tipado
+      return mod.default as React.ComponentType<MyLottieProps>;
+    }),
+  {
+    ssr: false,
+  }
+);
 
 const DatosBancarios = () => {
   const idUsuario = Cookies.get("idUsuario") || "";
@@ -117,7 +137,12 @@ const DatosBancarios = () => {
     <div className="DatosBancarios-contenedor">
       {cargando ? (
         <div className="DatosBancarios-loader">
-          <Lottie animationData={animationData} loop autoplay style={{ height: 150 }} />
+          <Lottie
+            animationData={animationData}
+            loop={true}
+            autoplay={true}
+            style={{ height: 200, width: "100%", margin: "auto" }}
+          />
           <p className="DatosBancarios-mensaje">Cargando datos bancarios...</p>
         </div>
       ) : yaRegistrado ? (
@@ -201,7 +226,12 @@ const DatosBancarios = () => {
 
           {guardando ? (
             <div className="DatosBancarios-loader">
-              <Lottie animationData={animationData} loop autoplay style={{ height: 100 }} />
+              <Lottie
+                animationData={animationData}
+                loop={true}
+                autoplay={true}
+                style={{ height: 200, width: "100%", margin: "auto" }}
+              />
               <p className="DatosBancarios-mensaje">Guardando datos bancarios...</p>
             </div>
           ) : (

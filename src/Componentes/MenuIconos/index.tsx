@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useContext } from "react";
+import Link from "next/link";
 import {
   FaUmbrellaBeach,
   FaTemperatureArrowUp,
@@ -68,21 +69,9 @@ const MenuIconos: React.FC = () => {
 
   // Lista de iconos con sus acciones o links
   const iconos = [
-    {
-      titulo: "Cerca Bogota",
-      icono: <GiEagleEmblem />,
-      link: "/Bogota",
-    },
-    {
-      titulo: "Cerca Medellin",
-      icono: <PiCoffeeBeanFill />,
-      link: "/Medellin",
-    },
-    {
-      titulo: "Cerca Cali",
-      icono: <FaCat/>,
-      link: "/Cali",
-    },
+    { titulo: "Cerca Bogota", icono: <GiEagleEmblem />, link: "/Bogota" },
+    { titulo: "Cerca Medellin", icono: <PiCoffeeBeanFill />, link: "/Medellin" },
+    { titulo: "Cerca Cali", icono: <FaCat />, link: "/Cali" },
     { titulo: "Jacuzzi", icono: <FaHotTubPerson />, accion: setActivarFiltrosJacuzzi },
     { titulo: "Pet Friendly", icono: <MdOutlinePets />, accion: setActivarFiltrosMascotas },
     { titulo: "Domo", icono: <GiHabitatDome />, accion: setActivarFiltrosDomo },
@@ -103,26 +92,24 @@ const MenuIconos: React.FC = () => {
   ];
 
   /**
-   * Selecciona un icono. Si tiene link:
-   * - En pantallas menores de 900px => redirige en la misma pestaña
-   * - En pantallas mayores => abre nueva pestaña
+   * Función para manejar clic en elementos con link, con navegación amigable para SEO.
+   * En pantallas de escritorio se abre en nueva pestaña y en móviles en la misma.
+   */
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string, indice: number) => {
+    setIconoSeleccionado(indice);
+    if (window.innerWidth >= 900) {
+      e.preventDefault();
+      window.open(link, "_blank");
+    }
+    // En móviles se permite la navegación normal.
+  };
+
+  /**
+   * Selecciona un icono sin link (filtro interno)
    */
   const seleccionarIcono = (indice: number) => {
     setIconoSeleccionado(indice);
-    const link = iconos[indice].link;
-
-    if (link) {
-      if (window.innerWidth < 900) {
-        // Móvil o pantallas pequeñas: redirige en la misma pestaña
-        window.location.href = link;
-      } else {
-        // Escritorio: abre en una nueva pestaña
-        window.open(link, "_blank");
-      }
-      return;
-    }
-
-    // Si no tiene link, entonces es un filtro interno:
+    // Desactiva todos los filtros
     [
       setActivarFiltrosDomo,
       setActivarFiltrosTienda,
@@ -143,7 +130,7 @@ const MenuIconos: React.FC = () => {
       setActivarFiltrosJacuzzi,
       setActivarFiltrosUbicacion,
     ].forEach((fn) => fn(false));
-
+    // Activa el filtro correspondiente
     iconos[indice].accion?.(true);
   };
 
@@ -173,14 +160,28 @@ const MenuIconos: React.FC = () => {
 
           <div ref={contenedorListaRef} className="MenuIconos-lista-iconos">
             {iconos.map((elemento, indice) => (
-              <div
-                key={indice}
-                className={`MenuIconos-icono-item ${iconoSeleccionado === indice ? "MenuIconos-icono-seleccionado" : ""}`}
-                onClick={() => seleccionarIcono(indice)}
-              >
-                <div className="MenuIconos-icono">{elemento.icono}</div>
-                <span>{elemento.titulo}</span>
-              </div>
+              elemento.link ? (
+                <Link
+                  key={indice}
+                  href={elemento.link}
+                  onClick={(e) => handleLinkClick(e, elemento.link, indice)}
+                  className={`MenuIconos-icono-item ${iconoSeleccionado === indice ? "MenuIconos-icono-seleccionado" : ""}`}
+                  aria-label={`Filtrar por ${elemento.titulo}`}
+                >
+                  <div className="MenuIconos-icono">{elemento.icono}</div>
+                  <span>{elemento.titulo}</span>
+                </Link>
+              ) : (
+                <button
+                  key={indice}
+                  className={`MenuIconos-icono-item ${iconoSeleccionado === indice ? "MenuIconos-icono-seleccionado" : ""}`}
+                  onClick={() => seleccionarIcono(indice)}
+                  aria-label={`Filtrar por ${elemento.titulo}`}
+                >
+                  <div className="MenuIconos-icono">{elemento.icono}</div>
+                  <span>{elemento.titulo}</span>
+                </button>
+              )
             ))}
           </div>
 

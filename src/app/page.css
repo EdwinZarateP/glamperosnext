@@ -16,6 +16,17 @@
     display: none;
 }
 
+.Home-oculto-seo {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  
+
 /* 🔹 Responsive - Pantallas pequeñas (móviles) */
 @media (max-width: 479px) {
     .Home-principal {

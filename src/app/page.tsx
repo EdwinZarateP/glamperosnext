@@ -34,33 +34,6 @@ const Home: React.FC = () => {
           name="keywords"
           content="glamping Colombia, camping de lujo, turismo ecológico, alojamiento en la naturaleza"
         />
-        <meta
-          property="og:title"
-          content="Glamping en Colombia | Encuentra tu experiencia única"
-        />
-        <meta
-          property="og:description"
-          content="Descubre los mejores glampings en Colombia. Explora destinos únicos y vive una experiencia en la naturaleza con todas las comodidades."
-        />
-        <meta property="og:url" content="https://glamperos.com/" />
-        <meta
-          property="og:image"
-          content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
-        />
-        <meta property="og:type" content="website" />
-        <meta
-          name="twitter:title"
-          content="Glamping en Colombia | Encuentra tu experiencia única"
-        />
-        <meta
-          name="twitter:description"
-          content="Descubre los mejores glampings en Colombia. Explora destinos únicos y vive una experiencia en la naturaleza con todas las comodidades."
-        />
-        <meta
-          name="twitter:image"
-          content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
-        />
-        <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://glamperos.com/" />
       </Head>
 
@@ -71,13 +44,10 @@ const Home: React.FC = () => {
         {mostrarFiltros && <FiltrosContenedor />}
 
         <main>
-          <section>
-            <h1 className="Home-titulo-principal">
-              Descubre los Mejores Glampings en Colombia
-            </h1>
-            <p className="Home-descripcion">
-              Explora la naturaleza con comodidad y estilo. Encuentra el
-              glamping perfecto en cualquier rincón de Colombia.
+          <section className="Home-oculto-seo">
+            <h1>Descubre los Mejores Glampings en Colombia</h1>
+            <p>
+              Explora la naturaleza con comodidad y estilo. Encuentra el glamping perfecto en cualquier rincón de Colombia.
             </p>
           </section>
 

@@ -1,5 +1,3 @@
-// src/app/layout.tsx
-
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import Script from "next/script";
@@ -20,20 +18,17 @@ export const metadata: Metadata = {
   title: "Glamperos | Encuentra y reserva los mejores glampings en Colombia",
   description:
     "Descubre y reserva glampings exclusivos en los mejores destinos naturales de Colombia. Vive una experiencia única en alojamientos de lujo en medio de la naturaleza.",
-  
-  // Ajusta el viewport para dispositivos móviles
+
   viewport: {
     width: "device-width",
     initialScale: 1,
   },
 
-  // Indica a los motores de búsqueda que indexen y sigan enlaces
   robots: {
     index: true,
     follow: true,
   },
 
-  // Ajustes Open Graph
   openGraph: {
     title: "Glamperos | Encuentra y reserva los mejores glampings en Colombia",
     description:
@@ -52,10 +47,9 @@ export const metadata: Metadata = {
     type: "website",
   },
 
-  // Ajustes para Twitter Card
   twitter: {
     card: "summary_large_image",
-    site: "@glamperos", // Cambia si tienes una cuenta oficial de Twitter
+    site: "@glamperos",
     title: "Glamperos | Encuentra y reserva los mejores glampings en Colombia",
     description:
       "Descubre glampings exclusivos en Colombia y vive una experiencia de lujo en la naturaleza.",
@@ -64,7 +58,6 @@ export const metadata: Metadata = {
     ],
   },
 
-  // URL canónica
   alternates: {
     canonical: "https://glamperos.com",
   },
@@ -78,23 +71,23 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        {/* Favicon */}
+        {/* ✅ Favicon actualizado */}
         <link
           rel="icon"
           type="image/jpeg"
           href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
         />
 
-        {/* 
-          Google Maps API 
-          - "beforeInteractive" para que se cargue antes de que se ejecute tu app
-        */}
+        {/* ✅ Verificación de Google Search Console */}
+        <meta name="google-site-verification" content="TU-CODIGO-DE-VERIFICACION" />
+
+        {/* ✅ Google Maps API */}
         <Script
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP8Es7GVLkm_qdCItKb60pGH7ov_tEif0&libraries=places"
           strategy="beforeInteractive"
         />
 
-        {/* JSON-LD para mejorar SEO en Google (Organización/TravelAgency) */}
+        {/* ✅ JSON-LD para SEO */}
         <Script type="application/ld+json" strategy="afterInteractive">
           {`
             {
@@ -115,7 +108,7 @@ export default function RootLayout({
       <body className={openSans.className}>
         <ClientProviders>{children}</ClientProviders>
 
-        {/* Google Analytics (GA4) */}
+        {/* ✅ Google Analytics (GA4) */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-NXB4CM5T4H"

@@ -69,7 +69,7 @@ const medellin: React.FC = () => {
       </Head>
 
       <div className="Medellin-principal">
-        <HeaderDinamico title="Glamping cerca a Medellin" />
+        <HeaderDinamico title="Mejores Glamping cerca a Medellin" />
         <MenuIconos />
 
         {mostrarFiltros && <FiltrosContenedor />}
@@ -77,11 +77,13 @@ const medellin: React.FC = () => {
         <main>
           <section>
             <h1 className="Medellin-titulo-principal">
-              Descubre los Mejores Glampings cerca de Medellin
+              Mejores Glampings cerca a Medellin
             </h1>
             <p className="Medellin-descripcion">
-              Explora la naturaleza con comodidad y estilo. Encuentra el
-              glamping perfecto cerca de Medellin.
+            🌺Entre montañas de esmeralda y ríos que cantan, te espera un refugio donde el alma se encanta.
+            Cabañas de ensueño, bajo cielos dorados, susurros del viento, abrazos callados.          El café y las nubes danzan al alba,
+            mientras el sol besa la tierra y la calma. Despierta en un bosque, duerme con estrellas,
+            cerca a Medellín hay noches eternas. 🌄
             </p>
           </section>
 

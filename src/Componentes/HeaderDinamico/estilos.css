@@ -221,7 +221,7 @@
   }
   
   .HeaderDinamico-titulo {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #333;
   }
@@ -302,6 +302,11 @@
     }
     .HeaderDinamico-botonExplorar{
       display: none;
+    }
+
+    .HeaderDinamico-titulo {
+      max-width: 90%;
+      font-size: 1.2rem;
     }
   }
   

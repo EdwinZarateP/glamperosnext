@@ -80,7 +80,7 @@ const MenuIconos: React.FC = () => {
     {
       titulo: "Cerca Medellin",
       icono: <PiCoffeeBeanFill />,
-      link: `${DOMAIN}/medellin`,
+      link: `/medellin`,
     },
     {
       titulo: "Cerca Cali",

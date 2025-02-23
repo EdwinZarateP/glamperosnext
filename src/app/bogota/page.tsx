@@ -69,7 +69,7 @@ const bogota: React.FC = () => {
       </Head>
 
       <div className="Bogota-principal">
-        <HeaderDinamico title="Glamping cerca a Bogota" />
+        <HeaderDinamico title="Mejores Glampings cerca a Bogota" />
         <MenuIconos />
 
         {mostrarFiltros && <FiltrosContenedor />}
@@ -80,8 +80,10 @@ const bogota: React.FC = () => {
               Descubre los Mejores Glampings cerca de Bogota
             </h1>
             <p className="Bogota-descripcion">
-              Explora la naturaleza con comodidad y estilo. Encuentra el
-              glamping perfecto cerca de Bogota.
+              🏔️Bajo cielos grises, entre montes fríos,  glampings secretos te ofrecen su abrigo.
+              Brisa andina, neblina en la piel, el fuego encendido, un mágico hotel.
+              Aromas de páramo, susurros del río, el murmullo del bosque en ecos perdidos.
+              Bogotá se aleja, el tiempo se esconde, y en la montaña, el alma responde.🌲
             </p>
           </section>
 

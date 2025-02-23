@@ -69,7 +69,7 @@ const cali: React.FC = () => {
       </Head>
 
       <div className="Cali-principal">
-        <HeaderDinamico title="Glamping cerca a Cali" />
+        <HeaderDinamico title="Mejores Glampings cerca a Cali" />
         <MenuIconos />
 
         {mostrarFiltros && <FiltrosContenedor />}
@@ -77,11 +77,13 @@ const cali: React.FC = () => {
         <main>
           <section>
             <h1 className="Cali-titulo-principal">
-              Descubre los Mejores Glampings cerca de Cali
+              Mejores Glampings cerca a Cali
             </h1>
             <p className="Cali-descripcion">
-              Explora la naturaleza con comodidad y estilo. Encuentra el
-              glamping perfecto cerca de Cali.
+            🌺Brisa de azúcar, fuego del sol, Cali te envuelve en su mágico rol.
+            Ríos de vida, selvas en flor, una hamaca y el canto de un ruiseñor.
+            Aroma de tierra, noches de luna,  el Pacífico cerca, su voz oportuna.
+            Despierta en la brisa, duerme en la calma, el Valle del Cauca te abraza el alma. 🌙
             </p>
           </section>
 

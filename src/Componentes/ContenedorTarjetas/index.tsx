@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback, useContext } from "react";
 import { ContextoApp } from "@/context/AppContext";
 import Tarjeta from "@/Componentes/Tarjeta/index";
 import { precioConRecargo } from "@/Funciones/precioConRecargo";
+import FiltrosContenedor from "@/Componentes/FiltrosContenedor/index";
 import Cookies from "js-cookie";
 import "./estilos.css";
 
@@ -71,6 +72,7 @@ const ContenedorTarjetas: React.FC = () => {
     activarFiltrosCaminata,
     activarFiltrosDesierto,
     activarFiltrosJacuzzi,
+    mostrarFiltros
   } = almacenVariables;
 
   const [glampings, setGlampingsLocal] = useState<GlampingData[]>([]);
@@ -550,6 +552,7 @@ const ContenedorTarjetas: React.FC = () => {
           Cantidad_Huespedes_Adicional={glamping.Cantidad_Huespedes_Adicional}
         />
       ))}
+        {mostrarFiltros && <FiltrosContenedor />}
     </div>
   );
 };

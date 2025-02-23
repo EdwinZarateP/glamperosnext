@@ -106,7 +106,7 @@ const Header: React.FC = () => {
 
   return (
     <div className="contenedor-Header">
-      <header className="Header">
+      <div className="Header">
         <div className="Header-menuUsuarioLista">
           <MenuUsuario />
         </div>
@@ -177,7 +177,7 @@ const Header: React.FC = () => {
             {cantiadfiltrosAplicados > 0 && <div className="Header-badge">{cantiadfiltrosAplicados}</div>}
           </div>
         </div>
-      </header>
+      </div>
 
       {mostrarPanelBusqueda && <PanelBusqueda onBuscar={manejarBusqueda} onCerrar={cerrarPanelBusqueda} />}
     </div>

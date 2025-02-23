@@ -1,26 +1,12 @@
-"use client";
-
-import { useContext } from "react";
+// "use client";
 import Head from "next/head";
 import Header from "@/Componentes/Header";
 import ContenedorTarjetas from "@/Componentes/ContenedorTarjetas/index";
 import MenuIconos from "@/Componentes/MenuIconos";
-import FiltrosContenedor from "@/Componentes/FiltrosContenedor/index";
-import { ContextoApp } from "@/context/AppContext";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import "./page.css";
 
 const Home: React.FC = () => {
-  const contexto = useContext(ContextoApp);
-
-  if (!contexto) {
-    throw new Error(
-      "El contexto no está disponible. Asegúrate de envolver el componente con ProveedorContextoApp."
-    );
-  }
-
-  const { mostrarFiltros } = contexto;
-
   return (
     <>
       {/* 🔹 HEAD SEO */}
@@ -40,8 +26,6 @@ const Home: React.FC = () => {
       <div className="Home-principal">
         <Header />
         <MenuIconos />
-
-        {mostrarFiltros && <FiltrosContenedor />}
 
         <main>
           <section className="Home-oculto-seo">

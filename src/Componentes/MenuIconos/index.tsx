@@ -33,6 +33,9 @@ import { VscSettings } from "react-icons/vsc";
 import { ContextoApp } from "@/context/AppContext";
 import "./estilos.css"; 
 
+// Define tu dominio base
+const DOMAIN = "https://glamperos.com";
+
 const MenuIconos: React.FC = () => {
   const almacenVariables = useContext(ContextoApp);
 
@@ -67,22 +70,22 @@ const MenuIconos: React.FC = () => {
     setActivarFiltrosUbicacion,
   } = almacenVariables;
 
-  // Lista de iconos con sus acciones o links
+  // Lista de iconos con sus acciones o links (ahora en URLs absolutas)
   const iconos = [
     {
       titulo: "Cerca Bogota",
       icono: <GiEagleEmblem />,
-      link: "/Bogota",
+      link: `${DOMAIN}/Bogota`,
     },
     {
       titulo: "Cerca Medellin",
       icono: <PiCoffeeBeanFill />,
-      link: "/Medellin",
+      link: `${DOMAIN}/Medellin`,
     },
     {
       titulo: "Cerca Cali",
       icono: <FaCat />,
-      link: "/Cali",
+      link: `${DOMAIN}/Cali`,
     },
     { titulo: "Jacuzzi", icono: <FaHotTubPerson />, accion: setActivarFiltrosJacuzzi },
     { titulo: "Pet Friendly", icono: <MdOutlinePets />, accion: setActivarFiltrosMascotas },
@@ -107,7 +110,11 @@ const MenuIconos: React.FC = () => {
    * Función para manejar el clic en un elemento con link.
    * Si es escritorio, abre en una nueva pestaña; si es móvil, navega en la misma.
    */
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string, indice: number) => {
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    link: string,
+    indice: number
+  ) => {
     setIconoSeleccionado(indice);
     if (window.innerWidth >= 900) {
       e.preventDefault();

@@ -10,7 +10,7 @@ import { ContextoApp } from "@/context/AppContext";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
-const Cali: React.FC = () => {
+const cali: React.FC = () => {
   const contexto = useContext(ContextoApp);
 
   if (!contexto) {
@@ -94,4 +94,4 @@ const Cali: React.FC = () => {
   );
 };
 
-export default Cali;
+export default cali;

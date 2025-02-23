@@ -10,7 +10,7 @@ import { ContextoApp } from "@/context/AppContext";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
-const Medellin: React.FC = () => {
+const medellin: React.FC = () => {
   const contexto = useContext(ContextoApp);
 
   if (!contexto) {
@@ -94,4 +94,4 @@ const Medellin: React.FC = () => {
   );
 };
 
-export default Medellin;
+export default medellin;

@@ -31,9 +31,19 @@ import {
 } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
 import { ContextoApp } from "@/context/AppContext";
+import Image from "next/image";
 import "./estilos.css"; 
 
 // Define tu dominio base
+const iconoColombia = (
+  <Image 
+    src="/Imagenes/colombia.png" 
+    alt="Mapa de Colombia" 
+    width={30} 
+    height={30} 
+  />
+);
+
 const DOMAIN = "https://glamperos.com";
 
 const MenuIconos: React.FC = () => {
@@ -72,6 +82,11 @@ const MenuIconos: React.FC = () => {
 
   // Lista de iconos con sus acciones o links (ahora en URLs absolutas)
   const iconos = [
+    {
+      titulo: "Todo Colombia",
+      icono: iconoColombia,
+      link: `/`,
+    },
     {
       titulo: "Cerca Bogota",
       icono: <GiEagleEmblem />,

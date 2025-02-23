@@ -102,9 +102,6 @@ const HeaderDinamico: React.FC<HeaderDinamicoProps> = ({ title }) => {
         {/* 🔹 Sección nueva con el título y botón */}
         <div className="HeaderDinamico-centro">
           <h1 className="HeaderDinamico-titulo">{title}</h1>
-          {/* <button className="HeaderDinamico-botonExplorar" onClick={irAInicio}>
-            Explorar Colombia
-          </button> */}
         </div>
 
         {/* 🔹 Sección derecha con usuario y filtros */}

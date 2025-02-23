@@ -221,10 +221,13 @@
   }
   
   .HeaderDinamico-titulo {
-    font-size: 2rem;
+    display: flex;
+    font-size: 1.8rem;
     font-weight: bold;
-    color: #333;
+    color: #2F6B3E;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
   }
+
   
   .HeaderDinamico-botonExplorar {
     margin-top: 5px;
@@ -304,9 +307,11 @@
       display: none;
     }
 
-    .HeaderDinamico-titulo {
+    .HeaderDinamico-titulo {  
       max-width: 90%;
       font-size: 1.2rem;
+      justify-content: left;
+      align-items: left;
     }
   }
   

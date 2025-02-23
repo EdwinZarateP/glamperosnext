@@ -69,9 +69,21 @@ const MenuIconos: React.FC = () => {
 
   // Lista de iconos con sus acciones o links
   const iconos = [
-    { titulo: "Cerca Bogota", icono: <GiEagleEmblem />, link: "/Bogota" },
-    { titulo: "Cerca Medellin", icono: <PiCoffeeBeanFill />, link: "/Medellin" },
-    { titulo: "Cerca Cali", icono: <FaCat />, link: "/Cali" },
+    {
+      titulo: "Cerca Bogota",
+      icono: <GiEagleEmblem />,
+      link: "/Bogota",
+    },
+    {
+      titulo: "Cerca Medellin",
+      icono: <PiCoffeeBeanFill />,
+      link: "/Medellin",
+    },
+    {
+      titulo: "Cerca Cali",
+      icono: <FaCat />,
+      link: "/Cali",
+    },
     { titulo: "Jacuzzi", icono: <FaHotTubPerson />, accion: setActivarFiltrosJacuzzi },
     { titulo: "Pet Friendly", icono: <MdOutlinePets />, accion: setActivarFiltrosMascotas },
     { titulo: "Domo", icono: <GiHabitatDome />, accion: setActivarFiltrosDomo },
@@ -92,8 +104,8 @@ const MenuIconos: React.FC = () => {
   ];
 
   /**
-   * Función para manejar clic en elementos con link, con navegación amigable para SEO.
-   * En pantallas de escritorio se abre en nueva pestaña y en móviles en la misma.
+   * Función para manejar el clic en un elemento con link.
+   * Si es escritorio, abre en una nueva pestaña; si es móvil, navega en la misma.
    */
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string, indice: number) => {
     setIconoSeleccionado(indice);
@@ -101,7 +113,6 @@ const MenuIconos: React.FC = () => {
       e.preventDefault();
       window.open(link, "_blank");
     }
-    // En móviles se permite la navegación normal.
   };
 
   /**
@@ -130,6 +141,7 @@ const MenuIconos: React.FC = () => {
       setActivarFiltrosJacuzzi,
       setActivarFiltrosUbicacion,
     ].forEach((fn) => fn(false));
+
     // Activa el filtro correspondiente
     iconos[indice].accion?.(true);
   };
@@ -159,7 +171,7 @@ const MenuIconos: React.FC = () => {
           </div>
 
           <div ref={contenedorListaRef} className="MenuIconos-lista-iconos">
-            {iconos.map((elemento, indice) => (
+            {iconos.map((elemento, indice) =>
               elemento.link ? (
                 <Link
                   key={indice}
@@ -172,7 +184,7 @@ const MenuIconos: React.FC = () => {
                   <span>{elemento.titulo}</span>
                 </Link>
               ) : (
-                <button
+                <div
                   key={indice}
                   className={`MenuIconos-icono-item ${iconoSeleccionado === indice ? "MenuIconos-icono-seleccionado" : ""}`}
                   onClick={() => seleccionarIcono(indice)}
@@ -180,9 +192,9 @@ const MenuIconos: React.FC = () => {
                 >
                   <div className="MenuIconos-icono">{elemento.icono}</div>
                   <span>{elemento.titulo}</span>
-                </button>
+                </div>
               )
-            ))}
+            )}
           </div>
 
           <div className="MenuIconos-flecha-derecha" onClick={() => desplazar("derecha")}>
@@ -193,7 +205,9 @@ const MenuIconos: React.FC = () => {
         <div className="MenuIconos-settings" onClick={manejarClickAbrirFiltros}>
           <VscSettings />
           <span>Filtros</span>
-          {cantiadfiltrosAplicados > 0 && <div className="MenuIconos-badge">{cantiadfiltrosAplicados}</div>}
+          {cantiadfiltrosAplicados > 0 && (
+            <div className="MenuIconos-badge">{cantiadfiltrosAplicados}</div>
+          )}
         </div>
       </div>
     </div>

@@ -75,17 +75,17 @@ const MenuIconos: React.FC = () => {
     {
       titulo: "Cerca Bogota",
       icono: <GiEagleEmblem />,
-      link: `${DOMAIN}/Bogota`,
+      link: `${DOMAIN}/bogota`,
     },
     {
       titulo: "Cerca Medellin",
       icono: <PiCoffeeBeanFill />,
-      link: `${DOMAIN}/Medellin`,
+      link: `${DOMAIN}/medellin`,
     },
     {
       titulo: "Cerca Cali",
       icono: <FaCat />,
-      link: `${DOMAIN}/Cali`,
+      link: `${DOMAIN}/cali`,
     },
     { titulo: "Jacuzzi", icono: <FaHotTubPerson />, accion: setActivarFiltrosJacuzzi },
     { titulo: "Pet Friendly", icono: <MdOutlinePets />, accion: setActivarFiltrosMascotas },

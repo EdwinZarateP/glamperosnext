@@ -1,16 +1,14 @@
-import { NextResponse } from "next/server";
+import { MetadataRoute } from "next";
 
-export function GET() {
-  const robots = `
-    User-agent: *
-    Disallow: /api/
-    Allow: /
-    Sitemap: https://glamperos.com/sitemap.xml
-  `;
-
-  return new NextResponse(robots, {
-    headers: {
-      "Content-Type": "text/plain",
-    },
-  });
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin", "/dashboard"], // Ajusta según lo que quieras bloquear
+      },
+    ],
+    sitemap: "https://glamperos.com/sitemap.xml",
+  };
 }

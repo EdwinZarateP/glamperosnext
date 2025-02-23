@@ -4,37 +4,29 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import TraerDatosBancarios, { DatosBancariosProps } from "@/Funciones/TraerDatosBancarios";
-import dynamic from "next/dynamic";
+import Lottie from "lottie-react";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import Swal from "sweetalert2";
 import "./estilos.css";
 
-
-interface MyLottieProps {
-  animationData: unknown;
-  loop?: boolean;
-  autoplay?: boolean;
-  style?: React.CSSProperties;
-}
-
-// Transformamos la importación de `lottie-react` a un componente que acepte MyLottieProps
-const Lottie = dynamic<MyLottieProps>(
-  () =>
-    import("lottie-react").then((mod) => {
-      // forzamos el default a un componente tipado
-      return mod.default as React.ComponentType<MyLottieProps>;
-    }),
-  {
-    ssr: false,
-  }
-);
-
 const DatosBancarios = () => {
-  const idUsuario = Cookies.get("idUsuario") || ""; // Asegurar que sea string
+  const idUsuario = Cookies.get("idUsuario") || "";
 
-  const [datos, setDatos] = useState<DatosBancariosProps | null>(null);
+  // Estado para los datos del formulario
+  const [datos, setDatos] = useState<DatosBancariosProps>({
+    banco: "",
+    numeroCuenta: "",
+    tipoCuenta: "",
+    tipoDocumento: "",
+  });
+
+  // Estado para saber si ya hay datos registrados en la BD
+  const [yaRegistrado, setYaRegistrado] = useState(false);
+
+  // Estados para manejar carga, guardado y mensajes
   const [cargando, setCargando] = useState(false);
+  const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState("");
-  const [certificadoBancario, setCertificadoBancario] = useState<File | null>(null);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -42,8 +34,24 @@ const DatosBancarios = () => {
       setCargando(true);
       try {
         const datosBancarios = await TraerDatosBancarios(idUsuario);
-        if (datosBancarios) {
-          setDatos(datosBancarios);
+        // Si la API retorna datos y el campo 'banco' no está vacío, el usuario ya tiene datos registrados
+        if (datosBancarios && datosBancarios.banco) {
+          setDatos({
+            banco: datosBancarios.banco,
+            numeroCuenta: datosBancarios.numeroCuenta || "",
+            tipoCuenta: datosBancarios.tipoCuenta || "",
+            tipoDocumento: datosBancarios.tipoDocumento || "",
+          });
+          setYaRegistrado(true);
+        } else {
+          // No hay datos en la BD, se inicializan vacíos
+          setDatos({
+            banco: "",
+            numeroCuenta: "",
+            tipoCuenta: "",
+            tipoDocumento: "",
+          });
+          setYaRegistrado(false);
         }
       } catch (error) {
         setMensaje("Error al obtener los datos bancarios.");
@@ -55,72 +63,108 @@ const DatosBancarios = () => {
     cargarDatos();
   }, [idUsuario]);
 
-  const manejarCambioArchivo = (evento: React.ChangeEvent<HTMLInputElement>) => {
-    if (evento.target.files && evento.target.files.length > 0) {
-      setCertificadoBancario(evento.target.files[0]);
-    }
-  };
-
   const manejarEnvio = async () => {
-    if (!idUsuario || !datos) {
-      setMensaje("No se encontraron datos para actualizar.");
+    // Validar que todos los campos requeridos estén completos
+    if (!idUsuario) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se encontró el usuario.",
+      });
       return;
     }
 
-    setCargando(true);
-
-    const formData = new FormData();
-    formData.append("numeroCuenta", datos.numeroCuenta);
-    formData.append("tipoCuenta", datos.tipoCuenta);
-    formData.append("banco", datos.banco);
-    if (certificadoBancario) {
-      formData.append("certificadoBancario", certificadoBancario);
+    if (!datos.tipoDocumento || !datos.banco || !datos.tipoCuenta || !datos.numeroCuenta) {
+      Swal.fire({
+        icon: "error",
+        title: "Campos incompletos",
+        text: "Por favor, completa todos los campos.",
+      });
+      return;
     }
 
+    setGuardando(true);
     try {
       const respuesta = await axios.put(
         `https://glamperosapi.onrender.com/usuarios/${idUsuario}/banco`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          banco: datos.banco,
+          numeroCuenta: datos.numeroCuenta,
+          tipoCuenta: datos.tipoCuenta,
+          tipoDocumento: datos.tipoDocumento,
+        }
       );
+      Swal.fire({
+        icon: "success",
+        title: "¡Éxito!",
+        text: respuesta.data.message,
+      });
+      setYaRegistrado(true);
       setMensaje(respuesta.data.message);
     } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error al actualizar los datos bancarios.",
+      });
       setMensaje("Error al actualizar los datos bancarios.");
     } finally {
-      setCargando(false);
+      setGuardando(false);
     }
   };
 
   return (
     <div className="DatosBancarios-contenedor">
       {cargando ? (
-        <Lottie
-          animationData={animationData}
-          loop={true}
-          autoplay={true}
-          style={{ height: 200, width: "100%", margin: "auto" }}
-        />
-      ) : datos ? (
+        <div className="DatosBancarios-loader">
+          <Lottie animationData={animationData} loop autoplay style={{ height: 150 }} />
+          <p className="DatosBancarios-mensaje">Cargando datos bancarios...</p>
+        </div>
+      ) : yaRegistrado ? (
         <>
-          <h2 className="DatosBancarios-titulo">Actualizar Datos Bancarios</h2>
+          <h2 className="DatosBancarios-titulo">Datos Bancarios Registrados</h2>
+          <p className="DatosBancarios-mensaje">
+            Tienes una cuenta bancaria registrada. Si necesitas modificarla, envía un correo a{" "}
+            <strong>soporte@glamperos.com</strong> o contáctanos por WhatsApp al{" "}
+            <strong>+57 321 8695196</strong>.
+          </p>
+          <div className="DatosBancarios-resumen">
+            <p><strong>Banco:</strong> {datos.banco}</p>
+            <p><strong>Tipo de Cuenta:</strong> {datos.tipoCuenta}</p>
+            <p><strong>Número de Cuenta:</strong> {datos.numeroCuenta}</p>
+            <p><strong>Tipo de Documento:</strong> {datos.tipoDocumento}</p>
+          </div>
+        </>
+      ) : (
+        <>
+          <h2 className="DatosBancarios-titulo">Registrar Datos Bancarios</h2>
 
-          {/* Mostrar imagen del certificado si existe */}
-          {datos.certificadoBancario && (
-            <div className="DatosBancarios-certificado">
-              <p>Certificado Bancario:</p>
-              <img src={datos.certificadoBancario} alt="Certificado Bancario" className="CertificadoBancario-img" />              
-            </div>
-          )}
-
-          {/* Select para el Banco */}
+          <label className="DatosBancarios-etiqueta">Tipo de Documento</label>
           <select
             className="DatosBancarios-input"
-            value={datos.banco}
-            onChange={(e) => setDatos({ ...datos, banco: e.target.value })}
+            value={datos.tipoDocumento || ""}
+            onChange={(e) =>
+              setDatos((prev) => ({ ...prev, tipoDocumento: e.target.value }))
+            }
           >
+            <option value="">Selecciona un tipo de documento</option>
+            <option value="CC">Cédula de Ciudadanía</option>
+            <option value="NIT">NIT</option>
+            <option value="CE">Cédula de Extranjería</option>
+          </select>
+
+          <label className="DatosBancarios-etiqueta">Banco</label>
+          <select
+            className="DatosBancarios-input"
+            value={datos.banco || ""}
+            onChange={(e) =>
+              setDatos((prev) => ({ ...prev, banco: e.target.value }))
+            }
+          >
+            <option value="">Selecciona un banco</option>
             <option value="Bancolombia">Bancolombia</option>
             <option value="Davivienda">Davivienda</option>
-            <option value="Banco de Bogota">Banco de Bogotá</option>
+            <option value="Banco de Bogotá">Banco de Bogotá</option>
             <option value="Banco de Occidente">Banco de Occidente</option>
             <option value="Nu Bank">Nu Bank</option>
             <option value="BBVA">BBVA</option>
@@ -128,38 +172,46 @@ const DatosBancarios = () => {
             <option value="Citibank">Citibank</option>
           </select>
 
-          {/* Select para el Tipo de Cuenta */}
+          <label className="DatosBancarios-etiqueta">Tipo de Cuenta</label>
           <select
             className="DatosBancarios-input"
-            value={datos.tipoCuenta}
-            onChange={(e) => setDatos({ ...datos, tipoCuenta: e.target.value })}
+            value={datos.tipoCuenta || ""}
+            onChange={(e) =>
+              setDatos((prev) => ({ ...prev, tipoCuenta: e.target.value }))
+            }
           >
+            <option value="">Selecciona un tipo de cuenta</option>
             <option value="ahorros">Ahorros</option>
             <option value="corriente">Corriente</option>
           </select>
 
-          {/* Input para el Número de Cuenta */}
+          <label className="DatosBancarios-etiqueta">Número de Cuenta</label>
           <input
-            className="DatosBancarios-input"
+            className="DatosBancarios-input-Cuenta"
             type="text"
             placeholder="Número de Cuenta"
-            value={datos.numeroCuenta}
-            onChange={(e) => setDatos({ ...datos, numeroCuenta: e.target.value.replace(/\D/g, "") })}
+            value={datos.numeroCuenta || ""}
+            onChange={(e) =>
+              setDatos((prev) => ({
+                ...prev,
+                numeroCuenta: e.target.value.replace(/\D/g, ""),
+              }))
+            }
           />
 
-          {/* Input para subir un nuevo certificado */}
-          <input className="DatosBancarios-input" type="file" accept="image/*" onChange={manejarCambioArchivo} />
+          {guardando ? (
+            <div className="DatosBancarios-loader">
+              <Lottie animationData={animationData} loop autoplay style={{ height: 100 }} />
+              <p className="DatosBancarios-mensaje">Guardando datos bancarios...</p>
+            </div>
+          ) : (
+            <button className="DatosBancarios-boton" onClick={manejarEnvio}>
+              Guardar Datos Bancarios
+            </button>
+          )}
 
-          {/* Botón para enviar */}
-          <button className="DatosBancarios-boton" onClick={manejarEnvio}>
-            Actualizar
-          </button>
-
-          {/* Mensaje de confirmación o error */}
           {mensaje && <p className="DatosBancarios-mensaje">{mensaje}</p>}
         </>
-      ) : (
-        <p>No se encontraron datos bancarios.</p>
       )}
     </div>
   );

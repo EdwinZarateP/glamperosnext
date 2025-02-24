@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ContextoApp } from "@/context/AppContext";
 import { useMediaQuery } from "@/Funciones/useMediaQuery";
+import Swal from "sweetalert2";
 import "./estilos.css";
 
 interface Message {
@@ -15,9 +16,9 @@ interface Message {
 }
 
 const Conversaciones: React.FC = () => {
-  const isMobile = useMediaQuery('(max-width: 900px)');
+  const isMobile = useMediaQuery("(max-width: 900px)");
   const searchParams = useSearchParams();
-  const idReceptor = searchParams.get('idReceptor') || "";
+  const idReceptor = searchParams.get("idReceptor") || "";
   const router = useRouter();
 
   const almacenVariables = useContext(ContextoApp);
@@ -25,12 +26,7 @@ const Conversaciones: React.FC = () => {
     throw new Error("El contexto no está disponible.");
   }
 
-  const {
-    idUsuarioReceptor,
-    setIdUsuarioReceptor,
-    nombreUsuarioChat,
-    fotoUsuarioChat,
-  } = almacenVariables;
+  const { idUsuarioReceptor, setIdUsuarioReceptor, nombreUsuarioChat, fotoUsuarioChat } = almacenVariables;
 
   const [mensaje, setMensaje] = useState("");
   const [mensajes, setMensajes] = useState<Message[]>([]);
@@ -81,8 +77,35 @@ const Conversaciones: React.FC = () => {
     };
   }, [idEmisor, idReceptorURL, autoScroll]);
 
+  // Función para detectar si el mensaje contiene datos sensibles (teléfonos, correos o URLs)
+  const contieneDatosProhibidos = (texto: string) => {
+    const regexTelefono = /(\+?\d{1,4}[\s-]?)?(\(?\d{2,4}\)?[\s-]?)?\d{3,4}[\s-]?\d{4}/g;
+    const regexCorreo = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+    const regexURL = /(https?:\/\/[^\s]+)/g;
+    return regexTelefono.test(texto) || regexCorreo.test(texto) || regexURL.test(texto);
+  };
+
+  // Función para ocultar datos sensibles en los mensajes mostrados
+  const ocultarDatosProhibidos = (texto: string) => {
+    return texto
+      .replace(/(\+?\d{1,4}[\s-]?)?(\(?\d{2,4}\)?[\s-]?)?\d{3,4}[\s-]?\d{4}/g, "[Número oculto]")
+      .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, "[Correo oculto]")
+      .replace(/(https?:\/\/[^\s]+)/g, "[Enlace oculto]");
+  };
+
   const enviarMensaje = async () => {
     if (mensaje.trim() && idEmisor && idReceptorURL) {
+      // Validar si el mensaje contiene información prohibida
+      if (contieneDatosProhibidos(mensaje)) {
+        Swal.fire({
+          title: "Información no permitida",
+          text: "Por políticas, no es permitido enviar números de contacto, correos electrónicos o direcciones web por medio de esta plataforma.",
+          icon: "warning",
+          confirmButtonText: "Entendido",
+        });
+        return;
+      }
+
       const nuevoMensaje = {
         emisor: idEmisor,
         receptor: idReceptorURL,
@@ -127,33 +150,25 @@ const Conversaciones: React.FC = () => {
     <div className="ConversacionesContenedor">
       <div className="ConversacionesHeader">
         {isMobile && (
-          <button 
-          className="CerrarModalBoton"
-          onClick={() => router.push('/Mensajes')}
-        >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-          Volver
-        </button>
-        
+          <button className="CerrarModalBoton" onClick={() => router.push("/Mensajes")}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Volver
+          </button>
         )}
         {fotoUsuarioChat ? (
-          <img
-            src={fotoUsuarioChat || "/imagenes/placeholder.png"}
-            alt={nombreUsuarioChat}
-            className="ConversacionesFoto"
-          />
+          <img src={fotoUsuarioChat || "/imagenes/placeholder.png"} alt={nombreUsuarioChat} className="ConversacionesFoto" />
         ) : (
           <div className="ConversacionesIniciales">{obtenerIniciales(nombreUsuarioChat)}</div>
         )}
@@ -168,7 +183,7 @@ const Conversaciones: React.FC = () => {
               msg.emisor === idEmisor ? "ConversacionesEmisor" : "ConversacionesReceptor"
             }`}
           >
-            <span className="ConversacionesTexto">{msg.mensaje}</span>
+            <span className="ConversacionesTexto">{ocultarDatosProhibidos(msg.mensaje)}</span>
             <span className="ConversacionesTimestamp">{new Date(msg.timestamp).toLocaleString()}</span>
           </div>
         ))}

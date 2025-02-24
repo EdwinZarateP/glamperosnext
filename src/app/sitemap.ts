@@ -6,6 +6,7 @@ export default function sitemap() {
     { url: `${baseUrl}/medellin`, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/bogota`, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/cali`, lastModified: new Date().toISOString() },
+    { url: `${baseUrl}/glampings`, lastModified: new Date().toISOString() },  
   ];
 }
 

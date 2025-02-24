@@ -3,8 +3,8 @@
     top: 70px;
     left: 0;
     display: flex;
-    justify-content: center; /* Centrar contenido horizontalmente */
-    align-items: center;    /* Centrar contenido verticalmente */
+    justify-content: center; 
+    align-items: center;
     height: 80px;
     width: 100%;
     background-color: white;
@@ -28,9 +28,7 @@
   }
   
   .MenuIconos-lista-iconos {
-    flex-grow: 0; /* No crece */
-    flex-shrink: 1; /* Puede reducirse si es necesario */
-    flex-basis: auto; /* Su tamaño depende del contenido */
+    height: 100%;
     display: flex;
     align-items: center;
     overflow-x: auto; /* Habilita el scroll horizontal */

@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import { useEffect, useState, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -44,6 +44,9 @@ const Lottie = dynamic<MyLottieProps>(
   }
 );
 
+// ------------------------------------------------------------------------------------
+// Tipos para Glamping y Propietario
+// ------------------------------------------------------------------------------------
 interface Glamping {
   nombreGlamping: string;
   ciudad_departamento: string;
@@ -64,9 +67,16 @@ interface Propietario {
 }
 
 // ------------------------------------------------------------------------------------
+// Definimos la interfaz de props que recibirá el componente Reservacion
+// ------------------------------------------------------------------------------------
+interface ReservacionProps {
+  onLoaded?: () => void; 
+}
+
+// ------------------------------------------------------------------------------------
 // Componente principal: Reservacion
 // ------------------------------------------------------------------------------------
-const Reservacion = () => {
+const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   // Contexto global de la aplicación
   const contexto = useContext(ContextoApp);
   const searchParams = useSearchParams();
@@ -142,6 +152,7 @@ const Reservacion = () => {
 
   // ------------------------------------------------------------------------------------
   // Efecto para obtener los datos del propietario del glamping
+  // Y notificar con onLoaded() que la data está lista
   // ------------------------------------------------------------------------------------
   useEffect(() => {
     const fetchPropietario = async () => {
@@ -153,13 +164,18 @@ const Reservacion = () => {
             whatsapp: data.telefono || "Usuario sin teléfono",
             correoPropietario: data.email || "Usuario sin correo",
           });
+          // Llamamos onLoaded una vez se tiene el propietario
+          onLoaded?.();
         } catch (error) {
           console.error("Error fetching propietario:", error);
         }
+      } else {
+        // Si no hay propietario, igual notificamos que ya cargamos algo
+        onLoaded?.();
       }
     };
     fetchPropietario();
-  }, [glamping]);
+  }, [glamping, onLoaded]);
 
   // ------------------------------------------------------------------------------------
   // Función para formatear números a moneda COP
@@ -223,28 +239,46 @@ const Reservacion = () => {
 
     try {
       const fechasReservadas = await ObtenerFechasReservadas(glampingId);
-      const rangoSeleccionado = generarFechasRango(fechaInicioDesencriptada, fechaFinDesencriptada);
+      const rangoSeleccionado = generarFechasRango(
+        fechaInicioDesencriptada,
+        fechaFinDesencriptada
+      );
+      // Removemos el último día para evitar traslape en check-out
       rangoSeleccionado.pop();
 
-      if (fechasReservadas && fechasReservadas.some((fecha) => rangoSeleccionado.includes(fecha))) {
+      // Verificamos si alguna fecha de ese rango ya está ocupada
+      if (
+        fechasReservadas &&
+        fechasReservadas.some((fecha) => rangoSeleccionado.includes(fecha))
+      ) {
         Swal.fire({
           title: "Fecha no disponible",
           text: `No se puede reservar las fechas del ${new Date(
             `${fechaInicioDesencriptada}T12:00:00`
-          ).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })} al ${new Date(
+          ).toLocaleDateString("es-ES", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })} al ${new Date(
             `${fechaFinDesencriptada}T12:00:00`
-          ).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })} porque ya están reservadas.`,
+          ).toLocaleDateString("es-ES", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })} porque ya están reservadas.`,
           icon: "error",
           confirmButtonText: "Aceptar",
         });
         return;
       }
 
+      // Creamos la reserva
       const creacionReserva = await CrearReserva({
         idCliente: id_Cliente ?? "sin id",
         idPropietario: glamping.propietario_id ?? "Propietario no registrado",
         idGlamping: glampingId,
-        ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
+        ciudad_departamento:
+          glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
         fechaInicio: new Date(fechaInicioDesencriptada),
         fechaFin: new Date(fechaFinDesencriptada),
         totalDiasNum: Number(totalDiasDesencriptados),
@@ -256,6 +290,7 @@ const Reservacion = () => {
         mascotasDesencriptadas,
       });
 
+      // Si la reserva fue exitosa, actualizamos fechas y enviamos notificaciones
       if (creacionReserva?.reserva) {
         await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
 
@@ -296,19 +331,25 @@ const Reservacion = () => {
           direccionGlamping: glamping.direccion ?? "Glamping sin direccion",
           latitud: Number(glamping?.ubicacion?.lat),
           longitud: Number(glamping?.ubicacion?.lng),
-          nombreCliente: nombreUsuarioCookie ? nombreUsuarioCookie.split(" ")[0] : "Estimado(a)",
+          nombreCliente: nombreUsuarioCookie
+            ? nombreUsuarioCookie.split(" ")[0]
+            : "Estimado(a)",
         });
 
         await enviarWhatsAppPropietario({
           numero: propietario?.whatsapp ?? "sin teléfono",
-          nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
+          nombrePropietario: propietario?.nombreDueno
+            ? propietario.nombreDueno.split(" ")[0]
+            : "Estimado(a)",
           nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
           fechaInicio: new Date(fechaInicioDesencriptada).toISOString().split("T")[0],
           fechaFin: new Date(fechaFinDesencriptada).toISOString().split("T")[0],
         });
 
         lanzarConfetti();
-        router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
+        router.push(
+          `/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`
+        );
       } else {
         console.error("Error al procesar la reserva.");
       }
@@ -346,7 +387,8 @@ const Reservacion = () => {
                 <strong>
                   {formatoPesos(
                     Math.round(
-                      Number(totalFinalDesencriptado) / Number(totalDiasDesencriptados)
+                      Number(totalFinalDesencriptado) /
+                        Number(totalDiasDesencriptados)
                     )
                   )}{" "}
                   / noche
@@ -373,7 +415,9 @@ const Reservacion = () => {
               </p>
               <p className="Reservacion-total">
                 Total:{" "}
-                <strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado)))}</strong>
+                <strong>
+                  {formatoPesos(Math.round(Number(totalFinalDesencriptado)))}
+                </strong>
               </p>
             </div>
 

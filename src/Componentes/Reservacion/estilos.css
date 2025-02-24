@@ -146,10 +146,13 @@
 /* 🎬 Contenedor del Lottie cuando se carga la reserva */
 .lottie-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  height: 150px;
+  width: 150px;
+  background: transparent; /* Asegura que no se oculta */
 }
+
 
 .loading-text {
   margin-top: 10px;

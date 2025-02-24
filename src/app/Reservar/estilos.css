@@ -1,7 +1,15 @@
-.Reservar-contenedor{
+.Reservar-contenedor {
     display: flex;
+    flex-direction: column; /* Para apilar Header, Lottie y Reservacion verticalmente */
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+}
+
+.lottie-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0; /* Espacio opcional para separar la animación de los otros componentes */
 }

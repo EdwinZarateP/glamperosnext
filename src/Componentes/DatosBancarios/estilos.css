@@ -3,23 +3,55 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 25px;               /* Un poco más de padding para dar más aire */
+  padding: 30px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  max-width: 450px;
-  margin: 30px auto;           /* Añadimos un poco de margen vertical */
+  border-radius: 12px;
+  max-width: 500px;
+  margin: 40px auto;
   background-color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 /* Título */
 .DatosBancarios-titulo {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   font-weight: bold;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   text-align: center;
-  letter-spacing: 0.5px;       /* Suave espaciado entre letras */
+  letter-spacing: 0.5px;
+}
+
+/* Mensaje informativo */
+.DatosBancarios-mensaje {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  width: 90%;
+}
+
+/* Caja de datos bancarios */
+.DatosBancarios-resumen {
+  width: 100%;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.DatosBancarios-resumen p {
+  font-size: 1.1rem;
+  color: #222;
+  font-weight: 500;
+  padding: 8px 0;
+  margin: 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.DatosBancarios-resumen p:last-child {
+  border-bottom: none;
 }
 
 /* Etiquetas */
@@ -28,27 +60,16 @@
   font-size: 1rem;
   font-weight: bold;
   color: #555;
-  margin: 10px 0 5px;         /* Separación más clara del input anterior */
+  margin: 15px 0 8px;
   display: block;
-}
-
-/* Etiquetas */
-.DatosBancarios-input-Cuenta {
-  width: 90%;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
-  background-color: #fff;
+  text-align: left;
 }
 
 /* Inputs y selects */
-.DatosBancarios-input {
+.DatosBancarios-input, .DatosBancarios-input-Cuenta {
   width: 100%;
   padding: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
@@ -56,15 +77,15 @@
   background-color: #fff;
 }
 
-/* Placeholder más suave */
-.DatosBancarios-input::placeholder {
+/* Placeholder */
+.DatosBancarios-input::placeholder, .DatosBancarios-input-Cuenta::placeholder {
   color: #999;
 }
 
-/* Efecto cuando el usuario selecciona un input */
-.DatosBancarios-input:focus {
+/* Efecto al seleccionar un input */
+.DatosBancarios-input:focus, .DatosBancarios-input-Cuenta:focus {
   border-color: #2F6B3E;
-  box-shadow: 0 0 5px rgba(47, 107, 62, 0.3);
+  box-shadow: 0 0 6px rgba(47, 107, 62, 0.3);
   outline: none;
 }
 
@@ -80,39 +101,27 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.2s ease;
+  margin-top: 15px;
 }
 
-/* Efecto hover en el botón */
+/* Hover en botón */
 .DatosBancarios-boton:hover {
   background-color: #24552a;
-  transform: scale(1.02);
+  transform: scale(1.03);
 }
 
-/* Mensaje de éxito o error */
-.DatosBancarios-mensaje {
-  margin-top: 10px;
+/* Loader */
+.DatosBancarios-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.DatosBancarios-loader p {
   font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-/* Estilo cuando hay un mensaje de error */
-.DatosBancarios-mensaje.error {
-  color: red;
-}
-
-/* Estilo cuando hay un mensaje de éxito */
-.DatosBancarios-mensaje.exito {
-  color: green;
-}
-
-/* Loader mientras carga los datos */
-.DatosBancarios-cargando {
-  width: 100%;
-  text-align: center;
-  font-size: 1rem;
-  font-weight: bold;
   color: #2F6B3E;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
 /* Responsividad para dispositivos móviles */
@@ -123,13 +132,21 @@
     margin: 20px auto;
   }
 
-  .DatosBancarios-input, 
+  .DatosBancarios-titulo {
+    font-size: 1.6rem;
+  }
+
+  .DatosBancarios-mensaje {
+    font-size: 1rem;
+    width: 100%;
+  }
+
+  .DatosBancarios-resumen p {
+    font-size: 1rem;
+  }
+
   .DatosBancarios-boton {
     font-size: 0.95rem;
     padding: 10px;
-  }
-
-  .DatosBancarios-titulo {
-    font-size: 1.5rem;
   }
 }

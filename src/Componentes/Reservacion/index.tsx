@@ -15,7 +15,6 @@ import { enviarWhatsAppPropietario } from "@/Funciones/enviarWhatsAppPropietario
 import InputTelefono from "@/Componentes/InputTelefono/index";
 import { ContextoApp } from "@/context/AppContext";
 import Politicas from "@/Componentes/Politica/index";
-import confetti from "canvas-confetti";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
@@ -164,13 +163,12 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
             whatsapp: data.telefono || "Usuario sin teléfono",
             correoPropietario: data.email || "Usuario sin correo",
           });
-          // Llamamos onLoaded una vez se tiene el propietario
+          // Notificamos que la data ya se cargó
           onLoaded?.();
         } catch (error) {
           console.error("Error fetching propietario:", error);
         }
       } else {
-        // Si no hay propietario, igual notificamos que ya cargamos algo
         onLoaded?.();
       }
     };
@@ -205,16 +203,43 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   };
 
   // ------------------------------------------------------------------------------------
-  // Función para lanzar confetti (explosión de celebración)
+  // Función para lanzar confetti (celebración)
   // ------------------------------------------------------------------------------------
-  const lanzarConfetti = () => {
-    confetti.create(undefined, { resize: true, useWorker: true })({
-      particleCount: 200,
-      spread: 120,
-      origin: { x: 0.5, y: 0.5 },
-      zIndex: 1001,
-    });
+  const lanzarConfetti = async () => {
+    if (typeof window !== "undefined") {
+      // Importamos dinámicamente canvas-confetti
+      const confettiModule = await import("canvas-confetti");
+      const confetti = confettiModule.default;
+  
+      // Crear un nuevo canvas para el confeti
+      const canvas = document.createElement("canvas");
+      canvas.style.position = "fixed";
+      canvas.style.top = "0";
+      canvas.style.left = "0";
+      canvas.style.width = "100vw";
+      canvas.style.height = "100vh";
+      canvas.style.pointerEvents = "none";
+      canvas.style.zIndex = "9999";
+  
+      document.body.appendChild(canvas);
+      
+      // Creamos una instancia de confetti en el nuevo canvas
+      const confettiInstance = confetti.create(canvas, { resize: true, useWorker: true });
+  
+      // Disparamos el confeti
+      confettiInstance({
+        particleCount: 200,
+        spread: 120,
+        origin: { x: 0.5, y: 0.5 },
+      });
+  
+      // Opcional: Eliminar el canvas después de un tiempo para evitar que se acumule en el DOM
+      setTimeout(() => {
+        document.body.removeChild(canvas);
+      }, 5000); // 5 segundos después se elimina
+    }
   };
+  
 
   // ------------------------------------------------------------------------------------
   // Función principal: Manejo de la confirmación de la reserva
@@ -246,7 +271,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       // Removemos el último día para evitar traslape en check-out
       rangoSeleccionado.pop();
 
-      // Verificamos si alguna fecha de ese rango ya está ocupada
       if (
         fechasReservadas &&
         fechasReservadas.some((fecha) => rangoSeleccionado.includes(fecha))
@@ -272,7 +296,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         return;
       }
 
-      // Creamos la reserva
       const creacionReserva = await CrearReserva({
         idCliente: id_Cliente ?? "sin id",
         idPropietario: glamping.propietario_id ?? "Propietario no registrado",
@@ -290,7 +313,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         mascotasDesencriptadas,
       });
 
-      // Si la reserva fue exitosa, actualizamos fechas y enviamos notificaciones
       if (creacionReserva?.reserva) {
         await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
 
@@ -342,8 +364,12 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
             ? propietario.nombreDueno.split(" ")[0]
             : "Estimado(a)",
           nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
-          fechaInicio: new Date(fechaInicioDesencriptada).toISOString().split("T")[0],
-          fechaFin: new Date(fechaFinDesencriptada).toISOString().split("T")[0],
+          fechaInicio: new Date(fechaInicioDesencriptada)
+            .toISOString()
+            .split("T")[0],
+          fechaFin: new Date(fechaFinDesencriptada)
+            .toISOString()
+            .split("T")[0],
         });
 
         lanzarConfetti();

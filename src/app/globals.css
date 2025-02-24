@@ -1,10 +1,25 @@
 /* styles/globals.css */
 body {
   box-sizing: border-box;
-  font-family: 'Lato','Open Sans','Montserrat','Pacifico','Merriweather',  'sans-serif', 'Playfair Display';
+  font-family: 'Lato', 'Open Sans', 'Montserrat', 'Pacifico', 'Merriweather', 'sans-serif', 'Playfair Display';
   margin: 0;
   padding: 0;
   background-color: #fefefe;
-  -webkit-tap-highlight-color: transparent;
-  margin: 0;
+  color: black;
+  -webkit-tap-highlight-color: transparent; /* Evita el resaltado azul en toques móviles */
+}
+
+/* Evitar la selección de texto en toda la página */
+* {
+  user-select: none;
+}
+
+/* Evitar el sombreado azul al hacer clic en botones y enlaces */
+button, a, input, textarea {
+  outline: none;
+}
+
+/* Desactivar tooltips automáticos en elementos con title */
+*[title] {
+  pointer-events: none;
 }

@@ -35,13 +35,15 @@ interface MyLottieProps {
 const Lottie = dynamic<MyLottieProps>(
   () =>
     import("lottie-react").then((mod) => {
-      // Forzamos el default a un componente tipado
       return mod.default as React.ComponentType<MyLottieProps>;
     }),
   {
     ssr: false,
   }
 );
+
+// Importamos el componente de confeti dinámicamente
+const ConfettiEffect = dynamic(() => import("@/Componentes/ConfettiEffect"), { ssr: false });
 
 // ------------------------------------------------------------------------------------
 // Tipos para Glamping y Propietario
@@ -76,18 +78,17 @@ interface ReservacionProps {
 // Componente principal: Reservacion
 // ------------------------------------------------------------------------------------
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
-  // Contexto global de la aplicación
   const contexto = useContext(ContextoApp);
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Extraer datos desde Cookies
   const id_Cliente = Cookies.get("idUsuario");
   const telefonoUsuarioCookie = Cookies.get("telefonoUsuario");
   const nombreUsuarioCookie = Cookies.get("nombreUsuario");
 
-  // Estado para mostrar la animación Lottie durante la carga
   const [loading, setLoading] = useState(false);
+  // Estado para mostrar el confeti
+  const [showConfetti, setShowConfetti] = useState(false);
 
   if (!contexto) {
     throw new Error(
@@ -95,9 +96,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     );
   }
 
-  // ------------------------------------------------------------------------------------
-  // Extracción y desencriptación de los query parameters
-  // ------------------------------------------------------------------------------------
   const glampingId = searchParams.get("glampingId") ?? "";
   const fechaInicioDesencriptada = searchParams.get("fechaInicio")
     ? decryptData(decodeURIComponent(searchParams.get("fechaInicio")!))
@@ -127,14 +125,10 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     ? decryptData(decodeURIComponent(searchParams.get("mascotas")!))
     : "0";
 
-  // Estados para almacenar la información de glamping y propietario
   const [glamping, setGlamping] = useState<Glamping | null>(null);
   const [propietario, setPropietario] = useState<Propietario | null>(null);
   const { verPolitica, setVerPolitica } = contexto;
 
-  // ------------------------------------------------------------------------------------
-  // Efecto para obtener los datos del glamping
-  // ------------------------------------------------------------------------------------
   useEffect(() => {
     const fetchGlamping = async () => {
       if (glampingId) {
@@ -149,10 +143,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     fetchGlamping();
   }, [glampingId]);
 
-  // ------------------------------------------------------------------------------------
-  // Efecto para obtener los datos del propietario del glamping
-  // Y notificar con onLoaded() que la data está lista
-  // ------------------------------------------------------------------------------------
   useEffect(() => {
     const fetchPropietario = async () => {
       if (glamping?.propietario_id) {
@@ -163,7 +153,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
             whatsapp: data.telefono || "Usuario sin teléfono",
             correoPropietario: data.email || "Usuario sin correo",
           });
-          // Notificamos que la data ya se cargó
           onLoaded?.();
         } catch (error) {
           console.error("Error fetching propietario:", error);
@@ -175,9 +164,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     fetchPropietario();
   }, [glamping, onLoaded]);
 
-  // ------------------------------------------------------------------------------------
-  // Función para formatear números a moneda COP
-  // ------------------------------------------------------------------------------------
   const formatoPesos = (valor: number): string => {
     return `${valor.toLocaleString("es-CO", {
       style: "currency",
@@ -186,9 +172,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     })}`;
   };
 
-  // ------------------------------------------------------------------------------------
-  // Función para generar un rango de fechas (formato YYYY-MM-DD)
-  // ------------------------------------------------------------------------------------
   const generarFechasRango = (inicio: string, fin: string): string[] => {
     const fechas: string[] = [];
     let fechaActual = new Date(inicio);
@@ -198,57 +181,14 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       fechas.push(fechaActual.toISOString().split("T")[0]);
       fechaActual.setDate(fechaActual.getDate() + 1);
     }
-
     return fechas;
   };
 
-  // ------------------------------------------------------------------------------------
-  // Función para lanzar confetti (celebración)
-  // ------------------------------------------------------------------------------------
-  const lanzarConfetti = async () => {
-    if (typeof window !== "undefined") {
-      // Importamos dinámicamente canvas-confetti
-      const confettiModule = await import("canvas-confetti");
-      const confetti = confettiModule.default;
-  
-      // Crear un nuevo canvas para el confeti
-      const canvas = document.createElement("canvas");
-      canvas.style.position = "fixed";
-      canvas.style.top = "0";
-      canvas.style.left = "0";
-      canvas.style.width = "100vw";
-      canvas.style.height = "100vh";
-      canvas.style.pointerEvents = "none";
-      canvas.style.zIndex = "9999";
-  
-      document.body.appendChild(canvas);
-      
-      // Creamos una instancia de confetti en el nuevo canvas
-      const confettiInstance = confetti.create(canvas, { resize: true, useWorker: true });
-  
-      // Disparamos el confeti
-      confettiInstance({
-        particleCount: 200,
-        spread: 120,
-        origin: { x: 0.5, y: 0.5 },
-      });
-  
-      // Opcional: Eliminar el canvas después de un tiempo para evitar que se acumule en el DOM
-      setTimeout(() => {
-        document.body.removeChild(canvas);
-      }, 5000); // 5 segundos después se elimina
-    }
-  };
-  
-
-  // ------------------------------------------------------------------------------------
-  // Función principal: Manejo de la confirmación de la reserva
-  // ------------------------------------------------------------------------------------
   const handleConfirmarReserva = async () => {
     if (telefonoUsuarioCookie === "sintelefono") {
       Swal.fire({
         title: "😳 Estas muy cerca",
-        text: "Es necesario registrar tu número de WhatsApp para poder enviarte los detalles de tu reserva y compartir tu contacto con el anfitrión.",
+        text: "Es necesario registrar tu número de WhatsApp para enviarte los detalles de tu reserva y compartir tu contacto con el anfitrión.",
         icon: "warning",
         confirmButtonText: "Aceptar",
       });
@@ -264,11 +204,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
 
     try {
       const fechasReservadas = await ObtenerFechasReservadas(glampingId);
-      const rangoSeleccionado = generarFechasRango(
-        fechaInicioDesencriptada,
-        fechaFinDesencriptada
-      );
-      // Removemos el último día para evitar traslape en check-out
+      const rangoSeleccionado = generarFechasRango(fechaInicioDesencriptada, fechaFinDesencriptada);
       rangoSeleccionado.pop();
 
       if (
@@ -300,8 +236,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         idCliente: id_Cliente ?? "sin id",
         idPropietario: glamping.propietario_id ?? "Propietario no registrado",
         idGlamping: glampingId,
-        ciudad_departamento:
-          glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
+        ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
         fechaInicio: new Date(fechaInicioDesencriptada),
         fechaFin: new Date(fechaFinDesencriptada),
         totalDiasNum: Number(totalDiasDesencriptados),
@@ -353,29 +288,22 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
           direccionGlamping: glamping.direccion ?? "Glamping sin direccion",
           latitud: Number(glamping?.ubicacion?.lat),
           longitud: Number(glamping?.ubicacion?.lng),
-          nombreCliente: nombreUsuarioCookie
-            ? nombreUsuarioCookie.split(" ")[0]
-            : "Estimado(a)",
+          nombreCliente: nombreUsuarioCookie ? nombreUsuarioCookie.split(" ")[0] : "Estimado(a)",
         });
 
         await enviarWhatsAppPropietario({
           numero: propietario?.whatsapp ?? "sin teléfono",
-          nombrePropietario: propietario?.nombreDueno
-            ? propietario.nombreDueno.split(" ")[0]
-            : "Estimado(a)",
+          nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
           nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
-          fechaInicio: new Date(fechaInicioDesencriptada)
-            .toISOString()
-            .split("T")[0],
-          fechaFin: new Date(fechaFinDesencriptada)
-            .toISOString()
-            .split("T")[0],
+          fechaInicio: new Date(fechaInicioDesencriptada).toISOString().split("T")[0],
+          fechaFin: new Date(fechaFinDesencriptada).toISOString().split("T")[0],
         });
 
-        lanzarConfetti();
-        router.push(
-          `/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`
-        );
+        // Activamos el confeti y, tras 2 segundos, redirigimos a la página de Gracias
+        setShowConfetti(true);
+        setTimeout(() => {
+          router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
+        }, 2000);
       } else {
         console.error("Error al procesar la reserva.");
       }
@@ -388,6 +316,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
 
   return (
     <div className="Reservacion-contenedor">
+      {showConfetti && <ConfettiEffect />}
       {glamping && (
         <div className="Reservacion-card">
           <div className="Reservacion-imagen-container">
@@ -412,28 +341,26 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
               <p>
                 <strong>
                   {formatoPesos(
-                    Math.round(
-                      Number(totalFinalDesencriptado) /
-                        Number(totalDiasDesencriptados)
-                    )
+                    Math.round(Number(totalFinalDesencriptado) / Number(totalDiasDesencriptados))
                   )}{" "}
                   / noche
                 </strong>
               </p>
               <p>
-                {new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString(
-                  "es-ES",
-                  { day: "numeric", month: "short", year: "numeric" }
-                )}{" "}
+                {new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}{" "}
                 -{" "}
-                {new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString(
-                  "es-ES",
-                  { day: "numeric", month: "short", year: "numeric" }
-                )}
+                {new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
               </p>
               <p>
-                {adultosDesencriptados} Adultos, {ninosDesencriptados} Niños,{" "}
-                {bebesDesencriptados} Bebés, {mascotasDesencriptadas} Mascotas
+                {adultosDesencriptados} Adultos, {ninosDesencriptados} Niños, {bebesDesencriptados} Bebés, {mascotasDesencriptadas} Mascotas
               </p>
               <p>
                 Tarifa de Glamperos:{" "}
@@ -441,9 +368,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
               </p>
               <p className="Reservacion-total">
                 Total:{" "}
-                <strong>
-                  {formatoPesos(Math.round(Number(totalFinalDesencriptado)))}
-                </strong>
+                <strong>{formatoPesos(Math.round(Number(totalFinalDesencriptado)))}</strong>
               </p>
             </div>
 

@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";

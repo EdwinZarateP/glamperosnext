@@ -114,29 +114,45 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   );
   const precioFinalNoche = precioConTarifa / totalDiasUrl;
 
+  const verificarFavorito = async (): Promise<boolean> => {
+    try {
+      const respuesta = await axios.get("https://glamperosapi.onrender.com/favoritos/buscar", {
+        params: { usuario_id: idUsuarioCookie, glamping_id: glampingId }
+      });
+      return respuesta.data.favorito_existe;
+    } catch (error) {
+      console.error("Error al verificar favorito:", error);
+      return false;
+    }
+  }; 
+
   const handleFavoritoChange = async () => {
     if (!idUsuarioCookie) {
       router.push("/RegistroPag");
       return;
     }
-
+  
     try {
       const nuevoEstado = !esFavorito;
-      // Aquí se inserta el "pop" que da vida al clic, como el latido de un corazón      
-      
       audio.play();
       setEsFavorito(nuevoEstado);
       onFavoritoChange(nuevoEstado);
-
+  
       if (nuevoEstado) {
         await axios.post("https://glamperosapi.onrender.com/favoritos/", {
           usuario_id: idUsuarioCookie,
           glamping_id: glampingId,
         });
       } else {
-        await axios.delete(
-          `https://glamperosapi.onrender.com/favoritos/?usuario_id=${idUsuarioCookie}&glamping_id=${glampingId}`
-        );
+        const existe = await verificarFavorito();
+        if (!existe) {
+          console.warn("El favorito ya fue eliminado, no es necesario hacer otra petición.");
+          return;
+        }
+  
+        await axios.delete("https://glamperosapi.onrender.com/favoritos/", {
+          params: { usuario_id: idUsuarioCookie, glamping_id: glampingId }
+        });
       }
     } catch (error) {
       console.error("Error al actualizar el favorito:", error);
@@ -145,6 +161,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
       onFavoritoChange(!esFavorito);
     }
   };
+  
 
   const siguienteImagen = () => {
     setImagenActual((prev) => (prev < imagenes.length - 1 ? prev + 1 : prev));

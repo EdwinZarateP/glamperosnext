@@ -75,7 +75,7 @@ export default function RootLayout({
         <link
           rel="icon"
           type="image/jpeg"
-          href="/Imagenes/animal5.ico"
+          href="/Imagenes/favicon.ico"
         />
 
         {/* ✅ Verificación de Google Search Console */}

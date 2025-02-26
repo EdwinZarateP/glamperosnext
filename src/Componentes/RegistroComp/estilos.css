@@ -2,29 +2,30 @@
 .RegistroComp-contenedor {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  width: 500px;
-  height: 200px;
-  padding: 20px;
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* Título */
 .RegistroComp-titulo {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   font-size: 28px;
   font-weight: bold;
-  color: #2F6B3E; /* Verde corporativo */
+  color: #2f6b3e; /* Verde corporativo */
 }
 
-/* Mensaje */
-.RegistroComp-mensaje {
+/* Mensaje de error */
+.Mensaje-error {
   text-align: center;
   margin-bottom: 20px;
-  color: #F2A900; /* Amarillo corporativo */
+  color: #f44336;
   font-size: 16px;
   font-weight: bold;
 }
@@ -32,6 +33,7 @@
 /* Campos del formulario */
 .RegistroComp-campo {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .RegistroComp-campo label {
@@ -51,7 +53,7 @@
 }
 
 .RegistroComp-campo input:focus {
-  border-color: #2F6B3E; /* Verde al enfocarse */
+  border-color: #2f6b3e;
   outline: none;
   box-shadow: 0 0 5px rgba(47, 107, 62, 0.4);
 }
@@ -66,7 +68,7 @@
 
 .RegistroComp-clave-contenedor input {
   width: 100%;
-  padding-right: 40px; /* Espacio para el ícono */
+  padding-right: 40px;
 }
 
 .RegistroComp-icono-clave {
@@ -81,7 +83,7 @@
 .RegistroComp-boton {
   width: 100%;
   padding: 12px;
-  background-color: #2F6B3E; /* Amarillo corporativo */
+  background-color: #2f6b3e;
   color: #fff;
   font-size: 16px;
   border: none;
@@ -92,7 +94,7 @@
 }
 
 .RegistroComp-boton:hover {
-  background-color: #3f8f53; 
+  background-color: #3f8f53;
   transform: translateY(-2px);
 }
 
@@ -104,52 +106,76 @@
 /* Botón de Google */
 .RegistroComp-google {
   display: flex;
-  margin-top: 20px;
   justify-content: center;
-  text-align: center;
+  margin-top: 20px;
 }
 
+/* Botón de Facebook */
+.RegistroComp-facebook {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.RegistroComp-facebook-boton {
+  width: 100%;
+  max-width: 250px;
+  padding: 10px;
+  background-color: #3b5998;
+  color: #fff !important;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.RegistroComp-facebook-boton:hover {
+  background-color: #4c70ba;
+  transform: translateY(-2px);
+}
 
 /* Responsividad */
 @media (max-width: 768px) {
   .RegistroComp-contenedor {
-      padding: 15px;
-      max-width: 100%; /* Ancho completo */
-      margin: 20px;
+    padding: 20px;
+    margin: 20px;
+    max-width: 90%;
   }
-
+  
   .RegistroComp-titulo {
-      font-size: 24px;
+    font-size: 24px;
   }
-
+  
   .RegistroComp-campo input {
-      font-size: 14px;
-      padding: 10px;
+    font-size: 14px;
+    padding: 10px;
   }
-
+  
   .RegistroComp-boton,
-  .RegistroComp-google-boton {
-      font-size: 14px;
-      padding: 10px;
+  .RegistroComp-facebook-boton {
+    font-size: 14px;
+    padding: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .RegistroComp-titulo {
-      font-size: 20px;
+    font-size: 20px;
   }
-
+  
   .RegistroComp-campo input {
-      font-size: 14px;
+    font-size: 14px;
   }
-
+  
   .RegistroComp-boton,
-  .RegistroComp-google-boton {
-      font-size: 14px;
+  .RegistroComp-facebook-boton {
+    font-size: 14px;
   }
-
+  
   .RegistroComp-clave-contenedor {
-      flex-direction: column;
-      gap: 5px;
+    flex-direction: column;
+    gap: 5px;
   }
 }

@@ -150,7 +150,7 @@ const RegistroComp: React.FC = () => {
 
       {mensaje && <p className="Mensaje-error">{mensaje}</p>}
 
-      <div className="RegistroComp-google">
+      <div className="RegistroComp-google">        
         <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setMensaje("Hubo un error al iniciar sesión con Google. Intenta nuevamente.")} />
       </div>
     </div>

@@ -3,7 +3,7 @@
 import { useState, useContext, useEffect } from "react";
 import axios, { AxiosError } from "axios";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import FacebookLogin from "react-facebook-login";
+// import FacebookLogin from "react-facebook-login";
 import { jwtDecode } from "jwt-decode";
 import { ContextoApp } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
@@ -118,49 +118,49 @@ const RegistroComp: React.FC = () => {
   };
 
   // ✅ Manejo del login con Facebook
-  const handleFacebookResponse = async (response: any) => {
-    if (!response.accessToken) {
-      setMensaje("No se recibió el token de Facebook");
-      return;
-    }
+  // const handleFacebookResponse = async (response: any) => {
+  //   if (!response.accessToken) {
+  //     setMensaje("No se recibió el token de Facebook");
+  //     return;
+  //   }
 
-    try {
-      const res = await axios.post(`${API_URL}/facebook`, {
-        accessToken: response.accessToken,
-      });
+  //   try {
+  //     const res = await axios.post(`${API_URL}/facebook`, {
+  //       accessToken: response.accessToken,
+  //     });
 
-      if (res.status === 200 && res.data) {
-        const usuario: {
-          _id: string;
-          nombre: string;
-          email: string;
-          telefono?: string;
-        } = res.data.usuario;
-        Cookies.set("idUsuario", usuario._id, { expires: 7 });
-        Cookies.set("nombreUsuario", usuario.nombre, { expires: 7 });
-        Cookies.set("correoUsuario", usuario.email, { expires: 7 });
+  //     if (res.status === 200 && res.data) {
+  //       const usuario: {
+  //         _id: string;
+  //         nombre: string;
+  //         email: string;
+  //         telefono?: string;
+  //       } = res.data.usuario;
+  //       Cookies.set("idUsuario", usuario._id, { expires: 7 });
+  //       Cookies.set("nombreUsuario", usuario.nombre, { expires: 7 });
+  //       Cookies.set("correoUsuario", usuario.email, { expires: 7 });
 
-        const telefono: string = usuario.telefono?.trim() || "sintelefono";
-        Cookies.set("telefonoUsuario", telefono, { expires: 7 });
+  //       const telefono: string = usuario.telefono?.trim() || "sintelefono";
+  //       Cookies.set("telefonoUsuario", telefono, { expires: 7 });
 
-        setIdUsuario(usuario._id);
-        setNombreUsuario(usuario.nombre);
-        setCorreoUsuario(usuario.email);
-        setLogueado(true);
+  //       setIdUsuario(usuario._id);
+  //       setNombreUsuario(usuario.nombre);
+  //       setCorreoUsuario(usuario.email);
+  //       setLogueado(true);
 
-        router.push(
-          !!usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil"
-        );
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response?.status === 400) {
-        setMensaje("El correo ya está registrado. Intentando redirigir...");
-        redirigirUsuarioExistente(error.response?.data?.usuario);
-      } else {
-        manejarError(error);
-      }
-    }
-  };
+  //       router.push(
+  //         !!usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil"
+  //       );
+  //     }
+  //   } catch (error: unknown) {
+  //     if (axios.isAxiosError(error) && error.response?.status === 400) {
+  //       setMensaje("El correo ya está registrado. Intentando redirigir...");
+  //       redirigirUsuarioExistente(error.response?.data?.usuario);
+  //     } else {
+  //       manejarError(error);
+  //     }
+  //   }
+  // };
 
   // ✅ Función para redirigir usuarios existentes
   const redirigirUsuarioExistente = async (usuario: {
@@ -222,9 +222,9 @@ const RegistroComp: React.FC = () => {
         />
       </div>
 
-      <div className="RegistroComp-facebook">
+      {/* <div className="RegistroComp-facebook">
         <FacebookLogin
-          appId="1183129216655327" /* Reemplaza con tu App ID de Facebook */
+          appId="1183129216655327" 
           autoLoad={false}
           fields="name,email,picture"
           callback={handleFacebookResponse}
@@ -232,7 +232,7 @@ const RegistroComp: React.FC = () => {
           textButton=" Iniciar sesión con Facebook"
           cssClass="RegistroComp-facebook-boton"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

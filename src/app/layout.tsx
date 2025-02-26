@@ -76,7 +76,7 @@ export default function RootLayout({
 
         {/* ✅ Google Maps API */}
         <Script
-          src="https://maps.googleapis.com/maps/api/js?key=TU-LLAVE-DE-GOOGLE-MAPS&libraries=places"
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP8Es7GVLkm_qdCItKb60pGH7ov_tEif0&libraries=places"
           strategy="beforeInteractive"
         />
 

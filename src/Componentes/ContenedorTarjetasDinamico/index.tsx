@@ -41,7 +41,7 @@ interface ContenedorTarjetasDinamicoProps {
 const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
   lat,
   lng,
-  radio = 200, // Por defecto, usaremos 200 km de radio
+  radio = 150, // Por defecto, usaremos 200 km de radio
 }) => {
   const almacenVariables = useContext(ContextoApp);
 

@@ -295,9 +295,17 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
           numero: propietario?.whatsapp ?? "sin teléfono",
           nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
           nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
-          fechaInicio: new Date(fechaInicioDesencriptada).toISOString().split("T")[0],
-          fechaFin: new Date(fechaFinDesencriptada).toISOString().split("T")[0],
-        });
+          fechaInicio: new Date(fechaInicioDesencriptada).toLocaleDateString("es-ES", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
+          fechaFin: new Date(fechaFinDesencriptada).toLocaleDateString("es-ES", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }),
+        });      
 
         // Activamos el confeti y, tras 2 segundos, redirigimos a la página de Gracias
         setShowConfetti(true);

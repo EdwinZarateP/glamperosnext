@@ -86,6 +86,15 @@ const MenuUsuario: React.FC = () => {
             >
               Cuenta
             </li>
+            <li
+              className="MenuUsuario-opcion"
+              onClick={() => {
+                setMostrarMenuUsuarios(false);
+                router.push("/politicas-privacidad");
+              }}
+            >
+              Politicas de privacidad
+            </li>
           </>
         )}
         <li
@@ -96,7 +105,8 @@ const MenuUsuario: React.FC = () => {
           }}
         >
           Centro de ayuda
-        </li>
+        </li>    
+        
         <li
           className="MenuUsuario-opcion"
           onClick={() => {

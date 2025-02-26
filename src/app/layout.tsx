@@ -72,11 +72,7 @@ export default function RootLayout({
     <html lang="es">
       <head>
         {/* ✅ Favicon actualizado */}
-        <link
-          rel="icon"
-          type="image/jpeg"
-          href="/Imagenes/favicon.ico"
-        />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
         {/* ✅ Verificación de Google Search Console */}
         <meta name="google-site-verification" content="TU-CODIGO-DE-VERIFICACION" />

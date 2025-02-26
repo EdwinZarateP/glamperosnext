@@ -10,9 +10,6 @@ const openSans = Open_Sans({
   display: "optional",
 });
 
-// ---------------------------------------
-// METADATA (Next.js App Router)
-// ---------------------------------------
 export const metadata: Metadata = {
   metadataBase: new URL("https://glamperos.com"),
   title: "Glamperos | Encuentra y reserva los mejores glampings en Colombia",
@@ -79,7 +76,7 @@ export default function RootLayout({
 
         {/* ✅ Google Maps API */}
         <Script
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP8Es7GVLkm_qdCItKb60pGH7ov_tEif0&libraries=places"
+          src="https://maps.googleapis.com/maps/api/js?key=TU-LLAVE-DE-GOOGLE-MAPS&libraries=places"
           strategy="beforeInteractive"
         />
 

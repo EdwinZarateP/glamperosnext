@@ -224,7 +224,7 @@ const RegistroComp: React.FC = () => {
 
       <div className="RegistroComp-facebook">
         <FacebookLogin
-          appId="TU_FACEBOOK_APP_ID" /* Reemplaza con tu App ID de Facebook */
+          appId="1183129216655327" /* Reemplaza con tu App ID de Facebook */
           autoLoad={false}
           fields="name,email,picture"
           callback={handleFacebookResponse}

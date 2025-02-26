@@ -75,7 +75,7 @@ export default function RootLayout({
         <link
           rel="icon"
           type="image/jpeg"
-          href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
+          href="/Imagenes/animal5.ico"
         />
 
         {/* ✅ Verificación de Google Search Console */}

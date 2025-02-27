@@ -14,17 +14,17 @@ const nextConfig = {
     return [
       {
         source: "/Medellin",
-        destination: "https://glamperos.com/medellin",
+        destination: "/medellin", // Solo la ruta relativa
         permanent: true, // 301 - Redirección permanente
       },
       {
         source: "/Bogota",
-        destination: "https://glamperos.com/bogota",
+        destination: "/bogota",
         permanent: true, // 301 - Redirección permanente
       },
       {
         source: "/Cali",
-        destination: "https://glamperos.com/cali",
+        destination: "/cali",
         permanent: true, // 301 - Redirección permanente
       },
     ];

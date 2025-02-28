@@ -65,7 +65,7 @@ const bogota: React.FC = () => {
           content="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://glamperos.com/Bogota" />
+        <link rel="canonical" href="https://glamperos.com/bogota" />
       </Head>
 
       <div className="Bogota-principal">

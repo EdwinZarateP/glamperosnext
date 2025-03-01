@@ -206,46 +206,46 @@ const Cuenta: React.FC = () => {
       {!modoPropietario ? (
           <div className="Cuenta-tarjetas">
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCrear}>
-            <h3> 🏕️ Publica tu Glamping</h3>
+            <h3>Publica tu Glamping 🏕️ </h3>
           </div>
           <div className="Cuenta-tarjeta" onClick={manejarEditarPerfil}>
-            <h3>👤 Datos personales</h3>
+            <h3>Datos personales 👤 </h3>
             <p>Proporciona tus datos personales e indícanos cómo podemos ponernos en contacto contigo.</p>
           </div>
           <div className="Cuenta-tarjeta" onClick={irReservarCliente}>
-            <h3>🧳 Mis Viajes</h3>
+            <h3>Mis Viajes 🧳 </h3>
             <p>Mira dónde has reservado.</p>
           </div>    
     
           <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
-            <h3>🆘 Centro de ayuda</h3>
+            <h3>Centro de ayuda 🆘 </h3>
           </div>
         </div>
       ) : (
         usuario?.glampings && usuario.glampings.length > 0 && (
           <div className="Cuenta-tarjetas">
             <div className="Cuenta-tarjeta" onClick={irReservarPropiedades}>
-              📅
-              <h3>Estado de tus reservas recibidas</h3>
+              
+              <h3>Estado de tus reservas 📅</h3>
               <p>Revisa tus reservas vigentes e históricas.</p>
             </div>
             <div className="Cuenta-tarjeta" onClick={manejarEditarGlamping}>
-              <h3>⛺ Editar glamping</h3>
+              <h3>Editar glamping ⛺</h3>
               <p>Bloquea fechas, edita información y fotos</p>
             </div>
             <div className="Cuenta-tarjeta" onClick={manejarBancos}>
-              <h3>🏦 Datos bancarios</h3>
+              <h3>Datos bancarios 🏦</h3>
             </div>
 
             <div className="Cuenta-tarjeta" onClick={manejarPagos}>
-              <h3>💰 Pagos </h3>
+              <h3>Pagos 💰</h3>
             </div>
 
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCrear}>
-              <h3> 🏕️ Publica tu Glamping</h3>
+              <h3>Publica tu Glamping 🏕️</h3>
             </div>
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
-              <h3>🆘 Centro de ayuda</h3>
+              <h3>Centro de ayuda 🆘</h3>
             </div>
           </div>
         )

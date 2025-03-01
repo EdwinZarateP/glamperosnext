@@ -18,14 +18,14 @@
 .Cuenta-titulo {
   font-size: 26px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   color: #2C3E50;
 }
 
 /* Información del usuario */
 .Cuenta-informacion {
   font-size: 16px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #5D6D7E;
 }
 
@@ -41,13 +41,21 @@
 /* Tarjeta individual */
 .Cuenta-tarjeta {
   background-color: #F4F1EA;
-  padding: 10px;
+  padding:5px;
   border-radius: 10px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease-in-out;
-  text-align: center;
+  text-align: left;
 }
+
+.Cuenta-tarjeta h3{
+  margin: 5px;
+}
+.Cuenta-tarjeta p{
+  margin: 5px;
+}
+
 
 .Cuenta-tarjeta:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -57,6 +65,7 @@
 /* Cerrar sesión */
 .Cuenta-cerrar-sesion {
   margin-top: 21px;
+  margin-bottom: 21px;
   cursor: pointer;
   color: #E74C3C;
   font-size: 16px;
@@ -167,7 +176,7 @@
 
   .Cuenta-tarjetas {
     max-width: 100%;
-    padding: 0 10px;
+    padding: 0 5px;
   }
 
   .Cuenta-toggle-container {
@@ -192,6 +201,6 @@
 
   .Cuenta-CentroAyuda{
     display: flex;
-    justify-content: center;
+    justify-content: left;
   }
 }

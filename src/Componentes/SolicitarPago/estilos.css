@@ -1,0 +1,79 @@
+/* Contenedor principal */
+.solicitar-pago-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+/* Títulos y secciones */
+.titulo {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Información de saldo y método */
+.saldo-disponible,
+.metodo-pago {
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+/* Botón para solicitar el retiro */
+.btn-solicitar {
+  display: block;
+  width: 100%;
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-solicitar:hover {
+  background-color: #0056b3;
+}
+
+/* Mensajes generales (no se usa para alertas de SweetAlert2) */
+.mensaje {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Estilos para la lista de solicitudes */
+.lista-solicitudes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.solicitud-item {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.solicitud-item:hover {
+  background-color: #eee;
+}

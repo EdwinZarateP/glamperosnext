@@ -99,6 +99,10 @@ const Cuenta: React.FC = () => {
     router.push("/GestionBancos");
   };
 
+  const manejarPagos = () => {
+    router.push("/Pagos");
+  };
+
   const irReservarCliente = () => {
     router.push("/ReservasClientes");
   };
@@ -177,8 +181,13 @@ const Cuenta: React.FC = () => {
               <p>Cambia información básica y fotos.</p>
             </div>
             <div className="Cuenta-tarjeta" onClick={manejarBancos}>
-              <h3>💰 Pagos y datos bancarios</h3>
+              <h3>🏦 Datos bancarios</h3>
             </div>
+
+            <div className="Cuenta-tarjeta" onClick={manejarPagos}>
+              <h3>💰 Pagos </h3>
+            </div>
+
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
               <h3>🆘 Centro de ayuda</h3>
             </div>

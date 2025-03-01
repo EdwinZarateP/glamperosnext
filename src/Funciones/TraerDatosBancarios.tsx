@@ -6,6 +6,8 @@ export interface DatosBancariosProps {
   numeroCuenta: string | null;
   tipoCuenta: string | null;
   tipoDocumento: string | null;
+  numeroDocumento: string | null;
+  nombreTitular: string | null;
 }
 
 const TraerDatosBancarios = async (usuarioId: string): Promise<DatosBancariosProps | null> => {
@@ -18,6 +20,8 @@ const TraerDatosBancarios = async (usuarioId: string): Promise<DatosBancariosPro
       numeroCuenta: respuesta.data.numeroCuenta,
       tipoCuenta: respuesta.data.tipoCuenta,
       tipoDocumento: respuesta.data.tipoDocumento,
+      numeroDocumento: respuesta.data.numeroDocumento,
+      nombreTitular: respuesta.data.nombreTitular,
     };
   } catch (error) {
     console.error("Error al obtener los datos bancarios:", error);

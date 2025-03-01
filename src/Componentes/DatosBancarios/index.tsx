@@ -38,6 +38,9 @@ const DatosBancarios = () => {
     numeroCuenta: "",
     tipoCuenta: "",
     tipoDocumento: "",
+    numeroDocumento: "",
+    nombreTitular: "",
+    
   });
 
   // Estado para saber si ya hay datos registrados en la BD
@@ -61,6 +64,8 @@ const DatosBancarios = () => {
             numeroCuenta: datosBancarios.numeroCuenta || "",
             tipoCuenta: datosBancarios.tipoCuenta || "",
             tipoDocumento: datosBancarios.tipoDocumento || "",
+            numeroDocumento: datosBancarios.numeroDocumento || "",
+            nombreTitular: datosBancarios.nombreTitular || "",            
           });
           setYaRegistrado(true);
         } else {
@@ -70,6 +75,8 @@ const DatosBancarios = () => {
             numeroCuenta: "",
             tipoCuenta: "",
             tipoDocumento: "",
+            numeroDocumento: "",
+            nombreTitular: "",
           });
           setYaRegistrado(false);
         }
@@ -94,7 +101,7 @@ const DatosBancarios = () => {
       return;
     }
 
-    if (!datos.tipoDocumento || !datos.banco || !datos.tipoCuenta || !datos.numeroCuenta) {
+    if (!datos.tipoDocumento || !datos.banco || !datos.tipoCuenta || !datos.numeroCuenta || !datos.numeroDocumento || !datos.nombreTitular ) {
       Swal.fire({
         icon: "error",
         title: "Campos incompletos",
@@ -112,6 +119,8 @@ const DatosBancarios = () => {
           numeroCuenta: datos.numeroCuenta,
           tipoCuenta: datos.tipoCuenta,
           tipoDocumento: datos.tipoDocumento,
+          numeroDocumento: datos.numeroDocumento,
+          nombreTitular: datos.nombreTitular,
         }
       );
       Swal.fire({
@@ -154,15 +163,31 @@ const DatosBancarios = () => {
             <strong>+57 321 8695196</strong>.
           </p>
           <div className="DatosBancarios-resumen">
+            <p><strong>Nombre del Titular:</strong> {datos.nombreTitular}</p>
+            <p><strong>Tipo de Documento:</strong> {datos.tipoDocumento}</p>
+            <p><strong>Numero de Documento:</strong> {datos.numeroDocumento}</p>
             <p><strong>Banco:</strong> {datos.banco}</p>
             <p><strong>Tipo de Cuenta:</strong> {datos.tipoCuenta}</p>
-            <p><strong>Número de Cuenta:</strong> {datos.numeroCuenta}</p>
-            <p><strong>Tipo de Documento:</strong> {datos.tipoDocumento}</p>
+            <p><strong>Número de Cuenta:</strong> {datos.numeroCuenta}</p>            
           </div>
         </>
       ) : (
         <>
           <h2 className="DatosBancarios-titulo">Registrar Datos Bancarios</h2>
+
+          <label className="DatosBancarios-etiqueta">Nombre Titular</label>
+          <input
+            className="DatosBancarios-input-Cuenta"
+            type="text"
+            placeholder="Nombre del Titular"
+            value={datos.nombreTitular || ""}
+            onChange={(e) =>
+              setDatos((prev) => ({
+                ...prev,
+                nombreTitular: e.target.value, // Permite cualquier caracter
+              }))
+            }            
+          />          
 
           <label className="DatosBancarios-etiqueta">Tipo de Documento</label>
           <select
@@ -177,6 +202,20 @@ const DatosBancarios = () => {
             <option value="NIT">NIT</option>
             <option value="CE">Cédula de Extranjería</option>
           </select>
+
+          <label className="DatosBancarios-etiqueta">Número de Documento</label>
+          <input
+            className="DatosBancarios-input-Cuenta"
+            type="text"
+            placeholder="Número de Documento"
+            value={datos.numeroDocumento || ""}
+            onChange={(e) =>
+              setDatos((prev) => ({
+                ...prev,
+                numeroDocumento: e.target.value.replace(/\D/g, ""),
+              }))
+            }
+          />
 
           <label className="DatosBancarios-etiqueta">Banco</label>
           <select
@@ -223,6 +262,8 @@ const DatosBancarios = () => {
               }))
             }
           />
+
+          
 
           {guardando ? (
             <div className="DatosBancarios-loader">

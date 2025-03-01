@@ -368,7 +368,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                 })}
               </p>
               <p>
-                {adultosDesencriptados} Adultos, {ninosDesencriptados} Niños, {bebesDesencriptados} Bebés, {mascotasDesencriptadas} Mascotas
+                {adultosDesencriptados} {parseInt(adultosDesencriptados) === 1 ? "Adulto" : "Adultos"}, {ninosDesencriptados} {parseInt(ninosDesencriptados) === 1 ? "Niño" : "Niños"}, {bebesDesencriptados} {parseInt(bebesDesencriptados) === 1 ? "Bebé" : "Bebés"}, {mascotasDesencriptadas} {parseInt(mascotasDesencriptadas) === 1 ? "Mascota" : "Mascotas"}
               </p>
               <p>
                 Tarifa de Glamperos:{" "}

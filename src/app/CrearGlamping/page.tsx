@@ -153,12 +153,12 @@ const CreacionGlamping: React.FC = () => {
 
     // Validación para el paso 10 si la descripción tiene menos de 50 palabras
     if (pasoActual === 10) {
-      const cantidadPalabras = descripcionGlamping.trim().split(' ').filter(palabra => palabra.trim() !== '').length; // Contar las palabras no vacías
-      if (cantidadPalabras < 50) {
+      const cantidadPalabras = descripcionGlamping.trim().split(' ').filter(palabra => palabra.trim() !== '').length; 
+      if (cantidadPalabras < 20) {
         Swal.fire({
           icon: "warning",
           title: "No te quedes corto 😝",
-          text: "Escribe una descripción de al menos 50 palabras.",
+          text: "Escribe una descripción de al menos 20 palabras.",
           confirmButtonText: "Aceptar",
         });
         return;

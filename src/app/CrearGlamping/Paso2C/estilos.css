@@ -1,6 +1,7 @@
 /* Contenedor principal con diseño flexible */
 .Paso2C-contenedor {
-  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
   font-family: Arial, sans-serif;
   width: 90%;
   margin: 0 auto;

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Cookies from "js-cookie";
+import { ContextoApp } from "@/context/AppContext";
 import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import { useRouter } from "next/navigation"; // Se agregó useSearchParams
@@ -26,6 +27,49 @@ const Lottie = dynamic<MyLottieProps>(
 );
 
 const Cuenta: React.FC = () => {
+
+  const almacenVariables = useContext(ContextoApp);
+  if (!almacenVariables) {
+    throw new Error("El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto.");
+  }
+  const {
+    setSiono,
+    setLatitud,
+    setLongitud,
+    setCiudad_departamento,
+    setTipoGlamping,
+    setAmenidadesGlobal,
+    setImagenesCargadas,
+    setNombreGlamping,
+    setDescripcionGlamping,
+    setPrecioEstandar,
+    setCantidad_Huespedes,
+    setCantidad_Huespedes_Adicional,
+    setDescuento,
+    setAcepta_Mascotas,
+    setPrecioEstandarAdicional,
+    setDiasCancelacion,
+  } = almacenVariables;
+
+  const quitarSetters = () => {
+    setSiono(true);
+    setLatitud(4.123456);
+    setLongitud(-74.123456);
+    setCiudad_departamento("");
+    setTipoGlamping("");
+    setAmenidadesGlobal([]);
+    setImagenesCargadas([]);
+    setNombreGlamping("");
+    setDescripcionGlamping("");
+    setPrecioEstandar(0);
+    setDiasCancelacion(1);
+    setCantidad_Huespedes(1);
+    setCantidad_Huespedes_Adicional(0);
+    setDescuento(0);
+    setPrecioEstandarAdicional(0);
+    setAcepta_Mascotas(false);
+  };
+
   const [usuario, setUsuario] = useState<{
     nombre: string;
     email: string;
@@ -96,6 +140,7 @@ const Cuenta: React.FC = () => {
   };
 
   const manejarCrear = () => {
+    quitarSetters();
     router.push("/CrearGlamping");
   };
 

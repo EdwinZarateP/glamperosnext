@@ -1,6 +1,7 @@
 .Paso3B-contenedor {
     font-family: Arial, sans-serif;
-    padding: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
     max-width: 800px;
     margin: 0 auto;
     background-color: #f9f9f9;

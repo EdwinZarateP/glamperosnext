@@ -2,7 +2,8 @@
 .paso1c2-contenedor {
   max-width: 900px;
   margin: 20px auto;
-  padding: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
   border: 1px solid #dcdcdc;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

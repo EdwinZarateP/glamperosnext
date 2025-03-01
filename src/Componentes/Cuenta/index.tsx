@@ -230,8 +230,8 @@ const Cuenta: React.FC = () => {
               <p>Revisa tus reservas vigentes e históricas.</p>
             </div>
             <div className="Cuenta-tarjeta" onClick={manejarEditarGlamping}>
-              <h3>⛺ Editar información de tus glamping</h3>
-              <p>Cambia información básica y fotos.</p>
+              <h3>⛺ Editar glamping</h3>
+              <p>Bloquea fechas, edita información y fotos</p>
             </div>
             <div className="Cuenta-tarjeta" onClick={manejarBancos}>
               <h3>🏦 Datos bancarios</h3>

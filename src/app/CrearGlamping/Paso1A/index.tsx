@@ -9,7 +9,7 @@ const Paso1A: React.FC = () => {
           <h2 className="Paso1A-titulo-secundario">Paso 1</h2>
           <h1 className="Paso1A-titulo-principal">Describe tu Glamping</h1>
           <p className="Paso1A-descripcion">
-            En este paso, te preguntaremos qué tipo de Glamping tienes. A continuación, indícanos 
+            En este paso, te preguntaremos qué tipo de Glamping tienes. Da clic en siguiente e indícanos 
             la ubicación y cuántos huéspedes pueden quedarse.
           </p>
         </div>

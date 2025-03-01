@@ -58,7 +58,11 @@
       grid-template-columns: 1fr; /* Una sola columna para pantallas pequeñas */
       gap: 10px;
     }
-  
+    
+    .Paso3A-titulo-principal {
+      font-size: 1.3rem;
+    }
+
     .Paso3A-texto, .Paso3A-video-contenedor {
       width: 100%; /* Ambos ocupan el ancho completo */
     }

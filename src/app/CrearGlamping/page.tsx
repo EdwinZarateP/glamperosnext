@@ -205,7 +205,7 @@ if (pasoActual === 12) {
   return (
     <div className="creacionGlamping-contenedor">
       <div className="creacionGlamping-paso">{pasos[pasoActual]}</div>
-      <img src={"/Imagenes/animal5.jpeg"} alt="Glamperos logo" className="creacionGlamping-logo"  onClick={redirigirInicio}/>
+      <img src={"https://storage.googleapis.com/glamperos-imagenes/Imagenes/Logo%20Glamperos.webp"} alt="Glamperos logo" className="creacionGlamping-logo"  onClick={redirigirInicio}/>
       <div className="creacionGlamping-progreso">
         <div className="creacionGlamping-progreso-barra" style={{ width: `${progreso}%` }}></div>
       </div>
@@ -215,24 +215,21 @@ if (pasoActual === 12) {
           className="creacionGlamping-boton-atras"
           onClick={retrocederPaso}
           disabled={pasoActual === 0}
+          style={{ visibility: pasoActual === 0 ? 'hidden' : 'visible' }} // Evita mover la UI
         >
           Atrás
         </button>
 
-        <button
-          className="creacionGlamping-boton-siguiente"
-          onClick={() => {
-            if (pasoActual === 13) {
-              alert("¡Glamping creado exitosamente!");
-            } else {
-              avanzarPaso();
-            }
-          }}
-          style={pasoActual === 13 ? { display: 'none' } : {}}
-        >
-          {pasoActual === 13 ? "Terminar" : "Siguiente"}
-        </button>
+        {pasoActual !== 13 && (
+          <button
+            className="creacionGlamping-boton-siguiente"
+            onClick={avanzarPaso}
+          >
+            Siguiente
+          </button>
+        )}
       </div>
+
     </div>
   );
 };

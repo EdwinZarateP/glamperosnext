@@ -62,5 +62,9 @@
     .Paso2A-texto, .Paso2A-video-contenedor {
       width: 100%; /* Ambos ocupan el ancho completo */
     }
+
+    .Paso2A-titulo-principal {
+      font-size: 1.5rem;
+    }
   }
   

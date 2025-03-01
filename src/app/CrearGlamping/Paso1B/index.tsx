@@ -1,23 +1,23 @@
 "use client";
-import React, { useState, useContext, useEffect } from 'react';
-import { GiCampingTent, GiHabitatDome, GiTreehouse, GiHut } from 'react-icons/gi';
+
+import React, { useState, useContext, useEffect } from "react";
+import { GiCampingTent, GiHabitatDome, GiTreehouse, GiHut } from "react-icons/gi";
 import { MdOutlineCabin } from "react-icons/md";
 import { FaCaravan } from "react-icons/fa";
 import { ContextoApp } from "@/context/AppContext";
-import './estilos.css';
+import "./estilos.css";
 
 const Paso1B: React.FC = () => {
   const [seleccionado, setSeleccionado] = useState<string | null>(null);
-
-  const { tipoGlamping, setTipoGlamping } = useContext(ContextoApp)!; // Accedemos al método para guardar en el contexto
+  const { tipoGlamping, setTipoGlamping } = useContext(ContextoApp)!;
 
   const opciones = [
-    { id: 'Tienda', label: 'Tienda', icono: <GiCampingTent /> },
-    { id: 'Domo', label: 'Domo', icono: <GiHabitatDome /> },
-    { id: 'Casa del arbol', label: 'Casa del arbol', icono: <GiTreehouse /> },
-    { id: 'Remolque', label: 'Remolque', icono: <FaCaravan /> },
-    { id: 'Cabaña', label: 'Cabaña', icono: <MdOutlineCabin /> },
-    { id: 'Choza', label: 'Choza', icono: <GiHut /> },
+    { id: "Tienda", label: "Tienda", icono: <GiCampingTent /> },
+    { id: "Domo", label: "Domo", icono: <GiHabitatDome /> },
+    { id: "Casa del árbol", label: "Casa del árbol", icono: <GiTreehouse /> },
+    { id: "Remolque", label: "Remolque", icono: <FaCaravan /> },
+    { id: "Cabaña", label: "Cabaña", icono: <MdOutlineCabin /> },
+    { id: "Choza", label: "Choza", icono: <GiHut /> },
   ];
 
   const manejarSeleccion = (opcionId: string) => {
@@ -25,7 +25,6 @@ const Paso1B: React.FC = () => {
     setTipoGlamping(opcionId);
   };
 
-  // Sincronizar el estado local con el contexto al momento de renderizar
   useEffect(() => {
     setSeleccionado(tipoGlamping);
   }, [tipoGlamping]);
@@ -37,7 +36,7 @@ const Paso1B: React.FC = () => {
         {opciones.map((opcion) => (
           <div
             key={opcion.id}
-            className={`Paso1B-opcion ${seleccionado === opcion.id ? 'Paso1B-seleccionado' : ''}`}
+            className={`Paso1B-opcion ${seleccionado === opcion.id ? "Paso1B-seleccionado" : ""}`}
             onClick={() => manejarSeleccion(opcion.id)}
           >
             <span className="Paso1B-icono">{opcion.icono}</span>

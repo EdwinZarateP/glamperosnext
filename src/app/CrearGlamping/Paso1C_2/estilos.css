@@ -85,3 +85,11 @@
 .paso1c2-sugerencia:hover {
   background-color: #f0f0f0;
 }
+
+
+@media (max-width: 900px) {
+  .paso1c2-contenedor {
+    width: 95%;
+    margin: 10px;
+  }
+}

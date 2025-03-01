@@ -1,9 +1,10 @@
 .Paso1A-contenedor {
   font-family: inherit;
   padding: 20px;
-  width: 90%;
-  /* height: 100%; */
-  margin: 0;
+  width: 100%;
+  max-width: 1200px; /* Evita que se expanda demasiado en pantallas grandes */
+  margin: 0 auto;
+  height: 100%;
 }
 
 .Paso1A-contenido {
@@ -12,8 +13,7 @@
   gap: 20px;
   align-items: center;
   width: 100%;
-  height: 50%;
-
+  height: auto; /* Ajusta la altura dinámicamente */
 }
 
 .Paso1A-texto {
@@ -43,23 +43,48 @@
   align-items: center;
   border-radius: 15px;
   overflow: hidden;
-  height: 70%;
+  height: 100%; /* Ajusta la altura dinámica */
 }
 
 .Paso1A-video {
-  width: auto;
-  height: 100%;
+  width: 100%;
+  max-width: 100%;
   border-radius: 15px;
 }
 
-/* Responsivo para pantallas de hasta 900px */
+/* Responsivo para pantallas menores a 900px */
 @media (max-width: 900px) {
+
   .Paso1A-contenido {
-    grid-template-columns: 1fr; /* Una sola columna para pantallas pequeñas */
-    gap: 10px;
+    grid-template-columns: 1fr; /* Pasa a una sola columna */
+    gap: 15px;
+    text-align: center;
+    height: 100%;
   }
 
-  .Paso1A-texto, .Paso1A-video-contenedor {
-    width: 100%; /* Ambos ocupan el ancho completo */
+  .Paso1A-titulo-principal {
+    font-size: 2rem; /* Reduce el tamaño del título */
+  }
+
+  .Paso1A-descripcion {
+    font-size: 0.9rem; /* Ajusta el tamaño de la descripción */
+  }
+
+  .Paso1A-video-contenedor {
+    height: auto;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .Paso1A-video{
+    height: 200px;
+    max-height: 300px;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  .Paso1A-video {
+    width: 100%;
+    max-height: 300px; /* Evita que el video se agrande demasiado */
   }
 }

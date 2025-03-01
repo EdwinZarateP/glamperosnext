@@ -4,16 +4,19 @@
   flex-direction: column;
   justify-content: center;
   padding: 10px;
-
   margin: 0 auto;
+  box-sizing: border-box;
+  width: 90%;
+  height: auto;
 }
 
-/* Contenedor del formulario */
+/* Formulario */
 .Paso2D-formulario {
   background: white;
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
 }
 
 /* Títulos e instrucciones */
@@ -31,20 +34,25 @@
   text-align: center;
 }
 
-/* Input con botón cerrar */
+/* Contenedor del input y botón de limpiar */
 .Paso2D-input-container {
   position: relative;
   width: 100%;
-
 }
 
 .Paso2D-input {
+  /* IMPORTANTE: evita que el texto empuje el botón */
+  box-sizing: border-box;
   padding: 12px 40px 12px 12px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 15px;
   width: 100%;
   transition: border-color 0.3s ease;
+  
+  /* Evita que la URL larga tape el botón (se podrá hacer scroll horizontal) */
+  white-space: nowrap;
+  overflow-x: auto;
 }
 
 .Paso2D-clear-button {
@@ -64,18 +72,35 @@
   align-items: center;
   justify-content: center;
   transition: color 0.3s ease;
+
+  /* Asegura que quede sobre el texto del input */
+  z-index: 1;
 }
 
 .Paso2D-clear-button:hover {
   color: #333;
 }
 
-/* Advertencia con el botón para mostrar el modal */
+/* Contenedor del video */
+.Paso2D-video-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.Paso2D-video {
+  width: 100%;
+  max-width: 450px;
+  aspect-ratio: 16 / 9;
+  border-radius: 15px;
+  border: none;
+}
+
+/* Advertencia y botón para ver políticas */
 .Paso2D-advertencia {
   text-align: center;
   margin-bottom: 10px;
   font-size: 14px;
-  color: #d9534f; /* Color rojo para llamar la atención */
+  color: #d9534f;
 }
 
 .Paso2D-btn-ver-politicas {
@@ -92,22 +117,8 @@
 .Paso2D-btn-ver-politicas:hover {
   background-color: #025aa7;
 }
-  
 
-/* Contenedor del video */
-.Paso2D-video-container {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.Paso2D-video {
-  width: 100%;
-  max-width: 450px;
-  height: 220px;
-  border-radius: 15px;
-}
-
-/* Estilado para el Modal de políticas */
+/* Modal */
 .Paso2D-modal-overlay {
   position: fixed;
   top: 0;
@@ -163,4 +174,37 @@
 
 .Paso2D-cerrar-modal:hover {
   background-color: #224e2d;
+}
+
+/* ======================= */
+/* RESPONSIVE DESIGN: Solo para pantallas menores a 900px */
+/* ======================= */
+@media (max-width: 900px) {
+  .Paso2D-contenedor {
+    width: 95%;
+    height: 100%;
+    padding: 10px;
+  }
+
+  .Paso2D-titulo {
+    font-size: 22px;
+  }
+
+  .Paso2D-instrucciones {
+    font-size: 14px;
+  }
+
+  .Paso2D-input {
+    font-size: 14px;
+    padding: 10px 35px 10px 10px;
+  }
+
+  .Paso2D-video {
+    max-width: 100%;
+  }
+
+  .Paso2D-modal-content {
+    width: 90%;
+    max-width: none;
+  }
 }

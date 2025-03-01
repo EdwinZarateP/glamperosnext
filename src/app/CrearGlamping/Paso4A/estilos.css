@@ -8,7 +8,6 @@
   height: 80%;
   margin: 2rem auto;
   padding: 1.5rem;
-
 }
 
 /* Título principal */
@@ -19,7 +18,7 @@
   margin-bottom: 1rem;
 }
 
-/* Formulario principal */
+/* Formulario */
 .guardarGlampingP-formulario {
   display: flex;
   flex-direction: column;
@@ -27,41 +26,6 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1rem;
-}
-
-/* Estilo general para las etiquetas y campos de entrada */
-.guardarGlampingP-label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
-  color: #555;
-  width: 48%;
-  gap: 0.5rem;
-}
-
-/* Campos de texto, select y textarea */
-.guardarGlampingP-input,
-.guardarGlampingP-select,
-.guardarGlampingP-textarea {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  transition: all 0.2s ease-in-out;
-}
-
-/* Estilizar los campos activos */
-.guardarGlampingP-input:focus,
-.guardarGlampingP-select:focus,
-.guardarGlampingP-textarea:focus {
-  border-color:  #2F6B3E;
-  outline: none;
-  box-shadow: 0 0 5px rgba(92, 157, 237, 0.3);
-}
-
-/* Checkbox */
-.guardarGlampingP-checkbox {
-  width: 20px;
 }
 
 /* Botón */
@@ -81,7 +45,7 @@
 }
 
 .guardarGlampingP-boton:disabled {
-  background-color:  #2F6B3E;
+  background-color: #2F6B3E;
   cursor: not-allowed;
 }
 
@@ -93,12 +57,7 @@
   font-size: 1rem;
 }
 
-/* Estilización para archivos cargados */
-.guardarGlampingP-file {
-  padding: 5px 0;
-  font-size: 0.9rem;
-}
-
+/* Popup */
 .popup-felicitaciones {
   position: fixed;
   top: 0;
@@ -122,10 +81,11 @@
   border-radius: 8px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
-  width: 650px;
+  width: 650px;  /* Tamaño para pantallas grandes */
   height: 300px;
 }
 
+/* Encabezado y párrafo */
 .popup-contenido h2 {
   margin: 0 0 10px 0;
   font-size: 3rem;
@@ -136,10 +96,11 @@
   font-size: 1.5rem;
 }
 
+/* Botones dentro del popup */
 .popup-contenido button.cerrar-popup {
   margin-top: 15px;
   padding: 8px 16px;
-  background-color:  #2F6B3E;
+  background-color: #2F6B3E;
   color: white;
   border: none;
   border-radius: 4px;
@@ -148,17 +109,19 @@
 }
 
 .popup-contenido button.cerrar-popup:hover {
-  background-color:  #1d4527;
+  background-color: #1d4527;
 }
 
+/* Lottie */
 .lottie-container {
-  background-color:transparent; /* Cambia el color según tu preferencia */
+  background-color: transparent;
   padding: 10px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   border: none;
 }
+
 .cargando-mensaje {
   margin-top: 10px;
   font-size: 16px;
@@ -167,15 +130,35 @@
   font-weight: bold;
 }
 
-
-
-/* Responsividad */
-@media (max-width: 768px) {
-  .guardarGlampingP-label {
-    width: 100%;
+/* ====================== */
+/* RESPONSIVE: Menores a 900px */
+/* ====================== */
+@media (max-width: 900px) {
+  /* Ajusta el tamaño del título */
+  .guardarGlampingP-titulo {
+    font-size: 1.5rem;
   }
-  
-  .guardarGlampingP-formulario {
-    justify-content: center;
+
+  /* Ajusta el tamaño del popup */
+  .popup-contenido {
+    width: 90%;  /* Ocupa el 90% del ancho */
+    max-width: 400px; /* Opcional, limita el ancho máximo */
+    height: auto; /* Deja que la altura se ajuste al contenido */
+    padding: 20px 10px;
+  }
+
+  .popup-contenido h2 {
+    font-size: 2rem;
+  }
+
+  .popup-contenido p {
+    font-size: 1rem;
+  }
+
+  /* Ajusta los botones dentro del popup */
+  .popup-contenido button.cerrar-popup {
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
   }
 }

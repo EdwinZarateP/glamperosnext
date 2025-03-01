@@ -2,26 +2,33 @@
 .Paso2C-contenedor {
   padding: 20px;
   font-family: Arial, sans-serif;
-  width: auto;
+  width: 90%;
   margin: 0 auto;
   box-sizing: border-box;
+  /* Para pantallas grandes se usa un alto definido; en móviles se adapta */
   height: 90%;
-  width: 90%;
   overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 8px;
   display: flex;
   gap: 20px;
-
 }
 
-/* Contenedor principal de imágenes */
+/* Para pantallas menores a 900px, apilamos las secciones verticalmente */
+@media (max-width: 900px) {
+  .Paso2C-contenedor {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+/* Sección principal de imágenes */
 .Paso2C-seccionPrincipal {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 10px; /* Espacio entre elementos */
+  gap: 10px;
   width: 30%;
   padding: 10px;
   height: 100%;
@@ -31,6 +38,14 @@
   object-fit: cover;
 }
 
+/* En móviles: usar ancho completo para la sección de subida */
+@media (max-width: 900px) {
+  .Paso2C-seccionPrincipal {
+    width: 100%;
+  }
+}
+
+/* Botón para subir imágenes */
 .Paso2C-botonAgregar {
   display: flex;
   justify-content: center;
@@ -47,24 +62,39 @@
   padding: 10px;
 }
 
+/* Sección derecha: vista previa de portada */
 .Paso2C-seccionDerecha-contenedor {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Espacio entre elementos */
+  gap: 10px;
   width: 70%;
   border: 1px solid #ddd;
   padding: 10px;
   border-radius: 8px;
   height: 100%;
-
 }
 
-/* Contenedor general */
+/* En móviles: ancho completo para la vista previa */
+@media (max-width: 900px) {
+  .Paso2C-seccionDerecha-contenedor {
+    width: 100%;
+  }
+}
+
+/* Contenedor general de la sección derecha */
 .Paso2C-seccionDerecha {
   display: flex;
   height: 100%;
   justify-content: center;
   align-items: center;
+}
+
+/* En móviles: apilar la imagen principal y secundaria */
+@media (max-width: 900px) {
+  .Paso2C-seccionDerecha {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 /* Contenedor de la imagen principal */
@@ -73,8 +103,16 @@
   justify-content: center;
   align-items: center;
   width: 50%;
-  height:100%;
+  height: 100%;
   padding-right: 5px;
+}
+
+/* En móviles: ancho completo */
+@media (max-width: 900px) {
+  .Paso2C-principal {
+    width: 100%;
+    padding-right: 0;
+  }
 }
 
 /* Imagen principal */
@@ -84,13 +122,13 @@
   object-fit: cover;
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
-  aspect-ratio: 1 / 0.5; 
+  aspect-ratio: 1 / 0.5;
 }
 
-/* Contenedor de las imágenes secundarias */
+/* Contenedor de imágenes secundarias */
 .Paso2C-secundaria {
   display: grid;
-  grid-template-columns:repeat(2, 1fr); 
+  grid-template-columns: repeat(2, 1fr);
   justify-content: center;
   width: 50%;
   height: 100%;
@@ -100,42 +138,52 @@
   overflow: hidden;
 }
 
+/* En móviles: ancho completo para la sección secundaria */
+@media (max-width: 900px) {
+  .Paso2C-secundaria {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* Imágenes secundarias */
 .Paso2C-seccionDerecha.secundaria img {
   width: 100%;
-  height:100%;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  aspect-ratio: 1 / 0.5; 
+  aspect-ratio: 1 / 0.5;
 }
 
-
-
-
-
-
-
-/* Estilización de imágenes dentro del contenedor principal */
+/* Contenedor individual de imagen */
 .Paso2C-imagenContenedor {
   width: 150px;
   height: 140px;
   position: relative;
 }
 
+/* Reducir tamaño en dispositivos muy pequeños */
+@media (max-width: 600px) {
+  .Paso2C-imagenContenedor {
+    width: 120px;
+    height: 110px;
+  }
+}
+
 .Paso2C-imagenContenedor:hover {
   transform: scale(1.05);
 }
 
+/* Imagen */
 .Paso2C-imagen {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 15px;
   cursor: grab;
-
 }
 
-/* Botones con estilos amigables */
+/* Botón para eliminar imagen */
 .Paso2C-boton-eliminar {
   position: absolute;
   top: 4px;
@@ -153,11 +201,12 @@
   background-color: #c0392b;
 }
 
-/* Estilización para la sección dinámica de arrastrar imágenes */
+/* Estilo durante el arrastre */
 .Paso2C-seccionPrincipal .Paso2C-imagenContenedor.dragging {
   opacity: 0.6;
 }
 
+/* Instrucciones */
 .Paso2C-instrucciones {
   text-align: center;
   margin-bottom: 10px;

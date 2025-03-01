@@ -36,12 +36,16 @@
     position: fixed;
     bottom: 50px;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between; /* Asegura que los botones no se colapsen */
     align-items: center;
     width: 100%;
-    padding-left: 25px;
-    /* padding: 20px; */
+    padding: 0 25px; /* Espacio en los lados */
   }
+  
+  .creacionGlamping-boton-atras {
+    visibility: visible; /* Asegura que siempre esté visible */
+  }
+  
   
   .creacionGlamping-boton-atras {
     background: none;
@@ -78,7 +82,7 @@
   }
   .creacionGlamping-logo {
     position: fixed;
-    width: 63px;
+    width: 56px;
     height: auto;
     bottom: 35px;
     cursor: pointer;

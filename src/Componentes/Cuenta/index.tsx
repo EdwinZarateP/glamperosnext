@@ -95,6 +95,10 @@ const Cuenta: React.FC = () => {
     router.push("/Ayuda");
   };
 
+  const manejarCrear = () => {
+    router.push("/CrearGlamping");
+  };
+
   const manejarBancos = () => {
     router.push("/GestionBancos");
   };
@@ -155,7 +159,10 @@ const Cuenta: React.FC = () => {
       )}
 
       {!modoPropietario ? (
-        <div className="Cuenta-tarjetas">
+          <div className="Cuenta-tarjetas">
+            <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCrear}>
+            <h3> 🏕️ Publica tu Glamping</h3>
+          </div>
           <div className="Cuenta-tarjeta" onClick={manejarEditarPerfil}>
             <h3>👤 Datos personales</h3>
             <p>Proporciona tus datos personales e indícanos cómo podemos ponernos en contacto contigo.</p>
@@ -163,7 +170,8 @@ const Cuenta: React.FC = () => {
           <div className="Cuenta-tarjeta" onClick={irReservarCliente}>
             <h3>🧳 Mis Viajes</h3>
             <p>Mira dónde has reservado.</p>
-          </div>        
+          </div>    
+    
           <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
             <h3>🆘 Centro de ayuda</h3>
           </div>
@@ -188,6 +196,9 @@ const Cuenta: React.FC = () => {
               <h3>💰 Pagos </h3>
             </div>
 
+            <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCrear}>
+              <h3> 🏕️ Publica tu Glamping</h3>
+            </div>
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
               <h3>🆘 Centro de ayuda</h3>
             </div>

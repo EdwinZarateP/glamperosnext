@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { useRef, useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation"; 
@@ -10,7 +10,6 @@ import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";
 
-
 interface MyLottieProps {
   animationData: unknown;
   loop?: boolean;
@@ -18,11 +17,10 @@ interface MyLottieProps {
   style?: React.CSSProperties;
 }
 
-// Transformamos la importación de `lottie-react` a un componente que acepte MyLottieProps
+// Importación dinámica de lottie-react
 const Lottie = dynamic<MyLottieProps>(
   () =>
     import("lottie-react").then((mod) => {
-      // forzamos el default a un componente tipado
       return mod.default as React.ComponentType<MyLottieProps>;
     }),
   {
@@ -31,7 +29,7 @@ const Lottie = dynamic<MyLottieProps>(
 );
 
 const GuardarGlampingP: React.FC = () => {
-  const router = useRouter(); // Cambio de useNavigate a useRouter
+  const router = useRouter();
   const nombreUsuarioCookie = Cookies.get('nombreUsuario'); 
   const correoUsuarioCookie = Cookies.get('correoUsuario'); 
 
@@ -52,28 +50,228 @@ const GuardarGlampingP: React.FC = () => {
     propietario_id: "",
     nombrePropietario: "",
   });
+
   const idPropietario = Cookies.get('idUsuario');
-  const { ubicacion, ciudad_departamento, imagenesCargadas, tipoGlamping, Cantidad_Huespedes,
-     Acepta_Mascotas, amenidadesGlobal, videoSeleccionado, nombreGlamping, descripcionGlamping,
-     precioEstandar, precioEstandarAdicional, descuento, nombreUsuario,
-      Cantidad_Huespedes_Adicional, direccion, diasCancelacion,
-     } = useContext(ContextoApp)!; 
+  const { 
+    ubicacion,
+    ciudad_departamento,
+    imagenesCargadas,
+    tipoGlamping,
+    Cantidad_Huespedes,
+    Acepta_Mascotas,
+    amenidadesGlobal,
+    videoSeleccionado,
+    nombreGlamping,
+    descripcionGlamping,
+    precioEstandar,
+    precioEstandarAdicional,
+    descuento,
+    nombreUsuario,
+    Cantidad_Huespedes_Adicional,
+    direccion,
+    diasCancelacion,
+  } = useContext(ContextoApp)!; 
+
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
-  const enviarCorreo = async (correo: string, nombre: string, fromEmail: string = "registro@glamperos.com") => {
+  // Ref al botón "Cerrar"
+  const cerrarPopupRef = useRef<HTMLButtonElement | null>(null);
+
+  // Sincroniza la idUsuario
+  useEffect(() => {
+    if (idPropietario) {
+      setFormulario((prev) => ({
+        ...prev,
+        propietario_id: idPropietario,
+      }));
+    }
+  }, [idPropietario]);
+
+  // Sincroniza nombre propietario
+  useEffect(() => {
+    if (nombreUsuario) {
+      setFormulario((prev) => ({
+        ...prev,
+        nombrePropietario: nombreUsuario, 
+      }));
+    }
+  }, [nombreUsuario]);  
+
+  // Sincroniza ubicación
+  useEffect(() => {
+    if (ubicacion) {
+      setFormulario((prev) => ({
+        ...prev,
+        ubicacion,
+      }));
+    }
+  }, [ubicacion]);  
+
+  // Sincroniza dirección
+  useEffect(() => {
+    if (direccion) {
+      setFormulario((prev) => ({
+        ...prev,
+        direccion, 
+      }));
+    }
+  }, [direccion]);
+
+  // Sincroniza ciudad_departamento
+  useEffect(() => {
+    if (ciudad_departamento) {
+      setFormulario((prev) => ({
+        ...prev,
+        ciudad_departamento,
+      }));
+    }
+  }, [ciudad_departamento]);
+
+  // Sincroniza tipoGlamping
+  useEffect(() => {
+    if (tipoGlamping) {
+      setFormulario((prev) => ({
+        ...prev,
+        tipoGlamping,
+      }));
+    }
+  }, [tipoGlamping]);
+
+  // Sincroniza Cantidad_Huespedes
+  useEffect(() => {
+    if (Cantidad_Huespedes) {
+      setFormulario((prev) => ({
+        ...prev,
+        Cantidad_Huespedes,
+      }));
+    }
+  }, [Cantidad_Huespedes]);
+
+  // Sincroniza Cantidad_Huespedes_Adicional
+  useEffect(() => {
+    if (typeof Cantidad_Huespedes_Adicional === 'number') {
+      setFormulario((prev) => ({
+        ...prev,
+        Cantidad_Huespedes_Adicional,
+      }));
+    }
+  }, [Cantidad_Huespedes_Adicional]);
+
+  // Sincroniza Acepta_Mascotas
+  useEffect(() => {
+    if (Acepta_Mascotas) {
+      setFormulario((prev) => ({
+        ...prev,
+        Acepta_Mascotas,
+      }));
+    }
+  }, [Acepta_Mascotas]);
+
+  // Sincroniza nombreGlamping
+  useEffect(() => {
+    if (nombreGlamping) {
+      setFormulario((prev) => ({
+        ...prev,
+        nombreGlamping,
+      }));
+    }
+  }, [nombreGlamping]);
+
+  // Sincroniza descripcionGlamping
+  useEffect(() => {
+    if (descripcionGlamping) {
+      setFormulario((prev) => ({
+        ...prev,
+        descripcionGlamping,
+      }));
+    }
+  }, [descripcionGlamping]);
+
+  // Sincroniza precioEstandar
+  useEffect(() => {
+    if (typeof precioEstandar === 'number') {
+      setFormulario((prev) => ({
+        ...prev,
+        precioEstandar,
+      }));
+    }
+  }, [precioEstandar]);
+
+  // Sincroniza precioEstandarAdicional
+  useEffect(() => {
+    if (typeof precioEstandarAdicional === 'number') {
+      setFormulario((prev) => ({
+        ...prev,
+        precioEstandarAdicional,
+      }));
+    }
+  }, [precioEstandarAdicional]);
+
+  // Sincroniza descuento
+  useEffect(() => {
+    if (typeof descuento === 'number') {
+      setFormulario((prev) => ({
+        ...prev,
+        descuento,
+      }));
+    }
+  }, [descuento]);
+  
+  // Sincroniza diasCancelacion
+  useEffect(() => {
+    if (typeof diasCancelacion === 'number') {
+      setFormulario((prev) => ({
+        ...prev,
+        diasCancelacion,
+      }));
+    }
+  }, [diasCancelacion]);
+  
+  // Sincroniza amenidadesGlobal
+  useEffect(() => {
+    if (amenidadesGlobal) {
+      setFormulario((prev) => ({
+        ...prev,
+        amenidadesGlobal: amenidadesGlobal.join(", "),
+      }));
+    }
+  }, [amenidadesGlobal]);
+
+  // Sincroniza videoSeleccionado
+  useEffect(() => {
+    if (videoSeleccionado) {
+      setFormulario((prev) => ({
+        ...prev,
+        video_youtube: videoSeleccionado || "",
+      }));
+    }
+  }, [videoSeleccionado]);
+
+  useEffect(() => {
+    if (showPopup && cerrarPopupRef.current) {
+      cerrarPopupRef.current.focus();
+    }
+  }, [showPopup]);
+
+  // Enviar correo
+  const enviarCorreo = async (
+    correo: string,
+    nombre: string,
+    fromEmail: string = "registro@glamperos.com"
+  ) => {
     try {
       const htmlContent = `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-          <h1 style="color: #2F6B3E;">😀¡${nombreGlamping} será parte de Glamperos!</h1>
+          <h1 style="color: #2F6B3E;">😀¡${formulario.nombreGlamping} será parte de Glamperos!</h1>
           <p>
             Hola ${nombre.split(' ')[0]},
           </p>
           <p>
             Nos sentimos muy emocionados de tenerte como parte de nuestra
             Comunidad de emprendedores de experiencias únicas. Gracias por inscribir
-            <strong style="color:#2F6B3E;">${nombreGlamping}</strong> con Glamperos, 
+            <strong style="color:#2F6B3E;">${formulario.nombreGlamping}</strong> con Glamperos, 
             el lugar donde el glamping cobra vida.
             Una vez verifiquemos si tu glamping cumple con nuestros requisitos, tu glamping quedará activo en la plataforma!
           </p>
@@ -101,206 +299,12 @@ const GuardarGlampingP: React.FC = () => {
         email: correo,
         name: nombre,
         subject: "¡Bienvenido a la familia Glamperos!",
-        html_content: htmlContent, // Enviar el contenido del correo
+        html_content: htmlContent,
       });
-        
     } catch (error) {
       console.error("Error al enviar el correo: ", error);
     }
   };
-   
-  
-  // Sincroniza la idUsuario automáticamente al formulario cuando la variable global cambia
-  useEffect(() => {
-    if (idPropietario) {
-      setFormulario((prev) => ({
-        ...prev,
-        propietario_id: idPropietario, // Actualizamos la idUsuario directamente
-      }));
-    }
-  }, [idPropietario]);
-
-// Sincroniza nombre propietario 
-  useEffect(() => {
-    if (nombreUsuario) {
-      setFormulario((prev) => ({
-        ...prev,
-        nombrePropietario: nombreUsuario, 
-      }));
-    }
-  }, [nombreUsuario]);  
-
-  // Sincroniza la ubicación automáticamente al formulario cuando la variable global cambia
-  useEffect(() => {
-    if (ubicacion) {
-      setFormulario((prev) => ({
-        ...prev,
-        ubicacion, // Actualizamos la ubicación directamente
-      }));
-    }
-  }, [ubicacion]);  
-
-   // Sincroniza la direccion automáticamente al formulario cuando la variable global cambia
-   useEffect(() => {
-    if (direccion) {
-      setFormulario((prev) => ({
-        ...prev,
-        direccion, 
-      }));
-    }
-  }, [direccion]);
-
-
-   // Sincroniza la ciudad_departamento automáticamente al formulario cuando la variable global cambia
-   useEffect(() => {
-    if (ciudad_departamento) {
-      setFormulario((prev) => ({
-        ...prev,
-        ciudad_departamento, // Actualizamos la ciudad_departamento directamente
-      }));
-    }
-  }, [ciudad_departamento]);
-
-    // Sincroniza la tipoGlamping automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (tipoGlamping) {
-        setFormulario((prev) => ({
-          ...prev,
-          tipoGlamping, // Actualizamos la tipoGlamping directamente
-        }));
-      }
-    }, [tipoGlamping]);
-
-    // Sincroniza la Cantidad_Huespedes automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (Cantidad_Huespedes) {
-        setFormulario((prev) => ({
-          ...prev,
-          Cantidad_Huespedes, // Actualizamos la Cantidad_Huespedes directamente
-        }));
-      }
-    }, [Cantidad_Huespedes]);
-
-
-    // Sincroniza la Cantidad_Huespedes_Adicional automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (typeof Cantidad_Huespedes_Adicional === 'number') {
-        setFormulario((prev) => ({
-          ...prev,
-          Cantidad_Huespedes_Adicional, // Actualizamos la Cantidad_Huespedes_Adicional directamente
-        }));
-      }
-    }, [Cantidad_Huespedes_Adicional]);
-
-
-    // Sincroniza la Acepta_Mascotas automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (Acepta_Mascotas) {
-        setFormulario((prev) => ({
-          ...prev,
-          Acepta_Mascotas, // Actualizamos la Acepta_Mascotas directamente
-        }));
-      }
-    }, [Acepta_Mascotas]);
-
-    // Sincroniza la nombreGlamping automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (nombreGlamping) {
-        setFormulario((prev) => ({
-          ...prev,
-          nombreGlamping, // Actualizamos la nombreGlamping directamente
-        }));
-      }
-    }, [nombreGlamping]);
-
-    // Sincroniza la descripcionGlamping automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (descripcionGlamping) {
-        setFormulario((prev) => ({
-          ...prev,
-          descripcionGlamping, // Actualizamos la descripcionGlamping directamente
-        }));
-      }
-    }, [descripcionGlamping]);
-
-    // Sincroniza la precioEstandar automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (typeof precioEstandar === 'number') {
-        setFormulario((prev) => ({
-          ...prev,
-          precioEstandar, // Actualizamos la precioEstandar directamente
-        }));
-      }
-    }, [precioEstandar]);
-
-    // Sincroniza la precioEstandarAdicional automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (typeof precioEstandarAdicional === 'number') {
-        setFormulario((prev) => ({
-          ...prev,
-          precioEstandarAdicional, // Actualizamos la precioEstandar directamente
-        }));
-      }
-    }, [precioEstandarAdicional]);
-
-    // Sincroniza la descuento automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (typeof descuento === 'number') {
-        setFormulario((prev) => ({
-          ...prev,
-          descuento, // Actualizamos la descuento directamente
-        }));
-      }
-    }, [descuento]);
-    
-    // Sincroniza la diasCancelacion automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (typeof diasCancelacion === 'number') {
-        setFormulario((prev) => ({
-          ...prev,
-          diasCancelacion,
-        }));
-      }
-    }, [diasCancelacion]);
-    
-    // Añadir un nuevo useEffect para sincronizar "amenidadesGlobal" automáticamente al formulario cuando cambia
-    useEffect(() => {
-      if (amenidadesGlobal) {
-        setFormulario((prev) => ({
-          ...prev,
-          amenidadesGlobal: amenidadesGlobal.join(", "), // Actualizamos "amenidadesGlobal" como un string separado por comas
-        }));
-      }
-    }, [amenidadesGlobal]);
-
-    // Sincroniza la videoSeleccionado automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (videoSeleccionado) {
-        setFormulario((prev) => ({
-          ...prev,
-          video_youtube: videoSeleccionado|| "", // Actualizamos la videoSeleccionado directamente o lo mandamos vacio
-        }));
-      }
-    }, [videoSeleccionado]);
-
-    // Sincroniza la Cantidad_Huespedes automáticamente al formulario cuando la variable global cambia
-    useEffect(() => {
-      if (Cantidad_Huespedes) {
-        setFormulario((prev) => ({
-          ...prev,
-          Cantidad_Huespedes, // Actualizamos la Cantidad_Huespedes directamente
-        }));
-      }
-    }, [Cantidad_Huespedes]);
-
-    // Referencia al botón "Cerrar"
-  const cerrarPopupRef = useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    if (showPopup && cerrarPopupRef.current) {
-      cerrarPopupRef.current.focus(); // Coloca el foco en el botón "Cerrar" cuando se activa el popup
-    }
-  }, [showPopup]);
 
   const manejarEnvio = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -311,21 +315,24 @@ const GuardarGlampingP: React.FC = () => {
     Object.entries(formulario).forEach(([key, value]) => {
       formData.append(key, value.toString());
     });
-    
-    // Adjuntamos las imágenes del contexto en el FormData
+    // Adjuntamos las imágenes
     imagenesCargadas.forEach((imagen) => formData.append("imagenes", imagen));
 
     try {
-      const respuesta = await axios.post("https://glamperosapi.onrender.com/glampings/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const respuesta = await axios.post(
+        "https://glamperosapi.onrender.com/glampings/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       setMensaje("Glamping creado con éxito: " + respuesta.data.nombreGlamping);
       lanzarConfetti();
       setShowPopup(true);
       
-      // Llamar a la función para enviar correo
+      // Enviar correo
       enviarCorreo(correoUsuarioCookie || "", nombreUsuarioCookie || "");
     } catch (error) {
       setMensaje("Error al crear el glamping: " + error);
@@ -334,46 +341,54 @@ const GuardarGlampingP: React.FC = () => {
     }
   };
 
-  // Función para lanzar confetti (explosión)
+  // Confetti
   const lanzarConfetti = () => {
     confetti.create(undefined, { resize: true, useWorker: true })({
       particleCount: 200,
       spread: 120,
       origin: { x: 0.5, y: 0.5 },
-      zIndex: 1001, // Asegúrate de usar un z-index alto
+      zIndex: 1001,
     });
   };
 
   const cerrarPopup = () => {
-    setShowPopup(false); // Cierra el popup
+    setShowPopup(false);
     setTimeout(() => {
-      router.push("/"); // Navega a la nueva página después de un breve retraso
-    }, 50); // 50 ms de retraso (puedes ajustar este valor si es necesario)
+      router.push("/");
+    }, 50);
   };
-  
 
   return (
     <div className="guardarGlampingP-contenedor">
-      <h1 className="guardarGlampingP-titulo">¡Ya casi eres parte de nuestra familia Glamperos!😊</h1>
+      <h1 className="guardarGlampingP-titulo">
+        ¡Ya casi eres parte de nuestra familia Glamperos!😊
+      </h1>
       <p>Puedes dar pasos atrás y cambiar cualquier cosa antes de dar clic en "Terminar"</p>
       
       <form className="guardarGlampingP-formulario" onSubmit={manejarEnvio}>
-      <button type="submit" className="guardarGlampingP-boton">
-        {cargando ? (
-          <div className="lottie-container" style={{ background: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>            
-            <Lottie
-              animationData={animationData}
-              loop={true}
-              autoplay={true}
-              style={{ height: 200, width: "100%", margin: "auto" }}
-            />
-            <p className="cargando-mensaje">Estamos creando tu glamping...</p>
-          </div>
-        ) : (
-          "Terminar"
-        )}
-      </button>
-
+        <button type="submit" className="guardarGlampingP-boton">
+          {cargando ? (
+            <div
+              className="lottie-container"
+              style={{
+                background: "white",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Lottie
+                animationData={animationData}
+                loop={true}
+                autoplay={true}
+                style={{ height: 200, width: "100%", margin: "auto" }}
+              />
+              <p className="cargando-mensaje">Estamos creando tu glamping...</p>
+            </div>
+          ) : (
+            "Terminar"
+          )}
+        </button>
       </form>
   
       {mensaje && <p className="guardarGlampingP-mensaje">{mensaje}</p>}
@@ -382,9 +397,11 @@ const GuardarGlampingP: React.FC = () => {
         <div className="popup-felicitaciones">
           <div className="popup-contenido">
             <h2>¡Felicitaciones! 🎉</h2>
-            <p>Tu glamping se registró con éxito, revisa tu correo y no olvides 
-              <strong> registrar tu whatsApp </strong> para avisarte cuando tengas reservas</p>
-               <button
+            <p>
+              Tu glamping se registró con éxito, revisa tu correo y no olvides 
+              <strong> registrar tu WhatsApp </strong> para avisarte cuando tengas reservas
+            </p>
+            <button
               className="cerrar-popup"
               onClick={() => router.push("/EdicionPerfil")}
             >
@@ -393,12 +410,11 @@ const GuardarGlampingP: React.FC = () => {
             <button className="cerrar-popup" onClick={cerrarPopup} ref={cerrarPopupRef}>
               Ya lo tengo registrado
             </button>
-            
           </div>
         </div>
       )}
     </div>
-  );  
+  );
 };
 
 export default GuardarGlampingP;

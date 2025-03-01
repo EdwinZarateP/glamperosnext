@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useContext } from "react";
-import { ContextoApp } from "@/context/AppContext";  // Se mantiene el alias correcto
-import "./estilos.css"; // Se mantiene la importación del CSS sin cambios
+import { ContextoApp } from "@/context/AppContext";  
+import "./estilos.css"; 
 
 const Paso1D: React.FC = () => {
   const almacenVariables = useContext(ContextoApp);

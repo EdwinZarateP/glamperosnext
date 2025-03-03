@@ -60,11 +60,16 @@ const ReservasPropietario: React.FC = () => {
   const [glampingData, setGlampingData] = useState<GlampingData[]>([]);
   const [cargando, setCargando] = useState<boolean>(true);
   const [filtroEstado, setFiltroEstado] = useState<string>('');
+  
+  // Estado para almacenar los teléfonos de cada cliente (clave: idCliente, valor: teléfono)
+  const [telefonosClientes, setTelefonosClientes] = useState<Record<string, string>>({});
 
+  // --------- Función formatear fecha ---------
   const formatearFechaColombia = (fechaUTC: string) => {
     if (!fechaUTC) return "Fecha no disponible";
     const fecha = new Date(fechaUTC);
     if (isNaN(fecha.getTime())) return "Fecha inválida";
+    // Ajuste manual de zona horaria (si lo necesitas)
     fecha.setHours(fecha.getHours() - 5);
     return new Intl.DateTimeFormat('es-CO', {
       year: 'numeric',
@@ -73,6 +78,7 @@ const ReservasPropietario: React.FC = () => {
     }).format(fecha);
   };
 
+  // --------- Efecto para obtener las reservas ---------
   useEffect(() => {
     if (!idPropietario) {
       console.error('No se encontró el idPropietario en las cookies');
@@ -85,7 +91,10 @@ const ReservasPropietario: React.FC = () => {
         const response = await fetch(`https://glamperosapi.onrender.com/reservas/documentos/${idPropietario}`);
         const data = await response.json();
         if (response.ok) {
-          const reservasOrdenadas = data.sort((a: Reserva, b: Reserva) => new Date(b.fechaCreacion).getTime() - new Date(a.fechaCreacion).getTime());
+          // Ordenar reservas por fechaCreacion (más reciente primero)
+          const reservasOrdenadas = data.sort(
+            (a: Reserva, b: Reserva) => new Date(b.fechaCreacion).getTime() - new Date(a.fechaCreacion).getTime()
+          );
           setReservas(reservasOrdenadas);
         } else {
           console.error('No se pudieron obtener las reservas');
@@ -100,6 +109,7 @@ const ReservasPropietario: React.FC = () => {
     obtenerReservas();
   }, [idPropietario]);
 
+  // --------- Efecto para obtener datos de cada Glamping ---------
   useEffect(() => {
     if (reservas.length > 0) {
       const obtenerGlamping = async (glampingId: string) => {
@@ -122,9 +132,45 @@ const ReservasPropietario: React.FC = () => {
         }
       });
     }
+  }, [reservas, glampingData]);
+
+  // --------- Efecto para obtener teléfonos de los clientes ---------
+  useEffect(() => {
+    if (reservas.length === 0) return;
+
+    // Extraemos todos los ID de clientes en las reservas y los hacemos únicos
+    const idsUnicos = Array.from(new Set(reservas.map(res => res.idCliente)));
+
+    const obtenerTelefonos = async () => {
+      const nuevosTelefonos: Record<string, string> = {};
+
+      for (const clienteId of idsUnicos) {
+        try {
+          const resp = await fetch(`https://glamperosapi.onrender.com/usuarios/${clienteId}`);
+          const data = await resp.json();
+      
+          if (resp.ok && data.telefono) {
+            let telefonoLimpio = data.telefono.startsWith("57") ? data.telefono.substring(2) : data.telefono;
+            nuevosTelefonos[clienteId] = telefonoLimpio;
+          } else {
+            nuevosTelefonos[clienteId] = 'No disponible';
+          }
+        } catch (error) {
+          console.error(`Error al obtener el teléfono del cliente ${clienteId}:`, error);
+          nuevosTelefonos[clienteId] = 'No disponible';
+        }
+      }      
+
+      setTelefonosClientes(nuevosTelefonos);
+    };
+
+    obtenerTelefonos();
   }, [reservas]);
 
-  const reservasFiltradas = filtroEstado ? reservas.filter(reserva => reserva.EstadoReserva === filtroEstado) : reservas;
+  // --------- Filtro de reservas por estado ---------
+  const reservasFiltradas = filtroEstado
+    ? reservas.filter(reserva => reserva.EstadoReserva === filtroEstado)
+    : reservas;
 
   return (
     <div className="ReservasPropietario-container">
@@ -139,14 +185,18 @@ const ReservasPropietario: React.FC = () => {
         </div>
       ) : reservas.length === 0 ? (
         <div className="ReservasPropietario-sinReservas">
-          <Image src={"/meme.jpg"} alt="Imagen divertida" className="ReservasPropietario-imagen" />
+          <Image src={"/meme.jpg"} alt="Imagen divertida" className="ReservasPropietario-imagen" width={300} height={300} />
           <p className="ReservasPropietario-mensaje">No tienes reservaciones aún, trabajamos en hacerte más visible</p>
         </div>
       ) : (
         <>
           <div className="ReservasPropietario-filtro">
             <label htmlFor="estadoReserva">Filtrar por estado: </label>
-            <select id="estadoReserva" value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
+            <select
+              id="estadoReserva"
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+            >
               <option value="">Todos</option>
               <option value="Reservada">Reservada</option>
               <option value="Finalizada">Finalizada</option>
@@ -159,27 +209,58 @@ const ReservasPropietario: React.FC = () => {
               const glamping = glampingData.find(g => g._id === reserva.idGlamping);
               if (!glamping) return null;
 
-              const colorEstado = reserva.EstadoReserva === "Cancelada" ? "#e0e0e0" : reserva.EstadoReserva === "Finalizada" ? "rgba(47, 107, 62, 0.2)" : "white";
+              const colorEstado =
+                reserva.EstadoReserva === "Cancelada"
+                  ? "#e0e0e0"
+                  : reserva.EstadoReserva === "Finalizada"
+                  ? "rgba(47, 107, 62, 0.2)"
+                  : "white";
 
               return (
                 <div key={reserva.id} className="ReservasPropietario-tarjeta" style={{ backgroundColor: colorEstado }}>
-                  <h3 className="ReservasPropietario-titulo">{glamping.nombreGlamping}</h3>              
-                  <p className="ReservasPropietario-detalle"><strong>Código Reserva:</strong> {reserva.codigoReserva}</p>                  
-                  <p className="ReservasPropietario-detalle"><strong>La recibiste el:</strong> {formatearFechaColombia(reserva.fechaCreacion)}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Estado Reserva:</strong> {reserva.EstadoReserva}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Ciudad:</strong> {reserva.ciudad_departamento}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Check-In:</strong> {new Date(reserva.FechaIngreso).toLocaleDateString()}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Check-Out:</strong> {new Date(reserva.FechaSalida).toLocaleDateString()}</p>
+                  <h3 className="ReservasPropietario-titulo">{glamping.nombreGlamping}</h3>
                   <p className="ReservasPropietario-detalle">
-                    <strong>Huéspedes: </strong> 
+                    <strong>Código Reserva:</strong> {reserva.codigoReserva}
+                  </p>
+                  {/* Aquí mostramos el teléfono del cliente */}
+                  <p className="ReservasPropietario-detalle">
+                    <strong>WhatsApp Cliente:</strong>{" "}
+                    {telefonosClientes[reserva.idCliente] || 'Cargando...'}
+                  </p>
+
+                  <p className="ReservasPropietario-detalle">
+                    <strong>La recibiste el:</strong> {formatearFechaColombia(reserva.fechaCreacion)}
+                  </p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Estado Reserva:</strong> {reserva.EstadoReserva}
+                  </p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Ciudad:</strong> {reserva.ciudad_departamento}
+                  </p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Check-In:</strong>{" "}
+                    {new Date(reserva.FechaIngreso).toLocaleDateString()}
+                  </p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Check-Out:</strong>{" "}
+                    {new Date(reserva.FechaSalida).toLocaleDateString()}
+                  </p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Huéspedes: </strong>
                     {reserva.adultos > 0 && `${Number(reserva.adultos)} ${Number(reserva.adultos) === 1 ? 'Adulto' : 'Adultos'}`}
                     {reserva.ninos > 0 && `, ${reserva.ninos} ${Number(reserva.ninos) === 1 ? 'Niño' : 'Niños'}`}
                     {reserva.bebes > 0 && `, ${reserva.bebes} ${Number(reserva.bebes) === 1 ? 'Bebé' : 'Bebés'}`}
                     {reserva.mascotas > 0 && ` y ${reserva.mascotas} Mascota${Number(reserva.mascotas) > 1 ? "s" : ""}`}
                   </p>
-                  <p className="ReservasPropietario-detalle"><strong>Valor Reserva:</strong> ${reserva.ValorReserva.toLocaleString()}</p>              
-                  <p className="ReservasPropietario-detalle"><strong>Comisión Glamperos:</strong> ${reserva.ComisionGlamperos.toLocaleString()}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Tu pago será: ${reserva.CostoGlamping.toLocaleString()}</strong></p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Valor Reserva:</strong> ${reserva.ValorReserva.toLocaleString()}
+                  </p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Comisión Glamperos:</strong> ${reserva.ComisionGlamperos.toLocaleString()}
+                  </p>
+                  <p className="ReservasPropietario-detalle">
+                    <strong>Tu pago será:</strong> ${reserva.CostoGlamping.toLocaleString()}
+                  </p>
                 </div>
               );
             })}

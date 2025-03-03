@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { GiWashingMachine, GiFireplace, GiSmokeBomb, GiThermometerHot, GiCoffeeCup, GiFishingNet, GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
+import { GiTowel, GiWashingMachine, GiFireplace, GiSmokeBomb, GiThermometerHot, GiCoffeeCup, GiFishingNet, GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
 import { IoWifi } from "react-icons/io5";
-import { IoIosBonfire } from "react-icons/io";
+import { IoIosBonfire, IoIosRestaurant } from "react-icons/io";
 import { TbDeviceTv } from "react-icons/tb";
-import { FaRegSnowflake, FaLaptopHouse, FaShower, FaUmbrellaBeach, FaChess } from "react-icons/fa";
+import { FaFan, FaRegSnowflake, FaLaptopHouse, FaShower, FaUmbrellaBeach, FaChess, FaPumpSoap } from "react-icons/fa";
 import { FaFireExtinguisher, FaKitMedical, FaKitchenSet, FaHotTubPerson, FaTemperatureArrowUp, FaTemperatureArrowDown} from "react-icons/fa6";
 import { MdOutdoorGrill, MdPool, MdOutlineBathtub, MdOutlinePets } from "react-icons/md";
 import { BsTreeFill, BsFillProjectorFill } from "react-icons/bs";
@@ -26,12 +26,16 @@ export const opcionesAmenidades = [
   { id: "Cocina", label: "Cocina", icono: <FaKitchenSet /> },
   { id: "Zona fogata", label: "Zona fogata", icono: <IoIosBonfire /> },
   { id: "Chimenea", label: "Chimenea", icono: <GiFireplace /> },
+  { id: "Servicio restaurante", label: "Servicio restaurante", icono: <IoIosRestaurant /> },
   { id: "Mini bar", label: "Mini bar", icono: <LuRefrigerator /> },
   { id: "Tv", label: "Tv", icono: <TbDeviceTv /> },
   { id: "Proyector", label: "Proyector", icono: <BsFillProjectorFill /> },
-  { id: "Juegos de mesa", label: "Juegos de mesa", icono: <FaChess /> },
+  { id: "Toallas", label: "Toallas", icono: <GiTowel /> },  
+  { id: "Jabon y shampoo", label: "Jabon y shampoo", icono: <FaPumpSoap /> },  
+  { id: "Juegos de mesa", label: "Juegos de mesa", icono: <FaChess /> },  
   { id: "Lavadora", label: "Lavadora", icono: <GiWashingMachine /> },
   { id: "Clima Calido", label: "Clima Calido", icono: <FaTemperatureArrowUp /> },
+  { id: "Ventilador", label: "Ventilador", icono: <FaFan /> },
   { id: "Aire acondicionado", label: "Aire acondicionado", icono: <FaRegSnowflake /> },
   { id: "Clima Frio", label: "Clima Frio", icono: <FaTemperatureArrowDown /> },
   { id: "Calefaccion", label: "Calefaccion", icono: <GiThermometerHot /> },

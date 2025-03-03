@@ -300,11 +300,11 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
             month: "short",
             year: "numeric",
           }),
-          fechaFin: new Date(fechaFinDesencriptada).toLocaleDateString("es-ES", {
+          fechaFin: `${new Date(fechaFinDesencriptada).toLocaleDateString("es-ES", {
             day: "2-digit",
             month: "short",
             year: "numeric",
-          }),
+          })} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioCookie ?? "sin teléfono"}`,          
         });      
 
         // Activamos el confeti y, tras 2 segundos, redirigimos a la página de Gracias

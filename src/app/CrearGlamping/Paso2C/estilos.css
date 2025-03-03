@@ -139,37 +139,6 @@
   overflow: hidden;
 }
 
-/* En móviles: ancho completo para la sección secundaria */
-@media (max-width: 900px) {
-  .Paso2C-secundaria {
-    width: 100%;
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* Imágenes secundarias */
-.Paso2C-seccionDerecha.secundaria img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  aspect-ratio: 1 / 0.5;
-}
-
-/* Contenedor individual de imagen */
-.Paso2C-imagenContenedor {
-  width: 150px;
-  height: 140px;
-  position: relative;
-}
-
-/* Reducir tamaño en dispositivos muy pequeños */
-@media (max-width: 600px) {
-  .Paso2C-imagenContenedor {
-    width: 120px;
-    height: 110px;
-  }
-}
 
 .Paso2C-imagenContenedor:hover {
   transform: scale(1.05);
@@ -218,3 +187,57 @@
   border: 1px dashed #ccc;
   border-radius: 5px;
 }
+
+/* Botón para rotar imagen */
+.Paso2C-boton-rotar {
+  position: absolute;
+  bottom: 10px; /* Ubicado en la esquina inferior derecha */
+  left: 10px; /* Espacio para no chocar con el botón de eliminar */
+  background-color: #1abc9c; /* Color turquesa */
+  color: #fff;
+  border: none;
+  padding: 6px 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+/* Hover en el botón de rotar */
+.Paso2C-boton-rotar:hover {
+  background-color: #16a085;
+}
+
+
+/* En móviles: ancho completo para la sección secundaria */
+@media (max-width: 900px) {
+  .Paso2C-secundaria {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Imágenes secundarias */
+.Paso2C-seccionDerecha.secundaria img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 1 / 0.5;
+}
+
+/* Contenedor individual de imagen */
+.Paso2C-imagenContenedor {
+  width: 150px;
+  height: 140px;
+  position: relative;
+}
+
+/* Reducir tamaño en dispositivos muy pequeños */
+@media (max-width: 600px) {
+  .Paso2C-imagenContenedor {
+    width: 120px;
+    height: 110px;
+  }
+}
+

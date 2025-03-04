@@ -167,7 +167,7 @@ const ModificarFotos: React.FC = () => {
         prevImagenes.map((img) => (img === imagenUrl ? nuevaUrl : img))
       );
   
-      Swal.fire("¡Listo!", "La imagen se ha rotado correctamente.", "success");
+      // window.location.reload();
     } catch (error: any) {
       Swal.fire("Error", error.message || "No se pudo rotar la imagen.", "error");
     }

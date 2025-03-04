@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation"; 
+import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import "./estilos.css";
 
@@ -8,10 +8,11 @@ const MAX_IMAGENES = 20;
 const ModificarFotos: React.FC = () => {
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId");
+  
   const [imagenes, setImagenes] = useState<string[]>([]);
   const [imagenesArchivo, setImagenesArchivo] = useState<File[]>([]);
   const [cargando, setCargando] = useState(false);
-  const inputFileRef = useRef<HTMLInputElement | null>(null); // Ref para el input de tipo file
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const fetchImagenes = async () => {
@@ -22,7 +23,7 @@ const ModificarFotos: React.FC = () => {
           text: 'No se encontró el ID del Glamping.',
         });
         return;
-      }      
+      }
       try {
         const response = await fetch(`https://glamperosapi.onrender.com/glampings/${glampingId}`);
         if (!response.ok) throw new Error("Error al obtener las imágenes del glamping");
@@ -40,12 +41,14 @@ const ModificarFotos: React.FC = () => {
     }
   }, [glampingId]);
 
+  // Subir automáticamente cuando se añadan imágenesArchivo
   useEffect(() => {
     if (imagenesArchivo.length > 0) {
       cargarImagenes();
     }
   }, [imagenesArchivo]);
 
+  // --------- REORGANIZAR IMÁGENES ---------
   const reorganizarImagenesEnAPI = async (nuevoOrdenImagenes: string[]) => {
     try {
       if (!glampingId) {
@@ -55,7 +58,7 @@ const ModificarFotos: React.FC = () => {
           text: 'No se encontró el ID del Glamping.',
         });
         return;
-      }      
+      }
       const response = await fetch(
         `https://glamperosapi.onrender.com/glampings/${glampingId}/reorganizar_imagenes`,
         {
@@ -70,7 +73,11 @@ const ModificarFotos: React.FC = () => {
       if (!response.ok) {
         const errorResponse = await response.json();
         console.error("Error de la API:", errorResponse);
-        throw new Error(errorResponse.detail ? JSON.stringify(errorResponse.detail) : "Error al reorganizar las imágenes");
+        throw new Error(
+          errorResponse.detail
+            ? JSON.stringify(errorResponse.detail)
+            : "Error al reorganizar las imágenes"
+        );
       }
 
       const data = await response.json();
@@ -84,16 +91,19 @@ const ModificarFotos: React.FC = () => {
   const manejarArrastre = (e: React.DragEvent<HTMLDivElement>, index: number) => {
     e.preventDefault();
     const targetIndex = parseInt(e.dataTransfer.getData("index"), 10);
-
     if (isNaN(targetIndex) || targetIndex === index || targetIndex >= imagenes.length) return;
 
     const nuevoOrden = [...imagenes];
-    [nuevoOrden[index], nuevoOrden[targetIndex]] = [nuevoOrden[targetIndex], nuevoOrden[index]];
+    [nuevoOrden[index], nuevoOrden[targetIndex]] = [
+      nuevoOrden[targetIndex],
+      nuevoOrden[index],
+    ];
 
     setImagenes(nuevoOrden);
     reorganizarImagenesEnAPI(nuevoOrden);
   };
 
+  // --------- ELIMINAR IMAGEN ---------
   const eliminarImagen = async (imagenUrl: string) => {
     if (!glampingId) {
       Swal.fire({
@@ -102,10 +112,12 @@ const ModificarFotos: React.FC = () => {
         text: 'No se encontró el ID del Glamping.',
       });
       return;
-    }    
+    }
     try {
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/imagenes?imagen_url=${encodeURIComponent(imagenUrl)}`,
+        `https://glamperosapi.onrender.com/glampings/${glampingId}/imagenes?imagen_url=${encodeURIComponent(
+          imagenUrl
+        )}`,
         {
           method: "DELETE",
         }
@@ -122,6 +134,46 @@ const ModificarFotos: React.FC = () => {
     }
   };
 
+  // --------- ROTAR IMAGEN ---------
+  const rotarImagen = async (imagenUrl: string, grados: number) => {
+    if (!glampingId) {
+      Swal.fire("Error", "No se encontró el ID del Glamping.", "error");
+      return;
+    }
+    try {
+      // Llamamos a nuestro endpoint de rotación en el backend
+      const response = await fetch(
+        `https://glamperosapi.onrender.com/glampings/${glampingId}/rotate_image`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ imagenUrl, grados }),
+        }
+      );
+  
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        throw new Error(errorResponse.detail || "Error al rotar la imagen");
+      }
+  
+      // Recibir la nueva URL de la imagen
+      const data = await response.json();
+      const nuevaUrl = data.nueva_url;
+  
+      // Reemplazar la imagen antigua por la nueva en el estado
+      setImagenes((prevImagenes) =>
+        prevImagenes.map((img) => (img === imagenUrl ? nuevaUrl : img))
+      );
+  
+      Swal.fire("¡Listo!", "La imagen se ha rotado correctamente.", "success");
+    } catch (error: any) {
+      Swal.fire("Error", error.message || "No se pudo rotar la imagen.", "error");
+    }
+  };  
+
+  // --------- SUBIR IMÁGENES ---------
   const cargarImagenes = async () => {
     if (!glampingId) {
       Swal.fire({
@@ -131,11 +183,15 @@ const ModificarFotos: React.FC = () => {
       });
       return;
     }
-    
+
     if (imagenesArchivo.length === 0) return;
 
     if (imagenes.length + imagenesArchivo.length > MAX_IMAGENES) {
-      Swal.fire("Error", `No puedes añadir más de ${MAX_IMAGENES} imágenes.`, "error");
+      Swal.fire(
+        "Error",
+        `No puedes añadir más de ${MAX_IMAGENES} imágenes.`,
+        "error"
+      );
       return;
     }
 
@@ -154,7 +210,6 @@ const ModificarFotos: React.FC = () => {
         );
         continue;
       }
-
       imagenesValidas.push(archivo);
     }
 
@@ -163,6 +218,7 @@ const ModificarFotos: React.FC = () => {
     const formData = new FormData();
     imagenesValidas.forEach((archivo) => formData.append("imagenes", archivo));
     setCargando(true);
+
     try {
       const response = await fetch(
         `https://glamperosapi.onrender.com/glampings/${glampingId}/imagenes`,
@@ -181,13 +237,17 @@ const ModificarFotos: React.FC = () => {
       setImagenes(data.imagenes || []);
       setImagenesArchivo([]);
     } catch (error: any) {
-      Swal.fire("Error", error.message || "No se pudieron cargar las imágenes.", "error");
+      Swal.fire(
+        "Error",
+        error.message || "No se pudieron cargar las imágenes.",
+        "error"
+      );
     } finally {
       setCargando(false);
     }
   };
 
-  // Función para abrir el input file cuando se hace clic en el botón
+  // Función para abrir el input file al hacer clic en el botón
   const seleccionarImagenes = () => {
     inputFileRef.current?.click();
   };
@@ -208,18 +268,33 @@ const ModificarFotos: React.FC = () => {
               onDrop={(e) => manejarArrastre(e, index)}
             >
               <div className="ModificarFotos-imagen-contenedor">
-                <img src={url} alt={`Imagen ${index}`} className="ModificarFotos-imagen" />
+                <img
+                  src={url}
+                  alt={`Imagen ${index}`}
+                  className="ModificarFotos-imagen"
+                />
+                {/* Botón eliminar */}
                 <button
                   className="ModificarFotos-boton-eliminar"
                   onClick={() => eliminarImagen(url)}
+                  title="Eliminar imagen"
                 >
                   🗑️
+                </button>
+                {/* Botón rotar */}
+                <button
+                  className="ModificarFotos-boton-rotar"
+                  onClick={() => rotarImagen(url, 90)}
+                  title="Rotar 90°"
+                >
+                  🔄
                 </button>
               </div>
             </div>
           ))}
         </div>
       )}
+
       <p>{`Imágenes actuales: ${imagenes.length} / ${MAX_IMAGENES}`}</p>
       <div className="ModificarFotos-agregar">
         <button className="ModificarFotos-boton" onClick={seleccionarImagenes}>
@@ -231,7 +306,7 @@ const ModificarFotos: React.FC = () => {
           type="file"
           accept="image/*"
           multiple
-          style={{ display: "none" }} // Oculta el input file
+          style={{ display: "none" }}
           onChange={(e) => setImagenesArchivo(Array.from(e.target.files || []))}
         />
         {cargando && <p>Estamos cargando tus imágenes...</p>}

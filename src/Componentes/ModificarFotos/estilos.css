@@ -1,6 +1,7 @@
-/* Estilos principales del contenedor */
+/* Contenedor principal */
 .ModificarFotos-contenedor {
   width: 80%;
+  max-width: 900px;
   margin: 20px auto;
   padding: 20px;
   background-color: #f9f9f9;
@@ -8,15 +9,15 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos de la lista de imágenes */
+/* Lista de imágenes */
 .ModificarFotos-lista {
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
-/* Estilo de cada item en la lista */
+/* Cada imagen ocupa el 33.3% en desktop, 50% en tablets y 100% en móviles */
 .ModificarFotos-item {
   position: relative;
   width: calc(33.33% - 10px);
@@ -26,6 +27,11 @@
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   cursor: grab;
+  transition: transform 0.2s ease-in-out;
+}
+
+.ModificarFotos-item:hover {
+  transform: scale(1.02);
 }
 
 .ModificarFotos-item:active {
@@ -46,33 +52,71 @@
   height: 100%;
   object-fit: cover;
   border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
 }
 
-/* Botón de eliminar imagen */
+/* Botón eliminar */
 .ModificarFotos-boton-eliminar {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   border: none;
   border-radius: 50%;
-  font-size: 20px;
+  font-size: 16px;
   color: #f44336;
   cursor: pointer;
-  padding: 5px;
-  transition: background-color 0.3s ease;
+  padding: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .ModificarFotos-boton-eliminar:hover {
   background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
 }
 
-/* Estilo del área para agregar nuevas imágenes */
+/* Botón de rotar imagen */
+.ModificarFotos-boton-rotar {
+  position: absolute;
+  top: 10px;
+  right: 50px; /* Espacio para no solapar con eliminar */
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  color: #007bff;
+  cursor: pointer;
+  padding: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.ModificarFotos-boton-rotar:hover {
+  background-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+/* Área para agregar nuevas imágenes */
 .ModificarFotos-agregar {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Botón para subir imágenes */
+.ModificarFotos-boton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.ModificarFotos-boton:hover {
+  background-color: #0056b3;
 }
 
 /* Texto de información */
@@ -83,7 +127,7 @@
   text-align: center;
 }
 
-/* Estilo cuando no hay imágenes */
+/* Cuando no hay imágenes */
 .ModificarFotos-contenedor p {
   color: #999;
   font-style: italic;
@@ -95,4 +139,17 @@
   font-weight: bold;
   font-size: 14px;
   margin-top: 10px;
+}
+
+/* Responsividad para tablets y móviles */
+@media (max-width: 768px) {
+  .ModificarFotos-item {
+    width: calc(50% - 10px);
+  }
+}
+
+@media (max-width: 480px) {
+  .ModificarFotos-item {
+    width: 100%;
+  }
 }

@@ -49,6 +49,8 @@ const GuardarGlampingP: React.FC = () => {
     video_youtube: "",
     propietario_id: "",
     nombrePropietario: "",
+    precioEstandarAdicional: 0, // Asegúrate de declararlo también aquí si vas a usarlo
+    Cantidad_Huespedes_Adicional: 0, // Ídem
   });
 
   const idPropietario = Cookies.get('idUsuario');
@@ -70,13 +72,14 @@ const GuardarGlampingP: React.FC = () => {
     Cantidad_Huespedes_Adicional,
     direccion,
     diasCancelacion,
+    copiasGlamping
   } = useContext(ContextoApp)!; 
 
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [showPopup, setShowPopup] = useState(false);
 
-  // Ref al botón "Cerrar"
+  // Ref al botón "Cerrar" del popup
   const cerrarPopupRef = useRef<HTMLButtonElement | null>(null);
 
   // Sincroniza la idUsuario
@@ -306,33 +309,52 @@ const GuardarGlampingP: React.FC = () => {
     }
   };
 
+  // AQUÍ es donde repetimos el proceso de guardar en la base de datos según copiasGlamping
   const manejarEnvio = async (e: React.FormEvent) => {
     e.preventDefault();
     setCargando(true);
     setMensaje("");
 
-    const formData = new FormData();
-    Object.entries(formulario).forEach(([key, value]) => {
-      formData.append(key, value.toString());
-    });
-    // Adjuntamos las imágenes
-    imagenesCargadas.forEach((imagen) => formData.append("imagenes", imagen));
-
     try {
-      const respuesta = await axios.post(
-        "https://glamperosapi.onrender.com/glampings/",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+      for (let i = 1; i <= (copiasGlamping || 1); i++) {
+        const formData = new FormData();
+
+        // Copiamos todos los valores del formulario
+        Object.entries(formulario).forEach(([key, value]) => {
+          formData.append(key, value.toString());
+        });
+
+        // Adjuntamos las imágenes
+        imagenesCargadas.forEach((imagen) => {
+          formData.append("imagenes", imagen);
+        });
+
+        // Si es la "copia" 2 o superior, modificamos el nombre (ejemplo: Bosque_2, Bosque_3, ...)
+        if (i > 1) {
+          const nuevoNombre = `${formulario.nombreGlamping}_${i}`;
+          formData.set("nombreGlamping", nuevoNombre);
         }
-      );
-      setMensaje("Glamping creado con éxito: " + respuesta.data.nombreGlamping);
+
+        // Guardamos en la base de datos
+        const respuesta = await axios.post(
+          "https://glamperosapi.onrender.com/glampings/",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        console.log("Glamping creado con éxito:", respuesta.data.nombreGlamping);
+      }
+      
+      // Ponemos un mensaje final que indique éxito general
+      setMensaje("¡Se crearon tus glampings con éxito!");
       lanzarConfetti();
       setShowPopup(true);
       
-      // Enviar correo
+      // Enviamos correo una sola vez, no importa cuántos glampings creamos
       enviarCorreo(correoUsuarioCookie || "", nombreUsuarioCookie || "");
     } catch (error) {
       setMensaje("Error al crear el glamping: " + error);

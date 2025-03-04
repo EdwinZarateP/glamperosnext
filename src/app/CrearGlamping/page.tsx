@@ -38,7 +38,7 @@ const CreacionGlamping: React.FC = () => {
   }, [setNombreGlamping]);
 
   const pasos = [
-    // <Paso2C key="Paso2C" />,
+    // <Paso3B key="Paso3B" />,
     <Paso1A key="Paso1A" />,
     <Paso1B key="Paso1B" />,
     <Paso1C key="Paso1C" />,

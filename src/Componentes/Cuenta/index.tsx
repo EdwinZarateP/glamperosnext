@@ -49,6 +49,7 @@ const Cuenta: React.FC = () => {
     setAcepta_Mascotas,
     setPrecioEstandarAdicional,
     setDiasCancelacion,
+    setCopiasGlamping,
   } = almacenVariables;
 
   const quitarSetters = () => {
@@ -68,6 +69,7 @@ const Cuenta: React.FC = () => {
     setDescuento(0);
     setPrecioEstandarAdicional(0);
     setAcepta_Mascotas(false);
+    setCopiasGlamping(1);
   };
 
   const [usuario, setUsuario] = useState<{

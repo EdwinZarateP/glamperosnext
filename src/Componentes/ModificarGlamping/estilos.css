@@ -62,7 +62,7 @@
 }
 
 .amenidad-button {
-  background-color: #2F6B3E;
+  background-color: #9c9c9c;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -73,11 +73,11 @@
 }
 
 .amenidad-button:hover {
-  background-color:rgb(33, 74, 44);
+  background-color:#2F6B3E;
 }
 
 .amenidad-button.selected {
-  background-color: #9c9c9c;
+  background-color: #2F6B3E;
 }
 
 .ModificarGlamping-boton {

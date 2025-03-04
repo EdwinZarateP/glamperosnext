@@ -166,6 +166,9 @@ interface ContextProps {
   setDescuento: React.Dispatch<React.SetStateAction<number>>;
   diasCancelacion: number;
   setDiasCancelacion: React.Dispatch<React.SetStateAction<number>>;
+  copiasGlamping: number;
+  setCopiasGlamping: React.Dispatch<React.SetStateAction<number>>;
+
   
   // Busqueda del Header
   busqueda: { destino: string, fechas: string };
@@ -316,7 +319,8 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
   
     //Dias de anticipacion para aceptar reservas
     const [diasCancelacion, setDiasCancelacion] = useState<number>(1);
-  
+    const [copiasGlamping,setCopiasGlamping] = useState<number>(1);
+    
     // Estado para filtros
     const [activarFiltros, setActivarFiltros] = useState<boolean>(false);
     const [activarFiltrosUbicacion, setActivarFiltrosUbicacion] = useState<boolean>(true);
@@ -425,6 +429,7 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
         precioEstandarAdicional, setPrecioEstandarAdicional,
         descuento, setDescuento,
         diasCancelacion, setDiasCancelacion,
+        copiasGlamping,setCopiasGlamping,
         activarFiltros, setActivarFiltros,
         activarFiltrosUbicacion, setActivarFiltrosUbicacion,
         activarFiltrosUbicacionBogota, setActivarFiltrosUbicacionBogota,

@@ -57,6 +57,7 @@ const Header: React.FC = () => {
     setFechasSeparadas,
     setPrecioEstandarAdicional,
     setDiasCancelacion,
+    setCopiasGlamping,
   } = almacenVariables;
 
   const [mostrarPanelBusqueda, setMostrarPanelBusqueda] = useState<boolean>(false);
@@ -96,6 +97,7 @@ const Header: React.FC = () => {
     setDescuento(0);
     setPrecioEstandarAdicional(0);
     setAcepta_Mascotas(false);
+    setCopiasGlamping(1)
   };
 
   const irAInicio = () => {

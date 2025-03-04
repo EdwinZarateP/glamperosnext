@@ -6,7 +6,7 @@ import { ContextoApp } from "@/context/AppContext";
 
 const Paso3B: React.FC = () => {
   const { precioEstandar, setPrecioEstandar, precioEstandarAdicional,
-    setPrecioEstandarAdicional, descuento, setDescuento, diasCancelacion, setDiasCancelacion } = useContext(ContextoApp)!;
+    setPrecioEstandarAdicional, descuento, setDescuento, diasCancelacion, setDiasCancelacion, copiasGlamping,setCopiasGlamping, } = useContext(ContextoApp)!;
 
   const manejarPreciosEstandar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor = e.target.value.replace(/\D/g, '');
@@ -56,6 +56,19 @@ const Paso3B: React.FC = () => {
     setDiasCancelacion((prev) => prev ?? 0);
   };
 
+  const manejarCopiasGlamping = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valor = e.target.value.replace(/\D/g, '');
+    const valorNumerico = Number(valor);
+    if (valorNumerico <= 10) {
+      setCopiasGlamping(valorNumerico);
+    }
+  };
+
+  const manejarBlurCopiasGlamping= () => {
+    setCopiasGlamping((prev) => prev ?? 0);
+  };
+
+
   return (
     <div className="Paso3B-contenedor">
       <h1 className="Paso3B-titulo">Establece tu precio</h1>
@@ -85,6 +98,12 @@ const Paso3B: React.FC = () => {
           <label htmlFor="diasCancelacion" className="Paso3B-etiqueta">¿Cuántos días de anticipación permites para que un huésped cancele su reserva?</label>
           <input id="diasCancelacion" type="text" className="Paso3B-input" value={diasCancelacion} onChange={manejarDiasCancelacion} onBlur={manejarBlurDiasCancelacion} placeholder="Ej: 5" />
         </div>
+
+        <div className="Paso3B-opcion">
+          <label htmlFor="cantidadCopias" className="Paso3B-etiqueta">¿Cuantas propiedades iguales quieres crear?</label>
+          <input id="diasCancelacion" type="text" className="Paso3B-input" value={copiasGlamping} onChange={manejarCopiasGlamping} onBlur={manejarBlurCopiasGlamping} placeholder="Ej: 5" />
+        </div>
+
       </div>
     </div>
   );

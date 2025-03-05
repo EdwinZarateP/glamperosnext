@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import { ContextoApp } from "@/context/AppContext";
-import CalendarioGeneral from "@/Componentes/CalendarioGeneral";
+import CalendarioSecundario from "@/Componentes/CalendarioSecundario";
 import Visitantes from "../Visitantes";
 import viernesysabadosyfestivos from "@/Componentes/BaseFinesSemana/fds.json";
 import { calcularTarifaServicio } from "@/Funciones/calcularTarifaServicio";
@@ -20,6 +20,7 @@ interface formularioFechasMovilesProps {
   admiteMascotas: boolean;
   Cantidad_Huespedes: number;
   Cantidad_Huespedes_Adicional: number;
+  minimoNoches: number;
 }
 
 const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
@@ -29,6 +30,7 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
   admiteMascotas,
   Cantidad_Huespedes,
   Cantidad_Huespedes_Adicional,
+  minimoNoches
 }) => {
   // Obtenemos el contexto
   const almacenVariables = useContext(ContextoApp);
@@ -363,32 +365,44 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
   // Manejar el click en "Reservar"
   const handleReservarClick = (e: React.MouseEvent) => {
     const emailUsuario = Cookies.get("correoUsuario");
-
+  
     if (!emailUsuario) {
       ValidarSesion("sesionCerrada");
       e.preventDefault();
       return;
     }
-
+  
+    // 1. Verifica que las fechas sean válidas
     if (!validarFechas()) return;
-
-  // Construcción de parámetros encriptados
-  const queryParams = new URLSearchParams({
-    glampingId: glampingId || "",
-    fechaInicio: encodeURIComponent(encryptData(fechaInicioReservada)),
-    fechaFin: encodeURIComponent(encryptData(fechaFinReservada)),
-    totalFinal: encodeURIComponent(encryptData(TotalFinal.toString())),
-    tarifa: encodeURIComponent(encryptData(tarifaFinalGlamperos.toString())),
-    totalDias: encodeURIComponent(encryptData(totalDiasRender.toString())),
-    adultos: encodeURIComponent(encryptData(adultosRender.toString())),
-    ninos: encodeURIComponent(encryptData(ninosRender.toString())),
-    bebes: encodeURIComponent(encryptData(bebesRender.toString())),
-    mascotas: encodeURIComponent(encryptData(mascotasRender.toString())),
-  });
-
-  const nuevaUrl = `/Reservar?${queryParams.toString()}`;
-  router.push(nuevaUrl);
+  
+    // 2. Verifica que sea >= minimoNoches
+    if (totalDiasRender < minimoNoches) {
+      Swal.fire({
+        icon: "warning",
+        title: "Estadía muy corta",
+        text: `Este Glamping solo permite reservas de al menos ${minimoNoches} noches.`,
+      });
+      return; // Detener el proceso
+    }
+  
+    // 3. Si todo está bien, construye la URL y redirige
+    const queryParams = new URLSearchParams({
+      glampingId: glampingId || "",
+      fechaInicio: encodeURIComponent(encryptData(fechaInicioReservada)),
+      fechaFin: encodeURIComponent(encryptData(fechaFinReservada)),
+      totalFinal: encodeURIComponent(encryptData(TotalFinal.toString())),
+      tarifa: encodeURIComponent(encryptData(tarifaFinalGlamperos.toString())),
+      totalDias: encodeURIComponent(encryptData(totalDiasRender.toString())),
+      adultos: encodeURIComponent(encryptData(adultosRender.toString())),
+      ninos: encodeURIComponent(encryptData(ninosRender.toString())),
+      bebes: encodeURIComponent(encryptData(bebesRender.toString())),
+      mascotas: encodeURIComponent(encryptData(mascotasRender.toString())),
+    });
+  
+    const nuevaUrl = `/Reservar?${queryParams.toString()}`;
+    router.push(nuevaUrl);
   };
+  
 
   return (
     <div className="formularioFechasMoviles-contenedor">
@@ -426,7 +440,7 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
         <span className="formularioFechasMoviles-boton-efecto"></span>
       </button>
 
-      {mostrarCalendario && <CalendarioGeneral cerrarCalendario={() => setMostrarCalendario(false)} />}
+      {mostrarCalendario && <CalendarioSecundario cerrarCalendario={() => setMostrarCalendario(false)} minimoNoches={minimoNoches} /> }
       {mostrarVisitantes && (
         <Visitantes
           max_adultos={10}

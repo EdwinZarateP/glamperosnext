@@ -1,16 +1,21 @@
 "use client";
 
-import  { useContext, useState, useEffect } from "react";
-import Swal from "sweetalert2";  
-import "./estilos.css";         
-import { ContextoApp } from "@/context/AppContext"; 
+import { useContext, useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import "./estilos.css";
+import { ContextoApp } from "@/context/AppContext";
 import { useRouter, useSearchParams } from "next/navigation";
 
+/** NUEVO: Incluimos minimoNoches en la interfaz de propiedades */
 interface PropiedadesCalendarioSecundario {
   cerrarCalendario: () => void;
+  minimoNoches: number; // Recibe el mínimo de noches requeridas
 }
 
-const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({ cerrarCalendario }) => {
+const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
+  cerrarCalendario,
+  minimoNoches
+}) => {
   const almacenVariables = useContext(ContextoApp);
 
   if (!almacenVariables) {
@@ -48,14 +53,15 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({ cerra
   useEffect(() => {
     const fechaInicioUrl = searchParams.get("fechaInicioUrl");
     const fechaFinUrl = searchParams.get("fechaFinUrl");
-    // Nota: totalDiasUrl se calcula automáticamente, pero lo dejamos en la URL
+
     if (fechaInicioUrl) {
       setFechaInicio(new Date(fechaInicioUrl));
     }
     if (fechaFinUrl) {
       setFechaFin(new Date(fechaFinUrl));
     }
-  }, [searchParams, setFechaInicio, setFechaFin]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Preparamos la fecha de hoy sin horas
   const fechaHoy = new Date();
@@ -71,7 +77,7 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({ cerra
     setMesesVisibles(mesesCalculados);
   }, [fechaHoy]);
 
-  // Cálculo de días libres entre fechaInicio y fechaFin y actualiza el estado
+  // Cálculo de días entre fechaInicio y fechaFin y actualización del estado
   useEffect(() => {
     if (fechaInicio && fechaFin) {
       const diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
@@ -99,7 +105,7 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({ cerra
     }
   }, [fechaInicio, fechaFin, FechasSeparadas, setTotalDias]);
 
-  // Sincronizamos los query params con el estado cada vez que cambian las fechas o las fechas reservadas
+  // Sincronizamos los query params con el estado cada vez que cambian las fechas
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -132,13 +138,43 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({ cerra
   }, [fechaInicio, fechaFin, FechasSeparadas, router]);
 
   // Validación para evitar fecha de inicio posterior a fecha de fin
+  // y para no permitir menos de minimoNoches
   const validarFechas = (): boolean => {
     if (fechaInicio && fechaFin) {
+      // Fecha inicio debe ser antes de la fecha fin
       if (fechaInicio.getTime() === fechaFin.getTime() || fechaInicio > fechaFin) {
         Swal.fire({
           icon: "error",
           title: "Error en el rango de fechas",
-          text: "La fecha de inicio no puede ser igual o posterior a la fecha de fin. Por favor, selecciona un rango válido.",
+          text: "La fecha de inicio no puede ser igual o posterior a la fecha de fin. Selecciona un rango válido.",
+        });
+        return false;
+      }
+
+      // Cálculo de noches seleccionadas
+      const diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
+      let dias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
+
+      // Quitamos días reservados en ese rango
+      if (FechasSeparadas.length > 0) {
+        for (let i = 0; i < dias; i++) {
+          const diaIterado = new Date(fechaInicio.getTime() + i * (1000 * 60 * 60 * 24));
+          if (
+            FechasSeparadas.some(
+              (fechaReservada) => fechaReservada.toDateString() === diaIterado.toDateString()
+            )
+          ) {
+            dias--;
+          }
+        }
+      }
+
+      // NUEVO: validamos contra minimoNoches
+      if (dias < minimoNoches) {
+        Swal.fire({
+          icon: "warning",
+          title: "Rango muy corto",
+          text: `Este Glamping solo permite reservas de al menos ${minimoNoches} noches.`,
         });
         return false;
       }
@@ -158,7 +194,7 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({ cerra
     } else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
       const nuevaFechaFin = new Date(fecha);
 
-      // Evitar que sea un solo día (mismo día) — opcional
+      // Evitar que sea el mismo día: opcional
       if (nuevaFechaFin.toDateString() === fechaInicio.toDateString()) {
         nuevaFechaFin.setDate(nuevaFechaFin.getDate() + 1);
       }
@@ -333,6 +369,7 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({ cerra
           </button>
           <button
             onClick={() => {
+              // Antes de cerrar, validamos tanto el rango como el mínimo de noches
               if (validarFechas()) {
                 cerrarCalendario();
                 setFechaInicioConfirmado(fechaInicio);

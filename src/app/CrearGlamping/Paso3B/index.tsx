@@ -6,7 +6,8 @@ import { ContextoApp } from "@/context/AppContext";
 
 const Paso3B: React.FC = () => {
   const { precioEstandar, setPrecioEstandar, precioEstandarAdicional,
-    setPrecioEstandarAdicional, descuento, setDescuento, diasCancelacion, setDiasCancelacion, copiasGlamping,setCopiasGlamping, } = useContext(ContextoApp)!;
+    setPrecioEstandarAdicional, descuento, setDescuento, diasCancelacion, 
+    setDiasCancelacion, copiasGlamping, setCopiasGlamping, minimoNoches, setMinimoNoches } = useContext(ContextoApp)!;
 
   const manejarPreciosEstandar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor = e.target.value.replace(/\D/g, '');
@@ -56,6 +57,25 @@ const Paso3B: React.FC = () => {
     setDiasCancelacion((prev) => prev ?? 0);
   };
 
+  const manejarMinimoNoches = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valor = e.target.value.replace(/\D/g, '');
+    const valorNumerico = Number(valor);
+
+    if (valorNumerico < 1) {
+      
+      setMinimoNoches(1);
+    } else if (valorNumerico > 30) {
+      setMinimoNoches(30);
+    } else {
+      setMinimoNoches(valorNumerico);
+    }
+    };
+
+  const manejarBlurMinimoNoches = () => {
+    setMinimoNoches((prev) => (prev && prev >= 1 ? prev : 1));
+  };
+
+
   const manejarCopiasGlamping = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor = e.target.value.replace(/\D/g, '');
     const valorNumerico = Number(valor);
@@ -67,7 +87,6 @@ const Paso3B: React.FC = () => {
   const manejarBlurCopiasGlamping= () => {
     setCopiasGlamping((prev) => prev ?? 0);
   };
-
 
   return (
     <div className="Paso3B-contenedor">
@@ -97,6 +116,11 @@ const Paso3B: React.FC = () => {
         <div className="Paso3B-opcion">
           <label htmlFor="diasCancelacion" className="Paso3B-etiqueta">¿Cuántos días de anticipación permites para que un huésped cancele su reserva?</label>
           <input id="diasCancelacion" type="text" className="Paso3B-input" value={diasCancelacion} onChange={manejarDiasCancelacion} onBlur={manejarBlurDiasCancelacion} placeholder="Ej: 5" />
+        </div>
+
+        <div className="Paso3B-opcion">
+          <label htmlFor="minimoNoches" className="Paso3B-etiqueta">¿Cuántas noches como mínimo se pueden reservar?</label>
+          <input id="minimoNoches" type="text" className="Paso3B-input" value={minimoNoches} onChange={manejarMinimoNoches} onBlur={manejarBlurMinimoNoches} placeholder="Ej: 1" />
         </div>
 
         <div className="Paso3B-opcion">

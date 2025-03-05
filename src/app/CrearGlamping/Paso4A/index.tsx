@@ -50,7 +50,8 @@ const GuardarGlampingP: React.FC = () => {
     propietario_id: "",
     nombrePropietario: "",
     precioEstandarAdicional: 0, // Asegúrate de declararlo también aquí si vas a usarlo
-    Cantidad_Huespedes_Adicional: 0, // Ídem
+    Cantidad_Huespedes_Adicional: 0, 
+    minimoNoches: 0, 
   });
 
   const idPropietario = Cookies.get('idUsuario');
@@ -72,7 +73,8 @@ const GuardarGlampingP: React.FC = () => {
     Cantidad_Huespedes_Adicional,
     direccion,
     diasCancelacion,
-    copiasGlamping
+    copiasGlamping,
+    minimoNoches
   } = useContext(ContextoApp)!; 
 
   const [cargando, setCargando] = useState(false);
@@ -211,6 +213,16 @@ const GuardarGlampingP: React.FC = () => {
       }));
     }
   }, [precioEstandarAdicional]);
+
+  // Sincroniza minimoNoches
+  useEffect(() => {
+    if (typeof minimoNoches === 'number') {
+      setFormulario((prev) => ({
+        ...prev,
+        minimoNoches,
+      }));
+    }
+  }, [minimoNoches]);
 
   // Sincroniza descuento
   useEffect(() => {

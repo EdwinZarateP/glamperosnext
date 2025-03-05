@@ -14,6 +14,7 @@ const ModificarGlamping: React.FC = () => {
   const [Acepta_Mascotas, setAcepta_Mascotas] = useState<boolean>(false);
   const [precioEstandar, setPrecioEstandar] = useState<number>(0);
   const [precioEstandarAdicional, setPrecioEstandarAdicional] = useState<number>(0);
+  const [minimoNoches, setMinimoNoches] = useState<number>(1);  
   const [diasCancelacion, setDiasCancelacion] = useState<number>(1);    
   const [descuento, setDescuento] = useState<number>(0);
   const [descripcionGlamping, setDescripcionGlamping] = useState('');
@@ -42,6 +43,7 @@ const ModificarGlamping: React.FC = () => {
         setAcepta_Mascotas(data.Acepta_Mascotas || false);
         setPrecioEstandar(data.precioEstandar ?? 0);
         setPrecioEstandarAdicional(data.precioEstandarAdicional ?? 0);
+        setMinimoNoches(data.minimoNoches ?? 1);
         setDiasCancelacion(data.diasCancelacion ?? 0);
         setDescuento(data.descuento ?? 0);
         setDescripcionGlamping(data.descripcionGlamping || '');
@@ -158,6 +160,7 @@ const ModificarGlamping: React.FC = () => {
     formData.append("Acepta_Mascotas", Acepta_Mascotas ? "true" : "false");    
     formData.append("precioEstandar", precioEstandar.toString());
     formData.append("precioEstandarAdicional", precioEstandarAdicional.toString());
+    formData.append("minimoNoches", minimoNoches.toString());    
     formData.append("diasCancelacion", diasCancelacion.toString());    
     formData.append("descuento", descuento.toString());
     formData.append("descripcionGlamping", descripcionGlamping);
@@ -246,19 +249,15 @@ const ModificarGlamping: React.FC = () => {
             Cantidad Huespedes estandar por noche:
           </label>
           <input
-            id="Cantidad_Huespedes"
-            className="ModificarGlamping-input"
-            type="number"
-            value={Cantidad_Huespedes}
-            min="1"
-            max="15"
+            id="Cantidad_Huespedes" className="ModificarGlamping-input"
+            type="number" value={Cantidad_Huespedes} min="1" max="15"
             onChange={(e) => {
               let valor = Number(e.target.value);              
               if (valor < 1) valor = 1;
               if (valor > 15) valor = 15;
               setCantidad_Huespedes(valor);
             }}
-          />            
+          />    
 
           <label className="ModificarGlamping-label" htmlFor="Cantidad_Huespedes_Adicional">
             Huespedes adicionales por noche:
@@ -288,7 +287,21 @@ const ModificarGlamping: React.FC = () => {
             value={precioEstandarAdicional}
             onChange={(e) => setPrecioEstandarAdicional(Number(e.target.value))}
             disabled={Cantidad_Huespedes_Adicional <= 0}
-          />             
+          />
+
+          <label className="ModificarGlamping-label" htmlFor="minimoNoches">
+            Minimo de noches que permites reservar:
+          </label>
+          <input
+            id="minimoNoches" className="ModificarGlamping-input"
+            type="number" value={minimoNoches} min="1" max="3"
+            onChange={(e) => {
+              let valor = Number(e.target.value);              
+              if (valor < 1) valor = 1;
+              if (valor > 3) valor = 3;
+              setMinimoNoches(valor);
+            }}
+          />              
 
           <label className="ModificarGlamping-label" htmlFor="diasCancelacion">
             Días para admitir cancelaciones:

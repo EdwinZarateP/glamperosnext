@@ -21,6 +21,7 @@ interface FormularioFechasProps {
   admiteMascotas: boolean;
   Cantidad_Huespedes: number;
   Cantidad_Huespedes_Adicional: number;
+  minimoNoches: number;
 }
 
 const FormularioFechas: React.FC<FormularioFechasProps> = ({
@@ -30,6 +31,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
   admiteMascotas,
   Cantidad_Huespedes,
   Cantidad_Huespedes_Adicional,
+  minimoNoches
 }) => {
   // Obtenemos el contexto
   const almacenVariables = useContext(ContextoApp);
@@ -366,32 +368,44 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
   // Manejar el click en "Reservar"
   const handleReservarClick = (e: React.MouseEvent) => {
     const emailUsuario = Cookies.get("correoUsuario");
-
+  
     if (!emailUsuario) {
       ValidarSesion("sesionCerrada");
       e.preventDefault();
       return;
     }
-
+  
+    // 1. Verifica que las fechas sean válidas
     if (!validarFechas()) return;
-
-  // Construcción de parámetros encriptados
-  const queryParams = new URLSearchParams({
-    glampingId: glampingId || "",
-    fechaInicio: encodeURIComponent(encryptData(fechaInicioReservada)),
-    fechaFin: encodeURIComponent(encryptData(fechaFinReservada)),
-    totalFinal: encodeURIComponent(encryptData(TotalFinal.toString())),
-    tarifa: encodeURIComponent(encryptData(tarifaFinalGlamperos.toString())),
-    totalDias: encodeURIComponent(encryptData(totalDiasRender.toString())),
-    adultos: encodeURIComponent(encryptData(adultosRender.toString())),
-    ninos: encodeURIComponent(encryptData(ninosRender.toString())),
-    bebes: encodeURIComponent(encryptData(bebesRender.toString())),
-    mascotas: encodeURIComponent(encryptData(mascotasRender.toString())),
-  });
-
-  const nuevaUrl = `/Reservar?${queryParams.toString()}`;
-  router.push(nuevaUrl);
+  
+    // 2. Verifica que sea >= minimoNoches
+    if (totalDiasRender < minimoNoches) {
+      Swal.fire({
+        icon: "warning",
+        title: "Estadía muy corta",
+        text: `Este Glamping solo permite reservas de al menos ${minimoNoches} noches..`,
+      });
+      return; // Detener el proceso
+    }
+  
+    // 3. Si todo está bien, construye la URL y redirige
+    const queryParams = new URLSearchParams({
+      glampingId: glampingId || "",
+      fechaInicio: encodeURIComponent(encryptData(fechaInicioReservada)),
+      fechaFin: encodeURIComponent(encryptData(fechaFinReservada)),
+      totalFinal: encodeURIComponent(encryptData(TotalFinal.toString())),
+      tarifa: encodeURIComponent(encryptData(tarifaFinalGlamperos.toString())),
+      totalDias: encodeURIComponent(encryptData(totalDiasRender.toString())),
+      adultos: encodeURIComponent(encryptData(adultosRender.toString())),
+      ninos: encodeURIComponent(encryptData(ninosRender.toString())),
+      bebes: encodeURIComponent(encryptData(bebesRender.toString())),
+      mascotas: encodeURIComponent(encryptData(mascotasRender.toString())),
+    });
+  
+    const nuevaUrl = `/Reservar?${queryParams.toString()}`;
+    router.push(nuevaUrl);
   };
+  
 
   // Render final
   return (
@@ -537,7 +551,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
 
       {/* Componente CalendarioSecundario */}
       {mostrarCalendario && (
-        <CalendarioSecundario cerrarCalendario={() => setMostrarCalendario(false)} />
+        <CalendarioSecundario cerrarCalendario={() => setMostrarCalendario(false)} minimoNoches={minimoNoches} />
       )}
 
       {/* Componente Visitantes */}

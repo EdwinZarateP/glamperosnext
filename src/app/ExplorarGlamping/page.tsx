@@ -64,6 +64,7 @@ interface Glamping {
   video_youtube: string;
   propietario_id: string;
   diasCancelacion: number;
+  minimoNoches: number;
 }
 
 export default function ExplorarGlamping() {
@@ -126,6 +127,7 @@ export default function ExplorarGlamping() {
           video_youtube: datos.video_youtube || "sin video",
           propietario_id: datos.propietario_id || "No disponible",
           diasCancelacion: datos.diasCancelacion || 3,
+          minimoNoches: datos.minimoNoches || 1,               
         });
 
         // Convertir fechas reservadas de string a Date
@@ -257,6 +259,7 @@ export default function ExplorarGlamping() {
                   admiteMascotas={informacionGlamping.Acepta_Mascotas || false}
                   Cantidad_Huespedes={informacionGlamping.Cantidad_Huespedes || 10}
                   Cantidad_Huespedes_Adicional={informacionGlamping.Cantidad_Huespedes_Adicional || 0}
+                  minimoNoches={informacionGlamping.minimoNoches || 1}                  
                 />
               </div>
             </div>
@@ -279,6 +282,7 @@ export default function ExplorarGlamping() {
                 admiteMascotas={informacionGlamping.Acepta_Mascotas || false}
                 Cantidad_Huespedes={informacionGlamping.Cantidad_Huespedes || 10}
                 Cantidad_Huespedes_Adicional={informacionGlamping.Cantidad_Huespedes_Adicional || 0}
+                minimoNoches={informacionGlamping.minimoNoches || 1}                  
               />     
           </main>
         </>

@@ -1,81 +1,128 @@
 .Paso3B-contenedor {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-    height: 100%;
-   }
-  
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  height: 100%;
+}
+
+.Paso3B-titulo {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.Paso3B-descripcion {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.Paso3B-contenido {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 15px;
+}
+
+.Paso3B-opcion {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.Paso3B-etiqueta {
+  font-size: 1rem;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Input de texto (Precio, Descuento, etc.) */
+.Paso3B-input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.Paso3B-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Contenedor para los botones + y - */
+.Stepper-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Botón de stepper (+ y -) */
+.Stepper-boton {
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;      /* Tamaño de la fuente para el símbolo */
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background: #ffffff;    /* Fondo blanco para resaltar */
+  cursor: pointer;
+  text-align: center;
+  line-height: 36px;      /* Para centrar el símbolo verticalmente */
+  transition: background 0.3s ease, transform 0.1s;
+}
+
+.Stepper-boton:hover {
+  background: #f0f0f0;
+}
+
+.Stepper-boton:active {
+  transform: scale(0.95);
+}
+
+/* Valor que muestra la cantidad */
+.Stepper-valor {
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 30px;
+  text-align: center;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .Paso3B-contenedor {
+    padding: 15px;
+  }
+
   .Paso3B-titulo {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 10px;
-    text-align: center;
+    font-size: 1.8rem;
   }
-  
+
   .Paso3B-descripcion {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 20px;
-    text-align: left;
+    font-size: 0.9rem;
   }
-  
-  .Paso3B-contenido {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .Paso3B-opcion {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
+
   .Paso3B-etiqueta {
-    font-size: 1rem;
-    color: #333;
-    font-weight: bold;
+    font-size: 0.9rem;
   }
-  
+
   .Paso3B-input {
-    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .Stepper-boton {
+    width: 36px;
+    height: 36px;
+    line-height: 32px;
+  }
+
+  .Stepper-valor {
     font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    box-sizing: border-box;
   }
-  
-  .Paso3B-input:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  /* Responsivo */
-  @media (max-width: 768px) {
-    .Paso3B-contenedor {
-      padding: 15px;
-    }
-  
-    .Paso3B-titulo {
-      font-size: 1.8rem;
-    }
-  
-    .Paso3B-descripcion {
-      font-size: 0.9rem;
-    }
-  
-    .Paso3B-etiqueta {
-      font-size: 0.9rem;
-    }
-  
-    .Paso3B-input {
-      font-size: 0.9rem;
-    }
-  }
-  
+}

@@ -5,10 +5,22 @@ import "./estilos.css";
 import { ContextoApp } from "@/context/AppContext";
 
 const Paso3B: React.FC = () => {
-  const { precioEstandar, setPrecioEstandar, precioEstandarAdicional,
-    setPrecioEstandarAdicional, descuento, setDescuento, diasCancelacion, 
-    setDiasCancelacion, copiasGlamping, setCopiasGlamping, minimoNoches, setMinimoNoches } = useContext(ContextoApp)!;
+  const {
+    precioEstandar,
+    setPrecioEstandar,
+    precioEstandarAdicional,
+    setPrecioEstandarAdicional,
+    descuento,
+    setDescuento,
+    diasCancelacion,
+    setDiasCancelacion,
+    copiasGlamping,
+    setCopiasGlamping,
+    minimoNoches,
+    setMinimoNoches,
+  } = useContext(ContextoApp)!;
 
+  // ───── Handlers para campos de texto (precio, descuento, etc.) ─────
   const manejarPreciosEstandar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor = e.target.value.replace(/\D/g, '');
     const valorNumerico = Number(valor);
@@ -17,16 +29,16 @@ const Paso3B: React.FC = () => {
     }
   };
 
+  const manejarBlurPrecio = () => {
+    setPrecioEstandar((prev) => prev ?? 0);
+  };
+
   const manejarPreciosEstandarAdicional = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valor = e.target.value.replace(/\D/g, '');
     const valorNumerico = Number(valor);
     if (valorNumerico <= 1000000) {
       setPrecioEstandarAdicional(valorNumerico);
     }
-  };
-
-  const manejarBlurPrecio = () => {
-    setPrecioEstandar((prev) => prev ?? 0);
   };
 
   const manejarBlurPrecioAdicional = () => {
@@ -45,47 +57,41 @@ const Paso3B: React.FC = () => {
     setDescuento((prev) => prev ?? 0);
   };
 
-  const manejarDiasCancelacion = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valor = e.target.value.replace(/\D/g, '');
-    const valorNumerico = Number(valor);
-    if (valorNumerico <= 15) {
-      setDiasCancelacion(valorNumerico);
+  // ───── Handlers para los botones de incremento/decremento ─────
+  // 1) Días de cancelación
+  const handleDecreaseDiasCancelacion = () => {
+    if (diasCancelacion > 1) {
+      setDiasCancelacion(diasCancelacion - 1);
+    }
+  };
+  const handleIncreaseDiasCancelacion = () => {
+    if (diasCancelacion < 10) {
+      setDiasCancelacion(diasCancelacion + 1);
     }
   };
 
-  const manejarBlurDiasCancelacion = () => {
-    setDiasCancelacion((prev) => prev ?? 0);
-  };
-
-  const manejarMinimoNoches = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valor = e.target.value.replace(/\D/g, '');
-    const valorNumerico = Number(valor);
-
-    if (valorNumerico < 1) {
-      
-      setMinimoNoches(1);
-    } else if (valorNumerico > 30) {
-      setMinimoNoches(30);
-    } else {
-      setMinimoNoches(valorNumerico);
+  // 2) Mínimo de noches
+  const handleDecreaseMinimoNoches = () => {
+    if (minimoNoches > 1) {
+      setMinimoNoches(minimoNoches - 1);
     }
-    };
-
-  const manejarBlurMinimoNoches = () => {
-    setMinimoNoches((prev) => (prev && prev >= 1 ? prev : 1));
   };
-
-
-  const manejarCopiasGlamping = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valor = e.target.value.replace(/\D/g, '');
-    const valorNumerico = Number(valor);
-    if (valorNumerico <= 10) {
-      setCopiasGlamping(valorNumerico);
+  const handleIncreaseMinimoNoches = () => {
+    if (minimoNoches < 3) {
+      setMinimoNoches(minimoNoches + 1);
     }
   };
 
-  const manejarBlurCopiasGlamping= () => {
-    setCopiasGlamping((prev) => prev ?? 0);
+  // 3) Cantidad de copias
+  const handleDecreaseCopiasGlamping = () => {
+    if (copiasGlamping > 1) {
+      setCopiasGlamping(copiasGlamping - 1);
+    }
+  };
+  const handleIncreaseCopiasGlamping = () => {
+    if (copiasGlamping < 10) {
+      setCopiasGlamping(copiasGlamping + 1);
+    }
   };
 
   return (
@@ -98,36 +104,125 @@ const Paso3B: React.FC = () => {
       </p>
 
       <div className="Paso3B-contenido">
+        {/* Campo: Precio por noche */}
         <div className="Paso3B-opcion">
-          <label htmlFor="precio-estandar" className="Paso3B-etiqueta">Precio por noche (Estandar)</label>
-          <input id="precio-estandar" type="text" className="Paso3B-input" value={precioEstandar} onChange={manejarPreciosEstandar} onBlur={manejarBlurPrecio} placeholder="Ej: 350.000" />
+          <label htmlFor="precio-estandar" className="Paso3B-etiqueta">
+            Precio por noche (Estandar)
+          </label>
+          <input
+            id="precio-estandar"
+            type="text"
+            className="Paso3B-input"
+            value={precioEstandar}
+            onChange={manejarPreciosEstandar}
+            onBlur={manejarBlurPrecio}
+            placeholder="Ej: 350.000"
+          />
         </div>
 
+        {/* Campo: Precio por huésped adicional */}
         <div className="Paso3B-opcion">
-          <label htmlFor="precio-estandar-adicional" className="Paso3B-etiqueta">Precio por noche (por cada huésped adicional)</label>
-          <input id="precio-estandar-adicional" type="text" className="Paso3B-input" value={precioEstandarAdicional} onChange={manejarPreciosEstandarAdicional} onBlur={manejarBlurPrecioAdicional} placeholder="Ej: 150.000" />
+          <label htmlFor="precio-estandar-adicional" className="Paso3B-etiqueta">
+            Precio por noche (por cada huésped adicional)
+          </label>
+          <input
+            id="precio-estandar-adicional"
+            type="text"
+            className="Paso3B-input"
+            value={precioEstandarAdicional}
+            onChange={manejarPreciosEstandarAdicional}
+            onBlur={manejarBlurPrecioAdicional}
+            placeholder="Ej: 150.000"
+          />
         </div>
 
+        {/* Campo: Descuento */}
         <div className="Paso3B-opcion">
-          <label htmlFor="descuento" className="Paso3B-etiqueta">% de descuento para días entre semana no festivos</label>
-          <input id="descuento" type="text" className="Paso3B-input" value={descuento} onChange={manejarDescuento} onBlur={manejarBlurDescuento} placeholder="Ej: 10%" />
+          <label htmlFor="descuento" className="Paso3B-etiqueta">
+            % de descuento para días entre semana no festivos
+          </label>
+          <input
+            id="descuento"
+            type="text"
+            className="Paso3B-input"
+            value={descuento}
+            onChange={manejarDescuento}
+            onBlur={manejarBlurDescuento}
+            placeholder="Ej: 10%"
+          />
         </div>
 
+        {/* Campo: Días de cancelación (BOTONES) */}
         <div className="Paso3B-opcion">
-          <label htmlFor="diasCancelacion" className="Paso3B-etiqueta">¿Cuántos días de anticipación permites para que un huésped cancele su reserva?</label>
-          <input id="diasCancelacion" type="text" className="Paso3B-input" value={diasCancelacion} onChange={manejarDiasCancelacion} onBlur={manejarBlurDiasCancelacion} placeholder="Ej: 5" />
+          <label className="Paso3B-etiqueta">
+            ¿Cuántos días de anticipación para cancelar?
+          </label>
+          <div className="Stepper-container">
+            <button
+              type="button"
+              className="Stepper-boton"
+              onClick={handleDecreaseDiasCancelacion}
+            >
+              –
+            </button>
+            <span className="Stepper-valor">{diasCancelacion}</span>
+            <button
+              type="button"
+              className="Stepper-boton"
+              onClick={handleIncreaseDiasCancelacion}
+            >
+              +
+            </button>
+          </div>
         </div>
 
+        {/* Campo: Mínimo de noches (BOTONES) */}
         <div className="Paso3B-opcion">
-          <label htmlFor="minimoNoches" className="Paso3B-etiqueta">¿Cuántas noches como mínimo se pueden reservar?</label>
-          <input id="minimoNoches" type="text" className="Paso3B-input" value={minimoNoches} onChange={manejarMinimoNoches} onBlur={manejarBlurMinimoNoches} placeholder="Ej: 1" />
+          <label className="Paso3B-etiqueta">
+            ¿Cuántas noches como mínimo se pueden reservar?
+          </label>
+          <div className="Stepper-container">
+            <button
+              type="button"
+              className="Stepper-boton"
+              onClick={handleDecreaseMinimoNoches}
+            >
+              –
+            </button>
+            <span className="Stepper-valor">{minimoNoches}</span>
+            <button
+              type="button"
+              className="Stepper-boton"
+              onClick={handleIncreaseMinimoNoches}
+            >
+              +
+            </button>
+          </div>
         </div>
 
+        {/* Campo: Cantidad de copias (BOTONES) */}
         <div className="Paso3B-opcion">
-          <label htmlFor="cantidadCopias" className="Paso3B-etiqueta">¿Cuantas propiedades iguales quieres crear?</label>
-          <input id="diasCancelacion" type="text" className="Paso3B-input" value={copiasGlamping} onChange={manejarCopiasGlamping} onBlur={manejarBlurCopiasGlamping} placeholder="Ej: 5" />
+          <label className="Paso3B-etiqueta">
+            ¿Cuántas propiedades iguales quieres crear?
+          </label>
+          <div className="Stepper-container">
+            <button
+              type="button"
+              className="Stepper-boton"
+              onClick={handleDecreaseCopiasGlamping}
+            >
+              –
+            </button>
+            <span className="Stepper-valor">{copiasGlamping}</span>
+            <button
+              type="button"
+              className="Stepper-boton"
+              onClick={handleIncreaseCopiasGlamping}
+            >
+              +
+            </button>
+          </div>
         </div>
-
       </div>
     </div>
   );

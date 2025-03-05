@@ -237,8 +237,8 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         idPropietario: glamping.propietario_id ?? "Propietario no registrado",
         idGlamping: glampingId,
         ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
-        fechaInicio: new Date(fechaInicioDesencriptada),
-        fechaFin: new Date(fechaFinDesencriptada),
+        fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
+        fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
         totalDiasNum: Number(totalDiasDesencriptados),
         precioConTarifaNum: Number(totalFinalDesencriptado),
         TarifaGlamperosNum: Number(tarifaDesencriptada),
@@ -255,8 +255,8 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
           correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
           nombre: propietario?.nombreDueno ?? "Propietario desconocido",
           codigoReserva: creacionReserva.reserva.codigoReserva,
-          fechaInicio: new Date(fechaInicioDesencriptada),
-          fechaFin: new Date(fechaFinDesencriptada),
+          fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
+          fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
           Cantidad_Adultos: Number(adultosDesencriptados),
           Cantidad_Ninos: Number(ninosDesencriptados),
           Cantidad_Mascotas: Number(mascotasDesencriptadas),
@@ -269,8 +269,8 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
           correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
           nombre: propietario?.nombreDueno ?? "Propietario desconocido",
           codigoReserva: creacionReserva.reserva.codigoReserva,
-          fechaInicio: new Date(fechaInicioDesencriptada),
-          fechaFin: new Date(fechaFinDesencriptada),
+          fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
+          fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
           Cantidad_Adultos: Number(adultosDesencriptados),
           Cantidad_Ninos: Number(ninosDesencriptados),
           Cantidad_Mascotas: Number(mascotasDesencriptadas),
@@ -295,12 +295,12 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
           numero: propietario?.whatsapp ?? "sin teléfono",
           nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
           nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
-          fechaInicio: new Date(fechaInicioDesencriptada).toLocaleDateString("es-ES", {
+          fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
             day: "2-digit",
             month: "short",
             year: "numeric",
           }),
-          fechaFin: `${new Date(fechaFinDesencriptada).toLocaleDateString("es-ES", {
+          fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
             day: "2-digit",
             month: "short",
             year: "numeric",
@@ -413,7 +413,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       {verPolitica && (
         <Politicas
           diasCancelacion={glamping?.diasCancelacion ?? 5}
-          fechaInicio={new Date(fechaInicioDesencriptada)}
+          fechaInicio={new Date(`${fechaInicioDesencriptada}T12:00:00`)}
         />
       )}
     </div>

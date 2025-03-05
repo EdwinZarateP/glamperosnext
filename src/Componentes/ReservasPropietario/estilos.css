@@ -1,9 +1,10 @@
-/* estilos.css */
+/* ======= CONTENEDOR PRINCIPAL ======= */
 .ReservasPropietario-container {
   width: 100%;
   height: 100%;
 }
 
+/* ======= CARGANDO / SIN RESERVAS ======= */
 .ReservasPropietario-cargando {
   display: flex;
   justify-content: center;
@@ -29,27 +30,34 @@
   margin-top: 10px;
 }
 
+/* ======= LISTA DE RESERVAS ======= */
 .ReservasPropietario-lista {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   align-items: center;
-  gap: 10px;
-  padding: 15px;
+  gap: 15px;
+  padding: 20px;
 }
 
+/* ======= TARJETAS DE RESERVAS ======= */
 .ReservasPropietario-tarjeta {
   background: #ffffff;
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
-  position: relative;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 1px solid #e0e0e0;
   width: 100%;
-  max-width: 300px;
+  max-width: 340px;
 }
 
+.ReservasPropietario-tarjeta:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ======= TÍTULOS Y DETALLES ======= */
 .ReservasPropietario-titulo {
   color: #2d3436;
   font-size: 1.4rem;
@@ -71,119 +79,62 @@
   font-weight: 600;
 }
 
-.ReservasPropietario-carrusel {
-  position: relative;
-  margin-top: 1rem;
-  border-radius: 15px;
-  overflow: hidden;
-  aspect-ratio: 16/9;
-}
-
-.ReservasPropietario-carrusel-imagen {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* ======= SECCIÓN DE REAGENDAMIENTO ======= */
+.ReservasPropietario-reagendamiento {
+  background: #f8f9fa;
+  padding: 12px;
   border-radius: 10px;
-  transition: opacity 0.3s ease;
-  cursor: pointer;
+  border-left: 5px solid #ffc107;
+  margin-top: 10px;
+  text-align: center;
 }
 
-.ReservasPropietario-carrusel-botones-izq {
-  position: absolute;
-  top: calc(50% - 24px);
-  left: 2px;
-  display: flex;
-  gap: 5px;
+.ReservasPropietario-reagendamiento p {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #333;
 }
 
-.ReservasPropietario-carrusel-botones-der {
-  position: absolute;
-  top: calc(50% - 24px);
-  right: 2px;
-  display: flex;
-  gap: 5px;
-}
-
-.ReservasPropietario-boton-carrusel-izq {
-  background: rgba(255, 255, 255, 1);
-  border: none;
-  padding: 5px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #2d3436;
-  font-weight: bold;
-  font-size: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ReservasPropietario-boton-carrusel-izq svg {
-  width: 1em;
-  height: 1em;
-}
-
-.ReservasPropietario-boton-carrusel-izq:hover {
-  scale: 1.05;
-}
-
-.ReservasPropietario-boton-carrusel-der {
-  background: rgba(255, 255, 255, 1);
-  border: none;
-  padding: 5px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #2d3436;
-  font-weight: bold;
-  font-size: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ReservasPropietario-boton-carrusel-der svg {
-  width: 2em;
-  height: 2em;
-}
-
-.ReservasPropietario-boton-carrusel-der:hover {
-  scale: 1.05;
-}
-
-.ReservasPropietario-icono-mascotas {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 1.8rem;
-  color: #000000;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 5px;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.ReservasPropietario-detalle[strong="Estado:"] {
-  font-weight: bold;
-  padding: 4px 8px;
-  border-radius: 5px;
+/* ======= BOTONES DE REAGENDAMIENTO ======= */
+.boton-aprobar,
+.boton-rechazar {
   display: inline-block;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin: 5px;
 }
 
-/* Estilo para el contenedor del filtro */
+.boton-aprobar {
+  background: #28a745;
+  color: white;
+}
+
+.boton-aprobar:hover {
+  background: #218838;
+  transform: scale(1.05);
+}
+
+.boton-rechazar {
+  background: #dc3545;
+  color: white;
+}
+
+.boton-rechazar:hover {
+  background: #c82333;
+  transform: scale(1.05);
+}
+
+/* ======= FILTRO DE RESERVAS ======= */
 .ReservasPropietario-filtro {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 15px;
-  /* margin-bottom: 20px; */
   background: #f4f4f4;
   padding: 10px 20px;
   border-radius: 10px;
@@ -230,12 +181,17 @@
   background-color: #f0f0f0;
 }
 
-/* Estilos responsivos */
+/* ======= RESPONSIVE ======= */
 @media (max-width: 900px) {
-
   .ReservasPropietario-lista {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: center;
     padding-bottom: 70px;
+  }
+
+  .ReservasPropietario-tarjeta {
+    width: 90%;
+    max-width: 350px;
   }
 
   .ReservasPropietario-titulo {
@@ -257,6 +213,7 @@
   }
 }
 
+/* ======= ANIMACIONES ======= */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -270,13 +227,4 @@
 
 .ReservasPropietario-tarjeta {
   animation: fadeIn 0.5s ease forwards;
-}
-
-.ReservasPropietario-detalle[strong="Valor Total:"] {
-  font-size: 1.1rem;
-  color: #f8c7c7;
-  font-weight: bold;
-  margin-top: 1.2rem;
-  padding-top: 0.8rem;
-  border-top: 1px solid #eee;
 }

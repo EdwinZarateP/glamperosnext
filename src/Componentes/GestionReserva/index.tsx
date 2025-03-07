@@ -1,11 +1,12 @@
+"use client";
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from "next/navigation";
 import Swal from 'sweetalert2';
 import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import { EliminarFechas } from "@/Funciones/EliminarFechas";
+import CalendarioReagenda from "@/Componentes/CalendarioReagenda"; 
 import './estilos.css';
-
 
 interface MyLottieProps {
   animationData: unknown;
@@ -18,14 +19,12 @@ interface MyLottieProps {
 const Lottie = dynamic<MyLottieProps>(
   () =>
     import("lottie-react").then((mod) => {
-      // forzamos el default a un componente tipado
       return mod.default as React.ComponentType<MyLottieProps>;
     }),
   {
     ssr: false,
   }
 );
-
 
 interface Reserva {
   id: string;
@@ -59,14 +58,23 @@ interface Glamping {
 const GestionReserva: React.FC = () => {
   const searchParams = useSearchParams();
   const codigoReserva = searchParams.get("codigoReserva") || ""; 
+
   const [reserva, setReserva] = useState<Reserva | null>(null);
   const [glamping, setGlamping] = useState<Glamping | null>(null);
   const [error, setError] = useState<string>('');
   const [cargando, setCargando] = useState<boolean>(false);
+
+  // Cancelación
   const [motivoCancelacion, setMotivoCancelacion] = useState<string>('');
   const [mostrarFormularioCancelacion, setMostrarFormularioCancelacion] = useState<boolean>(false);
-  const [telefonoAnfitrion, setTelefonoAnfitrion] = useState<string>("573197862921");
-  const [nombreAnfitrion, setNombreAnfitrion] = useState<string>("573197862921");
+
+  // SE MANTIENEN (aunque no se usen)
+  const [ , setTelefonoAnfitrion] = useState<string>("573197862921");
+  const [ , setNombreAnfitrion] = useState<string>("573197862921");  
+  const [mostrarCalendarioReagenda, setMostrarCalendarioReagenda] = useState<boolean>(false);
+  const [fechasBloqueadas, setFechasBloqueadas] = useState<Date[]>([]);
+  const [minimoNoches, setMinimoNoches] = useState<number>(1);
+
 
   const motivosCancelacion = [
     "Cambio de planes",
@@ -77,6 +85,7 @@ const GestionReserva: React.FC = () => {
     "Otro motivo"
   ];
 
+  // 1) Efecto para obtener teléfono/nombre del anfitrión
   useEffect(() => {
     const obtenertelefonoAnfitrion = async () => {
       if (reserva?.idPropietario) {
@@ -94,21 +103,25 @@ const GestionReserva: React.FC = () => {
     obtenertelefonoAnfitrion();
   }, [reserva]);
 
-  // Efecto para desplazarse al final cuando se muestre el formulario
+  // 2) Efecto para scroll al formulario si se abre
   useEffect(() => {
     if (mostrarFormularioCancelacion) {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
   }, [mostrarFormularioCancelacion]);
 
+  // 3) Calcular fecha límite de cancelación
   const calcularFechaLimiteCancelacion = (): string => {
     if (!reserva || !glamping) return '';
+    if (reserva.EstadoReserva === "Reagendado") return "No aplica porque fue reagendada";
+  
     const fechaIngreso = new Date(reserva.FechaIngreso);
     const fechaLimite = new Date(fechaIngreso);
     fechaLimite.setDate(fechaIngreso.getDate() - glamping.diasCancelacion);
     return fechaLimite.toLocaleDateString('es-CO');
-  };
+  };  
 
+  // 4) Manejar la cancelación
   const manejarCancelacion = async () => {
     if (!reserva || !glamping) return;
 
@@ -122,7 +135,6 @@ const GestionReserva: React.FC = () => {
       return;
     }
 
-    // Verificar si está dentro del período sin reembolso
     const fechaLimite = new Date(reserva.FechaIngreso);
     fechaLimite.setDate(fechaLimite.getDate() - glamping.diasCancelacion);
     const hoy = new Date();
@@ -133,13 +145,12 @@ const GestionReserva: React.FC = () => {
     if (hoy > fechaLimite) {
       const confirmacion = await Swal.fire({
         title: '¿Estás seguro?',
-        text: `Al cancelar ahora no recibirás reembolso, pues este glamping solo admitia cancelaciones hasta el ${fechaLimite.toLocaleDateString()}. ¿Deseas continuar?`,
+        text: `Al cancelar ahora no recibirás reembolso, pues este glamping solo admitía cancelaciones hasta el ${fechaLimite.toLocaleDateString()}. ¿Deseas continuar?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Continuar',
         cancelButtonText: 'Cancelar'
       });
-      
       if (!confirmacion.isConfirmed) return;
     }
 
@@ -154,24 +165,11 @@ const GestionReserva: React.FC = () => {
           ComentariosCancelacion: motivoCancelacion
         })
       });
-
       if (!respuesta.ok) throw new Error('Error al actualizar la reserva');
 
       await eliminarFechasReservadas(reserva.idGlamping, reserva.FechaIngreso, reserva.FechaSalida);
 
-      if (glamping) {
-        try {
-          await enviarMensajeCancelacion(telefonoAnfitrion, nombreAnfitrion);
-        } catch (error) {
-          console.error("Error enviando mensaje:", error);
-          Swal.fire({
-            title: 'Mensaje no enviado',
-            text: 'La reserva se canceló pero hubo un error enviando la notificación',
-            icon: 'warning'
-          });
-        }
-      }
-
+      // Podrías notificar al anfitrión (lógica omitida)
       Swal.fire({
         title: '¡Cancelación exitosa!',
         text: 'Tu reserva ha sido cancelada correctamente',
@@ -190,13 +188,15 @@ const GestionReserva: React.FC = () => {
     }
   };
 
+
+
+  // 5) useEffect para cargar la reserva y el glamping
   useEffect(() => {
     const obtenerDatos = async () => {
       if (!codigoReserva) {
         setError('No se proporcionó un código de reserva');
         return;
       }
-      
       setCargando(true);
       setError('');
 
@@ -204,20 +204,19 @@ const GestionReserva: React.FC = () => {
         const respuestaReserva = await fetch(
           `https://glamperosapi.onrender.com/reservas/codigo/${codigoReserva}`
         );
-        
         if (!respuestaReserva.ok) {
-          throw new Error(respuestaReserva.status === 404 
-            ? 'No se encontró una reserva con ese código' 
-            : 'Error al obtener la reserva');
+          throw new Error(
+            respuestaReserva.status === 404 
+              ? 'No se encontró una reserva con ese código' 
+              : 'Error al obtener la reserva'
+          );
         }
-
         const datosReserva = await respuestaReserva.json();
         setReserva(datosReserva.reserva);
 
         const respuestaGlamping = await fetch(
           `https://glamperosapi.onrender.com/glampings/${datosReserva.reserva.idGlamping}`
         );
-
         if (!respuestaGlamping.ok) throw new Error('Error al obtener detalles del alojamiento');
 
         const datosGlamping = await respuestaGlamping.json();
@@ -227,6 +226,8 @@ const GestionReserva: React.FC = () => {
           ciudad_departamento: datosGlamping.ciudad_departamento,
           diasCancelacion: datosGlamping.diasCancelacion
         });
+        setFechasBloqueadas(datosGlamping.fechasReservadas.map((fecha: string) => new Date(fecha)));
+        setMinimoNoches(datosGlamping.minimoNoches || 1);
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -238,6 +239,7 @@ const GestionReserva: React.FC = () => {
     obtenerDatos();
   }, [codigoReserva]);
 
+  // 6) Función para eliminar fechas reservadas si se cancela la reserva
   const eliminarFechasReservadas = async (glampingId: string, fechaInicio: string, fechaFin: string) => {
     const fechasAEliminar: string[] = [];
     let fechaActual = new Date(fechaInicio);
@@ -246,7 +248,7 @@ const GestionReserva: React.FC = () => {
     fechaActual.setHours(0, 0, 0, 0);
     fechaFinDate.setHours(0, 0, 0, 0);
 
-    while (fechaActual < fechaFinDate) { 
+    while (fechaActual < fechaFinDate) {
       const fechaStr = fechaActual.toISOString().split("T")[0];
       fechasAEliminar.push(fechaStr);
       fechaActual.setDate(fechaActual.getDate() + 1);
@@ -258,64 +260,80 @@ const GestionReserva: React.FC = () => {
     }
   };
 
-  const enviarMensajeCancelacion = async (numero: string, nombre: string) => {
-    const WHATSAPP_API_TOKEN = process.env.NEXT_PUBLIC_WHATSAPP_API_TOKEN; // Cambio de import.meta.env a process.env
-    if (!WHATSAPP_API_TOKEN) throw new Error('Token de WhatsApp no configurado');
-
-    const nombreGlamping = glamping?.nombreGlamping || "Glamping";
-    const fechaIngreso = reserva ? new Date(reserva.FechaIngreso).toLocaleDateString('es-CO') : "";
-    const fechaSalida = reserva ? new Date(reserva.FechaSalida).toLocaleDateString('es-CO') : "";
-
-    const body = {
-      messaging_product: "whatsapp",
-      recipient_type: "individual",
-      to: numero,
-      type: "template",
-      template: {
-        name: "cancelacion_reserva_glamping",
-        language: { code: "es_CO" },
-        components: [{
-          type: "body",
-          parameters: [
-            { type: "text", text: nombre.split(' ')[0] },
-            { type: "text", text: nombreGlamping },
-            { type: "text", text: fechaIngreso },
-            { type: "text", text: fechaSalida }
-          ]
-        }]
-      }
-    };
-
-    const response = await fetch('https://graph.facebook.com/v21.0/531912696676146/messages', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${WHATSAPP_API_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error.message);
-    }
-  };
-
-  // Calculamos si el botón debe mostrarse
+  // 7) Determinar si se permite cancelar o reagendar
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
-  
   const fechaIngreso = reserva ? new Date(reserva.FechaIngreso) : null;
   if (fechaIngreso) fechaIngreso.setHours(0, 0, 0, 0);
 
-  const puedeCancelar = reserva?.EstadoReserva !== 'Cancelada' && 
-                       fechaIngreso && 
-                       hoy <= fechaIngreso;
+  // Ocultamos "Cancelar" si la reserva está Cancelada, Reagendado, o la fecha ya pasó
+  const puedeCancelar = (
+    reserva?.EstadoReserva !== 'Cancelada' &&
+    reserva?.EstadoReserva !== 'Reagendado' &&
+    fechaIngreso && 
+    hoy <= fechaIngreso
+  );
+
+  const manejarReagendamiento = async (nuevaFechaInicio: Date, nuevaFechaFin: Date) => {
+    if (!reserva) return;
+
+    const confirmacion = await Swal.fire({
+        title: "Confirmación requerida",
+        text: "Este reagendamiento debe ser aprobado por el dueño para que tenga efecto. ¿Deseas continuar?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, solicitar",
+        cancelButtonText: "Cancelar",
+    });
+
+    if (!confirmacion.isConfirmed) return; // Si cancela, no hace nada
+
+    try {
+        const response = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                codigoReserva: reserva.codigoReserva,
+                FechaIngreso: nuevaFechaInicio.toISOString(),
+                FechaSalida: nuevaFechaFin.toISOString(),
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Cambiar el estado de la reserva localmente
+            setReserva((prev) => prev ? { ...prev, EstadoReserva: "Solicitud Reagendamiento" } : null);
+
+            Swal.fire({
+                icon: "info",
+                title: "Reagendamiento solicitado",
+                text: "Tu solicitud ha sido enviada y debe ser aprobada por el dueño.",
+                confirmButtonText: "Entendido",
+            });
+
+            setMostrarCalendarioReagenda(false);
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error al solicitar reagendamiento",
+                text: data.detail || "Por favor intenta nuevamente más tarde",
+            });
+        }
+    } catch (error) {
+        console.error("Error al solicitar reagendamiento:", error);
+        Swal.fire({
+            icon: "error",
+            title: "Error de conexión",
+            text: "No se pudo contactar al servidor",
+        });
+    }
+};
 
   return (
     <div className="GestionReserva-contenedor">
       <h1 className="GestionReserva-titulo">Detalles de Reserva</h1>
-
+  
       {cargando ? (
         <div className="GestionReserva-carga">
           <Lottie
@@ -329,37 +347,46 @@ const GestionReserva: React.FC = () => {
       ) : (
         <>
           {error && <p className="GestionReserva-error">⚠️ {error}</p>}
-
+  
           {reserva && (
             <div className="GestionReserva-detalle">
+              {/* ======== SECCIÓN GLAMPING ======== */}
               <div className="GestionReserva-seccion">
                 <h2 className="GestionReserva-subtitulo">Información del Glamping</h2>
                 {glamping ? (
                   <>
                     <p><strong>Nombre:</strong> {glamping.nombreGlamping}</p>
                     <p><strong>Ubicación:</strong> {glamping.ciudad_departamento}</p>
-                    <p><strong>Política de cancelación:</strong> {glamping.diasCancelacion} días antes del check-in</p>
+                    <p>
+                      <strong>Política de cancelación:</strong> 
+                      {reserva.EstadoReserva === "Reagendado"
+                        ? "No aplica porque fue reagendada"
+                        : `${glamping.diasCancelacion} días antes del check-in`}
+                    </p>
                     <p><strong>Último día para cancelar:</strong> {calcularFechaLimiteCancelacion()}</p>
                   </>
                 ) : (
                   <p>Información del alojamiento no disponible</p>
                 )}
               </div>
-
+  
+              {/* ======== SECCIÓN RESERVA ======== */}
               <div className="GestionReserva-seccion">
                 <h2 className="GestionReserva-subtitulo">Detalles de la Reserva</h2>
                 <p><strong>Código:</strong> {reserva.codigoReserva}</p>
-                <p><strong>Estado:</strong> 
+                <p>
+                  <strong>Estado:</strong>{" "}
                   <span style={{ color: reserva.EstadoReserva === "Cancelada" ? "red" : "black" }}>
                     {reserva.EstadoReserva}
                   </span>
                 </p>
-                <p><strong>Check-in:</strong> {new Date(reserva.FechaIngreso).toLocaleDateString('es-CO')}</p>
-                <p><strong>Check-out:</strong> {new Date(reserva.FechaSalida).toLocaleDateString('es-CO')}</p>
+                <p><strong>Check-in:</strong> {new Date(reserva.FechaIngreso).toLocaleDateString("es-CO")}</p>
+                <p><strong>Check-out:</strong> {new Date(reserva.FechaSalida).toLocaleDateString("es-CO")}</p>
                 <p><strong>Noches:</strong> {reserva.Noches}</p>
-                <p><strong>Valor total:</strong> ${reserva.ValorReserva.toLocaleString('es-CO')}</p>
+                <p><strong>Valor total:</strong> ${reserva.ValorReserva.toLocaleString("es-CO")}</p>
               </div>
-
+  
+              {/* ======== SECCIÓN HUÉSPEDES ======== */}
               <div className="GestionReserva-seccion">
                 <h2 className="GestionReserva-subtitulo">Huéspedes</h2>
                 <p><strong>Adultos:</strong> {reserva.adultos}</p>
@@ -367,8 +394,9 @@ const GestionReserva: React.FC = () => {
                 <p><strong>Bebés:</strong> {reserva.bebes}</p>
                 <p><strong>Mascotas:</strong> {reserva.mascotas}</p>
               </div>
-
-              {puedeCancelar && (
+  
+              {/* ======== BOTÓN CANCELAR ======== */}
+              {puedeCancelar && reserva.EstadoReserva !== "Solicitud Reagendamiento" && (
                 <>
                   {!mostrarFormularioCancelacion && (
                     <span 
@@ -417,6 +445,34 @@ const GestionReserva: React.FC = () => {
                 </>
               )}
 
+              {/* ======== BOTÓN REAGENDAR ======== */}
+              {reserva.EstadoReserva !== "Reagendado" && reserva.EstadoReserva !== "Cancelada" && reserva.EstadoReserva !== "Solicitud Reagendamiento" && (
+                <>
+                  <button 
+                    className="GestionReserva-boton-reagendar"
+                    onClick={() => setMostrarCalendarioReagenda(true)}
+                  >
+                    Reagendar Reserva
+                  </button>
+
+                  {mostrarCalendarioReagenda && reserva && (
+                    <CalendarioReagenda
+                      cerrarCalendario={() => setMostrarCalendarioReagenda(false)}
+                      onSeleccionarFechas={manejarReagendamiento}
+                      codigoReserva={reserva.codigoReserva}  // 🔥 Se agrega el código de reserva
+                      fechasIniciales={{ 
+                        inicio: new Date(reserva.FechaIngreso), 
+                        fin: new Date(reserva.FechaSalida) 
+                      }}
+                      FechasSeparadas={fechasBloqueadas.map(date => date.toISOString().split("T")[0])} 
+                      minimoNoches={minimoNoches}
+                    />
+                  )}
+
+                </>
+              )}
+  
+              {/* ======== COMENTARIOS DE CANCELACIÓN ======== */}
               {reserva.ComentariosCancelacion && reserva.ComentariosCancelacion !== "Sin comentario" && (
                 <div className="GestionReserva-seccion">
                   <h2 className="GestionReserva-subtitulo">Comentarios de Cancelación</h2>
@@ -429,6 +485,5 @@ const GestionReserva: React.FC = () => {
       )}
     </div>
   );
-};
-
+}
 export default GestionReserva;

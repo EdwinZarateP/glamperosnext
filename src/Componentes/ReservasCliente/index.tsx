@@ -160,9 +160,10 @@ const ReservasCliente: React.FC = () => {
   }, [reservas]);
 
   // 5) Calcular la fecha límite para cancelar
-  const calcularFechaCancelacion = (fechaIngreso: string, diasCancelacion: number) => {
-    if (diasCancelacion <= 0) return 'No aplica';
-    const fecha = new Date(fechaIngreso);
+  const calcularFechaCancelacion = (reserva: Reserva, diasCancelacion: number) => {
+    if (reserva.EstadoReserva === "Reagendado") return "Sin plazo";
+    if (diasCancelacion <= 0) return "No aplica";
+    const fecha = new Date(reserva.FechaIngreso);
     fecha.setDate(fecha.getDate() - diasCancelacion);
     return fecha.toLocaleDateString('es-ES', {
       day: 'numeric',
@@ -170,6 +171,7 @@ const ReservasCliente: React.FC = () => {
       year: 'numeric'
     });
   };
+  
 
   // 6) Determina si se muestra el botón de calificación
   const mostrarBotonCalificar = (reserva: Reserva) => {
@@ -260,7 +262,7 @@ const ReservasCliente: React.FC = () => {
                   onClick={() => router.push(`/GestionarReserva?codigoReserva=${encodeURIComponent(reserva.codigoReserva)}`)}
                 >
                   <strong>Plazo para cancelar:</strong>{" "}
-                  {calcularFechaCancelacion(reserva.FechaIngreso, glamping.diasCancelacion || 0)}
+                  {calcularFechaCancelacion(reserva, glamping.diasCancelacion || 0)}
                 </p>
                 <p
                   className="ReservasCliente-detalle"

@@ -62,6 +62,7 @@
   margin-top: 25px;
   padding: 20px;
   border-radius: 10px;
+
 }
 
 .GestionReserva-formulario {
@@ -135,6 +136,14 @@
 }
 
 .GestionReserva-enlace-cancelar{
+  margin-bottom: 40px;
+  color: red;
+  padding: 10px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.GestionReserva-enlace-reagendar {
   margin-bottom: 40px;
   color: red;
   padding: 10px;

@@ -6,68 +6,66 @@ import "./estilos.css";
 import { ContextoApp } from "@/context/AppContext";
 import { useRouter, useSearchParams } from "next/navigation";
 
-/** NUEVO: Incluimos minimoNoches en la interfaz de propiedades */
 interface PropiedadesCalendarioSecundario {
   cerrarCalendario: () => void;
-  minimoNoches: number; // Recibe el mínimo de noches requeridas
+  minimoNoches: number;
+  onSeleccionarFechas?: (inicio: Date, fin: Date) => void;
+  fechasIniciales?: { inicio: Date | null; fin: Date | null };
+  FechasSeparadas?: Date[];
 }
 
 const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
   cerrarCalendario,
-  minimoNoches
+  minimoNoches,
+  onSeleccionarFechas,
+  fechasIniciales,
+  FechasSeparadas: fechasSeparadasExternas
 }) => {
   const almacenVariables = useContext(ContextoApp);
+  const [fechaInicioLocal, setFechaInicioLocal] = useState<Date | null>(fechasIniciales?.inicio || null);
+  const [fechaFinLocal, setFechaFinLocal] = useState<Date | null>(fechasIniciales?.fin || null);
+  
+  const modoControlado = !!onSeleccionarFechas;
+  
+  const { 
+    fechaInicio: ctxFechaInicio,
+    setFechaInicio: ctxSetFechaInicio,
+    fechaFin: ctxFechaFin,
+    setFechaFin: ctxSetFechaFin,
+    setTotalDias: ctxSetTotalDias,
+    setFechaInicioConfirmado: ctxSetFechaInicioConfirmado,
+    setFechaFinConfirmado: ctxSetFechaFinConfirmado,
+    FechasSeparadas: ctxFechasSeparadas
+  } = almacenVariables || {};
 
-  if (!almacenVariables) {
-    throw new Error(
-      "El almacenVariables no está disponible. Asegúrate de envolver el componente en un proveedor de ContextoApp."
-    );
-  }
-
-  // Extraemos las variables de nuestro contexto
-  const {
-    fechaInicio,
-    setFechaInicio,
-    fechaFin,
-    setFechaFin,
-    setTotalDias,
-    setFechaInicioConfirmado,
-    setFechaFinConfirmado,
-    FechasSeparadas,
-  } = almacenVariables;
+  const fechaInicio = modoControlado ? fechaInicioLocal : ctxFechaInicio;
+  const fechaFin = modoControlado ? fechaFinLocal : ctxFechaFin;
+  const FechasSeparadas = modoControlado ? fechasSeparadasExternas || [] : ctxFechasSeparadas || [];
+  
+  const setFechaInicio = modoControlado ? setFechaInicioLocal : ctxSetFechaInicio;
+  const setFechaFin = modoControlado ? setFechaFinLocal : ctxSetFechaFin;
+  const setTotalDias = modoControlado ? undefined : ctxSetTotalDias;
 
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const [mesesVisibles, setMesesVisibles] = useState<{ mes: number; anio: number }[]>([]);
-
-  // Función auxiliar para formatear fechas a "YYYY-MM-DD"
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  // Al iniciar, cargamos del URL los query params y actualizamos el estado
-  useEffect(() => {
-    const fechaInicioUrl = searchParams.get("fechaInicioUrl");
-    const fechaFinUrl = searchParams.get("fechaFinUrl");
-
-    if (fechaInicioUrl) {
-      setFechaInicio(new Date(fechaInicioUrl));
-    }
-    if (fechaFinUrl) {
-      setFechaFin(new Date(fechaFinUrl));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Preparamos la fecha de hoy sin horas
   const fechaHoy = new Date();
   fechaHoy.setHours(0, 0, 0, 0);
 
-  // Generamos 18 meses a partir de hoy (puedes ajustar la cantidad que necesites)
+  useEffect(() => {
+    if (!modoControlado) {
+      const fechaInicioUrl = searchParams.get("fechaInicioUrl");
+      const fechaFinUrl = searchParams.get("fechaFinUrl");
+
+      if (fechaInicioUrl && setFechaInicio) {
+        setFechaInicio(new Date(fechaInicioUrl));
+      }
+      if (fechaFinUrl && setFechaFin) {
+        setFechaFin(new Date(fechaFinUrl));
+      }
+    }
+  }, [searchParams, modoControlado]);
+
   useEffect(() => {
     const mesesCalculados: { mes: number; anio: number }[] = [];
     for (let i = 0; i < 18; i++) {
@@ -77,22 +75,16 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
     setMesesVisibles(mesesCalculados);
   }, [fechaHoy]);
 
-  // Cálculo de días entre fechaInicio y fechaFin y actualización del estado
   useEffect(() => {
-    if (fechaInicio && fechaFin) {
+    if (fechaInicio && fechaFin && setTotalDias) {
       const diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
       let dias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
 
-      // Restamos los días que coincidan con fechas ya separadas (reservadas)
       if (FechasSeparadas.length > 0) {
         const diasReservadosEnRango: Date[] = [];
         for (let i = 0; i < dias; i++) {
           const diaIterado = new Date(fechaInicio.getTime() + i * (1000 * 60 * 60 * 24));
-          if (
-            FechasSeparadas.some(
-              (fechaReservada) => fechaReservada.toDateString() === diaIterado.toDateString()
-            )
-          ) {
+          if (FechasSeparadas.some(f => f.toDateString() === diaIterado.toDateString())) {
             diasReservadosEnRango.push(diaIterado);
           }
         }
@@ -100,12 +92,16 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
       }
 
       setTotalDias(dias);
-    } else {
-      setTotalDias(1);
     }
-  }, [fechaInicio, fechaFin, FechasSeparadas, setTotalDias]);
+  }, [fechaInicio, fechaFin, FechasSeparadas]);
 
-  // Sincronizamos los query params con el estado cada vez que cambian las fechas
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   useEffect(() => {
     const params = new URLSearchParams();
 
@@ -123,11 +119,7 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
       if (FechasSeparadas.length > 0) {
         for (let i = 0; i < totalDiasCalculated; i++) {
           const diaIterado = new Date(fechaInicio.getTime() + i * (1000 * 60 * 60 * 24));
-          if (
-            FechasSeparadas.some(
-              (fechaReservada) => fechaReservada.toDateString() === diaIterado.toDateString()
-            )
-          ) {
+          if (FechasSeparadas.some(f => f.toDateString() === diaIterado.toDateString())) {
             totalDiasCalculated--;
           }
         }
@@ -137,11 +129,8 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
     router.replace(`?${params.toString()}`);
   }, [fechaInicio, fechaFin, FechasSeparadas, router]);
 
-  // Validación para evitar fecha de inicio posterior a fecha de fin
-  // y para no permitir menos de minimoNoches
   const validarFechas = (): boolean => {
     if (fechaInicio && fechaFin) {
-      // Fecha inicio debe ser antes de la fecha fin
       if (fechaInicio.getTime() === fechaFin.getTime() || fechaInicio > fechaFin) {
         Swal.fire({
           icon: "error",
@@ -151,25 +140,18 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
         return false;
       }
 
-      // Cálculo de noches seleccionadas
       const diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
       let dias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
 
-      // Quitamos días reservados en ese rango
       if (FechasSeparadas.length > 0) {
         for (let i = 0; i < dias; i++) {
           const diaIterado = new Date(fechaInicio.getTime() + i * (1000 * 60 * 60 * 24));
-          if (
-            FechasSeparadas.some(
-              (fechaReservada) => fechaReservada.toDateString() === diaIterado.toDateString()
-            )
-          ) {
+          if (FechasSeparadas.some(f => f.toDateString() === diaIterado.toDateString())) {
             dias--;
           }
         }
       }
 
-      // NUEVO: validamos contra minimoNoches
       if (dias < minimoNoches) {
         Swal.fire({
           icon: "warning",
@@ -182,26 +164,21 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
     return true;
   };
 
-  // Función para manejar el clic en una fecha
   const manejarClickFecha = (fecha: Date) => {
-    // Si la fecha está reservada, no hacemos nada
     if (esFechaReservada(fecha)) return;
 
-    // Si no hay fechaInicio o ambas están definidas, reiniciamos el rango
     if (!fechaInicio || (fechaInicio && fechaFin)) {
-      setFechaInicio(fecha);
-      setFechaFin(null);
+      setFechaInicio?.(fecha);
+      setFechaFin?.(null);
     } else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
       const nuevaFechaFin = new Date(fecha);
 
-      // Evitar que sea el mismo día: opcional
       if (nuevaFechaFin.toDateString() === fechaInicio.toDateString()) {
         nuevaFechaFin.setDate(nuevaFechaFin.getDate() + 1);
       }
 
-      // Verificamos que no existan fechas reservadas en el rango seleccionado
       if (verificarRango(fechaInicio, nuevaFechaFin)) {
-        setFechaFin(nuevaFechaFin);
+        setFechaFin?.(nuevaFechaFin);
       } else {
         Swal.fire({
           icon: "error",
@@ -210,19 +187,17 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
         });
       }
     } else {
-      setFechaInicio(fecha);
-      setFechaFin(null);
+      setFechaInicio?.(fecha);
+      setFechaFin?.(null);
     }
   };
 
-  // Borrar el rango de fechas seleccionado
   const manejarBorrarFechas = () => {
-    setFechaInicio(null);
-    setFechaFin(null);
-    setTotalDias(1);
+    setFechaInicio?.(null);
+    setFechaFin?.(null);
+    setTotalDias?.(1);
   };
 
-  // Determina si la fecha está dentro del rango seleccionado
   const esFechaSeleccionada = (fecha: Date): boolean => {
     if (fechaInicio && fechaFin) {
       return fecha >= fechaInicio && fecha <= fechaFin;
@@ -230,39 +205,29 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
     return fechaInicio?.toDateString() === fecha.toDateString();
   };
 
-  // Determina si la fecha ya fue reservada
   const esFechaReservada = (fecha: Date): boolean => {
     return FechasSeparadas.length > 0
-      ? FechasSeparadas.some(
-          (fechaReservada) => fecha.toDateString() === fechaReservada.toDateString()
-        )
+      ? FechasSeparadas.some(f => f.toDateString() === fecha.toDateString())
       : false;
   };
 
-  // Determina si la fecha está deshabilitada (por ser anterior o igual al día de hoy)
   const esFechaDeshabilitada = (fecha: Date): boolean => {
     return fecha <= fechaHoy;
   };
 
-  // Verifica que en todo el rango (inicio - fin) no haya fechas reservadas
   const verificarRango = (inicio: Date, fin: Date): boolean => {
     const diferenciaTiempo = fin.getTime() - inicio.getTime();
     const totalDiasRango = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
 
     for (let i = 0; i <= totalDiasRango; i++) {
       const diaEnRango = new Date(inicio.getTime() + i * (1000 * 60 * 60 * 24));
-      if (
-        FechasSeparadas.some(
-          (fechaReservada) => fechaReservada.toDateString() === diaEnRango.toDateString()
-        )
-      ) {
-        return false; // Hay una fecha reservada dentro del rango
+      if (FechasSeparadas.some(f => f.toDateString() === diaEnRango.toDateString())) {
+        return false;
       }
     }
-    return true; // El rango está libre
+    return true;
   };
 
-  // Renderizamos los encabezados de los días de la semana
   const renderizarEncabezadoDias = () => {
     const diasSemana = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"];
     return (
@@ -276,20 +241,17 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
     );
   };
 
-  // Renderizamos el calendario de un mes (cuadrícula de días)
   const renderizarCalendario = (mes: number, anio: number) => {
     const diasEnMes = [];
     const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
     const primerDiaDelMes = new Date(anio, mes, 1).getDay();
 
-    // Espacios vacíos para alinear el calendario al primer día
     for (let i = 0; i < primerDiaDelMes; i++) {
       diasEnMes.push(
         <div key={`vacio-${i}`} className="CalendarioSecundario-dia-vacio" />
       );
     }
 
-    // Creamos un botón por cada día del mes
     for (let dia = 1; dia <= totalDiasMes; dia++) {
       const fechaDia = new Date(anio, mes, dia);
       const estaDeshabilitada = esFechaDeshabilitada(fechaDia);
@@ -304,7 +266,6 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
             ${estaReservada ? "CalendarioSecundario-dia-reservada" : ""}
             ${estaSeleccionada ? "CalendarioSecundario-dia-seleccionado" : ""}
             ${
-              // Si está seleccionado y entre fechaInicio y fechaFin
               estaSeleccionada && fechaInicio && fechaFin && fechaDia > fechaInicio && fechaDia < fechaFin
                 ? "CalendarioSecundario-dia-rango"
                 : ""
@@ -323,25 +284,14 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
 
   return (
     <>
-      {/* Fondo para oscurecer: se cierra al hacer click en él */}
-      <div
-        className="CalendarioSecundario-fondo"
-        onClick={cerrarCalendario}
-      ></div>
-
-      {/* Contenedor principal del calendario */}
+      <div className="CalendarioSecundario-fondo" onClick={cerrarCalendario}></div>
       <div className="CalendarioSecundario-contenedor">
-        <button
-          className="CalendarioSecundario-boton-cerrar"
-          onClick={cerrarCalendario}
-        >
+        <button className="CalendarioSecundario-boton-cerrar" onClick={cerrarCalendario}>
           ✖
         </button>
         <h2 className="CalendarioSecundario-titulo">
           Escoge tu viaje en el susurro del tiempo
         </h2>
-
-        {/* Muestra todos los meses generados */}
         <div className="CalendarioSecundario-meses">
           {mesesVisibles.map(({ mes, anio }, idx) => (
             <div key={idx} className="CalendarioSecundario-mes">
@@ -358,22 +308,20 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
             </div>
           ))}
         </div>
-
-        {/* Botones finales */}
         <div className="CalendarioSecundario-botones">
-          <button
-            onClick={manejarBorrarFechas}
-            className="CalendarioSecundario-boton-borrar"
-          >
+          <button onClick={manejarBorrarFechas} className="CalendarioSecundario-boton-borrar">
             Borrar fechas
           </button>
           <button
             onClick={() => {
-              // Antes de cerrar, validamos tanto el rango como el mínimo de noches
               if (validarFechas()) {
                 cerrarCalendario();
-                setFechaInicioConfirmado(fechaInicio);
-                setFechaFinConfirmado(fechaFin);
+                // En la función donde se usan los setters, por ejemplo:
+                ctxSetFechaInicioConfirmado?.(fechaInicio ?? null); // Asegurar que no sea undefined
+                ctxSetFechaFinConfirmado?.(fechaFin ?? null); // Asegurar que no sea undefined
+                if (onSeleccionarFechas && fechaInicio && fechaFin) {
+                  onSeleccionarFechas(fechaInicio, fechaFin);
+                }
               }
             }}
             className="CalendarioSecundario-boton-confirmar"

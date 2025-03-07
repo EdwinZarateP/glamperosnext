@@ -12,6 +12,7 @@ interface CalendarioReagendaProps {
   FechasSeparadas?: string[];
   minimoNoches: number;
   whatsapp: string;
+  nombreProp: string;
 }
 
 const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
@@ -22,6 +23,7 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
   FechasSeparadas = [],
   minimoNoches,
   whatsapp,
+  nombreProp
 }) => {
   // Definimos "hoy" a las 00:00:00
   const hoy = new Date();
@@ -206,7 +208,7 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
       // Envía el mensaje de WhatsApp
       await enviarWhatsAppReagendamiento({
         numero: whatsapp,
-        nombrePropietario: "Propietario",
+        nombrePropietario: nombreProp,
         codReserva: codigoReserva, // Usa el código de reserva que ya tienes
       });
 

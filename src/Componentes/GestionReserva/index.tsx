@@ -67,7 +67,7 @@ const GestionReserva: React.FC = () => {
 
   // Datos del anfitrión (aunque no se usen en este ejemplo)
   const [telefonoAnfitrion, setTelefonoAnfitrion] = useState<string>("573125443396");
-  const [ , setNombreAnfitrion] = useState<string>("Anfitrión"); 
+  const [nombreAnfitrion, setNombreAnfitrion] = useState<string>("Anfitrión"); 
 
   const [mostrarCalendarioReagenda, setMostrarCalendarioReagenda] = useState<boolean>(false);
   const [fechasBloqueadas, setFechasBloqueadas] = useState<Date[]>([]);
@@ -445,6 +445,7 @@ const GestionReserva: React.FC = () => {
                       FechasSeparadas={fechasBloqueadas.map(date => date.toISOString().split("T")[0])} 
                       minimoNoches={minimoNoches}
                       whatsapp={telefonoAnfitrion}
+                      nombreProp={nombreAnfitrion}
                     />
                   )}
                 </>

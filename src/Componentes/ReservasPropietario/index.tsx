@@ -204,16 +204,35 @@ const ReservasPropietario: React.FC = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ fechas: fechasNuevas })
         });
-
-        Swal.fire("Éxito", "Reagendamiento aprobado y fechas actualizadas", "success");
+  
+        Swal.fire({
+          title: "Éxito",
+          text: "Reagendamiento aprobado y fechas actualizadas",
+          icon: "success",
+          confirmButtonText: "OK"
+        }).then((result) => {
+          if (result.isConfirmed || result.isDismissed) {
+            window.location.reload(); // 🔹 Se recarga cuando el usuario presiona "OK" o cierra el modal
+          }
+        });
       } else {
-        Swal.fire("Info", "Reagendamiento rechazado", "info");
+        Swal.fire({
+          title: "Info",
+          text: "Reagendamiento rechazado",
+          icon: "info",
+          confirmButtonText: "OK"
+        }).then((result) => {
+          if (result.isConfirmed || result.isDismissed) {
+            window.location.reload(); // 🔹 También se recarga cuando rechaza y cierra el modal
+          }
+        });
       }
       setReagendamientos(prev => prev.filter(r => r.codigoReserva !== reag.codigoReserva));
     } catch {
       Swal.fire("Error", "Ocurrió un error al procesar la solicitud", "error");
     }
   };
+  
 
   const generarFechasEntreRango = (inicio: Date, fin: Date) => {
     const arr: string[] = [];

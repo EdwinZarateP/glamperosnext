@@ -8,24 +8,6 @@ import { EliminarFechas } from "@/Funciones/EliminarFechas";
 import CalendarioReagenda from "@/Componentes/CalendarioReagenda"; 
 import './estilos.css';
 
-interface MyLottieProps {
-  animationData: unknown;
-  loop?: boolean;
-  autoplay?: boolean;
-  style?: React.CSSProperties;
-}
-
-// Transformamos la importación de `lottie-react` a un componente que acepte MyLottieProps
-const Lottie = dynamic<MyLottieProps>(
-  () =>
-    import("lottie-react").then((mod) => {
-      return mod.default as React.ComponentType<MyLottieProps>;
-    }),
-  {
-    ssr: false,
-  }
-);
-
 interface Reserva {
   id: string;
   idCliente: string;
@@ -53,7 +35,22 @@ interface Glamping {
   nombreGlamping: string;
   ciudad_departamento: string;
   diasCancelacion: number;
+  fechasReservadas?: string[];
+  minimoNoches?: number;
 }
+
+// Configuración dinámica para Lottie
+interface MyLottieProps {
+  animationData: unknown;
+  loop?: boolean;
+  autoplay?: boolean;
+  style?: React.CSSProperties;
+}
+const Lottie = dynamic<MyLottieProps>(
+  () =>
+    import("lottie-react").then((mod) => mod.default as React.ComponentType<MyLottieProps>),
+  { ssr: false }
+);
 
 const GestionReserva: React.FC = () => {
   const searchParams = useSearchParams();
@@ -68,13 +65,13 @@ const GestionReserva: React.FC = () => {
   const [motivoCancelacion, setMotivoCancelacion] = useState<string>('');
   const [mostrarFormularioCancelacion, setMostrarFormularioCancelacion] = useState<boolean>(false);
 
-  // SE MANTIENEN (aunque no se usen)
+  // Datos del anfitrión (aunque no se usen en este ejemplo)
   const [ , setTelefonoAnfitrion] = useState<string>("573197862921");
   const [ , setNombreAnfitrion] = useState<string>("573197862921");  
+
   const [mostrarCalendarioReagenda, setMostrarCalendarioReagenda] = useState<boolean>(false);
   const [fechasBloqueadas, setFechasBloqueadas] = useState<Date[]>([]);
   const [minimoNoches, setMinimoNoches] = useState<number>(1);
-
 
   const motivosCancelacion = [
     "Cambio de planes",
@@ -85,7 +82,7 @@ const GestionReserva: React.FC = () => {
     "Otro motivo"
   ];
 
-  // 1) Efecto para obtener teléfono/nombre del anfitrión
+  // 1) Obtener datos del anfitrión
   useEffect(() => {
     const obtenertelefonoAnfitrion = async () => {
       if (reserva?.idPropietario) {
@@ -103,7 +100,7 @@ const GestionReserva: React.FC = () => {
     obtenertelefonoAnfitrion();
   }, [reserva]);
 
-  // 2) Efecto para scroll al formulario si se abre
+  // 2) Scroll automático al formulario de cancelación
   useEffect(() => {
     if (mostrarFormularioCancelacion) {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -121,7 +118,7 @@ const GestionReserva: React.FC = () => {
     return fechaLimite.toLocaleDateString('es-CO');
   };  
 
-  // 4) Manejar la cancelación
+  // 4) Manejar la cancelación de la reserva
   const manejarCancelacion = async () => {
     if (!reserva || !glamping) return;
 
@@ -138,7 +135,6 @@ const GestionReserva: React.FC = () => {
     const fechaLimite = new Date(reserva.FechaIngreso);
     fechaLimite.setDate(fechaLimite.getDate() - glamping.diasCancelacion);
     const hoy = new Date();
-    
     fechaLimite.setHours(0, 0, 0, 0);
     hoy.setHours(0, 0, 0, 0);
 
@@ -169,7 +165,6 @@ const GestionReserva: React.FC = () => {
 
       await eliminarFechasReservadas(reserva.idGlamping, reserva.FechaIngreso, reserva.FechaSalida);
 
-      // Podrías notificar al anfitrión (lógica omitida)
       Swal.fire({
         title: '¡Cancelación exitosa!',
         text: 'Tu reserva ha sido cancelada correctamente',
@@ -188,9 +183,7 @@ const GestionReserva: React.FC = () => {
     }
   };
 
-
-
-  // 5) useEffect para cargar la reserva y el glamping
+  // 5) Obtener datos de reserva y glamping
   useEffect(() => {
     const obtenerDatos = async () => {
       if (!codigoReserva) {
@@ -224,9 +217,13 @@ const GestionReserva: React.FC = () => {
           _id: datosGlamping._id,
           nombreGlamping: datosGlamping.nombreGlamping,
           ciudad_departamento: datosGlamping.ciudad_departamento,
-          diasCancelacion: datosGlamping.diasCancelacion
+          diasCancelacion: datosGlamping.diasCancelacion,
+          fechasReservadas: datosGlamping.fechasReservadas,
+          minimoNoches: datosGlamping.minimoNoches || 1
         });
-        setFechasBloqueadas(datosGlamping.fechasReservadas.map((fecha: string) => new Date(fecha)));
+        setFechasBloqueadas(
+          datosGlamping.fechasReservadas.map((fechaStr: string) => new Date(fechaStr))
+        );
         setMinimoNoches(datosGlamping.minimoNoches || 1);
 
       } catch (err) {
@@ -266,7 +263,6 @@ const GestionReserva: React.FC = () => {
   const fechaIngreso = reserva ? new Date(reserva.FechaIngreso) : null;
   if (fechaIngreso) fechaIngreso.setHours(0, 0, 0, 0);
 
-  // Ocultamos "Cancelar" si la reserva está Cancelada, Reagendado, o la fecha ya pasó
   const puedeCancelar = (
     reserva?.EstadoReserva !== 'Cancelada' &&
     reserva?.EstadoReserva !== 'Reagendado' &&
@@ -274,61 +270,21 @@ const GestionReserva: React.FC = () => {
     hoy <= fechaIngreso
   );
 
-  const manejarReagendamiento = async (nuevaFechaInicio: Date, nuevaFechaFin: Date) => {
-    if (!reserva) return;
+  // 8) Manejar reagendamiento (Opción 1: sin fetch aquí, pues ya se hace en CalendarioReagenda)
+  const manejarReagendamiento = (_nuevaFechaInicio: Date, _nuevaFechaFin: Date) => {
+    setReserva((prev) =>
+      prev ? { ...prev, EstadoReserva: "Solicitud Reagendamiento" } : null
+    );
 
-    const confirmacion = await Swal.fire({
-        title: "Confirmación requerida",
-        text: "Este reagendamiento debe ser aprobado por el dueño para que tenga efecto. ¿Deseas continuar?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, solicitar",
-        cancelButtonText: "Cancelar",
+    Swal.fire({
+      icon: "info",
+      title: "Reagendamiento solicitado",
+      text: "Tu solicitud ha sido enviada y debe ser aprobada por el dueño.",
+      confirmButtonText: "Entendido",
     });
 
-    if (!confirmacion.isConfirmed) return; // Si cancela, no hace nada
-
-    try {
-        const response = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                codigoReserva: reserva.codigoReserva,
-                FechaIngreso: nuevaFechaInicio.toISOString(),
-                FechaSalida: nuevaFechaFin.toISOString(),
-            }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // Cambiar el estado de la reserva localmente
-            setReserva((prev) => prev ? { ...prev, EstadoReserva: "Solicitud Reagendamiento" } : null);
-
-            Swal.fire({
-                icon: "info",
-                title: "Reagendamiento solicitado",
-                text: "Tu solicitud ha sido enviada y debe ser aprobada por el dueño.",
-                confirmButtonText: "Entendido",
-            });
-
-            setMostrarCalendarioReagenda(false);
-        } else {
-            Swal.fire({
-                icon: "error",
-                title: "Error al solicitar reagendamiento",
-                text: data.detail || "Por favor intenta nuevamente más tarde",
-            });
-        }
-    } catch (error) {
-        console.error("Error al solicitar reagendamiento:", error);
-        Swal.fire({
-            icon: "error",
-            title: "Error de conexión",
-            text: "No se pudo contactar al servidor",
-        });
-    }
-};
+    setMostrarCalendarioReagenda(false);
+  };
 
   return (
     <div className="GestionReserva-contenedor">
@@ -406,7 +362,7 @@ const GestionReserva: React.FC = () => {
                       Cancelar reserva
                     </span>
                   )}
-
+  
                   {mostrarFormularioCancelacion && (
                     <div className="GestionReserva-seccion GestionReserva-cancelacion">
                       <div className="GestionReserva-cancelacion-header">
@@ -418,7 +374,7 @@ const GestionReserva: React.FC = () => {
                           ✖
                         </button>
                       </div>
-
+  
                       <div className="GestionReserva-formulario">
                         <select
                           value={motivoCancelacion}
@@ -432,7 +388,7 @@ const GestionReserva: React.FC = () => {
                             </option>
                           ))}
                         </select>
-
+  
                         <button 
                           onClick={manejarCancelacion}
                           className="GestionReserva-boton-cancelar"
@@ -444,22 +400,25 @@ const GestionReserva: React.FC = () => {
                   )}
                 </>
               )}
-
+  
               {/* ======== BOTÓN REAGENDAR ======== */}
-              {reserva.EstadoReserva !== "Reagendado" && reserva.EstadoReserva !== "Cancelada" && reserva.EstadoReserva !== "Solicitud Reagendamiento" && (
+              {reserva.EstadoReserva !== "Reagendado" &&
+               reserva.EstadoReserva !== "Cancelada" &&
+               reserva.EstadoReserva !== "Reserva no reagendada" &&
+               reserva.EstadoReserva !== "Solicitud Reagendamiento" && (
                 <>
-                  <button 
-                    className="GestionReserva-boton-reagendar"
+                  <span 
+                    className="GestionReserva-enlace-reagendar"
                     onClick={() => setMostrarCalendarioReagenda(true)}
                   >
                     Reagendar Reserva
-                  </button>
-
+                  </span>
+  
                   {mostrarCalendarioReagenda && reserva && (
                     <CalendarioReagenda
                       cerrarCalendario={() => setMostrarCalendarioReagenda(false)}
-                      onSeleccionarFechas={manejarReagendamiento}
-                      codigoReserva={reserva.codigoReserva}  // 🔥 Se agrega el código de reserva
+                      onSeleccionarFechas={manejarReagendamiento} 
+                      codigoReserva={reserva.codigoReserva}
                       fechasIniciales={{ 
                         inicio: new Date(reserva.FechaIngreso), 
                         fin: new Date(reserva.FechaSalida) 
@@ -468,12 +427,12 @@ const GestionReserva: React.FC = () => {
                       minimoNoches={minimoNoches}
                     />
                   )}
-
                 </>
               )}
   
               {/* ======== COMENTARIOS DE CANCELACIÓN ======== */}
-              {reserva.ComentariosCancelacion && reserva.ComentariosCancelacion !== "Sin comentario" && (
+              {reserva.ComentariosCancelacion &&
+               reserva.ComentariosCancelacion !== "Sin comentario" && (
                 <div className="GestionReserva-seccion">
                   <h2 className="GestionReserva-subtitulo">Comentarios de Cancelación</h2>
                   <p>{reserva.ComentariosCancelacion}</p>

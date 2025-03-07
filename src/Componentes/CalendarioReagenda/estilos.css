@@ -132,15 +132,7 @@
   border: 1px solid #4cae4c;
 }
 
-/* 🔹 Día de inicio resaltado */
-.CalendarioReagenda-dia-inicio {
-  background: #2F6B3E;
-  color: white;
-  font-weight: bold;
-  border: 1px solid #265b31;
-}
-
-/* 🔹 Días dentro del rango */
+/* 🔹 Día dentro del rango */
 .CalendarioReagenda-dia-rango {
   background: #a6e3a6;
   border-radius: 0;

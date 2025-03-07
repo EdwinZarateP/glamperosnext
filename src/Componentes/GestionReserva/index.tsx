@@ -66,8 +66,8 @@ const GestionReserva: React.FC = () => {
   const [mostrarFormularioCancelacion, setMostrarFormularioCancelacion] = useState<boolean>(false);
 
   // Datos del anfitrión (aunque no se usen en este ejemplo)
-  const [ , setTelefonoAnfitrion] = useState<string>("573197862921");
-  const [ , setNombreAnfitrion] = useState<string>("573197862921");  
+  const [telefonoAnfitrion, setTelefonoAnfitrion] = useState<string>("573125443396");
+  const [ , setNombreAnfitrion] = useState<string>("Anfitrión"); 
 
   const [mostrarCalendarioReagenda, setMostrarCalendarioReagenda] = useState<boolean>(false);
   const [fechasBloqueadas, setFechasBloqueadas] = useState<Date[]>([]);
@@ -286,6 +286,25 @@ const GestionReserva: React.FC = () => {
     setMostrarCalendarioReagenda(false);
   };
 
+  // whatsapp
+  useEffect(() => {
+    const obtenertelefonoAnfitrion = async () => {
+      if (reserva?.idPropietario) {
+        try {
+          const respuesta = await fetch(`https://glamperosapi.onrender.com/usuarios/${reserva.idPropietario}`);
+          if (!respuesta.ok) throw new Error('Error al obtener datos del usuario');
+          const usuario = await respuesta.json();
+          setTelefonoAnfitrion(usuario.telefono || "573125443396");
+          setNombreAnfitrion(usuario.nombre || "Anfitrión");
+        } catch (error) {
+          console.error("Error obteniendo teléfono:", error);
+        }
+      }
+    };
+    obtenertelefonoAnfitrion();
+  }, [reserva]);
+  
+
   return (
     <div className="GestionReserva-contenedor">
       <h1 className="GestionReserva-titulo">Detalles de Reserva</h1>
@@ -425,6 +444,7 @@ const GestionReserva: React.FC = () => {
                       }}
                       FechasSeparadas={fechasBloqueadas.map(date => date.toISOString().split("T")[0])} 
                       minimoNoches={minimoNoches}
+                      whatsapp={telefonoAnfitrion}
                     />
                   )}
                 </>

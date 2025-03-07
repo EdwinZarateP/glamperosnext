@@ -32,19 +32,26 @@
 .btn-solicitar {
   display: block;
   width: 100%;
-  background-color: #007bff;
+  background-color: #28a745; /* Cambio a verde para indicar acción positiva */
   color: #fff;
-  padding: 10px 0;
+  padding: 12px 0;
   border: none;
   border-radius: 5px;
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
   margin-bottom: 20px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .btn-solicitar:hover {
-  background-color: #0056b3;
+  background-color: #218838;
+  transform: scale(1.03);
+}
+
+.btn-solicitar:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 /* Mensajes generales (no se usa para alertas de SweetAlert2) */
@@ -62,14 +69,27 @@
   margin: 0;
 }
 
+/* Solicitudes pendientes */
+.solicitud-item.pendiente {
+  border: 1px solid #ffcc00;
+  background-color: #fff8e1; /* Amarillo claro */
+  font-weight: bold;
+  color: #856404;
+}
+
+/* Solicitudes pagadas */
+.solicitud-item.pagada {
+  border: 1px solid #28a745;
+  background-color: #e9f7ef; /* Verde claro */
+  color: #155724;
+}
+
+/* Estilo base de las solicitudes */
 .solicitud-item {
-  border: 1px solid #ddd;
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #f9f9f9;
   font-size: 14px;
-  color: #333;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }

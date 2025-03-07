@@ -1,6 +1,9 @@
+// SolicitarPago.tsx
+
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import "./estilos.css";
+import { enviarCorreoContabilidad } from "@/Funciones/enviarCorreoContabilidad";
 
 const API_URL = "https://glamperosapi.onrender.com";
 
@@ -27,6 +30,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   const [saldo, setSaldo] = useState<number>(0);
   const [metodoPago, setMetodoPago] = useState<string>("Cargando...");
   const [solicitudes, setSolicitudes] = useState<SolicitudPago[]>([]);
+  const [numeroCuenta, setNumeroCuenta] = useState<string>("No disponible"); // Nueva línea para guardar el número de cuenta
 
   useEffect(() => {
     const fetchSaldo = async () => {
@@ -59,6 +63,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
         }
         const data: Banco = await response.json();
         setMetodoPago(`${data.banco} - ${data.tipoCuenta}`);
+        setNumeroCuenta(data.numeroCuenta || "No disponible"); // Guardar número de cuenta
       } catch (error) {
         console.error("Error al obtener datos bancarios:", error);
         setMetodoPago("No registrado");
@@ -96,6 +101,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       } else {
         setSolicitudes([]);
       }
+
       const responseSaldo = await fetch(`${API_URL}/reservas/pendientes_pago/${idPropietario}`);
       if (responseSaldo.ok) {
         const dataSaldo = await responseSaldo.json();
@@ -128,6 +134,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
         body: JSON.stringify({ idPropietario, metodoPago }),
       });
       const data = await response.json();
+
       if (!response.ok) {
         Swal.fire({
           icon: "error",
@@ -135,14 +142,37 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
           text: data.detail || "Error al solicitar el pago",
         });
       } else {
+        // 'data.solicitud' es donde viene el objeto con toda la información
+        const solicitud = data.solicitud;
+
         Swal.fire({
           icon: "success",
           title: "Solicitud Enviada",
           html: `<p>${data.mensaje}</p>
-                 <p><strong>Códigos de Reservas:</strong><br/>${data.codigosReserva ? data.codigosReserva.join("<br/>") : "No disponibles"}</p>`,
+                 <p><strong>ID de Solicitud:</strong> ${solicitud._id}</p>
+                 <p><strong>Códigos de Reservas:</strong><br/>${
+                   solicitud.codigosReserva
+                     ? solicitud.codigosReserva.join("<br/>")
+                     : "No disponibles"
+                 }</p>`,
           confirmButtonText: "Aceptar",
         });
+
+        // Enviar correo con toda la información de la solicitud, incluyendo número de cuenta
+        await enviarCorreoContabilidad({
+          idSolicitud: solicitud._id,
+          idPropietario,
+          montoSolicitado: saldo,
+          metodoPago,
+          estado: solicitud.Estado,
+          fechaSolicitud: solicitud.FechaSolicitud,
+          fechaPago: solicitud.FechaPago,
+          referenciaPago: solicitud.ReferenciaPago,
+          codigosReserva: solicitud.codigosReserva || [],
+          numeroCuenta, // Se envía el número de cuenta obtenido
+        });
       }
+
       await recargarDatos();
     } catch (error) {
       console.error("Error al solicitar pago:", error);
@@ -154,12 +184,15 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
     }
   };
 
+  // Para mostrar solicitudes
   const verDetalles = (solicitud: SolicitudPago) => {
     Swal.fire({
       title: "Detalles de la Solicitud",
       html: `<p><strong>ID de Solicitud:</strong> ${solicitud._id}</p>
              <p><strong>Monto Solicitado:</strong> $${solicitud.MontoSolicitado.toLocaleString()}</p>
-             <p><strong>Códigos de Reservas:</strong><br/>${solicitud.codigosReserva ? solicitud.codigosReserva.join("<br/>") : "No disponible"}</p>
+             <p><strong>Códigos de Reservas:</strong><br/>${
+               solicitud.codigosReserva ? solicitud.codigosReserva.join("<br/>") : "No disponible"
+             }</p>
              <p><strong>Fecha de Solicitud:</strong> ${new Date(solicitud.FechaSolicitud).toLocaleDateString()}</p>
              <p><strong>Estado:</strong> ${solicitud.Estado}</p>`,
       icon: "info",
@@ -167,8 +200,8 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
     });
   };
 
-  const solicitudesPendientes = solicitudes.filter(s => s.Estado !== "Pagado");
-  const solicitudesPagadas = solicitudes.filter(s => s.Estado === "Pagado");
+  const solicitudesPendientes = solicitudes.filter((s) => s.Estado !== "Pagado");
+  const solicitudesPagadas = solicitudes.filter((s) => s.Estado === "Pagado");
 
   return (
     <div className="solicitar-pago-container">
@@ -182,40 +215,51 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       <button onClick={solicitarPago} className="btn-solicitar">
         Solicitar Retiro
       </button>
-      
-      <h3 className="titulo">Historial de Solicitudes Pendientes</h3>
-      {solicitudesPendientes.length > 0 ? (
-        <ul className="lista-solicitudes">
-          {solicitudesPendientes.map((solicitud, index) => (
-            <li key={index} className="solicitud-item" onClick={() => verDetalles(solicitud)}>
-              <strong>ID:</strong> {solicitud._id} <br />
-              <strong>Monto:</strong> ${solicitud.MontoSolicitado.toLocaleString()} <br />
-              <strong>Fecha Solicitud:</strong> {new Date(solicitud.FechaSolicitud).toLocaleDateString()} <br />
-              <strong>Estado:</strong> {solicitud.Estado} <br />
-              <em>(Clic para ver detalles)</em>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No hay solicitudes pendientes registradas.</p>
+
+      {solicitudesPendientes.length > 0 && (
+        <>
+          <h3 className="titulo">Historial de Solicitudes Pendientes</h3>
+          <ul className="lista-solicitudes">
+            {solicitudesPendientes.map((solicitud, index) => (
+              <li
+                key={index}
+                className="solicitud-item"
+                onClick={() => verDetalles(solicitud)}
+              >
+                <strong>ID:</strong> {solicitud._id} <br />
+                <strong>Monto:</strong> ${solicitud.MontoSolicitado.toLocaleString()} <br />
+                <strong>Fecha Solicitud:</strong>{" "}
+                {new Date(solicitud.FechaSolicitud).toLocaleDateString()} <br />
+                <strong>Estado:</strong> {solicitud.Estado} <br />
+                <em>(Clic para ver detalles)</em>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
 
-      <h3 className="titulo">Historial de Pagos Realizados</h3>
-      {solicitudesPagadas.length > 0 ? (
-        <ul className="lista-solicitudes">
-          {solicitudesPagadas.map((solicitud, index) => (
-            <li key={index} className="solicitud-item" onClick={() => verDetalles(solicitud)}>
-              <strong>ID:</strong> {solicitud._id} <br />
-              <strong>Monto:</strong> ${solicitud.MontoSolicitado.toLocaleString()} <br />
-              <strong>Fecha de Pago:</strong>{" "}
-              {solicitud.FechaPago ? new Date(solicitud.FechaPago).toLocaleDateString() : "Sin Fecha"} <br />
-              <strong>Referencia:</strong> {solicitud.ReferenciaPago || "Sin Referencia"} <br />
-              <em>(Clic para ver detalles)</em>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No hay pagos registrados.</p>
+      {solicitudesPagadas.length > 0 && (
+        <>
+          <h3 className="titulo">Historial de Pagos Realizados</h3>
+          <ul className="lista-solicitudes">
+            {solicitudesPagadas.map((solicitud, index) => (
+              <li
+                key={index}
+                className="solicitud-item"
+                onClick={() => verDetalles(solicitud)}
+              >
+                <strong>ID:</strong> {solicitud._id} <br />
+                <strong>Monto:</strong> ${solicitud.MontoSolicitado.toLocaleString()} <br />
+                <strong>Fecha de Pago:</strong>{" "}
+                {solicitud.FechaPago
+                  ? new Date(solicitud.FechaPago).toLocaleDateString()
+                  : "Sin Fecha"} <br />
+                <strong>Referencia:</strong> {solicitud.ReferenciaPago || "Sin Referencia"} <br />
+                <em>(Clic para ver detalles)</em>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );

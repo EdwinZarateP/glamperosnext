@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Swal from "sweetalert2";
+import { enviarWhatsAppReagendamiento } from "@/Funciones/enviarWhatsAppReagendamiento"; // Ajusta la ruta
 import "./estilos.css";
 
 interface CalendarioReagendaProps {
@@ -194,13 +195,22 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
         }),
       });
 
+      // Dentro del bloque try, después de validar que la respuesta es exitosa:
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || "No se pudo solicitar el reagendamiento");
       }
 
+      // Envía el mensaje de WhatsApp
+      await enviarWhatsAppReagendamiento({
+        numero: "573125443396",
+        nombrePropietario: "Propietario",
+        codReserva: codigoReserva, // Usa el código de reserva que ya tienes
+      });
+
       onSeleccionarFechas(fechaInicio!, fechaFin!);
       cerrarCalendario();
+
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "No se pudo contactar al servidor";

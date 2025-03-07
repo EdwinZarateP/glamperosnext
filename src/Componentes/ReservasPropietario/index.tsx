@@ -311,10 +311,10 @@ const ReservasPropietario: React.FC = () => {
                   <p className="ReservasPropietario-detalle"><strong>Check-Out:</strong> {new Date(reserva.FechaSalida).toLocaleDateString()}</p>
                   <p className="ReservasPropietario-detalle">
                     <strong>Huéspedes:</strong> 
-                    {reserva.adultos > 0 && ` ${reserva.adultos} Adultos`}
-                    {reserva.ninos > 0 && `, ${reserva.ninos} Niños`}
-                    {reserva.bebes > 0 && `, ${reserva.bebes} Bebés`}
-                    {reserva.mascotas > 0 && `, ${reserva.mascotas} Mascota(s)`}
+                    {reserva.adultos > 1 && ` ${reserva.adultos} Adultos`}
+                    {reserva.ninos > 1 && `, ${reserva.ninos} Niños`}
+                    {reserva.bebes > 1 && `, ${reserva.bebes} Bebés`}
+                    {reserva.mascotas > 1 && `, ${reserva.mascotas} Mascota(s)`}
                   </p>
                   <p className="ReservasPropietario-detalle"><strong>Valor:</strong> ${reserva.ValorReserva.toLocaleString()}</p>
                   <p className="ReservasPropietario-detalle"><strong>Comisión:</strong> ${reserva.ComisionGlamperos.toLocaleString()}</p>

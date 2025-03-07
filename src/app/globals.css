@@ -10,9 +10,9 @@ body {
 }
 
 /* Evitar la selección de texto en toda la página */
-/* * {
+* {
   user-select: none;
-} */
+}
 
 /* Evitar el sombreado azul al hacer clic en botones y enlaces */
 button, a, input, textarea {

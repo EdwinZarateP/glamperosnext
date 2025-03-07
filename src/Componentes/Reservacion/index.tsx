@@ -368,8 +368,12 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                 })}
               </p>
               <p>
-                {adultosDesencriptados} {parseInt(adultosDesencriptados) === 1 ? "Adulto" : "Adultos"}, {ninosDesencriptados} {parseInt(ninosDesencriptados) === 1 ? "Niño" : "Niños"}, {bebesDesencriptados} {parseInt(bebesDesencriptados) === 1 ? "Bebé" : "Bebés"}, {mascotasDesencriptadas} {parseInt(mascotasDesencriptadas) === 1 ? "Mascota" : "Mascotas"}
+                {parseInt(adultosDesencriptados) > 0 && `${adultosDesencriptados} ${parseInt(adultosDesencriptados) === 1 ? "Adulto" : "Adultos"}`}
+                {parseInt(ninosDesencriptados) > 0 && `, ${ninosDesencriptados} ${parseInt(ninosDesencriptados) === 1 ? "Niño" : "Niños"}`}
+                {parseInt(bebesDesencriptados) > 0 && `, ${bebesDesencriptados} ${parseInt(bebesDesencriptados) === 1 ? "Bebé" : "Bebés"}`}
+                {parseInt(mascotasDesencriptadas) > 0 && `, ${mascotasDesencriptadas} ${parseInt(mascotasDesencriptadas) === 1 ? "Mascota" : "Mascotas"}`}
               </p>
+
               <p>
                 Tarifa de Glamperos:{" "}
                 <strong>{formatoPesos(Math.round(Number(tarifaDesencriptada)))}</strong>

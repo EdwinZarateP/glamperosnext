@@ -39,7 +39,7 @@ export async function getGlampings(page = 1, limit = 18): Promise<GlampingData[]
   const data: GlampingData[] = await res.json();
   return data.map((glamping) => ({
     _id: glamping._id,
-    habilitado: glamping.habilitado || false,
+    habilitado: glamping.habilitado || true,
     nombreGlamping: glamping.nombreGlamping || "Nombre no disponible",
     tipoGlamping: glamping.tipoGlamping || "Choza",
     ciudad_departamento: glamping.ciudad_departamento || "Ciudad no disponible",

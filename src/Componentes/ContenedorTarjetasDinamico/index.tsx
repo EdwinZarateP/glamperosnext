@@ -165,7 +165,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       // Mapeamos para garantizar valores por defecto
       const parsedData = data.map((g) => ({
         _id: g._id,
-        habilitado: g.habilitado || false,
+        habilitado: g.habilitado || true,
         nombreGlamping: g.nombreGlamping || "Nombre no disponible",
         tipoGlamping: g.tipoGlamping || "Choza",
         ciudad_departamento: g.ciudad_departamento || "Ciudad no disponible",

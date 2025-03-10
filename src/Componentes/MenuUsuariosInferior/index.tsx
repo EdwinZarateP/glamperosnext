@@ -16,7 +16,7 @@ const MenuUsuariosInferior: React.FC = () => {
   const redirigir = (ruta: string) => {
     if (!correoUsuario) {
       // Si no existe el correo, redirige a la página de registro
-      router.push("/RegistroPag");
+      router.push("/Registro");
     } else {
       // Si existe el correo, redirige a la ruta correspondiente
       router.push(ruta);

@@ -7,6 +7,7 @@ export default function sitemap() {
     { url: `${baseUrl}/bogota`, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/cali`, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/glampings`, lastModified: new Date().toISOString() },  
+    { url: `${baseUrl}/registro`, lastModified: new Date().toISOString() },  
   ];
 }
 

@@ -1,35 +1,99 @@
-/* estilos.css */
-.Registro-contenedor {
+/* Estilos Generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .Registro-contenedor {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(to right, #07a852, #64bb1c);
-    color: white;
-    font-family: 'Poppins', sans-serif;
     text-align: center;
-    padding: 20px;
-}
-
-.Registro-box {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
+    overflow: hidden;
+  }
+  
+  /* Video de Fondo */
+  .Registro-fondo-video {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-}
-
-.Registro-titulo {
-    font-size: 28px;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+  }
+  
+  /* Capa Oscura para Mejorar Legibilidad */
+  .Registro-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+  }
+  
+  /* Caja de Registro */
+  .Registro-box {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    backdrop-filter: blur(8px);
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  /* Animación de Aparición */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Título */
+  .Registro-titulo {
+    font-size: 30px;
     font-weight: bold;
+    color: #fff;
     margin-bottom: 10px;
-}
-
-.Registro-descripcion {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Descripción */
+  .Registro-descripcion {
     font-size: 16px;
-    margin-bottom: 20px;
     color: #f0f0f0;
-}
-
+    margin-bottom: 20px;
+  }
+  
+  /* Beneficio de la Rifa */
+  .Registro-beneficio {
+    font-size: 14px;
+    color: #ffeb3b;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 15px;
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* Animación de Pulso */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  

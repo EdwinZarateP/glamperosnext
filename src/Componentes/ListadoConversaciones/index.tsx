@@ -61,7 +61,7 @@ const ListadoConversaciones: React.FC = () => {
     if (!idEmisor) {
       setActivarChat(true);
       setIdUrlConversacion(`/Mensajes?idUsuarioReceptor=${idUsuarioReceptorQuery}`);
-      router.push("/Registro");
+      router.push("/registro");
       return;
     }
 

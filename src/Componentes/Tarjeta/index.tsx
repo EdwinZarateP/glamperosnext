@@ -128,7 +128,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
 
   const handleFavoritoChange = async () => {
     if (!idUsuarioCookie) {
-      router.push("/Registro");
+      router.push("/registro");
       return;
     }
   

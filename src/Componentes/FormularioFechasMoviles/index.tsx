@@ -357,7 +357,7 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
         icon: "warning",
         confirmButtonText: "Aceptar",
       }).then(() => {
-        router.push("/Registro");
+        router.push("/registro");
       });
     }
   };

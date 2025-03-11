@@ -94,8 +94,8 @@ export default function ImgExploradasIndividual({
   // Manejo de favoritos
   const toggleFavorito = async () => {
     if (!idUsuarioCookie) {
-      // Si el usuario no está logueado, lo enviamos a /Registro
-      router.push("/Registro");
+      // Si el usuario no está logueado, lo enviamos a /registro
+      router.push("/registro");
       return;
     }
 

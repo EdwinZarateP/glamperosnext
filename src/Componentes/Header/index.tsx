@@ -159,7 +159,7 @@ const Header: React.FC = () => {
               className="Header-botonAnfitrion"
               onClick={() => {
                 quitarSetters();
-                router.push("/Registro");
+                router.push("/registro");
               }}
             >
               Publica tu Glamping

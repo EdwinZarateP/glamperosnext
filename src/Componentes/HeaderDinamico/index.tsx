@@ -122,7 +122,7 @@ const HeaderDinamico: React.FC<HeaderDinamicoProps> = ({ title }) => {
               className="HeaderDinamico-botonAnfitrion"
               onClick={() => {
                 resetearDatos();
-                router.push("/Registro");
+                router.push("/registro");
               }}
             >
               Publica tu Glamping

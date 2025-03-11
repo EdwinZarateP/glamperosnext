@@ -114,7 +114,7 @@ const MenuUsuario: React.FC = () => {
             if (nombreUsuarioCookie) {
               cerrarSesion();
             } else {
-              router.push("/Registro");
+              router.push("/registro");
             }
           }}
         >

@@ -360,7 +360,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
         icon: "warning",
         confirmButtonText: "Aceptar",
       }).then(() => {
-        router.push("/Registro");
+        router.push("/registro");
       });
     }
   };

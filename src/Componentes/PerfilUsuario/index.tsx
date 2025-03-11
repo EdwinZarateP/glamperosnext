@@ -112,7 +112,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
 
   const manejarMensaje = async () => {
     if (!idEmisor) {
-      router.push("/Registro");
+      router.push("/registro");
       return;
     }
 

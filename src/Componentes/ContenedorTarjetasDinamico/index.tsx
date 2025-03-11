@@ -457,7 +457,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       <div className="no-glampings-container">
         <div className="no-glampings-message">
           <img
-            src="/Imagenes/meme.jpeg"
+            src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/meme.jpg"
             alt="Meme divertido"
             className="meme-imagen"
           />

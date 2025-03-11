@@ -208,17 +208,14 @@ const ReservasCliente: React.FC = () => {
             style={{ height: 200, width: "100%", margin: "auto" }}
           />
         </div>
-      ) : reservas.length === 0 ? (
+      ) : !reservas || reservas.length === 0 ? (  // Aquí nos aseguramos de que reservas esté definido
         <div className="ReservasCliente-sinReservas">
-          {/* Dejamos esta imagen sólo para la sección "No hay reservas" */}
           <img
-            src={"/meme.jpg"}
-            alt="Imagen divertida"
+            src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/dameTiempo.png"
+            alt="Sin reservas"
             className="ReservasCliente-imagen"
           />
-          <p className="ReservasCliente-mensaje">
-            No tienes reservas ¿Qué esperas para ir a ese lugar soñado?
-          </p>
+          <p className="ReservasCliente-mensaje">Aún no has hecho reservas</p>
         </div>
       ) : (
         <div className="ReservasCliente-lista">

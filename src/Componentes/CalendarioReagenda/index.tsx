@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Swal from "sweetalert2";
-import { enviarWhatsAppReagendamiento } from "@/Funciones/enviarWhatsAppReagendamiento"; // Ajusta la ruta
+import { enviarWhatsAppReagendamiento } from "@/Funciones/enviarWhatsAppReagendamiento";
 import "./estilos.css";
 
 interface CalendarioReagendaProps {
@@ -33,36 +33,40 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
   const defaultInicio = new Date();
   defaultInicio.setDate(defaultInicio.getDate() + 1);
   defaultInicio.setHours(0, 0, 0, 0);
+
   const defaultFin = new Date();
   defaultFin.setDate(defaultFin.getDate() + 2);
   defaultFin.setHours(0, 0, 0, 0);
 
-  // Si no se pasan fechasIniciales, se usan los valores por defecto.
+  // Estado para fechas seleccionadas
   const [fechaInicio, setFechaInicio] = useState<Date | null>(
     fechasIniciales.inicio ?? defaultInicio
   );
   const [fechaFin, setFechaFin] = useState<Date | null>(
     fechasIniciales.fin ?? defaultFin
   );
+
+  // Estado para mostrar los próximos 6 meses (por ejemplo)
   const [mesesVisibles, setMesesVisibles] = useState<{ mes: number; anio: number }[]>([]);
   const [loading, setLoading] = useState(false);
   const isRequestSent = useRef(false);
 
-  // Si no se recibieron fechas iniciales, forzamos la selección por defecto al montar
-  useEffect(() => {
-    if (!fechasIniciales.inicio && !fechasIniciales.fin) {
-      setFechaInicio(defaultInicio);
-      setFechaFin(defaultFin);
-    }
-  }, [fechasIniciales.inicio, fechasIniciales.fin, defaultInicio, defaultFin]);
-
-  // Convertir las fechas reservadas (en string) a Date (estableciendo las horas a 00:00:00)
+  // Convierto las fechas separadas (string) a objetos Date normalizados a 00:00
   const fechasReservadas = FechasSeparadas.map((fecha) => {
     const fechaObj = new Date(`${fecha}T00:00:00`);
     fechaObj.setHours(0, 0, 0, 0);
     return fechaObj;
   });
 
+  // Inicializamos las fechas si no se pasó nada en fechasIniciales
+  useEffect(() => {
+    if (!fechasIniciales.inicio && !fechasIniciales.fin) {
+      setFechaInicio(defaultInicio);
+      setFechaFin(defaultFin);
+    }
+  }, [fechasIniciales, defaultInicio, defaultFin]);
+
+  // Calculamos los meses que se mostrarán
   useEffect(() => {
     const mesesCalculados = Array.from({ length: 6 }, (_, i) => {
       const nuevoMes = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
@@ -71,11 +75,11 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
     setMesesVisibles(mesesCalculados);
   }, [hoy]);
 
-  // Función para verificar que no se incluya alguna fecha reservada en el rango seleccionado
+  // Verifica que no haya fechas reservadas dentro de un rango
   const verificarRango = (inicio: Date, fin: Date): boolean => {
     let current = new Date(inicio);
     while (current <= fin) {
-      if (fechasReservadas.some(f => f.toDateString() === current.toDateString())) {
+      if (fechasReservadas.some((f) => f.toDateString() === current.toDateString())) {
         return false;
       }
       current.setDate(current.getDate() + 1);
@@ -83,22 +87,27 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
     return true;
   };
 
-  // Al hacer click en un día se define la fecha de inicio o fin según corresponda
+  // Maneja la selección de días (inicio y fin)
   const manejarClickFecha = (fecha: Date) => {
-    // No permitir si la fecha está reservada o es anterior a hoy
-    if (fechasReservadas.some(f => f.toDateString() === fecha.toDateString()) || fecha < hoy) return;
+    // Si la fecha está reservada o es anterior a hoy, no hacemos nada
+    if (fechasReservadas.some((f) => f.toDateString() === fecha.toDateString()) || fecha < hoy) {
+      return;
+    }
 
+    // Si no hay selección o ya se había seleccionado un rango, reiniciamos
     if (!fechaInicio || (fechaInicio && fechaFin)) {
-      // Si no hay selección o ya se había seleccionado un rango, reiniciar y establecer el inicio
       setFechaInicio(fecha);
       setFechaFin(null);
-    } else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
-      // Si ya se seleccionó el inicio y se hace click en una fecha posterior
+    }
+    // Si ya se seleccionó el inicio y se hace click en una fecha posterior
+    else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
       const nuevaFechaFin = new Date(fecha);
-      // Si el usuario selecciona la misma fecha que el inicio, se autoselecciona el día siguiente
+
+      // Si el usuario elige la misma fecha de inicio, forzamos un día más
       if (nuevaFechaFin.toDateString() === fechaInicio.toDateString()) {
         nuevaFechaFin.setDate(nuevaFechaFin.getDate() + 1);
       }
+
       if (verificarRango(fechaInicio, nuevaFechaFin)) {
         setFechaFin(nuevaFechaFin);
       } else {
@@ -109,53 +118,52 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
         });
       }
     } else {
+      // Cualquier otro caso, reiniciar
       setFechaInicio(fecha);
       setFechaFin(null);
     }
   };
 
-  // Función para determinar la clase que tendrá cada día (sombreado si está seleccionado)
+  // Función que determina la clase CSS de cada día
   const getDiaClase = (fechaDia: Date): string => {
     let clase = "CalendarioReagenda-dia";
+
+    // Día anterior a hoy -> deshabilitado
     if (fechaDia < hoy) {
-      clase += " CalendarioReagenda-dia-deshabilitado";
+      return (clase += " CalendarioReagenda-dia-deshabilitado");
     }
-    // Si se está forzando la selección por defecto (sin fechasIniciales manuales)
-    if (!fechasIniciales.inicio && !fechasIniciales.fin) {
-      if (fechaDia.toDateString() === defaultInicio.toDateString() || fechaDia.toDateString() === defaultFin.toDateString()) {
-        clase += " CalendarioReagenda-dia-seleccionado";
-        return clase;
-      } else if (fechaDia > defaultInicio && fechaDia < defaultFin) {
-        clase += " CalendarioReagenda-dia-rango";
-        return clase;
-      }
+
+    // Día reservado -> prioridad en estilo
+    if (fechasReservadas.some((f) => f.toDateString() === fechaDia.toDateString())) {
+      return (clase += " CalendarioReagenda-dia-reservada");
     }
-    // Si la fecha está reservada, aplicar el estilo reservado (y este tiene prioridad)
-    if (fechasReservadas.some(f => f.toDateString() === fechaDia.toDateString())) {
-      clase += " CalendarioReagenda-dia-reservada";
-      return clase;
-    }
-    // Si ya se realizó una selección manual (o se modificó la selección)
+
+    // Lógica de selección
     if (fechaInicio && fechaFin) {
+      // Si es fecha de inicio o fecha de fin
       if (
         fechaDia.toDateString() === fechaInicio.toDateString() ||
         fechaDia.toDateString() === fechaFin.toDateString()
       ) {
         clase += " CalendarioReagenda-dia-seleccionado";
-      } else if (fechaDia > fechaInicio && fechaDia < fechaFin) {
+      }
+      // Si está dentro del rango
+      else if (fechaDia > fechaInicio && fechaDia < fechaFin) {
         clase += " CalendarioReagenda-dia-rango";
       }
     } else if (fechaInicio && !fechaFin) {
+      // Sólo hay fechaInicio seleccionada
       if (fechaDia.toDateString() === fechaInicio.toDateString()) {
         clase += " CalendarioReagenda-dia-seleccionado";
       }
     }
+
     return clase;
   };
 
+  // Validar que las fechas cumplan el mínimo de noches
   const validarFechas = (): boolean => {
     if (!fechaInicio || !fechaFin) return false;
-
     if (fechaInicio >= fechaFin) {
       Swal.fire("Error", "La fecha de inicio debe ser antes de la fecha de fin", "error");
       return false;
@@ -163,16 +171,62 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
 
     const diferenciaDias = (fechaFin.getTime() - fechaInicio.getTime()) / (1000 * 60 * 60 * 24);
     if (diferenciaDias < minimoNoches) {
-      Swal.fire("Error", `Debe haber un mínimo de ${minimoNoches} noches entre las fechas`, "warning");
+      Swal.fire("Error", `Debe haber un mínimo de ${minimoNoches} noches entre las fechas.`, "warning");
       return false;
     }
-
     return true;
   };
 
+  // Renderiza el encabezado de días (Do, Lu, Ma, etc.)
+  const renderizarEncabezadoDias = () => {
+    const diasSemana = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"];
+    return (
+      <div className="CalendarioReagenda-dias-semana">
+        {diasSemana.map((dia, i) => (
+          <div key={i} className="CalendarioReagenda-dia-semana">
+            {dia}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Renderiza los días de un mes dado (retorna el array de JSX)
+  const renderizarDiasDelMes = (anio: number, mes: number) => {
+    const primerDiaSemana = new Date(anio, mes, 1).getDay();
+    const diasEnMes = new Date(anio, mes + 1, 0).getDate();
+    const celdas = [];
+
+    // Espacios vacíos para alinear el primer día
+    for (let i = 0; i < primerDiaSemana; i++) {
+      celdas.push(<div key={`vacio-${i}`} className="CalendarioReagenda-dia-vacio" />);
+    }
+
+    // Días reales del mes
+    for (let dia = 1; dia <= diasEnMes; dia++) {
+      const fechaDia = new Date(anio, mes, dia);
+      fechaDia.setHours(0, 0, 0, 0);
+
+      celdas.push(
+        <button
+          key={dia}
+          className={getDiaClase(fechaDia)}
+          onClick={() => manejarClickFecha(fechaDia)}
+          disabled={
+            fechasReservadas.some((f) => f.toDateString() === fechaDia.toDateString()) ||
+            fechaDia < hoy
+          }
+        >
+          {dia}
+        </button>
+      );
+    }
+    return celdas;
+  };
+
+  // Confirmar la solicitud de reagendamiento
   const confirmarReagendamiento = useCallback(async () => {
     if (Swal.isVisible() || !validarFechas() || loading || isRequestSent.current) return;
-
     isRequestSent.current = true;
     setLoading(true);
 
@@ -189,6 +243,7 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
 
       if (!confirmacion.isConfirmed) return;
 
+      // Llamada a la API
       const response = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -199,7 +254,6 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
         }),
       });
 
-      // Dentro del bloque try, después de validar que la respuesta es exitosa:
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.detail || "No se pudo solicitar el reagendamiento");
@@ -209,9 +263,10 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
       await enviarWhatsAppReagendamiento({
         numero: whatsapp,
         nombrePropietario: nombreProp,
-        codReserva: codigoReserva, // Usa el código de reserva que ya tienes
+        codReserva: codigoReserva,
       });
 
+      // Si todo va bien, avisamos y cerramos
       onSeleccionarFechas(fechaInicio!, fechaFin!);
       cerrarCalendario();
 
@@ -232,48 +287,36 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
 
   return (
     <div className="CalendarioReagenda-fondo" onClick={cerrarCalendario}>
-      <div className="CalendarioReagenda-contenedor" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="CalendarioReagenda-contenedor"
+        onClick={(e) => e.stopPropagation()} // Evita cerrar al hacer click dentro
+      >
         <button className="CalendarioReagenda-boton-cerrar" onClick={cerrarCalendario}>
           ✖
         </button>
         <h2 className="CalendarioReagenda-titulo">Selecciona tus nuevas fechas</h2>
+
+        {/* Contenedor con los meses */}
         <div className="CalendarioReagenda-meses">
-          {mesesVisibles.map(({ mes, anio }, idx) => {
-            const primerDiaSemana = new Date(anio, mes, 1).getDay();
-            const diasEnMes = new Date(anio, mes + 1, 0).getDate();
-            const celdas = [];
-
-            // Espacios vacíos para alinear el primer día
-            for (let i = 0; i < primerDiaSemana; i++) {
-              celdas.push(<div key={`empty-${i}`} className="CalendarioReagenda-dia-vacio" />);
-            }
-
-            for (let dia = 1; dia <= diasEnMes; dia++) {
-              const fechaDia = new Date(anio, mes, dia);
-              fechaDia.setHours(0, 0, 0, 0);
-
-              celdas.push(
-                <button
-                  key={dia}
-                  className={getDiaClase(fechaDia)}
-                  onClick={() => manejarClickFecha(fechaDia)}
-                  disabled={fechasReservadas.some(f => f.toDateString() === fechaDia.toDateString()) || fechaDia < hoy}
-                >
-                  {dia}
-                </button>
-              );
-            }
-
-            return (
-              <div key={idx} className="CalendarioReagenda-mes">
-                <h3 className="CalendarioReagenda-mes-titulo">
-                  {new Date(anio, mes).toLocaleDateString("es-ES", { month: "long", year: "numeric" })}
-                </h3>
-                <div className="CalendarioReagenda-grid">{celdas}</div>
+          {mesesVisibles.map(({ mes, anio }, idx) => (
+            <div key={idx} className="CalendarioReagenda-mes">
+              <h3 className="CalendarioReagenda-mes-titulo">
+                {new Date(anio, mes).toLocaleDateString("es-ES", {
+                  month: "long",
+                  year: "numeric",
+                })}
+              </h3>
+              {/* Encabezado de días */}
+              {renderizarEncabezadoDias()}
+              {/* Grid con los días del mes */}
+              <div className="CalendarioReagenda-grid">
+                {renderizarDiasDelMes(anio, mes)}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
+
+        {/* Botones de acción */}
         <div className="CalendarioReagenda-botones">
           <button
             onClick={() => {

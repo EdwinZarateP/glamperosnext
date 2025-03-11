@@ -311,7 +311,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         setShowConfetti(true);
         setTimeout(() => {
           router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
-        }, 2000);
+        }, 0);
       } else {
         console.error("Error al procesar la reserva.");
       }

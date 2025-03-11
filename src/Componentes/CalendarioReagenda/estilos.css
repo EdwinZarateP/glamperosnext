@@ -1,4 +1,8 @@
-/* 🔹 Fondo oscuro al abrir el calendario */
+/* =============================
+   ESTILOS BASE DEL FONDO
+============================= */
+
+/* Fondo semitransparente que oscurece al abrir el calendario */
 .CalendarioReagenda-fondo {
   position: fixed;
   top: 0;
@@ -12,15 +16,16 @@
   justify-content: center;
 }
 
-/* 🔹 Contenedor principal */
+/* Contenedor principal */
 .CalendarioReagenda-contenedor {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 20px;
   width: 90%;
   max-width: 700px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.2s ease-in-out;
+  position: relative; /* Para que el botón de cerrar se ubique bien */
 }
 
 /* Animación de entrada */
@@ -35,114 +40,139 @@
   }
 }
 
-/* 🔹 Botón para cerrar */
+/* =============================
+   CABECERA Y BOTÓN DE CIERRE
+============================= */
 .CalendarioReagenda-boton-cerrar {
   background: transparent;
   border: none;
   font-size: 20px;
   cursor: pointer;
   float: right;
+  margin-top: -5px;
 }
 
 .CalendarioReagenda-titulo {
   text-align: center;
   margin-bottom: 15px;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: bold;
 }
 
-/* 🔹 Contenedor de meses */
+/* =============================
+   CONTENEDOR DE MESES
+============================= */
 .CalendarioReagenda-meses {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-height: 70vh;
-  overflow-y: auto;
+  max-height: 65vh; /* Controla la altura total */
+  overflow-y: auto; /* Scroll en caso de exceder la altura */
+  margin-bottom: 20px;
 }
 
-/* 🔹 Estilo de cada mes */
+/* Cada mes con su cabecera y días */
 .CalendarioReagenda-mes {
-  margin: 10px;
   border: 1px solid #e2e2e2;
-  padding: 12px;
-  border-radius: 8px;
-  width: 260px;
   background: #fdfdfd;
+  border-radius: 4px;
+  margin: 10px;
+  width: 260px;
+  padding: 10px;
 }
 
+/* Título del mes */
 .CalendarioReagenda-mes-titulo {
   text-transform: capitalize;
   text-align: center;
   margin-bottom: 8px;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
-/* 🔹 Grid de días */
+/* =============================
+   ENCABEZADO DE DÍAS (Do, Lu...)
+============================= */
+.CalendarioReagenda-dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.CalendarioReagenda-dia-semana {
+  padding: 3px 0;
+}
+
+/* =============================
+   GRID DE DÍAS DEL MES
+============================= */
 .CalendarioReagenda-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  justify-content: center;
-}
-
-/* 🔹 Cada botón de día */
-.CalendarioReagenda-dia {
-  width: 36px;
-  height: 36px;
-  line-height: 36px;
+  gap: 3px;
   text-align: center;
-  border-radius: 6px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s ease;
 }
 
-/* 🔹 Día vacío para alinear correctamente */
+/* Día vacío para alinear la cuadrícula */
 .CalendarioReagenda-dia-vacio {
   visibility: hidden;
 }
 
-/* 🔹 Día en hover */
+/* Cada día del mes */
+.CalendarioReagenda-dia {
+  border: none;
+  background: #f9f9f9;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+/* Hover de día habilitado */
 .CalendarioReagenda-dia:hover {
   background: #e2f3e2;
 }
 
-/* 🔹 Día deshabilitado */
+/* =============================
+   ESTADOS ESPECIALES DE DÍAS
+============================= */
+/* Día deshabilitado (antes de hoy) */
 .CalendarioReagenda-dia-deshabilitado {
-  background: #ddd;
-  cursor: not-allowed;
-  opacity: 0.6;
+  background: #ddd !important;
+  cursor: not-allowed !important;
+  color: #666;
 }
 
-/* 🔹 Día reservado */
+/* Día reservado */
 .CalendarioReagenda-dia-reservada {
-  background: #ffcccc;
-  cursor: not-allowed;
-  border: 1px solid #d9534f;
+  background: #ffcccc !important;
+  cursor: not-allowed !important;
+  color: #333;
 }
 
-/* 🔹 Día seleccionado */
+/* Día seleccionado (fechaInicio o fechaFin) */
 .CalendarioReagenda-dia-seleccionado {
-  background: #5cb85c;
+  background: #8ade8f !important;
   font-weight: bold;
-  color: white;
-  border: 1px solid #4cae4c;
+  color: #2d3436;
 }
 
-/* 🔹 Día dentro del rango */
+/* Día dentro del rango (entre fechaInicio y fechaFin) */
 .CalendarioReagenda-dia-rango {
-  background: #a6e3a6;
-  border-radius: 0;
+  background: #b2ebc2 !important;
+  color: #2d3436;
 }
 
-/* 🔹 Botones finales */
+/* =============================
+   BOTONES FINALES
+============================= */
 .CalendarioReagenda-botones {
   display: flex;
   justify-content: space-between;
-  margin-top: 15px;
 }
 
 .CalendarioReagenda-boton-borrar,
@@ -151,11 +181,11 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 0.9rem;
   transition: all 0.2s ease;
 }
 
-/* 🔹 Estilo del botón "Borrar" */
+/* Botón Borrar */
 .CalendarioReagenda-boton-borrar {
   background: #ccc;
 }
@@ -164,7 +194,7 @@
   background: #b3b3b3;
 }
 
-/* 🔹 Estilo del botón "Confirmar" */
+/* Botón Confirmar */
 .CalendarioReagenda-boton-confirmar {
   background: #2F6B3E;
   color: #ffffff;
@@ -179,23 +209,23 @@
   cursor: not-allowed;
 }
 
-/* 🔹 Diseño responsive */
+/* =============================
+   RESPONSIVE
+============================= */
 @media (max-width: 768px) {
+  .CalendarioReagenda-contenedor {
+    max-width: 95%;
+    padding: 15px;
+  }
   .CalendarioReagenda-titulo {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    margin-bottom: 10px;
   }
-
   .CalendarioReagenda-mes {
-    width: 90%;
+    width: 95%;
   }
-
   .CalendarioReagenda-botones {
     flex-direction: column;
-  }
-
-  .CalendarioReagenda-boton-borrar,
-  .CalendarioReagenda-boton-confirmar {
-    width: 100%;
-    margin-top: 8px;
+    gap: 10px;
   }
 }

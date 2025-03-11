@@ -73,7 +73,7 @@ export default async function ContenedorTarjetasServer() {
     return (
       <div className="no-glampings-container">
         <div className="no-glampings-message">
-          <img src="/Imagenes/meme.jpeg" alt="Meme divertido" className="meme-imagen" />
+          <img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/meme.jpg" alt="Meme divertido" className="meme-imagen" />
           <h2>Lo sentimos, no hemos encontrado glampings</h2>
           <p>
             Pero no te preocupes, ¡estamos trabajando para agregar más opciones!

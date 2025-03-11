@@ -49,7 +49,7 @@ const CentroAyuda: React.FC = () => {
           <h3 className="CentroAyuda-faq-titulo">Preguntas Frecuentes</h3>
           <ul>
             <li>
-              <strong>¿Cómo cancelo mi reserva?</strong> Puedes cancelarla en la sección "Cuenta"-"Mis Reservas",
+              <strong>¿Cómo cancelo o modifico mi reserva?</strong> Puedes hacerlo en la sección "Perfil"-"Mis Viajes",
               siempre que no infrinja las políticas establecidas antes de realizar la reserva.
             </li>
             <li>
@@ -71,9 +71,9 @@ const CentroAyuda: React.FC = () => {
             </li>
             <li>
               <strong>¿Qué es Glamperos?</strong>
-              <button className="CentroAyuda-boton-navegar" onClick={() => router.push("/DatosEmpresariales")}>
+              <span className="CentroAyuda-span-navegar" onClick={() => router.push("/DatosEmpresariales")}>
                 Conoce más de nosotros
-              </button>
+              </span>
             </li>
           </ul>
         </div>

@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 120px);
+    /* height: calc(100vh - 120px); */
     margin-top: 70px;
 }
 
@@ -10,7 +10,7 @@
 /* Responsivo para pantallas de hasta 900px */
 @media (max-width: 900px) {
     .Ayuda-contenedor{
-        height: 100vh;
+        /* height: 100vh; */
         margin-top: 0;
 
     }

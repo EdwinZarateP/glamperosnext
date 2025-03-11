@@ -20,8 +20,8 @@ const DatosEmpresa: React.FC = () => {
         <p><strong>Empresa Colombiana</strong></p>
         <p>Financiada por el fondo emprender del Gobierno Colombiano</p>
         <p><strong>Sede:</strong> Cl. 71 # 58 - 102, Santa Maria, Itagüí</p>
-        <p><strong>NIT:</strong> En tramite</p>
-        <p><strong>Número de Registro Nacional de Turismo (RNT):</strong> En tramite</p>
+        <p><strong>NIT:</strong>  901923029-2</p>
+        {/* <p><strong>Número de Registro Nacional de Turismo (RNT):</strong> En tramite</p> */}
       </section>
 
       <section className="DatosEmpresa-pagos">

@@ -47,13 +47,17 @@ const LandingPropietarios: React.FC = () => {
       </header>
 
       {/* Sección principal */}
-      <section className="LandingPropietarios-principal">
+      <section className="LandingPropietarios-principal">      
         <h1>¿Quieres aumentar tus reservas y ser más visible?</h1>
         <p>¡Glamperos te conecta con viajeros de toda Colombia!</p>
         <button className="LandingPropietarios-boton" onClick={irRegistro}>¡Registra tu glamping gratis!</button>
       </section>
 
       {/* Beneficios */}
+      <div className="LandingPropietarios-seguridad-encabezado">
+        <h2>¿Por qué registrarte en Glamperos?</h2>
+      </div>
+
       <section className="LandingPropietarios-beneficios">
         <div className="LandingPropietarios-beneficio">
           <div className="LandingPropietarios-beneficio-titulo">

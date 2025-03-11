@@ -79,6 +79,7 @@ const HeaderDinamico: React.FC<HeaderDinamicoProps> = ({ title }) => {
     router.push("/");
   };
 
+
   return (
     <div className="contenedor-HeaderDinamico">
       <header className="HeaderDinamico">

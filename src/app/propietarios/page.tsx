@@ -1,17 +1,41 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { FaMagnifyingGlass } from "react-icons/fa6";
+import { FaMagnifyingGlass, FaCheck } from "react-icons/fa6";
 import { GoGraph } from "react-icons/go";
 import { CiCalendar } from "react-icons/ci";
-import { FaCheck } from "react-icons/fa6";
+import { FaStar, FaWhatsapp } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
+
 const LandingPropietarios: React.FC = () => {
+
+  const router = useRouter();
+  const irAInicio = () => {
+    router.push("/");
+  };
+
+  const irRegistro = () => {
+    router.push("/registro");
+  };
+
+  const redirigirWhatsApp = () => {
+    const numeroWhatsApp = "+573218695196";
+    const mensaje = encodeURIComponent("Hola equipo Glamperos, ¡Soy propietario y quiero mas información!");
+    const esPantallaPequena = typeof window !== "undefined" && window.innerWidth < 600;
+    const urlWhatsApp = esPantallaPequena
+      ? `https://wa.me/${numeroWhatsApp}?text=${mensaje}`
+      : `https://web.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensaje}`;
+    window.open(urlWhatsApp, "_blank");
+  };
+
+
   return (
     <div className="LandingPropietarios-contenedor">
       {/* Encabezado */}
-      <header className="LandingPropietarios-header">
+      <header className="LandingPropietarios-header" onClick={irAInicio}>
         {/* Ajusta la ruta si prefieres usar <Image /> de Next con src local */}
         <Image
           src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/Logo%20Glamperos.webp"
@@ -26,7 +50,7 @@ const LandingPropietarios: React.FC = () => {
       <section className="LandingPropietarios-principal">
         <h1>¿Quieres aumentar tus reservas y ser más visible?</h1>
         <p>¡Glamperos te conecta con viajeros de toda Colombia!</p>
-        <button className="LandingPropietarios-boton">¡Registra tu glamping gratis!</button>
+        <button className="LandingPropietarios-boton" onClick={irRegistro}>¡Registra tu glamping gratis!</button>
       </section>
 
       {/* Beneficios */}
@@ -85,7 +109,7 @@ const LandingPropietarios: React.FC = () => {
         </div>
       </section>
 
-      <button className="LandingPropietarios-beneficio-boton">
+      <button className="LandingPropietarios-beneficio-boton" onClick={irRegistro}>
         ¡Registrar mi glamping ya!
       </button>
 
@@ -116,33 +140,48 @@ const LandingPropietarios: React.FC = () => {
         <ul>
           <li className="LandingPropietarios-seguridad-lista">
           <span className="LandingPropietarios-seguridad-icono"> <FaCheck /></span>
-            Especializados en glampings: Solo alojamientos
-            únicos en la naturaleza.
+            Especializados en glampings: Solo alojamientos únicos en la naturaleza.
           </li>
           <li className="LandingPropietarios-seguridad-lista">
           <span className="LandingPropietarios-seguridad-icono"> <FaCheck /></span>
-            100% gratis:sin tarifas de registro ni costos
-            ocultos.
+            100% gratis: sin tarifas de registro ni costos ocultos.
           </li>
           <li className="LandingPropietarios-seguridad-lista">
           <span className="LandingPropietarios-seguridad-icono"> <FaCheck /></span>
-            Reservas fáciles y seguras: conecta con viajeros sin
-            complicaciones.
+            Reservas fáciles y seguras: conecta con viajeros sin complicaciones.
+          </li>
+        </ul>
+      </section>
+
+       {/* Contacto */}
+       <section className="LandingPropietarios-contacto">
+       <div className="LandingPropietarios-contacto-encabezado">
+          <h2>¿Quieres saber más sobre nosotros?</h2>
+          <span  onClick={redirigirWhatsApp}>
+            ¡Hablemos por WhatsApp!{" "}
+            <FaWhatsapp style={{ color: "#25D366", fontSize: "24px" }} />
+          </span>
+        </div>
+
+        <ul>
+          <li className="LandingPropietarios-contacto-lista">
+          <span className="LandingPropietarios-contacto-icono"> <FaStar /></span>
+            Glamperos es una plataforma legalmente registrada y avalada.
+          </li>
+          <li className="LandingPropietarios-contacto-lista">
+          <span className="LandingPropietarios-contacto-icono"> <FaStar /></span>
+            Contamos con registro oficial en entidades gubernamentales.
+          </li>
+          <li className="LandingPropietarios-contacto-lista">
+          <span className="LandingPropietarios-contacto-icono"> <FaStar /></span>
+          Consulta nuestra regulación con el NIT 901.923.029-2 para mayor tranquilidad.
           </li>
         </ul>
       </section>
 
       {/* Contacto WhatsApp + registro legal y logos */}
-      <section className="LandingPropietarios-contacto">
-        <h2>¿Quieres saber más sobre nosotros?</h2>
-        <button className="LandingPropietarios-boton-whatsapp">
-          ¡Hablemos por WhatsApp!
-        </button>
-        <p>
-          Glamperos es una plataforma legalmente registrada y avalada. Contamos
-          con registro oficial en entidades gubernamentales. Consulta nuestra
-          regulación con el NIT 901.923.029-2 para mayor tranquilidad.
-        </p>
+      <section className="LandingPropietarios-patrocinadores">
+       
         <div className="LandingPropietarios-logos">
           <img
             src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/sena%20fondo.png"
@@ -156,18 +195,22 @@ const LandingPropietarios: React.FC = () => {
           />
         </div>
       </section>
+      <MenuUsuariosInferior />
 
       {/* Pie de página */}
       <footer className="LandingPropietarios-footer">
-        <p>2025 © Glamperos Todos los derechos reservados.</p>
-        <nav>
-          <Link href="#">Inicio</Link>
-          <Link href="#">Sobre nosotros</Link>
-          <Link href="#">Contacto</Link>
-          <Link href="#">Política de privacidad</Link>
-          <Link href="#">Términos de uso</Link>
-        </nav>
-      </footer>
+      <h3>Glamperos</h3>
+      <p>2025 © Glamperos Todos los derechos reservados.</p>
+      <nav>
+        <div>
+          <Link href="/">Inicio</Link>
+          <Link href="/Ayuda">Sobre nosotros</Link>
+        </div>
+        <div>
+          <Link href="/politicas-privacidad">Política de privacidad</Link>
+        </div>
+      </nav>
+    </footer>
     </div>
   );
 };

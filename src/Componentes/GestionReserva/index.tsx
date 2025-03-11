@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Swal from 'sweetalert2';
 import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import { enviarWhatsAppCancelacion } from "@/Funciones/enviarWhatsAppCancelacion";
 import { EliminarFechas } from "@/Funciones/EliminarFechas";
 import CalendarioReagenda from "@/Componentes/CalendarioReagenda"; 
 import './estilos.css';
@@ -165,6 +166,14 @@ const GestionReserva: React.FC = () => {
 
       await eliminarFechasReservadas(reserva.idGlamping, reserva.FechaIngreso, reserva.FechaSalida);
 
+      await enviarWhatsAppCancelacion({
+        numero: telefonoAnfitrion, // Asegúrate de tener el número correcto
+        nombrePropietario: nombreAnfitrion,
+        nombreGlamping: glamping.nombreGlamping,
+        FechaInicio: new Date(reserva.FechaIngreso).toLocaleDateString("es-CO"),
+        FechaFin: new Date(reserva.FechaSalida).toLocaleDateString("es-CO"),
+      });
+      
       Swal.fire({
         title: '¡Cancelación exitosa!',
         text: 'Tu reserva ha sido cancelada correctamente',

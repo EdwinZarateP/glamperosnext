@@ -211,12 +211,11 @@ const Cuenta: React.FC = () => {
             <h3>Publica tu Glamping 🏕️ </h3>
           </div>
           <div className="Cuenta-tarjeta" onClick={manejarEditarPerfil}>
-            <h3>Datos personales 👤 </h3>
-            <p>Proporciona tus datos personales e indícanos cómo podemos ponernos en contacto contigo.</p>
+            <h3>Tu perfil 👤 </h3>          
           </div>
           <div className="Cuenta-tarjeta" onClick={irReservarCliente}>
             <h3>Mis Viajes 🧳 </h3>
-            <p>Mira dónde has reservado.</p>
+            {/* <p>Mira dónde has reservado.</p> */}
           </div>    
     
           <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
@@ -245,6 +244,9 @@ const Cuenta: React.FC = () => {
 
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCrear}>
               <h3>Publica tu Glamping 🏕️</h3>
+            </div>
+            <div className="Cuenta-tarjeta" onClick={manejarEditarPerfil}>
+            <h3>Tu perfil 👤 </h3>              
             </div>
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
               <h3>Centro de ayuda 🆘</h3>

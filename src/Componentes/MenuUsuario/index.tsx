@@ -84,7 +84,7 @@ const MenuUsuario: React.FC = () => {
                 router.push("/GestionarCuenta");
               }}
             >
-              Cuenta
+              Perfil
             </li>
             <li
               className="MenuUsuario-opcion"

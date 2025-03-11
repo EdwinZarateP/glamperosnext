@@ -310,7 +310,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         // Activamos el confeti y, tras 2 segundos, redirigimos a la página de Gracias
         setShowConfetti(true);
         setTimeout(() => {
-          router.push(`/Gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
+          router.push(`/gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
         }, 0);
       } else {
         console.error("Error al procesar la reserva.");

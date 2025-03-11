@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { GoGraph } from "react-icons/go";
 import { CiCalendar } from "react-icons/ci";
+import { FaCheck } from "react-icons/fa6";
 import "./estilos.css";
 
 const LandingPropietarios: React.FC = () => {
@@ -102,7 +103,7 @@ const LandingPropietarios: React.FC = () => {
 
       {/* Seguridad y confianza */}
       <section className="LandingPropietarios-seguridad">
-        {/* Si quieres una imagen tipo “perezoso” a la izquierda, agrégala aquí */}
+        <div className="LandingPropietarios-seguridad-encabezado">
         <img
           className="LandingPropietarios-seguridad-img"
           src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/Logo%20Glamperos.webp"
@@ -111,17 +112,21 @@ const LandingPropietarios: React.FC = () => {
           height="80"
         />
         <h2>Glamperos, la plataforma especializada en glampings que te hace crecer</h2>
+        </div>
         <ul>
-          <li>
-            <strong>Especializados en glampings:</strong> Solo alojamientos
+          <li className="LandingPropietarios-seguridad-lista">
+          <span className="LandingPropietarios-seguridad-icono"> <FaCheck /></span>
+            Especializados en glampings: Solo alojamientos
             únicos en la naturaleza.
           </li>
-          <li>
-            <strong>100% gratis:</strong> sin tarifas de registro ni costos
+          <li className="LandingPropietarios-seguridad-lista">
+          <span className="LandingPropietarios-seguridad-icono"> <FaCheck /></span>
+            100% gratis:sin tarifas de registro ni costos
             ocultos.
           </li>
-          <li>
-            <strong>Reservas fáciles y seguras:</strong> conecta con viajeros sin
+          <li className="LandingPropietarios-seguridad-lista">
+          <span className="LandingPropietarios-seguridad-icono"> <FaCheck /></span>
+            Reservas fáciles y seguras: conecta con viajeros sin
             complicaciones.
           </li>
         </ul>

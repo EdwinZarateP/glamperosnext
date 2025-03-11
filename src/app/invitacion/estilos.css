@@ -68,6 +68,27 @@
     height: 45px;
     width: 45px;
   }
+
+  .LandingPropietarios-seguridad-lista{
+    display: flex;
+    gap: 10px;
+  }
+
+  .LandingPropietarios-seguridad-icono {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    background: rgb(231, 172, 59);
+    border-radius: 14px;
+    height: 42px;
+    width: 42px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+
+  
   
   .LandingPropietarios-beneficio-boton {
     max-width: 250px;
@@ -116,11 +137,26 @@
   .LandingPropietarios-contacto {
     text-align: center;
     margin: 20px 0;
-    background: rgb(231, 172, 59);
+    /* background: rgb(231, 172, 59); */
     padding: 15px;
     border-radius: 10px;
   }
   
+  .LandingPropietarios-seguridad-encabezado {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background-color:#2f6b3e;
+    color: white;
+    font-size: 0.8rem;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .LandingPropietarios-seguridad-encabezado h2{
+    text-align: left;
+  }
+
   .LandingPropietarios-seguridad-img {
     display: block;
     margin: 0 auto 10px auto;
@@ -184,6 +220,20 @@
       padding-bottom: 20px;
       font-size: 0.8rem;
       border-bottom: 5px solid rgb(216, 216, 216);
+    }
+    .LandingPropietarios-seguridad-encabezado {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      background-color:#2f6b3e;
+      color: white;
+      font-size: 0.8rem;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  
+    .LandingPropietarios-seguridad-encabezado h2{
+      text-align: left;
     }
   }
   

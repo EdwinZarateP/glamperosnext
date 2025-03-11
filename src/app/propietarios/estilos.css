@@ -1,320 +1,320 @@
 .LandingPropietarios-contenedor {
-    max-width: 1200px;
-    margin: auto;
-    /* padding: 20px; */
-  }
-  
-  .LandingPropietarios-header {
-    display: flex;
-    justify-content: left;
-    align-items: center;
-    gap: 10px;
-    padding: 20px;
-    font-size: 1rem;
-    color: #2f6b3e;
-    cursor: pointer;
-  }
-  
-  .LandingPropietarios-menu {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
-  .LandingPropietarios-principal {
-    text-align: left;
-    margin: 20px 0;
-    font-weight: 600;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  
-  .LandingPropietarios-boton {
-    background-color: #2f6b3e;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-  }
-  
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* ===== Encabezado ===== */
+.LandingPropietarios-header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+  font-size: 1rem;
+  color: #2f6b3e;
+  cursor: pointer;
+}
+
+/* ===== Sección Principal ===== */
+.LandingPropietarios-principal {
+  text-align: left;
+  margin: 20px 0;
+  font-weight: 600;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.LandingPropietarios-boton {
+  background-color: #2f6b3e;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+/* ===== Beneficios ===== */
+.LandingPropietarios-seguridad-encabezado {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  flex-direction: row-reverse;
+  background-color: #2f6b3e;
+  color: white;
+  font-size: 0.8rem;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.LandingPropietarios-seguridad-encabezado h2 {
+  text-align: left;
+}
+
+.LandingPropietarios-beneficios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  border-radius: 14px;
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+.LandingPropietarios-beneficio {
+  padding: 15px;
+  border-radius: 10px;
+  text-align: justify;
+}
+
+.LandingPropietarios-beneficio-titulo {
+  display: flex;
+  justify-content: left;
+  gap: 15px;
+  align-items: center;
+  text-align: left;
+}
+
+.LandingPropietarios-icono {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  background: rgb(231, 172, 59);
+  border-radius: 14px;
+  height: 45px;
+  width: 45px;
+}
+
+.LandingPropietarios-beneficio-boton {
+  max-width: 250px;
+  padding: 10px;
+  background-color: #2f6b3e;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+/* ===== Preguntas Frecuentes ===== */
+.LandingPropietarios-preguntas {
+  padding: 20px;
+}
+
+.LandingPropietarios-preguntas h2 {
+  margin-bottom: 15px;
+}
+
+.LandingPropietarios-preguntas ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.LandingPropietarios-preguntas li {
+  position: relative;
+  background: #fff;
+  padding: 15px 20px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Ícono "+" por defecto */
+.LandingPropietarios-preguntas li::after {
+  content: "+";
+  position: absolute;
+  right: 20px;
+  top: 18px;
+  font-size: 20px;
+  color: #666;
+}
+
+/* Si está activo, cambia el ícono a "-" */
+.LandingPropietarios-preguntas li.activo::after {
+  content: "-";
+}
+
+/* Hover */
+.LandingPropietarios-preguntas li:hover {
+  background-color: #f7f7f7;
+}
+
+/* Respuesta desplegada */
+.faq-question {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.faq-answer {
+  margin-top: 5px;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* ===== Seguridad y Contacto ===== */
+.LandingPropietarios-seguridad,
+.LandingPropietarios-contacto {
+  text-align: center;
+  padding-top: 15px;
+  border-radius: 10px;
+}
+
+.LandingPropietarios-seguridad-img,
+.LandingPropietarios-contacto-img {
+  display: block;
+  margin: 0 auto 10px auto;
+}
+
+.LandingPropietarios-seguridad ul,
+.LandingPropietarios-contacto ul {
+  list-style: none;
+  padding: 20px;
+  margin: 15px 0;
+}
+
+.LandingPropietarios-seguridad li,
+.LandingPropietarios-contacto li {
+  margin: 25px 0;
+  text-align: left;
+}
+
+.LandingPropietarios-seguridad-lista,
+.LandingPropietarios-contacto-lista {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.LandingPropietarios-seguridad-icono {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  background: rgb(231, 172, 59);
+  border-radius: 14px;
+  height: 40px;
+  min-width: 30px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.LandingPropietarios-contacto-icono {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  color: rgb(231, 172, 59);
+}
+
+.LandingPropietarios-contacto-encabezado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgb(231, 172, 59);
+  color: white;
+  font-size: 1rem;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  font-weight: 600;
+}
+
+.LandingPropietarios-contacto-encabezado span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2f6b3e;
+  padding: 10px;
+  gap: 20px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+/* Logos */
+.LandingPropietarios-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-top: 10px;
+}
+.LandingPropietarios-logos :nth-child(1) {
+  width: 200px;
+  height: auto;
+}
+
+/* ===== Footer ===== */
+.LandingPropietarios-footer {
+  background-color: #fff;
+  padding: 20px 40px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 70px;
+}
+
+.LandingPropietarios-footer p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.LandingPropietarios-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.LandingPropietarios-footer nav a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.LandingPropietarios-footer nav a:hover {
+  text-decoration: underline;
+}
+
+.LandingPropietarios-footer .social-icons {
+  margin-top: 10px;
+  display: flex;
+  gap: 15px;
+}
+
+.LandingPropietarios-footer .social-icons a {
+  font-size: 18px;
+  color: black;
+}
+
+/* ===== Responsividad general ===== */
+@media (max-width: 900px) {
   .LandingPropietarios-beneficios {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    border-radius: 14px;
-    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
-    margin: 20px;
-  }
-  
-  .LandingPropietarios-beneficio {
-    padding: 15px;
-    border-radius: 10px;
-    text-align: justify;
-  }
-  
-  .LandingPropietarios-beneficio-titulo {
-    display: flex;
-    justify-content: left;
-    gap: 15px;
-    align-items: center;
-    text-align: left;
-  }
-  
-  .LandingPropietarios-icono {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 22px;
-    background: rgb(231, 172, 59);
-    border-radius: 14px;
-    height: 45px;
-    width: 45px;
+    margin-bottom: 20px;
   }
 
-  .LandingPropietarios-seguridad-lista,
-  .LandingPropietarios-contacto-lista{
-    display: flex;
-    /* justify-content: center; */
-    align-items: center;
-    gap: 10px;
+  .LandingPropietarios-beneficio p {
+    padding-bottom: 20px;
+    font-size: 0.8rem;
+    border-bottom: 5px solid rgb(216, 216, 216);
   }
 
-  .LandingPropietarios-seguridad-icono {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 15px;
-    background: rgb(231, 172, 59);
-    border-radius: 14px;
-    height: 40px;
-    min-width: 30px;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
-  .LandingPropietarios-contacto-icono {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 35px;
-    color: rgb(231, 172, 59);
-  }
-
-  
-  .LandingPropietarios-beneficio-boton {
-    max-width: 250px;
-    padding: 10px;
-    background-color: #2f6b3e;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    margin-left: 20px;
-  }
-  
-  /* Preguntas frecuentes */
-  .LandingPropietarios-preguntas {
-    padding: 20px;
-  }
-  
-  .LandingPropietarios-preguntas ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .LandingPropietarios-preguntas li {
-    position: relative;
-    background: #fff;
-    padding: 15px 20px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    cursor: pointer;
-  }
-  
-  .LandingPropietarios-preguntas li::after {
-    content: "+";
-    position: absolute;
-    right: 20px;
-    top: 18px;
-    font-size: 20px;
-    color: #666;
-  }
-  
-  /* Sección seguridad y contacto */
-  .LandingPropietarios-seguridad,
-  .LandingPropietarios-contacto {
-    text-align: center;
-    padding-top: 15px;
-    border-radius: 10px;
-  }
-  
   .LandingPropietarios-seguridad-encabezado {
-    display: flex;
+    flex-direction: row;
     justify-content: left;
     align-items: center;
-    flex-direction: row-reverse;
-    background-color:#2f6b3e;
+    background-color: #2f6b3e;
     color: white;
     font-size: 0.8rem;
-    padding-left: 20px;
-    padding-right: 20px;
   }
 
-  .LandingPropietarios-contacto-encabezado {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color:rgb(231, 172, 59);
-    color: white;
-    font-size: 1rem;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 20px;
-    font-weight: 600;
-  }
-
-  .LandingPropietarios-contacto-encabezado span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color:#2f6b3e;
-    padding: 10px;
-    gap: 20px;
-    border-radius: 50px;
-    cursor: pointer;
-  }
-
-
-  .LandingPropietarios-seguridad-encabezado h2{
+  .LandingPropietarios-seguridad-encabezado h2 {
     text-align: left;
   }
-  .LandingPropietarios-contacto-encabezado h2{
-    text-align: center;
-  }
-
-  .LandingPropietarios-seguridad-img,
-  .LandingPropietarios-contacto-img {
-    display: block;
-    margin: 0 auto 10px auto;
-  }
-  
-  .LandingPropietarios-seguridad ul,
-  .LandingPropietarios-contacto ul {
-    list-style: none;
-    padding: 20px;
-    margin: 15px 0;
-  }
-  
-  .LandingPropietarios-seguridad li,
-  .LandingPropietarios-contacto li {
-    margin: 25px 0;
-    text-align: left;
-  }
-  
-  .LandingPropietarios-boton-whatsapp {
-    background-color: #25d366;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 15px;
-  }
-  
-  /* Logos dentro de contacto */
-  .LandingPropietarios-logos {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    margin-top: 10px;
-
-  }
-
-  .LandingPropietarios-logos :nth-child(1){
-    width: 200px;
-    height:auto;
-  }
-  
-  .LandingPropietarios-footer {
-    background-color: #fff; /* Fondo blanco */
-    padding: 20px 40px;
-    border-top: 1px solid #ddd; /* Línea sutil superior */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 70px;
-  }
-  
-  .LandingPropietarios-footer p {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 10px;
-  }
-  
-  .LandingPropietarios-footer nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 600px;
-  }
-  
-  .LandingPropietarios-footer nav a {
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
-    margin-right: 20px;
-    font-size: 14px;
-  }
-  
-  .LandingPropietarios-footer nav a:hover {
-    text-decoration: underline;
-  }
-  
-  .LandingPropietarios-footer .social-icons {
-    margin-top: 10px;
-    display: flex;
-    gap: 15px;
-  }
-  
-  .LandingPropietarios-footer .social-icons a {
-    font-size: 18px;
-    color: black;
-  }
-  
-
-  
-  /* Responsividad */
-  @media (max-width: 900px) {
-    .LandingPropietarios-beneficios {
-      margin-bottom: 20px;
-    }
-  
-    /* Ajuste de texto en los beneficios para pantallas pequeñas */
-    .LandingPropietarios-beneficio p {
-      padding-bottom: 20px;
-      font-size: 0.8rem;
-      border-bottom: 5px solid rgb(216, 216, 216);
-    }
-    .LandingPropietarios-seguridad-encabezado {
-      display: flex;
-      flex-direction: row;
-      justify-content: left;
-      align-items: center;
-      background-color:#2f6b3e;
-      color: white;
-      font-size: 0.8rem;
-    }
-  
-    .LandingPropietarios-seguridad-encabezado h2{
-      text-align: left;
-    }
-  }
-  
+}

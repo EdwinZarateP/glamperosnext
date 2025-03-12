@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useContext } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+// import { useSearchParams, useRouter } from "next/navigation";
 import { decryptData } from "@/Funciones/Encryptacion";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
 import { CrearReserva } from "@/Funciones/CrearReserva";
@@ -71,14 +72,14 @@ const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);
   const searchParams = useSearchParams();
-  const router = useRouter();
+  // const router = useRouter();
 
   const id_Cliente = Cookies.get("idUsuario");
   const telefonoUsuarioCookie = Cookies.get("telefonoUsuario");
   const nombreUsuarioCookie = Cookies.get("nombreUsuario");
 
   const [loading, setLoading] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [showConfetti, ] = useState(false);
 
   if (!contexto) {
     throw new Error(

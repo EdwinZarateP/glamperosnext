@@ -389,7 +389,13 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                 longitud: Number(glamping?.ubicacion?.lng),
                 nombreCliente: nombreUsuarioCookie ? nombreUsuarioCookie.split(" ")[0] : "Estimado(a)",
               });
-        
+
+              // 🔹 Remover el prefijo "57" si el número empieza con él
+              let telefonoUsuarioFormateado = telefonoUsuarioCookie ?? "sin teléfono";
+              if (telefonoUsuarioFormateado.startsWith("57")) {
+                telefonoUsuarioFormateado = telefonoUsuarioFormateado.slice(2);
+              }
+
               await enviarWhatsAppPropietario({
                 numero: propietario?.whatsapp ?? "sin teléfono",
                 nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
@@ -399,11 +405,11 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                   month: "short",
                   year: "numeric",
                 }),
-                fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
+               fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
-                })} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioCookie ?? "sin teléfono"}`,
+                })} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioFormateado}`,
               });
 
               setShowConfetti(true);

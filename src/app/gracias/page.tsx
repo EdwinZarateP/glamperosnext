@@ -32,8 +32,13 @@ const Gracias: React.FC = () => {
     const fechaFin = searchParams.get("fechaFin") ?? "Fecha no disponible";
 
     // Obtener datos de cookies
-    const telefonoUsuario = Cookies.get("telefonoUsuario") || "No disponible";
+    let telefonoUsuario = Cookies.get("telefonoUsuario") || "No disponible";
     const correoUsuario = Cookies.get("correoUsuario") || "No disponible";
+
+    // Si el teléfono empieza con "57", eliminarlo y dejar el resto del número
+    if (telefonoUsuario.startsWith("57")) {
+      telefonoUsuario = telefonoUsuario.slice(2);
+    }
 
     // Guardar datos en el estado
     setDatos({
@@ -53,28 +58,8 @@ const Gracias: React.FC = () => {
     <div className="GraciasContenedor">
       <HeaderIcono descripcion="Glamperos" />
       <h1 className="GraciasTitulo">¡Gracias por tu reserva!</h1>
-      <p className="GraciasMensaje">
-        Tu estancia será del{" "}
-        <span className="fecha-destacada">
-          {datos.fechaInicio !== "Fecha no disponible"
-            ? new Date(`${datos.fechaInicio}T12:00:00`).toLocaleDateString("es-ES", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })
-            : datos.fechaInicio}
-        </span>{" "}
-        al{" "}
-        <span className="fecha-destacada">
-          {datos.fechaFin !== "Fecha no disponible"
-            ? new Date(`${datos.fechaFin}T12:00:00`).toLocaleDateString("es-ES", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              })
-            : datos.fechaFin}
-        </span>
-        . A tu WhatsApp <strong>{datos.telefonoUsuario}</strong> y correo{" "}
+      <p className="GraciasMensaje">      
+         A tu WhatsApp <strong>{datos.telefonoUsuario}</strong> y correo{" "}
         <strong>{datos.correoUsuario}</strong> enviamos el código de reserva,
         ubicación del glamping y el contacto del anfitrión. ¡Gracias por
         elegirnos!

@@ -19,6 +19,9 @@ export const enviarWhatsAppPropietario = async ({
     if (!numero) {
       throw new Error("⚠️ Error: No has actualizado tu WhatsApp.");
     }
+    if (numero.startsWith("57")) {
+      numero = numero.slice(2);
+    }
 
     // 🔹 Verifica que el token esté disponible
     const whatsappApiToken = process.env.NEXT_PUBLIC_WHATSAPP_API_TOKEN;

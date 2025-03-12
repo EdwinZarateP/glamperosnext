@@ -34,6 +34,9 @@ export const enviarCorreoCliente = async ({
       ? `https://www.google.com/maps?q=${latitud},${longitud}`
       : "#";
 
+    if (usuarioWhatsapp.startsWith("57")) {
+      usuarioWhatsapp = usuarioWhatsapp.slice(2);
+    }
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <h2 style="color: #2F6B3E;">🎉 ¡Hora de relajarse!</h2>

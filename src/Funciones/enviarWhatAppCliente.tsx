@@ -30,7 +30,10 @@ export const enviarWhatAppCliente = async ({
     if (!whatsappApiToken) {
       throw new Error("⚠️ WHATSAPP_API_TOKEN no está definido en las variables de entorno.");
     }
-
+    // 🔹 Remover el prefijo "57" si el número empieza con él
+    if (whatsapp.startsWith("57")) {
+      whatsapp = whatsapp.slice(2);
+    }
     const url = "https://graph.facebook.com/v21.0/531912696676146/messages";
 
     const body = {

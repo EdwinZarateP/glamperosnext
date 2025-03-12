@@ -30,6 +30,11 @@ export const enviarCorreoPropietario = async ({
   fromEmail = "reservaciones@glamperos.com",
 }: EnviarCorreoPropietarioProps) => {
   try {
+    // 🔹 Remover el prefijo "57" si el número empieza con él
+    if (telefonoUsuario.startsWith("57")) {
+      telefonoUsuario = telefonoUsuario.slice(2);
+    }
+
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
         <h2 style="color: #2F6B3E;">🎉 ¡Tienes una nueva reserva!</h2>

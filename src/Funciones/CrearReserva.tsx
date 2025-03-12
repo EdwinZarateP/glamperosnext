@@ -12,6 +12,7 @@ interface ReservaProps {
   ninosDesencriptados: string;
   bebesDesencriptados: string;
   mascotasDesencriptadas: string;
+  codigoReserva: string;
 }
 
 // 🔹 Definir correctamente el tipo de respuesta esperada de la API
@@ -55,6 +56,7 @@ export const CrearReserva = async ({
   ninosDesencriptados,
   bebesDesencriptados,
   mascotasDesencriptadas,
+  
 }: ReservaProps): Promise<ReservaResponse | null> => {
   try {
     const nuevaReserva = {

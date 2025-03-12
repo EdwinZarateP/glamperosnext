@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { useEffect, useState, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -21,9 +21,6 @@ import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";
 
-// ------------------------------------------------------------------------------------
-// Definición de tipos para Lottie y otros componentes
-// ------------------------------------------------------------------------------------
 interface MyLottieProps {
   animationData: unknown;
   loop?: boolean;
@@ -31,23 +28,14 @@ interface MyLottieProps {
   style?: React.CSSProperties;
 }
 
-// Importación dinámica de Lottie para evitar problemas en SSR
 const Lottie = dynamic<MyLottieProps>(
   () =>
-    import("lottie-react").then((mod) => {
-      return mod.default as React.ComponentType<MyLottieProps>;
-    }),
-  {
-    ssr: false,
-  }
+    import("lottie-react").then((mod) => mod.default as React.ComponentType<MyLottieProps>),
+  { ssr: false }
 );
 
-// Importamos el componente de confeti dinámicamente
 const ConfettiEffect = dynamic(() => import("@/Componentes/ConfettiEffect"), { ssr: false });
 
-// ------------------------------------------------------------------------------------
-// Tipos para Glamping y Propietario
-// ------------------------------------------------------------------------------------
 interface Glamping {
   nombreGlamping: string;
   ciudad_departamento: string;
@@ -67,16 +55,19 @@ interface Propietario {
   correoPropietario: string;
 }
 
-// ------------------------------------------------------------------------------------
-// Definimos la interfaz de props que recibirá el componente Reservacion
-// ------------------------------------------------------------------------------------
 interface ReservacionProps {
-  onLoaded?: () => void; 
+  onLoaded?: () => void;
 }
 
-// ------------------------------------------------------------------------------------
-// Componente principal: Reservacion
-// ------------------------------------------------------------------------------------
+declare global {
+  interface Window {
+    WidgetCheckout?: any;
+  }
+}
+
+// Llave pública de pruebas de Wompi
+const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
+
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);
   const searchParams = useSearchParams();
@@ -87,7 +78,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const nombreUsuarioCookie = Cookies.get("nombreUsuario");
 
   const [loading, setLoading] = useState(false);
-  // Estado para mostrar el confeti
   const [showConfetti, setShowConfetti] = useState(false);
 
   if (!contexto) {
@@ -176,7 +166,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     const fechas: string[] = [];
     let fechaActual = new Date(inicio);
     const fechaFin = new Date(fin);
-
     while (fechaActual <= fechaFin) {
       fechas.push(fechaActual.toISOString().split("T")[0]);
       fechaActual.setDate(fechaActual.getDate() + 1);
@@ -207,31 +196,17 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       const rangoSeleccionado = generarFechasRango(fechaInicioDesencriptada, fechaFinDesencriptada);
       rangoSeleccionado.pop();
 
-      if (
-        fechasReservadas &&
-        fechasReservadas.some((fecha) => rangoSeleccionado.includes(fecha))
-      ) {
+      if (fechasReservadas && fechasReservadas.some((fecha) => rangoSeleccionado.includes(fecha))) {
         Swal.fire({
           title: "Fecha no disponible",
-          text: `No se puede reservar las fechas del ${new Date(
-            `${fechaInicioDesencriptada}T12:00:00`
-          ).toLocaleDateString("es-ES", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })} al ${new Date(
-            `${fechaFinDesencriptada}T12:00:00`
-          ).toLocaleDateString("es-ES", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })} porque ya están reservadas.`,
+          text: "No se puede reservar las fechas seleccionadas porque ya están ocupadas.",
           icon: "error",
           confirmButtonText: "Aceptar",
         });
         return;
       }
 
+      // 1) Crear la reserva en tu sistema (estado pendiente de pago)
       const creacionReserva = await CrearReserva({
         idCliente: id_Cliente ?? "sin id",
         idPropietario: glamping.propietario_id ?? "Propietario no registrado",
@@ -248,72 +223,116 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         mascotasDesencriptadas,
       });
 
-      if (creacionReserva?.reserva) {
-        await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
-
-        await enviarCorreoPropietario({
-          correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
-          nombre: propietario?.nombreDueno ?? "Propietario desconocido",
-          codigoReserva: creacionReserva.reserva.codigoReserva,
-          fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
-          fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
-          Cantidad_Adultos: Number(adultosDesencriptados),
-          Cantidad_Ninos: Number(ninosDesencriptados),
-          Cantidad_Mascotas: Number(mascotasDesencriptadas),
-          telefonoUsuario: telefonoUsuarioCookie ?? "sin teléfono",
-          correoUsuario: Cookies.get("correoUsuario") ?? "sin_correo@glamperos.com",
-          glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
-        });
-
-        await enviarCorreoCliente({
-          correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
-          nombre: propietario?.nombreDueno ?? "Propietario desconocido",
-          codigoReserva: creacionReserva.reserva.codigoReserva,
-          fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
-          fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
-          Cantidad_Adultos: Number(adultosDesencriptados),
-          Cantidad_Ninos: Number(ninosDesencriptados),
-          Cantidad_Mascotas: Number(mascotasDesencriptadas),
-          usuarioWhatsapp: telefonoUsuarioCookie ?? "sin teléfono",
-          glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
-          latitud: Number(glamping?.ubicacion?.lat),
-          longitud: Number(glamping?.ubicacion?.lng),
-        });
-
-        await enviarWhatAppCliente({
-          numero: telefonoUsuarioCookie ?? "sin teléfono",
-          codigoReserva: creacionReserva.reserva.codigoReserva,
-          whatsapp: propietario?.whatsapp ?? "Propietario sin telefono",
-          nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
-          direccionGlamping: glamping.direccion ?? "Glamping sin direccion",
-          latitud: Number(glamping?.ubicacion?.lat),
-          longitud: Number(glamping?.ubicacion?.lng),
-          nombreCliente: nombreUsuarioCookie ? nombreUsuarioCookie.split(" ")[0] : "Estimado(a)",
-        });
-
-        await enviarWhatsAppPropietario({
-          numero: propietario?.whatsapp ?? "sin teléfono",
-          nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
-          nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
-          fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }),
-          fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioCookie ?? "sin teléfono"}`,          
-        });      
-
-        // Activamos el confeti y, tras 2 segundos, redirigimos a la página de Gracias
-        setShowConfetti(true);
-        setTimeout(() => {
-          router.push(`/gracias?fechaInicio=${fechaInicioDesencriptada}&fechaFin=${fechaFinDesencriptada}`);
-        }, 0);
-      } else {
+      if (!creacionReserva?.reserva) {
         console.error("Error al procesar la reserva.");
+        return;
+      }
+
+      await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
+
+      // Enviar correos y notificaciones (según tu lógica)
+      await enviarCorreoPropietario({
+        correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
+        nombre: propietario?.nombreDueno ?? "Propietario desconocido",
+        codigoReserva: creacionReserva.reserva.codigoReserva,
+        fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
+        fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
+        Cantidad_Adultos: Number(adultosDesencriptados),
+        Cantidad_Ninos: Number(ninosDesencriptados),
+        Cantidad_Mascotas: Number(mascotasDesencriptadas),
+        telefonoUsuario: telefonoUsuarioCookie ?? "sin teléfono",
+        correoUsuario: Cookies.get("correoUsuario") ?? "sin_correo@glamperos.com",
+        glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
+      });
+
+      await enviarCorreoCliente({
+        correo: propietario?.correoPropietario ?? "sin_correo@glamperos.com",
+        nombre: propietario?.nombreDueno ?? "Propietario desconocido",
+        codigoReserva: creacionReserva.reserva.codigoReserva,
+        fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
+        fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
+        Cantidad_Adultos: Number(adultosDesencriptados),
+        Cantidad_Ninos: Number(ninosDesencriptados),
+        Cantidad_Mascotas: Number(mascotasDesencriptadas),
+        usuarioWhatsapp: telefonoUsuarioCookie ?? "sin teléfono",
+        glampingNombre: glamping.nombreGlamping ?? "Glamping sin nombre",
+        latitud: Number(glamping?.ubicacion?.lat),
+        longitud: Number(glamping?.ubicacion?.lng),
+      });
+
+      await enviarWhatAppCliente({
+        numero: telefonoUsuarioCookie ?? "sin teléfono",
+        codigoReserva: creacionReserva.reserva.codigoReserva,
+        whatsapp: propietario?.whatsapp ?? "Propietario sin telefono",
+        nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
+        direccionGlamping: glamping.direccion ?? "Glamping sin direccion",
+        latitud: Number(glamping?.ubicacion?.lat),
+        longitud: Number(glamping?.ubicacion?.lng),
+        nombreCliente: nombreUsuarioCookie ? nombreUsuarioCookie.split(" ")[0] : "Estimado(a)",
+      });
+
+      await enviarWhatsAppPropietario({
+        numero: propietario?.whatsapp ?? "sin teléfono",
+        nombrePropietario: propietario?.nombreDueno ? propietario.nombreDueno.split(" ")[0] : "Estimado(a)",
+        nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
+        fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+        fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString("es-ES", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioCookie ?? "sin teléfono"}`,
+      });
+
+      // 2) Abrir el widget de Wompi para pagar la reserva
+      // Convertir el total a centavos (si totalFinalDesencriptado está en pesos)
+      const montoPesos = Number(totalFinalDesencriptado);
+      const montoCentavos = Math.round(montoPesos * 100);
+
+      // Llamar al endpoint para generar la firma de integridad
+      const responseWompi = await fetch(
+        `https://glamperosapi.onrender.com/wompi/generar-firma?referencia=${creacionReserva.reserva.codigoReserva}&monto=${montoCentavos}&moneda=COP`
+      );
+      const dataWompi = await responseWompi.json();
+
+      if (!dataWompi.firma_integridad) {
+        console.error("No se pudo obtener la firma de integridad");
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo obtener la firma de integridad, intenta nuevamente.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+        return;
+      }
+
+      // Abrir el widget de Wompi para que el usuario realice el pago
+      if (window.WidgetCheckout) {
+        const checkout = new window.WidgetCheckout({
+          currency: "COP",
+          amountInCents: montoCentavos,
+          reference: creacionReserva.reserva.codigoReserva,
+          publicKey: PUBLIC_KEY,
+          redirectUrl: "https://glamperos.com/gracias",
+          signature: {
+            integrity: dataWompi.firma_integridad,
+          },
+        });
+
+        checkout.open((result: any) => {
+          console.log("Resultado de la transacción:", result);
+        });
+      } else {
+        console.error("El widget de Wompi no se ha cargado correctamente.");
+        Swal.fire({
+          title: "Error",
+          text: "El widget de Wompi no se ha cargado, intenta nuevamente.",
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
       }
     } catch (error) {
       console.error("Error en la reserva:", error);
@@ -367,13 +386,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                   year: "numeric",
                 })}
               </p>
-              <p>
-                {parseInt(adultosDesencriptados) > 0 && `${adultosDesencriptados} ${parseInt(adultosDesencriptados) === 1 ? "Adulto" : "Adultos"}`}
-                {parseInt(ninosDesencriptados) > 0 && `, ${ninosDesencriptados} ${parseInt(ninosDesencriptados) === 1 ? "Niño" : "Niños"}`}
-                {parseInt(bebesDesencriptados) > 0 && `, ${bebesDesencriptados} ${parseInt(bebesDesencriptados) === 1 ? "Bebé" : "Bebés"}`}
-                {parseInt(mascotasDesencriptadas) > 0 && `, ${mascotasDesencriptadas} ${parseInt(mascotasDesencriptadas) === 1 ? "Mascota" : "Mascotas"}`}
-              </p>
-
               <p>
                 Tarifa de Glamperos:{" "}
                 <strong>{formatoPesos(Math.round(Number(tarifaDesencriptada)))}</strong>

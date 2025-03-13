@@ -10,8 +10,8 @@ import { ObtenerFechasReservadas } from "@/Funciones/ObtenerFechasReservadas";
 // import { ActualizarFechasReservadas } from "@/Funciones/ActualizarFechasReservadas";
 // import { enviarCorreoPropietario } from "@/Funciones/enviarCorreoPropietario";
 // import { enviarCorreoCliente } from "@/Funciones/enviarCorreoCliente";
-import { enviarWhatAppCliente } from "@/Funciones/enviarWhatAppCliente";
-import { enviarWhatsAppPropietario } from "@/Funciones/enviarWhatsAppPropietario";
+// import { enviarWhatAppCliente } from "@/Funciones/enviarWhatAppCliente";
+// import { enviarWhatsAppPropietario } from "@/Funciones/enviarWhatsAppPropietario";
 import InputTelefono from "@/Componentes/InputTelefono/index";
 import { ContextoApp } from "@/context/AppContext";
 import Politicas from "@/Componentes/Politica/index";
@@ -91,7 +91,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   // ----------------------------------------------------------------------
   const id_Cliente = Cookies.get("idUsuario");
   const telefonoUsuarioCookie = Cookies.get("telefonoUsuario");
-  const nombreUsuarioCookie = Cookies.get("nombreUsuario");
+  // const nombreUsuarioCookie = Cookies.get("nombreUsuario");
 
   if (!contexto) {
     throw new Error("ContextoApp no está disponible.");
@@ -133,7 +133,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   // Estados para glamping y propietario
   // ----------------------------------------------------------------------
   const [glamping, setGlamping] = useState<Glamping | null>(null);
-  const [propietario, setPropietario] = useState<Propietario | null>(null);
+  const [ , setPropietario] = useState<Propietario | null>(null);
   const { verPolitica, setVerPolitica } = contexto;
 
   // ----------------------------------------------------------------------
@@ -370,24 +370,23 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
             const estadoPago = transactionData?.data?.status;
 
             if (estadoPago === "APPROVED") {
-              console.log("Edwin viy aca")
               // 10) La reserva ya está en la BD con estado "Pendiente"
               //     El Webhook de Wompi se encargará de actualizar la reserva a "Pagado"
               //     Pero si quieres, puedes disparar notificaciones aquí en el front:
 
               // Notificaciones WhatsApp - (correos se envían en el backend)
-              await enviarWhatAppCliente({
-                numero: telefonoUsuarioCookie ?? "sin teléfono",
-                codigoReserva: reservationReference,
-                whatsapp: propietario?.whatsapp ?? "Propietario sin teléfono",
-                nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
-                direccionGlamping: glamping.direccion ?? "Glamping sin dirección",
-                latitud: Number(glamping?.ubicacion?.lat),
-                longitud: Number(glamping?.ubicacion?.lng),
-                nombreCliente: nombreUsuarioCookie
-                  ? nombreUsuarioCookie.split(" ")[0]
-                  : "Estimado(a)",
-              });
+              // await enviarWhatAppCliente({
+              //   numero: telefonoUsuarioCookie ?? "sin teléfono",
+              //   codigoReserva: reservationReference,
+              //   whatsapp: propietario?.whatsapp ?? "Propietario sin teléfono",
+              //   nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
+              //   direccionGlamping: glamping.direccion ?? "Glamping sin dirección",
+              //   latitud: Number(glamping?.ubicacion?.lat),
+              //   longitud: Number(glamping?.ubicacion?.lng),
+              //   nombreCliente: nombreUsuarioCookie
+              //     ? nombreUsuarioCookie.split(" ")[0]
+              //     : "Estimado(a)",
+              // });
 
               // Remover prefijo "57" si existe para el mensaje del propietario
               let telefonoUsuarioFormateado = telefonoUsuarioCookie ?? "sin teléfono";
@@ -395,29 +394,29 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                 telefonoUsuarioFormateado = telefonoUsuarioFormateado.slice(2);
               }
 
-              await enviarWhatsAppPropietario({
-                numero: propietario?.whatsapp ?? "sin teléfono",
-                nombrePropietario: propietario?.nombreDueno
-                  ? propietario.nombreDueno.split(" ")[0]
-                  : "Estimado(a)",
-                nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
-                fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString(
-                  "es-ES",
-                  {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }
-                ),
-                fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString(
-                  "es-ES",
-                  {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  }
-                )} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioFormateado}`,
-              });
+              // await enviarWhatsAppPropietario({
+              //   numero: propietario?.whatsapp ?? "sin teléfono",
+              //   nombrePropietario: propietario?.nombreDueno
+              //     ? propietario.nombreDueno.split(" ")[0]
+              //     : "Estimado(a)",
+              //   nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
+              //   fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString(
+              //     "es-ES",
+              //     {
+              //       day: "2-digit",
+              //       month: "short",
+              //       year: "numeric",
+              //     }
+              //   ),
+              //   fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString(
+              //     "es-ES",
+              //     {
+              //       day: "2-digit",
+              //       month: "short",
+              //       year: "numeric",
+              //     }
+              //   )} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioFormateado}`,
+              // });
 
               // 11) Mostrar confetti y redirigir a la página de gracias
               setShowConfetti(true);

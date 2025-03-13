@@ -7,7 +7,7 @@ import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
 import { CrearReserva } from "@/Funciones/CrearReserva"; // Función para POST /reservas
 import { ObtenerUsuarioPorId } from "@/Funciones/ObtenerUsuario";
 import { ObtenerFechasReservadas } from "@/Funciones/ObtenerFechasReservadas";
-import { ActualizarFechasReservadas } from "@/Funciones/ActualizarFechasReservadas";
+// import { ActualizarFechasReservadas } from "@/Funciones/ActualizarFechasReservadas";
 // import { enviarCorreoPropietario } from "@/Funciones/enviarCorreoPropietario";
 // import { enviarCorreoCliente } from "@/Funciones/enviarCorreoCliente";
 import { enviarWhatAppCliente } from "@/Funciones/enviarWhatAppCliente";
@@ -310,7 +310,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       // 4) (Opcional) Actualizar las fechas reservadas de inmediato
       //    O puedes esperar a que se apruebe el pago. 
       //    Aquí lo hacemos de inmediato:
-      await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
+      // await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
 
       // 5) Calcular montos para Wompi
       const montoPesos = Number(totalFinalDesencriptado);

@@ -13,12 +13,13 @@ interface ReservaProps {
   bebesDesencriptados: string;
   mascotasDesencriptadas: string;
   codigoReserva: string;
+  EstadoPago: string; // ✅ Se ha agregado EstadoPago a la interfaz
 }
 
 // 🔹 Definir correctamente el tipo de respuesta esperada de la API
 interface ReservaResponse {
   mensaje: string;
-  reserva: {
+  reserva?: {
     id: string;
     idCliente: string;
     idPropietario: string;
@@ -35,10 +36,12 @@ interface ReservaResponse {
     bebes: number;
     mascotas: number;
     EstadoReserva: string;
+    EstadoPago: string; // ✅ Se ha agregado EstadoPago a la respuesta de la API
     fechaCreacion: string;
     codigoReserva: string;
     ComentariosCancelacion?: string;
   };
+  error?: string; // ⚠️ Agregar una propiedad opcional para capturar errores
 }
 
 // ✅ Ahora retorna un **objeto de reserva**, no solo una URL
@@ -56,7 +59,8 @@ export const CrearReserva = async ({
   ninosDesencriptados,
   bebesDesencriptados,
   mascotasDesencriptadas,
-  
+  codigoReserva,
+  EstadoPago, 
 }: ReservaProps): Promise<ReservaResponse | null> => {
   try {
     const nuevaReserva = {
@@ -75,9 +79,12 @@ export const CrearReserva = async ({
       bebes: Number(bebesDesencriptados) || 0,
       mascotas: Number(mascotasDesencriptadas) || 0,
       EstadoReserva: "Reservada",
+      EstadoPago,
+      codigoReserva,
       ComentariosCancelacion: "Sin comentario",
     };
-  
+
+    console.log("📩 Enviando reserva a backend:", nuevaReserva);
 
     const response = await fetch("https://glamperosapi.onrender.com/reservas", {
       method: "POST",
@@ -87,20 +94,20 @@ export const CrearReserva = async ({
       body: JSON.stringify(nuevaReserva),
     });
 
+    if (response.status === 400) {
+      console.error("❌ Error: La reserva ya existe.");
+      return null;  // No volver a crear una reserva duplicada
+    }
+
     if (!response.ok) {
-      console.error(`❌ Error en la respuesta del servidor: ${response.status} - ${response.statusText}`);
+      const errorText = await response.text();
+      console.error(`❌ Error en la respuesta del servidor: ${response.status} - ${errorText}`);
       throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
     }
 
-    const data: ReservaResponse = await response.json();    
-
-    // ✅ Verificar si la API devolvió un objeto de reserva válido
-    if (!data || !data.reserva || !data.reserva.codigoReserva) {
-      console.error("❌ La API no devolvió una reserva válida.");
-      return null;
-    }
-
-    return data; // 🔹 Ahora retorna el objeto completo con la reserva
+    const data: ReservaResponse = await response.json();
+    console.log("✅ Respuesta del backend:", data);
+    return data;
   } catch (error) {
     console.error("❌ Error al crear la reserva:", error);
     return null;

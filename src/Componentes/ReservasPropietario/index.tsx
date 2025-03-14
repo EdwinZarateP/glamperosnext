@@ -310,11 +310,11 @@ const ReservasPropietario: React.FC = () => {
                   <p className="ReservasPropietario-detalle"><strong>Check-In:</strong> {new Date(reserva.FechaIngreso).toLocaleDateString()}</p>
                   <p className="ReservasPropietario-detalle"><strong>Check-Out:</strong> {new Date(reserva.FechaSalida).toLocaleDateString()}</p>
                   <p className="ReservasPropietario-detalle">
-                    <strong>Huéspedes:</strong> 
-                    {reserva.adultos > 1 && ` ${reserva.adultos} Adultos`}
-                    {reserva.ninos > 1 && `, ${reserva.ninos} Niños`}
-                    {reserva.bebes > 1 && `, ${reserva.bebes} Bebés`}
-                    {reserva.mascotas > 1 && `, ${reserva.mascotas} Mascota(s)`}
+                  <strong>Huéspedes:</strong> 
+                    {reserva.adultos > 0 && ` ${reserva.adultos} Adulto${reserva.adultos > 1 ? "s" : ""}`}
+                    {reserva.ninos > 0 && `, ${reserva.ninos} Niño${reserva.ninos > 1 ? "s" : ""}`}
+                    {reserva.bebes > 0 && `, ${reserva.bebes} Bebé${reserva.bebes > 1 ? "s" : ""}`}
+                    {reserva.mascotas > 0 && `, ${reserva.mascotas} Mascota${reserva.mascotas > 1 ? "s" : ""}`}
                   </p>
                   <p className="ReservasPropietario-detalle"><strong>Valor:</strong> ${reserva.ValorReserva.toLocaleString()}</p>
                   <p className="ReservasPropietario-detalle"><strong>Comisión:</strong> ${reserva.ComisionGlamperos.toLocaleString()}</p>

@@ -1,6 +1,6 @@
 // SolicitarPago.tsx
-
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router"; // Importa el hook para la navegación
 import Swal from "sweetalert2";
 import "./estilos.css";
 import { enviarCorreoContabilidad } from "@/Funciones/enviarCorreoContabilidad";
@@ -27,6 +27,7 @@ interface Banco {
 }
 
 const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
+  const router = useRouter(); // Hook para navegación
   const [saldo, setSaldo] = useState<number>(0);
   const [metodoPago, setMetodoPago] = useState<string>("Cargando...");
   const [solicitudes, setSolicitudes] = useState<SolicitudPago[]>([]);
@@ -119,6 +120,23 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   };
 
   const solicitarPago = async () => {
+    // Verifica si el número de cuenta está disponible
+    if (numeroCuenta === "No disponible") {
+      Swal.fire({
+        icon: "warning",
+        title: "Cuenta bancaria no registrada",
+        text: "Debes inscribir primero la cuenta de banco en Gestión de Bancos.",
+        showCancelButton: true,
+        confirmButtonText: "Ir a Gestión de Bancos",
+        cancelButtonText: "Cerrar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/GestionBancos");
+        }
+      });
+      return; // Sale de la función sin continuar
+    }
+
     if (saldo <= 0) {
       Swal.fire({
         icon: "warning",

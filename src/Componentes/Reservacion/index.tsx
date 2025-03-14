@@ -4,14 +4,9 @@ import { useEffect, useState, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { decryptData } from "@/Funciones/Encryptacion";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
-import { CrearReserva } from "@/Funciones/CrearReserva"; // Función para POST /reservas
+import { CrearReserva } from "@/Funciones/CrearReserva"; 
 import { ObtenerUsuarioPorId } from "@/Funciones/ObtenerUsuario";
 import { ObtenerFechasReservadas } from "@/Funciones/ObtenerFechasReservadas";
-// import { ActualizarFechasReservadas } from "@/Funciones/ActualizarFechasReservadas";
-// import { enviarCorreoPropietario } from "@/Funciones/enviarCorreoPropietario";
-// import { enviarCorreoCliente } from "@/Funciones/enviarCorreoCliente";
-// import { enviarWhatAppCliente } from "@/Funciones/enviarWhatAppCliente";
-// import { enviarWhatsAppPropietario } from "@/Funciones/enviarWhatsAppPropietario";
 import InputTelefono from "@/Componentes/InputTelefono/index";
 import { ContextoApp } from "@/context/AppContext";
 import Politicas from "@/Componentes/Politica/index";
@@ -21,9 +16,6 @@ import dynamic from "next/dynamic";
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";
 
-// ------------------------------------------------------------------------
-// Definición de tipos para Lottie y otros componentes
-// ------------------------------------------------------------------------
 interface MyLottieProps {
   animationData: unknown;
   loop?: boolean;
@@ -38,9 +30,6 @@ const Lottie = dynamic<MyLottieProps>(
 
 const ConfettiEffect = dynamic(() => import("@/Componentes/ConfettiEffect"), { ssr: false });
 
-// ------------------------------------------------------------------------
-// Tipos para Glamping y Propietario
-// ------------------------------------------------------------------------
 interface Glamping {
   nombreGlamping: string;
   ciudad_departamento: string;
@@ -61,18 +50,12 @@ interface ReservacionProps {
   onLoaded?: () => void;
 }
 
-// ------------------------------------------------------------------------
-// Declaración global para Wompi
-// ------------------------------------------------------------------------
 declare global {
   interface Window {
     WidgetCheckout?: any;
   }
 }
 
-// ------------------------------------------------------------------------
-// Llave pública de pruebas de Wompi
-// ------------------------------------------------------------------------
 const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
 
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
@@ -80,26 +63,16 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // ----------------------------------------------------------------------
-  // Variables de estado
-  // ----------------------------------------------------------------------
   const [loading, setLoading] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  // ----------------------------------------------------------------------
-  // Extraer datos de cookies
-  // ----------------------------------------------------------------------
   const id_Cliente = Cookies.get("idUsuario");
   const telefonoUsuarioCookie = Cookies.get("telefonoUsuario");
-  // const nombreUsuarioCookie = Cookies.get("nombreUsuario");
 
   if (!contexto) {
     throw new Error("ContextoApp no está disponible.");
   }
 
-  // ----------------------------------------------------------------------
-  // Parámetros encriptados en la URL
-  // ----------------------------------------------------------------------
   const glampingId = searchParams.get("glampingId") ?? "";
   const fechaInicioDesencriptada = searchParams.get("fechaInicio")
     ? decryptData(decodeURIComponent(searchParams.get("fechaInicio")!))
@@ -129,16 +102,10 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     ? decryptData(decodeURIComponent(searchParams.get("mascotas")!))
     : "0";
 
-  // ----------------------------------------------------------------------
-  // Estados para glamping y propietario
-  // ----------------------------------------------------------------------
   const [glamping, setGlamping] = useState<Glamping | null>(null);
   const [ , setPropietario] = useState<Propietario | null>(null);
   const { verPolitica, setVerPolitica } = contexto;
 
-  // ----------------------------------------------------------------------
-  // Cargar script de Wompi manualmente
-  // ----------------------------------------------------------------------
   useEffect(() => {
     const scriptId = "wompi-widget-script";
     if (!document.getElementById(scriptId)) {
@@ -151,11 +118,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     }
   }, []);
 
-  // ----------------------------------------------------------------------
-  // Manejar posible redirección de PSE
-  // ----------------------------------------------------------------------
   useEffect(() => {
-    // Si Wompi para PSE redirige a la misma URL con ?status=APPROVED
     const urlParams = new URLSearchParams(window.location.search);
     const status = urlParams.get("status");
     if (status === "APPROVED") {
@@ -166,9 +129,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     }
   }, [router]);
 
-  // ----------------------------------------------------------------------
-  // Obtener datos de Glamping
-  // ----------------------------------------------------------------------
   useEffect(() => {
     const fetchGlamping = async () => {
       if (glampingId) {
@@ -183,9 +143,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     fetchGlamping();
   }, [glampingId]);
 
-  // ----------------------------------------------------------------------
-  // Obtener datos de Propietario
-  // ----------------------------------------------------------------------
   useEffect(() => {
     const fetchPropietario = async () => {
       if (glamping?.propietario_id) {
@@ -207,9 +164,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     fetchPropietario();
   }, [glamping, onLoaded]);
 
-  // ----------------------------------------------------------------------
-  // Formatear valores en pesos
-  // ----------------------------------------------------------------------
   const formatoPesos = (valor: number): string => {
     return `${valor.toLocaleString("es-CO", {
       style: "currency",
@@ -218,9 +172,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     })}`;
   };
 
-  // ----------------------------------------------------------------------
-  // Generar rango de fechas
-  // ----------------------------------------------------------------------
   const generarFechasRango = (inicio: string, fin: string): string[] => {
     const fechas: string[] = [];
     let fechaActual = new Date(inicio);
@@ -232,9 +183,20 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     return fechas;
   };
 
-  // ----------------------------------------------------------------------
-  // Confirmar reserva (CREACIÓN PREVIA) y luego pago
-  // ----------------------------------------------------------------------
+  // Función para formatear la cantidad de huéspedes
+  const formatHuespedes = () => {
+    const adultos = Number(adultosDesencriptados);
+    const ninos = Number(ninosDesencriptados);
+    const bebes = Number(bebesDesencriptados);
+    const mascotas = Number(mascotasDesencriptadas);
+    const partes: string[] = [];
+    if (adultos > 0) partes.push(`${adultos} ${adultos === 1 ? "adulto" : "adultos"}`);
+    if (ninos > 0) partes.push(`${ninos} ${ninos === 1 ? "niño" : "niños"}`);
+    if (bebes > 0) partes.push(`${bebes} ${bebes === 1 ? "bebé" : "bebés"}`);
+    if (mascotas > 0) partes.push(`${mascotas} ${mascotas === 1 ? "mascota" : "mascotas"}`);
+    return partes.join(", ");
+  };
+
   const handleConfirmarReserva = async () => {
     if (telefonoUsuarioCookie === "sintelefono") {
       Swal.fire({
@@ -254,13 +216,11 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
     setLoading(true);
 
     try {
-      // 1) Validar fechas disponibles
       const fechasReservadas = await ObtenerFechasReservadas(glampingId);
       const rangoSeleccionado = generarFechasRango(
         fechaInicioDesencriptada,
         fechaFinDesencriptada
       );
-      // Quitar el último día (no se reserva la salida)
       rangoSeleccionado.pop();
 
       if (fechasReservadas && fechasReservadas.some((f) => rangoSeleccionado.includes(f))) {
@@ -273,11 +233,8 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         return;
       }
 
-      // 2) Generar referencia única para la reserva y el pago
       const reservationReference = crypto.randomUUID();
 
-      // 3) Crear la reserva en la BD ANTES de abrir Wompi
-      //    => la reserva quedará en "Pendiente" hasta que se confirme el pago
       const creacionReserva = await CrearReserva({
         idCliente: id_Cliente ?? "sin id",
         idPropietario: glamping.propietario_id ?? "Propietario no registrado",
@@ -292,7 +249,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         ninosDesencriptados,
         bebesDesencriptados,
         mascotasDesencriptadas,
-        codigoReserva: reservationReference,  // 💡 Se usa el mismo código en la reserva
+        codigoReserva: reservationReference,
         EstadoPago: "Pendiente",
       });
 
@@ -307,16 +264,9 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         return;
       }
 
-      // 4) (Opcional) Actualizar las fechas reservadas de inmediato
-      //    O puedes esperar a que se apruebe el pago. 
-      //    Aquí lo hacemos de inmediato:
-      // await ActualizarFechasReservadas(glampingId, rangoSeleccionado);
-
-      // 5) Calcular montos para Wompi
       const montoPesos = Number(totalFinalDesencriptado);
       const montoCentavos = Math.round(montoPesos * 100);
 
-      // 6) Obtener firma desde backend
       const respFirma = await fetch(
         `https://glamperosapi.onrender.com/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP`
       );
@@ -333,7 +283,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         return;
       }
 
-      // 7) Verificar que el widget de Wompi esté cargado
       if (!window.WidgetCheckout) {
         console.error("El widget de Wompi no se ha cargado correctamente.");
         Swal.fire({
@@ -345,7 +294,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         return;
       }
 
-      // 8) Abrir el widget de pago
       const checkout = new window.WidgetCheckout({
         currency: "COP",
         amountInCents: montoCentavos,
@@ -359,66 +307,19 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
 
       checkout.open(async (result: any) => {
         console.log("Resultado de la transacción:", result);
-
-        // 9) Verificar si la transacción fue aprobada
         if (result && result.transaction && result.transaction.id) {
           try {
             const transactionId = result.transaction.id;
-            // Consultar el estado real de la transacción en Wompi
             const response = await fetch(`https://sandbox.wompi.co/v1/transactions/${transactionId}`);
             const transactionData = await response.json();
             const estadoPago = transactionData?.data?.status;
 
             if (estadoPago === "APPROVED") {
-              // 10) La reserva ya está en la BD con estado "Pendiente"
-              //     El Webhook de Wompi se encargará de actualizar la reserva a "Pagado"
-              //     Pero si quieres, puedes disparar notificaciones aquí en el front:
-
-              // Notificaciones WhatsApp - (correos se envían en el backend)
-              // await enviarWhatAppCliente({
-              //   numero: telefonoUsuarioCookie ?? "sin teléfono",
-              //   codigoReserva: reservationReference,
-              //   whatsapp: propietario?.whatsapp ?? "Propietario sin teléfono",
-              //   nombreGlampingReservado: glamping.nombreGlamping ?? "Glamping sin nombre",
-              //   direccionGlamping: glamping.direccion ?? "Glamping sin dirección",
-              //   latitud: Number(glamping?.ubicacion?.lat),
-              //   longitud: Number(glamping?.ubicacion?.lng),
-              //   nombreCliente: nombreUsuarioCookie
-              //     ? nombreUsuarioCookie.split(" ")[0]
-              //     : "Estimado(a)",
-              // });
-
-              // Remover prefijo "57" si existe para el mensaje del propietario
               let telefonoUsuarioFormateado = telefonoUsuarioCookie ?? "sin teléfono";
               if (telefonoUsuarioFormateado.startsWith("57")) {
                 telefonoUsuarioFormateado = telefonoUsuarioFormateado.slice(2);
               }
-
-              // await enviarWhatsAppPropietario({
-              //   numero: propietario?.whatsapp ?? "sin teléfono",
-              //   nombrePropietario: propietario?.nombreDueno
-              //     ? propietario.nombreDueno.split(" ")[0]
-              //     : "Estimado(a)",
-              //   nombreGlamping: glamping.nombreGlamping ?? "Glamping sin nombre",
-              //   fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`).toLocaleDateString(
-              //     "es-ES",
-              //     {
-              //       day: "2-digit",
-              //       month: "short",
-              //       year: "numeric",
-              //     }
-              //   ),
-              //   fechaFin: `${new Date(`${fechaFinDesencriptada}T12:00:00`).toLocaleDateString(
-              //     "es-ES",
-              //     {
-              //       day: "2-digit",
-              //       month: "short",
-              //       year: "numeric",
-              //     }
-              //   )} - puedes contactar a tu huésped al WhatsApp ${telefonoUsuarioFormateado}`,
-              // });
-
-              // 11) Mostrar confetti y redirigir a la página de gracias
+              
               setShowConfetti(true);
               setTimeout(() => {
                 router.push("/gracias");
@@ -502,8 +403,11 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                 })}
               </p>
               <p>
-                Tarifa de Glamperos:{" "}
-                <strong>{formatoPesos(Math.round(Number(tarifaDesencriptada)))}</strong>
+                Tarifa de Glamperos:{" "}{formatoPesos(Math.round(Number(tarifaDesencriptada)))}
+              </p>
+              {/* Aquí mostramos la cantidad de huéspedes formateada */}
+              <p>
+                <strong>Huéspedes:</strong> {formatHuespedes()}
               </p>
               <p className="Reservacion-total">
                 Total:{" "}

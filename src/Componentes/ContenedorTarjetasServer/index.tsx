@@ -93,7 +93,7 @@ export default async function ContenedorTarjetasServer() {
           ciudad={glamping.ciudad_departamento}
           precio={glamping.precioEstandar}
           descuento={glamping.descuento}
-          calificacion={glamping.calificacion || 4.5}
+          calificacion={glamping.calificacion || 5}
           favorito={false} // Aquí no se maneja la lógica de favoritos en SSR
           nombreGlamping={glamping.nombreGlamping}
           tipoGlamping={glamping.tipoGlamping}

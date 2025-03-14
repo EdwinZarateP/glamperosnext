@@ -1,12 +1,15 @@
-// SolicitarPago.tsx
+"use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router"; // Importa el hook para la navegación
+import { useRouter } from "next/navigation"; // Recomendado en Next.js 13 (app directory)
 import Swal from "sweetalert2";
 import "./estilos.css";
 import { enviarCorreoContabilidad } from "@/Funciones/enviarCorreoContabilidad";
 
 const API_URL = "https://glamperosapi.onrender.com";
 
+// -------------------------
+//   Tipos de datos
+// -------------------------
 interface SolicitudPago {
   _id?: string;
   idPropietario: string;
@@ -14,7 +17,7 @@ interface SolicitudPago {
   Estado: string;
   MetodoPago: string;
   FechaSolicitud: string;
-  FechaPago: string | null;
+  FechaPagoPropietario: string | null;
   ReferenciaPago: string | null;
   codigosReserva?: string[];
 }
@@ -26,18 +29,25 @@ interface Banco {
   tipoDocumento: string;
 }
 
+// -------------------------
+//   Componente Principal
+// -------------------------
 const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
-  const router = useRouter(); // Hook para navegación
+  const router = useRouter();  // Hook de navegación
   const [saldo, setSaldo] = useState<number>(0);
   const [metodoPago, setMetodoPago] = useState<string>("Cargando...");
   const [solicitudes, setSolicitudes] = useState<SolicitudPago[]>([]);
-  const [numeroCuenta, setNumeroCuenta] = useState<string>("No disponible"); // Nueva línea para guardar el número de cuenta
+  const [numeroCuenta, setNumeroCuenta] = useState<string>("No disponible"); // Guarda el número de cuenta
 
+  // -------------------------
+  //   Efectos de carga
+  // -------------------------
   useEffect(() => {
     const fetchSaldo = async () => {
       try {
         const response = await fetch(`${API_URL}/reservas/pendientes_pago/${idPropietario}`);
         if (!response.ok) {
+          // Si el status es 404, no hay reservas pendientes, saldo=0
           if (response.status === 404) {
             setSaldo(0);
             return;
@@ -59,12 +69,13 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       try {
         const response = await fetch(`${API_URL}/usuarios/${idPropietario}/banco`);
         if (!response.ok) {
+          // Si no existe info bancaria, se muestra "No registrado"
           setMetodoPago("No registrado");
           return;
         }
         const data: Banco = await response.json();
         setMetodoPago(`${data.banco} - ${data.tipoCuenta}`);
-        setNumeroCuenta(data.numeroCuenta || "No disponible"); // Guardar número de cuenta
+        setNumeroCuenta(data.numeroCuenta || "No disponible");
       } catch (error) {
         console.error("Error al obtener datos bancarios:", error);
         setMetodoPago("No registrado");
@@ -88,13 +99,18 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       }
     };
 
+    // Llamar a las funciones de carga inicial
     fetchSaldo();
     fetchMetodoPago();
     fetchSolicitudes();
   }, [idPropietario]);
 
+  // -------------------------
+  //   Recargar datos
+  // -------------------------
   const recargarDatos = async () => {
     try {
+      // Recarga de solicitudes
       const responseSolicitudes = await fetch(`${API_URL}/reservas/solicitudes_pago/${idPropietario}`);
       if (responseSolicitudes.ok) {
         const dataSolicitudes = await responseSolicitudes.json();
@@ -103,6 +119,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
         setSolicitudes([]);
       }
 
+      // Recarga de saldo
       const responseSaldo = await fetch(`${API_URL}/reservas/pendientes_pago/${idPropietario}`);
       if (responseSaldo.ok) {
         const dataSaldo = await responseSaldo.json();
@@ -119,8 +136,11 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
     }
   };
 
+  // -------------------------
+  //   Solicitar Pago
+  // -------------------------
   const solicitarPago = async () => {
-    // Verifica si el número de cuenta está disponible
+    // Verificar cuenta bancaria
     if (numeroCuenta === "No disponible") {
       Swal.fire({
         icon: "warning",
@@ -134,9 +154,10 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
           router.push("/GestionBancos");
         }
       });
-      return; // Sale de la función sin continuar
+      return;
     }
 
+    // Verificar saldo
     if (saldo <= 0) {
       Swal.fire({
         icon: "warning",
@@ -145,6 +166,18 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       });
       return;
     }
+
+    // Verificar que el método de pago no sea "Cargando..." o "No registrado"
+    if (metodoPago === "Cargando..." || metodoPago === "No registrado") {
+      Swal.fire({
+        icon: "error",
+        title: "Método de pago inválido",
+        text: "No se ha registrado un método de pago válido.",
+      });
+      return;
+    }
+
+    // Llamar a la API para solicitar el pago
     try {
       const response = await fetch(`${API_URL}/reservas/solicitar_pago`, {
         method: "POST",
@@ -160,7 +193,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
           text: data.detail || "Error al solicitar el pago",
         });
       } else {
-        // 'data.solicitud' es donde viene el objeto con toda la información
+        // data.solicitud contiene el objeto con toda la información
         const solicitud = data.solicitud;
 
         Swal.fire({
@@ -176,7 +209,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
           confirmButtonText: "Aceptar",
         });
 
-        // Enviar correo con toda la información de la solicitud, incluyendo número de cuenta
+        // Enviar correo a contabilidad con la información de la solicitud
         await enviarCorreoContabilidad({
           idSolicitud: solicitud._id,
           idPropietario,
@@ -184,13 +217,14 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
           metodoPago,
           estado: solicitud.Estado,
           fechaSolicitud: solicitud.FechaSolicitud,
-          fechaPago: solicitud.FechaPago,
+          fechaPago: solicitud.FechaPagoPropietario,
           referenciaPago: solicitud.ReferenciaPago,
           codigosReserva: solicitud.codigosReserva || [],
-          numeroCuenta, // Se envía el número de cuenta obtenido
+          numeroCuenta, // Enviar también el número de cuenta
         });
       }
 
+      // Finalmente, recargar datos
       await recargarDatos();
     } catch (error) {
       console.error("Error al solicitar pago:", error);
@@ -202,25 +236,37 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
     }
   };
 
-  // Para mostrar solicitudes
+  // -------------------------
+  //   Ver detalles de solicitud
+  // -------------------------
   const verDetalles = (solicitud: SolicitudPago) => {
     Swal.fire({
       title: "Detalles de la Solicitud",
       html: `<p><strong>ID de Solicitud:</strong> ${solicitud._id}</p>
              <p><strong>Monto Solicitado:</strong> $${solicitud.MontoSolicitado.toLocaleString()}</p>
              <p><strong>Códigos de Reservas:</strong><br/>${
-               solicitud.codigosReserva ? solicitud.codigosReserva.join("<br/>") : "No disponible"
+               solicitud.codigosReserva
+                 ? solicitud.codigosReserva.join("<br/>")
+                 : "No disponible"
              }</p>
-             <p><strong>Fecha de Solicitud:</strong> ${new Date(solicitud.FechaSolicitud).toLocaleDateString()}</p>
+             <p><strong>Fecha de Solicitud:</strong> ${new Date(
+               solicitud.FechaSolicitud
+             ).toLocaleDateString()}</p>
              <p><strong>Estado:</strong> ${solicitud.Estado}</p>`,
       icon: "info",
       confirmButtonText: "Cerrar",
     });
   };
 
+  // -------------------------
+  //   Filtrar listas
+  // -------------------------
   const solicitudesPendientes = solicitudes.filter((s) => s.Estado !== "Pagado");
   const solicitudesPagadas = solicitudes.filter((s) => s.Estado === "Pagado");
 
+  // -------------------------
+  //   Render del componente
+  // -------------------------
   return (
     <div className="solicitar-pago-container">
       <h2 className="titulo">Solicitar Pago</h2>
@@ -230,10 +276,12 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       <p className="metodo-pago">
         Método de Pago: <strong>{metodoPago}</strong>
       </p>
+
       <button onClick={solicitarPago} className="btn-solicitar">
         Solicitar Retiro
       </button>
 
+      {/* Solicitudes Pendientes */}
       {solicitudesPendientes.length > 0 && (
         <>
           <h3 className="titulo">Historial de Solicitudes Pendientes</h3>
@@ -245,7 +293,8 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
                 onClick={() => verDetalles(solicitud)}
               >
                 <strong>ID:</strong> {solicitud._id} <br />
-                <strong>Monto:</strong> ${solicitud.MontoSolicitado.toLocaleString()} <br />
+                <strong>Monto:</strong> $
+                {solicitud.MontoSolicitado.toLocaleString()} <br />
                 <strong>Fecha Solicitud:</strong>{" "}
                 {new Date(solicitud.FechaSolicitud).toLocaleDateString()} <br />
                 <strong>Estado:</strong> {solicitud.Estado} <br />
@@ -256,6 +305,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
         </>
       )}
 
+      {/* Solicitudes Pagadas */}
       {solicitudesPagadas.length > 0 && (
         <>
           <h3 className="titulo">Historial de Pagos Realizados</h3>
@@ -267,12 +317,15 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
                 onClick={() => verDetalles(solicitud)}
               >
                 <strong>ID:</strong> {solicitud._id} <br />
-                <strong>Monto:</strong> ${solicitud.MontoSolicitado.toLocaleString()} <br />
+                <strong>Monto:</strong> $
+                {solicitud.MontoSolicitado.toLocaleString()} <br />
                 <strong>Fecha de Pago:</strong>{" "}
-                {solicitud.FechaPago
-                  ? new Date(solicitud.FechaPago).toLocaleDateString()
-                  : "Sin Fecha"} <br />
-                <strong>Referencia:</strong> {solicitud.ReferenciaPago || "Sin Referencia"} <br />
+                {solicitud.FechaPagoPropietario
+                  ? new Date(solicitud.FechaPagoPropietario).toLocaleDateString()
+                  : "Sin Fecha"}{" "}
+                <br />
+                <strong>Referencia:</strong>{" "}
+                {solicitud.ReferenciaPago || "Sin Referencia"} <br />
                 <em>(Clic para ver detalles)</em>
               </li>
             ))}

@@ -121,7 +121,7 @@ const Favoritos: React.FC = () => {
             ciudad={glamping.ciudad_departamento}
             precio={glamping.precioEstandar}
             descuento={glamping.descuento}
-            calificacion={glamping.calificacion || 4.5}
+            calificacion={glamping.calificacion || 5}
             favorito={esFavorito(glamping._id, glampings.map((g) => g._id))}
             nombreGlamping={glamping.nombreGlamping}
             tipoGlamping={glamping.tipoGlamping}

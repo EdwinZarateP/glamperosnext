@@ -146,7 +146,7 @@ export default function ExplorarGlamping() {
 
   // Estados para calificaciones
   const [calificacionEvaluaciones, setCalificacionEvaluaciones] = useState<number | null>(null);
-  const [calificacionPromedio, setCalificacionPromedio] = useState<number>(4.5);
+  const [calificacionPromedio, setCalificacionPromedio] = useState<number>(5);
 
   useEffect(() => {
     if (glampingId) {
@@ -155,7 +155,7 @@ export default function ExplorarGlamping() {
           const response = await fetch(`https://glamperosapi.onrender.com/evaluaciones/glamping/${glampingId}/promedio`);
           const data = await response.json();
           if (data) {
-            setCalificacionPromedio(data.calificacion_promedio || 4.5);
+            setCalificacionPromedio(data.calificacion_promedio || 5);
             setCalificacionEvaluaciones(data.calificacionEvaluaciones || 1);
           }
         } catch (error) {
@@ -237,7 +237,7 @@ export default function ExplorarGlamping() {
             <div className="contenedor-descripcion-glamping">
               <div className="contenedor-descripcion-glamping-izq">
                 <DescripcionGlamping
-                  calificacionNumero={calificacionPromedio || 4.5}
+                  calificacionNumero={calificacionPromedio || 5}
                   calificacionEvaluaciones={calificacionEvaluaciones || 1}
                   calificacionMasAlta="Su piscina fue lo mejor calificado"
                   descripcion_glamping={informacionGlamping.descripcionGlamping}  

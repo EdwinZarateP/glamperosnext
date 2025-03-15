@@ -177,7 +177,7 @@ const ContenedorTarjetas: React.FC = () => {
 
       const parsedData = data.map((glamping) => ({
         _id: glamping._id,
-        habilitado: glamping.habilitado || true,
+        habilitado: glamping.habilitado || false,//Esto es lo que hace que se vean solo los true
         nombreGlamping: glamping.nombreGlamping || "Nombre no disponible",
         tipoGlamping: glamping.tipoGlamping || "Choza",
         ciudad_departamento:

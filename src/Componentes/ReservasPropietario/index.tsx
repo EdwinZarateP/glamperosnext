@@ -301,9 +301,9 @@ const ReservasPropietario: React.FC = () => {
                   className="ReservasPropietario-tarjeta"
                   style={{ backgroundColor: colorEstado }}
                 >
-                  <h3 className="ReservasPropietario-titulo">{glamping.nombreGlamping}</h3>
-                  <p className="ReservasPropietario-detalle"><strong>Código:</strong> {reserva.codigoReserva}</p>
-                  <p className="ReservasPropietario-detalle"><strong>WhatsApp:</strong> {telefonosClientes[reserva.idCliente] || '...'}</p>
+                  <h3 className="ReservasPropietario-titulo ">{glamping.nombreGlamping}</h3>
+                  <p className="ReservasPropietario-detalle permitir-seleccion"><strong>Código:</strong> {reserva.codigoReserva}</p>
+                  <p className="ReservasPropietario-detalle permitir-seleccion"><strong>WhatsApp huésped:</strong> {telefonosClientes[reserva.idCliente] || '...'}</p>
                   <p className="ReservasPropietario-detalle"><strong>Fecha Creación:</strong> {formatearFechaColombia(reserva.fechaCreacion)}</p>
                   <p className="ReservasPropietario-detalle"><strong>Estado Reserva:</strong> {reserva.EstadoReserva}</p>
                   <p className="ReservasPropietario-detalle"><strong>Ciudad:</strong> {reserva.ciudad_departamento}</p>

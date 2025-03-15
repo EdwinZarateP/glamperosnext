@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Recomendado en Next.js 13 (app directory)
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import * as XLSX from "xlsx"; // Asegúrate de instalar la librería: npm install xlsx
 import "./estilos.css";
 import { enviarCorreoContabilidad } from "@/Funciones/enviarCorreoContabilidad";
 
@@ -33,11 +34,12 @@ interface Banco {
 //   Componente Principal
 // -------------------------
 const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
-  const router = useRouter();  // Hook de navegación
+  const router = useRouter();
   const [saldo, setSaldo] = useState<number>(0);
   const [metodoPago, setMetodoPago] = useState<string>("Cargando...");
   const [solicitudes, setSolicitudes] = useState<SolicitudPago[]>([]);
-  const [numeroCuenta, setNumeroCuenta] = useState<string>("No disponible"); // Guarda el número de cuenta
+  const [numeroCuenta, setNumeroCuenta] = useState<string>("No disponible");
+  const [banco, setBanco] = useState<string>(""); // Para mostrar el banco en la tabla
 
   // -------------------------
   //   Efectos de carga
@@ -45,9 +47,10 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   useEffect(() => {
     const fetchSaldo = async () => {
       try {
-        const response = await fetch(`${API_URL}/reservas/pendientes_pago/${idPropietario}`);
+        const response = await fetch(
+          `${API_URL}/reservas/pendientes_pago/${idPropietario}`
+        );
         if (!response.ok) {
-          // Si el status es 404, no hay reservas pendientes, saldo=0
           if (response.status === 404) {
             setSaldo(0);
             return;
@@ -67,15 +70,17 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
 
     const fetchMetodoPago = async () => {
       try {
-        const response = await fetch(`${API_URL}/usuarios/${idPropietario}/banco`);
+        const response = await fetch(
+          `${API_URL}/usuarios/${idPropietario}/banco`
+        );
         if (!response.ok) {
-          // Si no existe info bancaria, se muestra "No registrado"
           setMetodoPago("No registrado");
           return;
         }
         const data: Banco = await response.json();
         setMetodoPago(`${data.banco} - ${data.tipoCuenta}`);
         setNumeroCuenta(data.numeroCuenta || "No disponible");
+        setBanco(data.banco || "");
       } catch (error) {
         console.error("Error al obtener datos bancarios:", error);
         setMetodoPago("No registrado");
@@ -84,7 +89,9 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
 
     const fetchSolicitudes = async () => {
       try {
-        const response = await fetch(`${API_URL}/reservas/solicitudes_pago/${idPropietario}`);
+        const response = await fetch(
+          `${API_URL}/reservas/solicitudes_pago/${idPropietario}`
+        );
         if (!response.ok) {
           if (response.status === 404) {
             setSolicitudes([]);
@@ -99,7 +106,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       }
     };
 
-    // Llamar a las funciones de carga inicial
+    // Llamadas iniciales
     fetchSaldo();
     fetchMetodoPago();
     fetchSolicitudes();
@@ -110,8 +117,9 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   // -------------------------
   const recargarDatos = async () => {
     try {
-      // Recarga de solicitudes
-      const responseSolicitudes = await fetch(`${API_URL}/reservas/solicitudes_pago/${idPropietario}`);
+      const responseSolicitudes = await fetch(
+        `${API_URL}/reservas/solicitudes_pago/${idPropietario}`
+      );
       if (responseSolicitudes.ok) {
         const dataSolicitudes = await responseSolicitudes.json();
         setSolicitudes(dataSolicitudes);
@@ -119,8 +127,9 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
         setSolicitudes([]);
       }
 
-      // Recarga de saldo
-      const responseSaldo = await fetch(`${API_URL}/reservas/pendientes_pago/${idPropietario}`);
+      const responseSaldo = await fetch(
+        `${API_URL}/reservas/pendientes_pago/${idPropietario}`
+      );
       if (responseSaldo.ok) {
         const dataSaldo = await responseSaldo.json();
         const saldoPropietario = dataSaldo.reduce(
@@ -140,7 +149,6 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   //   Solicitar Pago
   // -------------------------
   const solicitarPago = async () => {
-    // Verificar cuenta bancaria
     if (numeroCuenta === "No disponible") {
       Swal.fire({
         icon: "warning",
@@ -157,7 +165,6 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       return;
     }
 
-    // Verificar saldo
     if (saldo <= 0) {
       Swal.fire({
         icon: "warning",
@@ -167,7 +174,6 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       return;
     }
 
-    // Verificar que el método de pago no sea "Cargando..." o "No registrado"
     if (metodoPago === "Cargando..." || metodoPago === "No registrado") {
       Swal.fire({
         icon: "error",
@@ -177,7 +183,6 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       return;
     }
 
-    // Llamar a la API para solicitar el pago
     try {
       const response = await fetch(`${API_URL}/reservas/solicitar_pago`, {
         method: "POST",
@@ -193,9 +198,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
           text: data.detail || "Error al solicitar el pago",
         });
       } else {
-        // data.solicitud contiene el objeto con toda la información
         const solicitud = data.solicitud;
-
         Swal.fire({
           icon: "success",
           title: "Solicitud Enviada",
@@ -208,8 +211,6 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
                  }</p>`,
           confirmButtonText: "Aceptar",
         });
-
-        // Enviar correo a contabilidad con la información de la solicitud
         await enviarCorreoContabilidad({
           idSolicitud: solicitud._id,
           idPropietario,
@@ -220,11 +221,10 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
           fechaPago: solicitud.FechaPagoPropietario,
           referenciaPago: solicitud.ReferenciaPago,
           codigosReserva: solicitud.codigosReserva || [],
-          numeroCuenta, // Enviar también el número de cuenta
+          numeroCuenta,
         });
       }
 
-      // Finalmente, recargar datos
       await recargarDatos();
     } catch (error) {
       console.error("Error al solicitar pago:", error);
@@ -259,79 +259,121 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   };
 
   // -------------------------
-  //   Filtrar listas
+  //   Exportar a Excel
   // -------------------------
-  const solicitudesPendientes = solicitudes.filter((s) => s.Estado !== "Pagado");
-  const solicitudesPagadas = solicitudes.filter((s) => s.Estado === "Pagado");
+  const exportarExcel = () => {
+    // Transformar cada solicitud en un objeto con columnas deseadas
+    const dataExport = solicitudes.map((solicitud) => ({
+      "ID Solicitud": solicitud._id,
+      "Monto Solicitado": solicitud.MontoSolicitado,
+      "Estado": solicitud.Estado,
+      "Método de Pago": solicitud.MetodoPago,
+      "Fecha Solicitud": new Date(solicitud.FechaSolicitud).toLocaleDateString(),
+      "Fecha Pago Propietario": solicitud.FechaPagoPropietario
+        ? new Date(solicitud.FechaPagoPropietario).toLocaleDateString()
+        : "",
+      "Referencia Pago": solicitud.ReferenciaPago,
+      "Códigos Reserva": solicitud.codigosReserva
+        ? solicitud.codigosReserva.join(", ")
+        : "",
+      "Banco": banco,
+      "Número de Cuenta": numeroCuenta,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Historial Solicitudes");
+    XLSX.writeFile(workbook, "HistorialSolicitudes.xlsx");
+  };
+
+  // -------------------------
+  //   Preparar solicitudes para mostrar (solo 15 más recientes)
+  // -------------------------
+  const sortedSolicitudes = [...solicitudes].sort(
+    (a, b) =>
+      new Date(b.FechaSolicitud).getTime() - new Date(a.FechaSolicitud).getTime()
+  );
+  const solicitudesMostRecent = sortedSolicitudes.slice(0, 15);
 
   // -------------------------
   //   Render del componente
   // -------------------------
   return (
-    <div className="solicitar-pago-container">
-      <h2 className="titulo">Solicitar Pago</h2>
-      <p className="saldo-disponible">
+    <div className="SolicitarPago-container">
+      <h2 className="SolicitarPago-titulo">Solicitar Pago</h2>
+      <p className="SolicitarPago-saldo-disponible">
         Saldo disponible: <strong>${saldo.toLocaleString()}</strong>
       </p>
-      <p className="metodo-pago">
+      <p className="SolicitarPago-metodo-pago">
         Método de Pago: <strong>{metodoPago}</strong>
       </p>
 
-      <button onClick={solicitarPago} className="btn-solicitar">
+      <button onClick={solicitarPago} className="SolicitarPago-btn-solicitar">
         Solicitar Retiro
       </button>
 
-      {/* Solicitudes Pendientes */}
-      {solicitudesPendientes.length > 0 && (
-        <>
-          <h3 className="titulo">Historial de Solicitudes Pendientes</h3>
-          <ul className="lista-solicitudes">
-            {solicitudesPendientes.map((solicitud, index) => (
-              <li
-                key={index}
-                className="solicitud-item"
-                onClick={() => verDetalles(solicitud)}
-              >
-                <strong>ID:</strong> {solicitud._id} <br />
-                <strong>Monto:</strong> $
-                {solicitud.MontoSolicitado.toLocaleString()} <br />
-                <strong>Fecha Solicitud:</strong>{" "}
-                {new Date(solicitud.FechaSolicitud).toLocaleDateString()} <br />
-                <strong>Estado:</strong> {solicitud.Estado} <br />
-                <em>(Clic para ver detalles)</em>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      {/* Botón con texto ajustado */}
+      <button onClick={exportarExcel} className="SolicitarPago-btn-exportar">
+        Exportar Historial Excel
+      </button>
 
-      {/* Solicitudes Pagadas */}
-      {solicitudesPagadas.length > 0 && (
-        <>
-          <h3 className="titulo">Historial de Pagos Realizados</h3>
-          <ul className="lista-solicitudes">
-            {solicitudesPagadas.map((solicitud, index) => (
-              <li
-                key={index}
-                className="solicitud-item"
-                onClick={() => verDetalles(solicitud)}
-              >
-                <strong>ID:</strong> {solicitud._id} <br />
-                <strong>Monto:</strong> $
-                {solicitud.MontoSolicitado.toLocaleString()} <br />
-                <strong>Fecha de Pago:</strong>{" "}
-                {solicitud.FechaPagoPropietario
-                  ? new Date(solicitud.FechaPagoPropietario).toLocaleDateString()
-                  : "Sin Fecha"}{" "}
-                <br />
-                <strong>Referencia:</strong>{" "}
-                {solicitud.ReferenciaPago || "Sin Referencia"} <br />
-                <em>(Clic para ver detalles)</em>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      <h3 className="SolicitarPago-titulo">
+        Historial de Solicitudes (Últimas 15)
+      </h3>
+
+      {/* Contenedor para scroll horizontal */}
+      <div className="SolicitarPago-tabla-container">
+        {solicitudesMostRecent.length > 0 ? (
+          <table className="SolicitarPago-tabla-historial">
+            <thead>
+              <tr>
+                <th>ID Solicitud</th>
+                <th>Monto Solicitado</th>
+                <th>Estado</th>
+                <th>Fecha Solicitud</th>
+                <th>Fecha Pago</th>
+                <th>Referencia</th>
+                <th>Códigos Reserva</th>
+                <th>Banco</th>
+                <th>Número de Cuenta</th>
+              </tr>
+            </thead>
+            <tbody>
+              {solicitudesMostRecent.map((solicitud, index) => (
+                <tr
+                  key={index}
+                  onClick={() => verDetalles(solicitud)}
+                  className="SolicitarPago-fila-solicitud"
+                >
+                  <td>{solicitud._id}</td>
+                  <td>${solicitud.MontoSolicitado.toLocaleString()}</td>
+                  <td>{solicitud.Estado}</td>
+                  <td>
+                    {new Date(solicitud.FechaSolicitud).toLocaleDateString()}
+                  </td>
+                  <td>
+                    {solicitud.FechaPagoPropietario
+                      ? new Date(
+                          solicitud.FechaPagoPropietario
+                        ).toLocaleDateString()
+                      : "-"}
+                  </td>
+                  <td>{solicitud.ReferenciaPago || "-"}</td>
+                  <td>
+                    {solicitud.codigosReserva
+                      ? solicitud.codigosReserva.join(", ")
+                      : "-"}
+                  </td>
+                  <td>{banco || "-"}</td>
+                  <td>{numeroCuenta}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="SolicitarPago-mensaje">No hay solicitudes registradas.</p>
+        )}
+      </div>
     </div>
   );
 };

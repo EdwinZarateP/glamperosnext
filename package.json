@@ -49,6 +49,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@types/uuid": "^10.0.0",
+    "@types/xlsx": "^0.0.36",
     "typescript": "^5.2.2"
   }
 }

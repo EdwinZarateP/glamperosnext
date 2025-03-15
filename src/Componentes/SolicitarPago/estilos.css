@@ -1,5 +1,5 @@
 /* Contenedor principal */
-.solicitar-pago-container {
+.SolicitarPago-container {
   max-width: 400px;
   margin: 20px auto;
   padding: 20px;
@@ -11,7 +11,7 @@
 }
 
 /* Títulos y secciones */
-.titulo {
+.SolicitarPago-titulo {
   font-size: 20px;
   font-weight: bold;
   text-align: center;
@@ -20,8 +20,8 @@
 }
 
 /* Información de saldo y método */
-.saldo-disponible,
-.metodo-pago {
+.SolicitarPago-saldo-disponible,
+.SolicitarPago-metodo-pago {
   font-size: 16px;
   text-align: center;
   margin-bottom: 15px;
@@ -29,10 +29,10 @@
 }
 
 /* Botón para solicitar el retiro */
-.btn-solicitar {
+.SolicitarPago-btn-solicitar {
   display: block;
   width: 100%;
-  background-color: #28a745; /* Cambio a verde para indicar acción positiva */
+  background-color: #28a745;
   color: #fff;
   padding: 12px 0;
   border: none;
@@ -44,56 +44,96 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.btn-solicitar:hover {
+.SolicitarPago-btn-solicitar:hover {
   background-color: #218838;
   transform: scale(1.03);
 }
 
-.btn-solicitar:disabled {
+.SolicitarPago-btn-solicitar:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-/* Mensajes generales (no se usa para alertas de SweetAlert2) */
-.mensaje {
+/* Botón para exportar a Excel */
+.SolicitarPago-btn-exportar {
+  display: block;
+  width: 100%;
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.SolicitarPago-btn-exportar:hover {
+  background-color: #0069d9;
+  transform: scale(1.03);
+}
+
+/* Contenedor para scroll horizontal de la tabla */
+.SolicitarPago-tabla-container {
+  width: 100%;
+  overflow-x: auto; /* Habilita scroll horizontal */
+  margin-bottom: 10px;
+}
+
+/* Estilos para la tabla de historial */
+.SolicitarPago-tabla-historial {
+  min-width: 800px; /* Para forzar scroll horizontal si se excede el contenedor */
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.SolicitarPago-tabla-historial th,
+.SolicitarPago-tabla-historial td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+
+  /* Para forzar una sola línea */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px; /* Ajusta según necesites */
+}
+
+.SolicitarPago-tabla-historial th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Hover en filas */
+.SolicitarPago-fila-solicitud:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+
+/* Mensajes generales */
+.SolicitarPago-mensaje {
   margin-top: 10px;
   text-align: center;
   font-size: 14px;
   color: #333;
 }
 
-/* Estilos para la lista de solicitudes */
-.lista-solicitudes {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .SolicitarPago-container {
+    max-width: 90%;
+    padding: 10px;
+  }
 
-/* Solicitudes pendientes */
-.solicitud-item.pendiente {
-  border: 1px solid #ffcc00;
-  background-color: #fff8e1; /* Amarillo claro */
-  font-weight: bold;
-  color: #856404;
-}
-
-/* Solicitudes pagadas */
-.solicitud-item.pagada {
-  border: 1px solid #28a745;
-  background-color: #e9f7ef; /* Verde claro */
-  color: #155724;
-}
-
-/* Estilo base de las solicitudes */
-.solicitud-item {
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.solicitud-item:hover {
-  background-color: #eee;
+  .SolicitarPago-tabla-historial th,
+  .SolicitarPago-tabla-historial td {
+    padding: 6px;
+    font-size: 12px;
+    max-width: 80px; /* Aún más pequeño en móviles */
+  }
 }

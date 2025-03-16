@@ -187,7 +187,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       const response = await fetch(`${API_URL}/reservas/solicitar_pago`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ idPropietario, metodoPago }),
+        body: JSON.stringify({ idPropietario, metodoPago, numeroCuenta  }),
       });
       const data = await response.json();
 

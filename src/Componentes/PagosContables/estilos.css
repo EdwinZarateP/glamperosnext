@@ -1,0 +1,124 @@
+.PagosContables-contenedor {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: sans-serif;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.PagosContables-titulo {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.PagosContables-boton-exportar {
+  display: block;
+  margin: 0 auto 20px auto;
+  padding: 10px 15px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.PagosContables-boton-exportar:hover {
+  background-color: #0069d9;
+}
+
+.PagosContables-mensaje {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.PagosContables-tabla-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.PagosContables-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.PagosContables-tabla th,
+.PagosContables-tabla td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.PagosContables-tabla th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.PagosContables-fila:hover {
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.PagosContables-input-referencia {
+  width: 140px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.PagosContables-input-clave {
+  width: 80%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.PagosContables-boton-validar {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.PagosContables-boton-validar:hover {
+  background-color: #0069d9;
+}
+
+.PagosContables-boton-confirmar {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.PagosContables-boton-confirmar:hover {
+  background-color: #218838;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .PagosContables-contenedor {
+    max-width: 90%;
+    padding: 10px;
+  }
+
+  .PagosContables-tabla th,
+  .PagosContables-tabla td {
+    padding: 6px;
+    font-size: 12px;
+  }
+}

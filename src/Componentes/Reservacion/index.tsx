@@ -240,8 +240,8 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         idPropietario: glamping.propietario_id ?? "Propietario no registrado",
         idGlamping: glampingId,
         ciudad_departamento: glamping.ciudad_departamento ?? "No tiene ciudad_departamento",
-        fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00`),
-        fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00`),
+        fechaInicio: new Date(`${fechaInicioDesencriptada}T12:00:00Z`), // 🔥 Añadimos 'Z' para indicar UTC
+        fechaFin: new Date(`${fechaFinDesencriptada}T12:00:00Z`),
         totalDiasNum: Number(totalDiasDesencriptados),
         precioConTarifaNum: Number(totalFinalDesencriptado),
         TarifaGlamperosNum: Number(tarifaDesencriptada),

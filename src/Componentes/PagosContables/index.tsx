@@ -75,6 +75,7 @@ export default function PagosContables() {
   // ----------------------------------------------------------------------------
   const confirmarPago = async (sol: SolicitudPago) => {
     const metodoBanco = sol.MetodoPago || sol.Banco || "";
+    const numeroCuenta = sol.numeroCuenta || "";
     const referencia = referenciasPago[sol._id] || "";
 
     if (!metodoBanco || !referencia) {
@@ -149,6 +150,7 @@ export default function PagosContables() {
         emailCliente,
         montoPagado: sol.MontoSolicitado,
         metodoPago: metodoBanco,
+        numeroCuenta: numeroCuenta,
         fechaPago,
         referenciaPago: referencia,
         codigosReserva: sol.codigosReserva || [],

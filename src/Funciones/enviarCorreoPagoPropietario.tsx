@@ -3,6 +3,7 @@ interface enviarCorreoPagoPropietarioProps {
     emailCliente: string;
     montoPagado: number;
     metodoPago: string;
+    numeroCuenta: string;
     fechaPago: string; // Fecha y hora en formato ISO (por ejemplo, new Date().toISOString())
     referenciaPago?: string | null;
     codigosReserva?: string[];
@@ -13,6 +14,7 @@ interface enviarCorreoPagoPropietarioProps {
     emailCliente,
     montoPagado,
     metodoPago,
+    numeroCuenta,
     fechaPago,
     referenciaPago = null,
     codigosReserva = [],
@@ -26,6 +28,7 @@ interface enviarCorreoPagoPropietarioProps {
           <p><strong>ID de Reserva:</strong> ${idReserva}</p>
           <p><strong>Monto Pagado:</strong> $${montoPagado.toLocaleString()}</p>
           <p><strong>Método de Pago:</strong> ${metodoPago}</p>
+          <p><strong>Numero de cuenta:</strong> ${numeroCuenta}</p>
           <p><strong>Estado:</strong> Pagado</p>
           <p><strong>Fecha de Pago:</strong> ${new Date(fechaPago).toLocaleDateString()}</p>
           <p><strong>Referencia de Pago:</strong> ${referenciaPago || "No disponible"}</p>

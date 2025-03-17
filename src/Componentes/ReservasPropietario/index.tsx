@@ -276,7 +276,9 @@ const ReservasPropietario: React.FC = () => {
         Comisión: `$${reserva.ComisionGlamperos.toLocaleString()}`,
         "Tu Ganancia": `$${reserva.CostoGlamping.toLocaleString()}`,
         "Estado Pago": reserva.EstadoPagoProp,
-        "Fecha de Pago": new Date(reserva.FechaPagoPropietario).toLocaleDateString()
+        "Fecha de Pago": reserva.FechaPagoPropietario 
+          ? new Date(reserva.FechaPagoPropietario).toLocaleDateString() 
+          : "Aún no",
       };
     });
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -308,7 +310,11 @@ const ReservasPropietario: React.FC = () => {
              <p><strong>Comisión:</strong> $${reserva.ComisionGlamperos.toLocaleString()}</p>
              <p><strong>Tu Ganancia:</strong> $${reserva.CostoGlamping.toLocaleString()}</p>
              <p><strong>Estado Pago:</strong> ${reserva.EstadoPagoProp}</p>
-             <p><strong>Fecha de Pago:</strong> ${new Date(reserva.FechaPagoPropietario).toLocaleDateString()}</p>`,
+             <p><strong>Fecha de Pago:</strong> ${
+               reserva.FechaPagoPropietario 
+                 ? new Date(reserva.FechaPagoPropietario).toLocaleDateString() 
+                 : "Aún no"
+             }</p>`,
       confirmButtonText: "Cerrar"
     });
   };
@@ -406,7 +412,10 @@ const ReservasPropietario: React.FC = () => {
                       <td>${reserva.CostoGlamping.toLocaleString()}</td>
                       <td>{reserva.EstadoPagoProp}</td>
                       <td>
-                        {reserva.FechaPagoPropietario ? new Date(reserva.FechaPagoPropietario).toLocaleDateString(): "N/A" }</td>
+                        {reserva.FechaPagoPropietario 
+                          ? new Date(reserva.FechaPagoPropietario).toLocaleDateString()
+                          : "Aún no"}
+                      </td>
                       <td>
                         {reagPendiente && reagPendiente.estado === "Pendiente Aprobacion" ? (
                           <div className="reagendamiento-container" onClick={(e) => e.stopPropagation()}>

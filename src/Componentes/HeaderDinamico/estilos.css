@@ -309,10 +309,9 @@
 
     .HeaderDinamico-titulo {  
       max-width: 90%;
-      font-size: 1.2rem;
+      font-size: 0.9rem;
       justify-content: left;
       align-items: left;
-      background-color: #2F6B3E;
     }
   }
   

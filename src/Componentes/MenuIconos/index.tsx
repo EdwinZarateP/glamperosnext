@@ -122,6 +122,32 @@ const MenuIconos: React.FC = () => {
   ];
 
   /**
+   * Función para resetear todos los filtros antes de redirigir
+   */
+  const resetearFiltros = () => {
+    [
+      setActivarFiltrosDomo,
+      setActivarFiltrosTienda,
+      setActivarFiltrosCabaña,
+      setActivarFiltrosCasaArbol,
+      setActivarFiltrosRemolques,
+      setActivarFiltrosChoza,
+      setActivarFiltrosMascotas,
+      setActivarFiltrosClimaCalido,
+      setActivarFiltrosClimaFrio,
+      setActivarFiltrosPlaya,
+      setActivarFiltrosNaturaleza,
+      setActivarFiltrosRio,
+      setActivarFiltrosCascada,
+      setActivarFiltrosMontana,
+      setActivarFiltrosDesierto,
+      setActivarFiltrosCaminata,
+      setActivarFiltrosJacuzzi,
+      setActivarFiltrosUbicacion,
+    ].forEach((fn) => fn(false));
+  };
+
+  /**
    * Función para manejar el clic en un elemento con link.
    * Si es escritorio, abre en una nueva pestaña; si es móvil, navega en la misma.
    */
@@ -130,10 +156,13 @@ const MenuIconos: React.FC = () => {
     link: string,
     indice: number
   ) => {
+    resetearFiltros(); // Limpia los filtros antes de redirigir
     setIconoSeleccionado(indice);
     if (window.innerWidth >= 900) {
       e.preventDefault();
       window.open(link, "_blank");
+    } else {
+      window.location.href = link; // Recarga la página limpiando filtros
     }
   };
 

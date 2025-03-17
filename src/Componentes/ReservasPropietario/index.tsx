@@ -341,6 +341,7 @@ const ReservasPropietario: React.FC = () => {
               <option value="">Todos</option>
               <option value="Reservada">Reservada</option>
               <option value="Completada">Completada</option>
+              <option value="Reagendado">Reagendado</option>
               <option value="Cancelada">Cancelada</option>
             </select>
           </div>
@@ -404,7 +405,8 @@ const ReservasPropietario: React.FC = () => {
                       <td>${reserva.ComisionGlamperos.toLocaleString()}</td>
                       <td>${reserva.CostoGlamping.toLocaleString()}</td>
                       <td>{reserva.EstadoPagoProp}</td>
-                      <td>{new Date(reserva.FechaPagoPropietario).toLocaleDateString()}</td>
+                      <td>
+                        {reserva.FechaPagoPropietario ? new Date(reserva.FechaPagoPropietario).toLocaleDateString(): "N/A" }</td>
                       <td>
                         {reagPendiente && reagPendiente.estado === "Pendiente Aprobacion" ? (
                           <div className="reagendamiento-container" onClick={(e) => e.stopPropagation()}>

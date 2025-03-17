@@ -69,7 +69,7 @@ const bogota: React.FC = () => {
       </Head>
 
       <div className="Bogota-principal">
-        <HeaderDinamico title="Mejores Glampings cerca a Bogota" />
+        <HeaderDinamico title="Reserva los mejores glamping cerca a Bogota" />
         <MenuIconos />
 
         {mostrarFiltros && <FiltrosContenedor />}

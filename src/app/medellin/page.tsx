@@ -69,7 +69,7 @@ const medellin: React.FC = () => {
       </Head>
 
       <div className="Medellin-principal">
-        <HeaderDinamico title="Mejores Glamping cerca a Medellin" />
+        <HeaderDinamico title="Reserva los mejores glamping cerca a Medellin" />
         <MenuIconos />
 
         {mostrarFiltros && <FiltrosContenedor />}

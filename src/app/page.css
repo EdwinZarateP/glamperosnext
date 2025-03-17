@@ -36,6 +36,11 @@
       width: 97%;
   }
   .Home-Titulo{
+    /* display: none; */
+    font-size: 0.5rem;
+  }
+
+  .Home-Titulo p{
     display: none;
   }
 }

@@ -69,7 +69,7 @@ const cali: React.FC = () => {
       </Head>
 
       <div className="Cali-principal">
-        <HeaderDinamico title="Mejores Glampings cerca a Cali" />
+        <HeaderDinamico title="Reserva los mejores glamping cerca a Cali" />
         <MenuIconos />
 
         {mostrarFiltros && <FiltrosContenedor />}

@@ -1,10 +1,13 @@
-/* ======= CONTENEDOR PRINCIPAL ======= */
+/* Contenedor principal */
 .ReservasPropietario-container {
   width: 100%;
   height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  margin-top: 70px;
 }
 
-/* ======= CARGANDO / SIN RESERVAS ======= */
+/* Cargando / Sin Reservas */
 .ReservasPropietario-cargando {
   display: flex;
   justify-content: center;
@@ -30,106 +33,7 @@
   margin-top: 10px;
 }
 
-/* ======= LISTA DE RESERVAS ======= */
-.ReservasPropietario-lista {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: center;
-  gap: 15px;
-  padding: 20px;
-}
-
-/* ======= TARJETAS DE RESERVAS ======= */
-.ReservasPropietario-tarjeta {
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #e0e0e0;
-  width: 100%;
-  max-width: 340px;
-}
-
-.ReservasPropietario-tarjeta:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* ======= TÍTULOS Y DETALLES ======= */
-.ReservasPropietario-titulo {
-  color: #2d3436;
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid #000000;
-  padding-bottom: 0.5rem;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.ReservasPropietario-detalle {
-  font-size: 0.95rem;
-  color: #555;
-  margin: 0.2rem 0;
-  line-height: 1.5;
-}
-
-.ReservasPropietario-detalle strong {
-  color: #2d3436;
-  font-weight: 600;
-}
-
-/* ======= SECCIÓN DE REAGENDAMIENTO ======= */
-.ReservasPropietario-reagendamiento {
-  background: #f8f9fa;
-  padding: 12px;
-  border-radius: 10px;
-  border-left: 5px solid #ffc107;
-  margin-top: 10px;
-  text-align: center;
-}
-
-.ReservasPropietario-reagendamiento p {
-  margin: 5px 0;
-  font-size: 0.9rem;
-  color: #333;
-}
-
-/* ======= BOTONES DE REAGENDAMIENTO ======= */
-.boton-aprobar,
-.boton-rechazar {
-  display: inline-block;
-  padding: 10px 15px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-  margin: 5px;
-}
-
-.boton-aprobar {
-  background: #28a745;
-  color: white;
-}
-
-.boton-aprobar:hover {
-  background: #218838;
-  transform: scale(1.05);
-}
-
-.boton-rechazar {
-  background: #dc3545;
-  color: white;
-}
-
-.boton-rechazar:hover {
-  background: #c82333;
-  transform: scale(1.05);
-}
-
-/* ======= FILTRO DE RESERVAS ======= */
+/* Filtro de Reservas */
 .ReservasPropietario-filtro {
   display: flex;
   align-items: center;
@@ -139,18 +43,13 @@
   padding: 10px 20px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.ReservasPropietario-filtro:hover {
-  background-color: #e0e0e0;
+  margin-bottom: 20px;
 }
 
 .ReservasPropietario-filtro label {
   font-size: 1.1rem;
   color: #333;
   font-weight: bold;
-  font-family: 'Segoe UI', sans-serif;
 }
 
 .ReservasPropietario-filtro select {
@@ -160,60 +59,95 @@
   background: #ffffff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  box-sizing: border-box;
 }
 
 .ReservasPropietario-filtro select:focus {
   border-color: #2d3436;
-  box-shadow: 0 0 5px rgba(45, 52, 54, 0.6);
   outline: none;
 }
 
-.ReservasPropietario-filtro select option {
-  padding: 10px;
-  background-color: #ffffff;
-  color: #333;
+/* Tabla de Reservas */
+.ReservasPropietario-tabla-container {
+  overflow-x: auto;
 }
 
-.ReservasPropietario-filtro select option:hover {
-  background-color: #f0f0f0;
+.ReservasPropietario-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
-/* ======= RESPONSIVE ======= */
-@media (max-width: 900px) {
-  .ReservasPropietario-lista {
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 70px;
-  }
-
-  .ReservasPropietario-tarjeta {
-    width: 90%;
-    max-width: 350px;
-  }
-
-  .ReservasPropietario-titulo {
-    font-size: 1.2rem;
-  }
-
-  .ReservasPropietario-detalle {
-    font-size: 0.9rem;
-  }
-
-  .ReservasPropietario-filtro {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px 20px;
-  }
-
-  .ReservasPropietario-filtro select {
-    width: 100%;
-  }
+.ReservasPropietario-table th,
+.ReservasPropietario-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  font-size: 0.9rem;
+  /* Limitar a una sola línea */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
 
-/* ======= ANIMACIONES ======= */
+.ReservasPropietario-table th {
+  background-color: #f2f2f2;
+}
+
+/* Botones de reagendamiento */
+.boton-aprobar,
+.boton-rechazar {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.boton-aprobar {
+  background: #28a745;
+  color: #fff;
+}
+
+.boton-aprobar:hover {
+  background: #218838;
+}
+
+.boton-rechazar {
+  background: #dc3545;
+  color: #fff;
+}
+
+.boton-rechazar:hover {
+  background: #c82333;
+}
+
+/* Contenedor para reagendamiento en la tabla */
+.reagendamiento-container p {
+  margin: 2px 0;
+  font-size: 0.8rem;
+}
+
+/* Botón de exportación a Excel */
+.ExportButton {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+  display: block;
+  margin: 0 auto;
+}
+
+.ExportButton:hover {
+  background-color: #218838;
+}
+
+/* Animación de fadeIn para las filas (opcional) */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -225,6 +159,18 @@
   }
 }
 
-.ReservasPropietario-tarjeta {
+.ReservasPropietario-table tbody tr {
   animation: fadeIn 0.5s ease forwards;
+}
+
+/* Responsividad: asegura que la tabla se ajuste en pantallas pequeñas */
+@media (max-width: 900px) {
+  .ReservasPropietario-table th,
+  .ReservasPropietario-table td {
+    font-size: 0.8rem;
+    padding: 6px;
+  }
+  .ReservasPropietario-container {
+    margin-top: 0;
+  }
 }

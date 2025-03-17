@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import dynamic from "next/dynamic";
 import Swal from "sweetalert2";
+import * as XLSX from 'xlsx';
 import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
 import './estilos.css';
 
@@ -39,6 +40,8 @@ interface Reserva {
   fechaCreacion: string;
   codigoReserva: string;
   ComentariosCancelacion: string;
+  EstadoPagoProp: string;
+  FechaPagoPropietario: string;
 }
 
 interface GlampingData {
@@ -93,7 +96,9 @@ const ReservasPropietario: React.FC = () => {
           );
           setReservas(ordenadas);
         }
-      } catch {}
+      } catch (error) {
+        console.error("Error al obtener reservas:", error);
+      }
       setCargando(false);
     };
     obtenerReservas();
@@ -108,7 +113,9 @@ const ReservasPropietario: React.FC = () => {
           if (r.ok) {
             setGlampingData(prev => [...prev, data]);
           }
-        } catch {}
+        } catch (error) {
+          console.error("Error al obtener glamping:", error);
+        }
       };
       reservas.forEach(res => {
         if (!glampingData.find(g => g._id === res.idGlamping)) {
@@ -121,7 +128,6 @@ const ReservasPropietario: React.FC = () => {
   useEffect(() => {
     if (reservas.length === 0) return;
     const idsUnicos = Array.from(new Set(reservas.map(r => r.idCliente)));
-
     const obtenerTelefonos = async () => {
       const nuevos: Record<string, string> = {};
       for (const cId of idsUnicos) {
@@ -145,12 +151,10 @@ const ReservasPropietario: React.FC = () => {
   // Consulta a reagendamientos
   useEffect(() => {
     if (!idPropietario) return;
-  
     const obtenerReagendamientos = async () => {
       try {
         const r = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos/todos`);
         const data = await r.json();
-  
         if (r.ok && data.length > 0) {
           setReagendamientos(data);
         } else {
@@ -160,11 +164,11 @@ const ReservasPropietario: React.FC = () => {
         console.error("Error al obtener reagendamientos:", error);
       }
     };
-  
     obtenerReagendamientos();
-  }, [idPropietario]);  
+  }, [idPropietario]);
 
-  const manejarReagendamiento = async (reag: Reagendamiento, accion: "Aprobado" | "Rechazado") => {
+  const manejarReagendamiento = async (reag: Reagendamiento, accion: "Aprobado" | "Rechazado", e: React.MouseEvent) => {
+    e.stopPropagation(); // Evita que el click se propague a la fila
     try {
       const bodyReq = { estado: accion };
       const resp = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos/${reag.codigoReserva}`, {
@@ -212,7 +216,7 @@ const ReservasPropietario: React.FC = () => {
           confirmButtonText: "OK"
         }).then((result) => {
           if (result.isConfirmed || result.isDismissed) {
-            window.location.reload(); // 🔹 Se recarga cuando el usuario presiona "OK" o cierra el modal
+            window.location.reload();
           }
         });
       } else {
@@ -223,7 +227,7 @@ const ReservasPropietario: React.FC = () => {
           confirmButtonText: "OK"
         }).then((result) => {
           if (result.isConfirmed || result.isDismissed) {
-            window.location.reload(); // 🔹 También se recarga cuando rechaza y cierra el modal
+            window.location.reload();
           }
         });
       }
@@ -232,7 +236,6 @@ const ReservasPropietario: React.FC = () => {
       Swal.fire("Error", "Ocurrió un error al procesar la solicitud", "error");
     }
   };
-  
 
   const generarFechasEntreRango = (inicio: Date, fin: Date) => {
     const arr: string[] = [];
@@ -249,6 +252,66 @@ const ReservasPropietario: React.FC = () => {
   const reservasFiltradas = filtroEstado
     ? reservas.filter(r => r.EstadoReserva === filtroEstado)
     : reservas;
+
+  const handleExportToExcel = () => {
+    const exportData = reservasFiltradas.map(reserva => {
+      const glamping = glampingData.find(g => g._id === reserva.idGlamping);
+      const huespedes = [
+        reserva.adultos > 0 ? `${reserva.adultos} Adulto${reserva.adultos > 1 ? "s" : ""}` : "",
+        reserva.ninos > 0 ? `${reserva.ninos} Niño${reserva.ninos > 1 ? "s" : ""}` : "",
+        reserva.bebes > 0 ? `${reserva.bebes} Bebé${reserva.bebes > 1 ? "s" : ""}` : "",
+        reserva.mascotas > 0 ? `${reserva.mascotas} Mascota${reserva.mascotas > 1 ? "s" : ""}` : ""
+      ].filter(Boolean).join(", ");
+      return {
+        Glamping: glamping?.nombreGlamping || '',
+        Código: reserva.codigoReserva,
+        "WhatsApp huésped": telefonosClientes[reserva.idCliente] || '...',
+        "Fecha Creación": formatearFechaColombia(reserva.fechaCreacion),
+        "Estado Reserva": reserva.EstadoReserva,
+        Ciudad: reserva.ciudad_departamento,
+        "Check-In": new Date(reserva.FechaIngreso).toLocaleDateString(),
+        "Check-Out": new Date(reserva.FechaSalida).toLocaleDateString(),
+        Huéspedes: huespedes,
+        "Valor Reserva": `$${reserva.ValorReserva.toLocaleString()}`,
+        Comisión: `$${reserva.ComisionGlamperos.toLocaleString()}`,
+        "Tu Ganancia": `$${reserva.CostoGlamping.toLocaleString()}`,
+        "Estado Pago": reserva.EstadoPagoProp,
+        "Fecha de Pago": new Date(reserva.FechaPagoPropietario).toLocaleDateString()
+      };
+    });
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Reservas");
+    XLSX.writeFile(workbook, "reservas.xlsx");
+  };
+
+  const handleRowClick = (reserva: Reserva) => {
+    const glamping = glampingData.find(g => g._id === reserva.idGlamping);
+    const huespedes = [
+      reserva.adultos > 0 ? `${reserva.adultos} Adulto${reserva.adultos > 1 ? "s" : ""}` : "",
+      reserva.ninos > 0 ? `${reserva.ninos} Niño${reserva.ninos > 1 ? "s" : ""}` : "",
+      reserva.bebes > 0 ? `${reserva.bebes} Bebé${reserva.bebes > 1 ? "s" : ""}` : "",
+      reserva.mascotas > 0 ? `${reserva.mascotas} Mascota${reserva.mascotas > 1 ? "s" : ""}` : ""
+    ].filter(Boolean).join(", ");
+
+    Swal.fire({
+      title: `Reserva: ${reserva.codigoReserva}`,
+      html: `<p><strong>Glamping:</strong> ${glamping?.nombreGlamping || 'N/A'}</p>
+             <p><strong>WhatsApp huésped:</strong> ${telefonosClientes[reserva.idCliente] || '...'}</p>
+             <p><strong>Fecha Creación:</strong> ${formatearFechaColombia(reserva.fechaCreacion)}</p>
+             <p><strong>Estado Reserva:</strong> ${reserva.EstadoReserva}</p>
+             <p><strong>Ciudad:</strong> ${reserva.ciudad_departamento}</p>
+             <p><strong>Check-In:</strong> ${new Date(reserva.FechaIngreso).toLocaleDateString()}</p>
+             <p><strong>Check-Out:</strong> ${new Date(reserva.FechaSalida).toLocaleDateString()}</p>
+             <p><strong>Huéspedes:</strong> ${huespedes}</p>
+             <p><strong>Valor Reserva:</strong> $${reserva.ValorReserva.toLocaleString()}</p>
+             <p><strong>Comisión:</strong> $${reserva.ComisionGlamperos.toLocaleString()}</p>
+             <p><strong>Tu Ganancia:</strong> $${reserva.CostoGlamping.toLocaleString()}</p>
+             <p><strong>Estado Pago:</strong> ${reserva.EstadoPagoProp}</p>
+             <p><strong>Fecha de Pago:</strong> ${new Date(reserva.FechaPagoPropietario).toLocaleDateString()}</p>`,
+      confirmButtonText: "Cerrar"
+    });
+  };
 
   return (
     <div className="ReservasPropietario-container">
@@ -277,66 +340,96 @@ const ReservasPropietario: React.FC = () => {
             >
               <option value="">Todos</option>
               <option value="Reservada">Reservada</option>
-              <option value="Finalizada">Finalizada</option>
+              <option value="Completada">Completada</option>
               <option value="Cancelada">Cancelada</option>
             </select>
           </div>
+          <div className="ReservasPropietario-tabla-container">
+            <table className="ReservasPropietario-table">
+              <thead>
+                <tr>
+                  <th>Glamping</th>
+                  <th>Código</th>
+                  <th>WhatsApp</th>
+                  <th>Fecha Creación</th>
+                  <th>Estado Reserva</th>
+                  <th>Ciudad</th>
+                  <th>Check-In</th>
+                  <th>Check-Out</th>
+                  <th>Huéspedes</th>
+                  <th>Valor Reserva</th>
+                  <th>Comisión</th>
+                  <th>Tu Ganancia</th>
+                  <th>Estado Pago</th>
+                  <th>Fecha de Pago</th>
+                  <th>Reagendamiento</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reservasFiltradas.map((reserva) => {
+                  const glamping = glampingData.find(g => g._id === reserva.idGlamping);
+                  const reagPendiente = reagendamientos.find(r => r.codigoReserva === reserva.codigoReserva);
+                  const huespedes = [
+                    reserva.adultos > 0 ? `${reserva.adultos} Adulto${reserva.adultos > 1 ? "s" : ""}` : "",
+                    reserva.ninos > 0 ? `${reserva.ninos} Niño${reserva.ninos > 1 ? "s" : ""}` : "",
+                    reserva.bebes > 0 ? `${reserva.bebes} Bebé${reserva.bebes > 1 ? "s" : ""}` : "",
+                    reserva.mascotas > 0 ? `${reserva.mascotas} Mascota${reserva.mascotas > 1 ? "s" : ""}` : ""
+                  ].filter(Boolean).join(", ");
 
-          <div className="ReservasPropietario-lista">
-            {reservasFiltradas.map((reserva) => {
-              const glamping = glampingData.find(g => g._id === reserva.idGlamping);
-              if (!glamping) return null;
-              const colorEstado =
-                reserva.EstadoReserva === "Cancelada"
-                  ? "#e0e0e0"
-                  : reserva.EstadoReserva === "Finalizada"
-                  ? "rgba(47, 107, 62, 0.2)"
-                  : "white";
+                  // Verificar si existe un reagendamiento pendiente y asignar el color
+                  const isReagendamiento = reagPendiente && reagPendiente.estado === "Pendiente Aprobacion";
+                  const rowStyle = {
+                    backgroundColor: isReagendamiento 
+                      ? "#f8d7da" // rojo claro en caso de reagendamiento pendiente
+                      : reserva.EstadoPagoProp === "Pagado"
+                        ? "#d4edda"
+                        : reserva.EstadoPagoProp === "Solicitado"
+                          ? "#ffe5b4"
+                          : "transparent",
+                    cursor: "pointer"
+                  };
 
-              const reagPendiente = reagendamientos.find(r => r.codigoReserva === reserva.codigoReserva);
-
-              return (
-                <div
-                  key={reserva.id}
-                  className="ReservasPropietario-tarjeta"
-                  style={{ backgroundColor: colorEstado }}
-                >
-                  <h3 className="ReservasPropietario-titulo ">{glamping.nombreGlamping}</h3>
-                  <p className="ReservasPropietario-detalle permitir-seleccion"><strong>Código:</strong> {reserva.codigoReserva}</p>
-                  <p className="ReservasPropietario-detalle permitir-seleccion"><strong>WhatsApp huésped:</strong> {telefonosClientes[reserva.idCliente] || '...'}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Fecha Creación:</strong> {formatearFechaColombia(reserva.fechaCreacion)}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Estado Reserva:</strong> {reserva.EstadoReserva}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Ciudad:</strong> {reserva.ciudad_departamento}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Check-In:</strong> {new Date(reserva.FechaIngreso).toLocaleDateString()}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Check-Out:</strong> {new Date(reserva.FechaSalida).toLocaleDateString()}</p>
-                  <p className="ReservasPropietario-detalle">
-                  <strong>Huéspedes:</strong> 
-                    {reserva.adultos > 0 && ` ${reserva.adultos} Adulto${reserva.adultos > 1 ? "s" : ""}`}
-                    {reserva.ninos > 0 && `, ${reserva.ninos} Niño${reserva.ninos > 1 ? "s" : ""}`}
-                    {reserva.bebes > 0 && `, ${reserva.bebes} Bebé${reserva.bebes > 1 ? "s" : ""}`}
-                    {reserva.mascotas > 0 && `, ${reserva.mascotas} Mascota${reserva.mascotas > 1 ? "s" : ""}`}
-                  </p>
-                  <p className="ReservasPropietario-detalle"><strong>Valor:</strong> ${reserva.ValorReserva.toLocaleString()}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Comisión:</strong> ${reserva.ComisionGlamperos.toLocaleString()}</p>
-                  <p className="ReservasPropietario-detalle"><strong>Pago Propietario:</strong> ${reserva.CostoGlamping.toLocaleString()}</p>
-
-                  {reagPendiente && reagPendiente.estado === "Pendiente Aprobacion" && (
-                    <div className="ReservasPropietario-reagendamiento">
-                      <p><strong>Solicitud de Reagendamiento</strong></p>
-                      <p>Nuevo Check-In: {new Date(reagPendiente.FechaIngreso).toLocaleDateString()}</p>
-                      <p>Nuevo Check-Out: {new Date(reagPendiente.FechaSalida).toLocaleDateString()}</p>
-                      <button className="boton-aprobar" onClick={() => manejarReagendamiento(reagPendiente, "Aprobado")}>
-                        Aprobar
-                      </button>
-                      <button className="boton-rechazar" onClick={() => manejarReagendamiento(reagPendiente, "Rechazado")}>
-                        Rechazar
-                      </button>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                  return (
+                    <tr key={reserva.id} style={rowStyle} onClick={() => handleRowClick(reserva)}>
+                      <td>{glamping?.nombreGlamping || "N/A"}</td>
+                      <td>{reserva.codigoReserva}</td>
+                      <td>{telefonosClientes[reserva.idCliente] || "..."}</td>
+                      <td>{formatearFechaColombia(reserva.fechaCreacion)}</td>
+                      <td>{reserva.EstadoReserva}</td>
+                      <td>{reserva.ciudad_departamento}</td>
+                      <td>{new Date(reserva.FechaIngreso).toLocaleDateString()}</td>
+                      <td>{new Date(reserva.FechaSalida).toLocaleDateString()}</td>
+                      <td>{huespedes}</td>
+                      <td>${reserva.ValorReserva.toLocaleString()}</td>
+                      <td>${reserva.ComisionGlamperos.toLocaleString()}</td>
+                      <td>${reserva.CostoGlamping.toLocaleString()}</td>
+                      <td>{reserva.EstadoPagoProp}</td>
+                      <td>{new Date(reserva.FechaPagoPropietario).toLocaleDateString()}</td>
+                      <td>
+                        {reagPendiente && reagPendiente.estado === "Pendiente Aprobacion" ? (
+                          <div className="reagendamiento-container" onClick={(e) => e.stopPropagation()}>
+                            <p><strong>Nuevo Check-In:</strong> {new Date(reagPendiente.FechaIngreso).toLocaleDateString()}</p>
+                            <p><strong>Nuevo Check-Out:</strong> {new Date(reagPendiente.FechaSalida).toLocaleDateString()}</p>
+                            <button className="boton-aprobar" onClick={(e) => manejarReagendamiento(reagPendiente, "Aprobado", e)}>
+                              Aprobar
+                            </button>
+                            <button className="boton-rechazar" onClick={(e) => manejarReagendamiento(reagPendiente, "Rechazado", e)}>
+                              Rechazar
+                            </button>
+                          </div>
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
+          <button className="ExportButton" onClick={handleExportToExcel}>
+            Exportar a Excel
+          </button>
         </>
       )}
     </div>

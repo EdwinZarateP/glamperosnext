@@ -22,6 +22,15 @@ const LandingPage = () => {
     };
   }, []);
 
+  const handleNavigation = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    if (isLargeScreen) {
+      window.open(path, "_blank"); // Abre en nueva pestaña si la pantalla es grande
+    } else {
+      window.location.href = path; // Recarga la página si la pantalla es pequeña
+    }
+  };
+
   return (
     <>
       <Head>
@@ -37,10 +46,18 @@ const LandingPage = () => {
         </p>
 
         <div className="LandingPage-buttons">
-          <Link href="/" target={isLargeScreen ? "_blank" : "_self"} className="LandingPage-btn">🏕️ Todo Colombia</Link>
-          <Link href="/medellin" target={isLargeScreen ? "_blank" : "_self"} className="LandingPage-btn">🌄 Medellín</Link>
-          <Link href="/cali" target={isLargeScreen ? "_blank" : "_self"} className="LandingPage-btn">🌿 Cali</Link>
-          <Link href="/bogota" target={isLargeScreen ? "_blank" : "_self"} className="LandingPage-btn">🏔️ Bogotá</Link>
+          <Link href="/" onClick={(e) => handleNavigation(e, "/")} className="LandingPage-btn">
+            🏕️ Todo Colombia
+          </Link>
+          <Link href="/medellin" onClick={(e) => handleNavigation(e, "/medellin")} className="LandingPage-btn">
+            🌄 Medellín
+          </Link>
+          <Link href="/cali" onClick={(e) => handleNavigation(e, "/cali")} className="LandingPage-btn">
+            🌿 Cali
+          </Link>
+          <Link href="/bogota" onClick={(e) => handleNavigation(e, "/bogota")} className="LandingPage-btn">
+            🏔️ Bogotá
+          </Link>
         </div>
 
         <section className="LandingPage-gallery">

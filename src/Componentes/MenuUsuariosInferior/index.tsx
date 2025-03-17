@@ -15,13 +15,15 @@ const MenuUsuariosInferior: React.FC = () => {
 
   const redirigir = (ruta: string) => {
     if (!correoUsuario) {
-      // Si no existe el correo, redirige a la página de registro
       router.push("/registro");
     } else {
-      // Si existe el correo, redirige a la ruta correspondiente
-      router.push(ruta);
+      if (ruta === "/") {
+        router.replace(ruta); // Usa replace para forzar la recarga
+      } else {
+        router.push(ruta);
+      }
     }
-  };
+  };  
 
   return (
     <div className="MenuUsuariosInferior">

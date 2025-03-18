@@ -266,6 +266,13 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
         codReserva: codigoReserva,
       });
 
+      // Envía el mensaje de WhatsApp edwin
+      await enviarWhatsAppReagendamiento({
+        numero: "573125443396",
+        nombrePropietario: nombreProp,
+        codReserva: codigoReserva,
+      });
+
       // Si todo va bien, avisamos y cerramos
       onSeleccionarFechas(fechaInicio!, fechaFin!);
       cerrarCalendario();

@@ -173,6 +173,14 @@ const GestionReserva: React.FC = () => {
         FechaInicio: new Date(reserva.FechaIngreso).toLocaleDateString("es-CO"),
         FechaFin: new Date(reserva.FechaSalida).toLocaleDateString("es-CO"),
       });
+
+      await enviarWhatsAppCancelacion({
+        numero: "573125443396", // Asegúrate de tener el número correcto
+        nombrePropietario: "Edwin",
+        nombreGlamping: glamping.nombreGlamping,
+        FechaInicio: new Date(reserva.FechaIngreso).toLocaleDateString("es-CO"),
+        FechaFin: new Date(reserva.FechaSalida).toLocaleDateString("es-CO"),
+      });
       
       Swal.fire({
         title: '¡Cancelación exitosa!',

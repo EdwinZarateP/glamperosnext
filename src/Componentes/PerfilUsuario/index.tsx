@@ -120,6 +120,13 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
             nombreHuesped: nombreEmisor.split(" ")[0] || "",
             mensaje,
           });
+
+          await enviarWhatsAppNotificarMensaje({
+            numero: "573125443396",
+            nombrePropietario: usuario.nombre.split(" ")[0] || "",
+            nombreHuesped: nombreEmisor.split(" ")[0] || "",
+            mensaje,
+          });
         }
       } catch (error) {
         console.error("Error al enviar el mensaje:", error);

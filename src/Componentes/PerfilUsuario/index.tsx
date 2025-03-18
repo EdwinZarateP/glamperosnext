@@ -7,6 +7,9 @@ import Cookies from "js-cookie";
 import { ContextoApp } from "@/context/AppContext";
 import "./estilos.css"; // Importado en _app.tsx
 
+// IMPORTAMOS LA FUNCIÓN DE WHATSAPP
+import { enviarWhatsAppNotificarMensaje } from "@/Funciones/enviarWhatsAppNotificarMensaje";
+
 interface PerfilUsuarioProps {
   propietario_id: string;
 }
@@ -27,63 +30,20 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
 
   const almacenVariables = useContext(ContextoApp);
   if (!almacenVariables) {
-    throw new Error("El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto.");
+    throw new Error(
+      "El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto."
+    );
   }
 
   const idEmisor = Cookies.get("idUsuario");
   const nombreEmisor = Cookies.get("nombreUsuario") || "";
-  const mensaje1 = usuario.nombre.split(" ")[0] || "";
-  const mensaje2 = nombreEmisor.split(" ")[0] || "";
-  const mensaje3 = mensaje;
-  const WHATSAPP_API_TOKEN = process.env.NEXT_PUBLIC_WHATSAPP_API_TOKEN; // Reemplazo de import.meta.env
-
-  const enviarMensaje = async (numero: string) => {
-    const url = "https://graph.facebook.com/v21.0/531912696676146/messages";
-    const body = {
-      messaging_product: "whatsapp",
-      recipient_type: "individual",
-      to: numero,
-      type: "template",
-      template: {
-        name: "notificacionmensaje",
-        language: { code: "es_CO" },
-        components: [
-          {
-            type: "body",
-            parameters: [
-              { type: "text", text: mensaje1 },
-              { type: "text", text: mensaje2 },
-              { type: "text", text: mensaje3 },
-            ],
-          },
-          {
-            type: "button",
-            sub_type: "url",
-            index: "0",
-            parameters: [{ type: "text", text: idEmisor }],
-          },
-        ],
-      },
-    };
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${WHATSAPP_API_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      alert("Error al enviar el mensaje");
-    }
-  };
 
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const response = await fetch(`https://glamperosapi.onrender.com/usuarios/${propietario_id}`);
+        const response = await fetch(
+          `https://glamperosapi.onrender.com/usuarios/${propietario_id}`
+        );
         const data = await response.json();
         setUsuario({
           foto: data.foto || "",
@@ -98,7 +58,9 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
     const fetchGlamping = async () => {
       try {
         if (!glampingId) return;
-        const response = await fetch(`https://glamperosapi.onrender.com/glampings/${glampingId}`);
+        const response = await fetch(
+          `https://glamperosapi.onrender.com/glampings/${glampingId}`
+        );
         const data = await response.json();
         setNombreGlamping(data.nombreGlamping);
       } catch (error) {
@@ -116,6 +78,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
       return;
     }
 
+    // NOTA: Aquí dejamos tu lógica de "dueño a dueño" TAL CUAL
     if (idEmisor === propietario_id) {
       Swal.fire({
         icon: "error",
@@ -133,19 +96,30 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
         timestamp: new Date().toISOString(),
       };
 
+      console.log(usuario.whatsapp);
+
       try {
+        // 1) Guardar en BD
         await fetch("https://glamperosapi.onrender.com/mensajes/enviar_mensaje", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nuevoMensaje),
         });
 
+        // 2) Redirigir a Mensajes
         router.push(`/Mensajes?idUsuarioReceptor=/${propietario_id}`);
 
+        // 3) Resetear mensaje
         setMensaje("");
 
+        // 4) Enviar notificación por WhatsApp usando la función importada
         if (usuario.whatsapp !== "Usuario sin telefono") {
-          enviarMensaje(usuario.whatsapp);
+          await enviarWhatsAppNotificarMensaje({
+            numero: usuario.whatsapp,
+            nombrePropietario: usuario.nombre.split(" ")[0] || "",
+            nombreHuesped: nombreEmisor.split(" ")[0] || "",
+            mensaje,
+          });
         }
       } catch (error) {
         console.error("Error al enviar el mensaje:", error);
@@ -160,10 +134,19 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
   return (
     <div className="PerfilUsuarioContenedor">
       <div className="PerfilUsuarioFoto">
-        {usuario.foto ? <img src={usuario.foto} alt={usuario.nombre} /> : <div className="PerfilUsuarioSinFoto">{inicial}</div>}
+        {usuario.foto ? (
+          <img src={usuario.foto} alt={usuario.nombre} />
+        ) : (
+          <div className="PerfilUsuarioSinFoto">{inicial}</div>
+        )}
       </div>
       <div className="PerfilUsuarioNombre">{usuario.nombre}</div>
-      <textarea className="PerfilUsuarioMensajeInput" placeholder="Escribe tu mensaje..." value={mensaje} onChange={(e) => setMensaje(e.target.value)} />
+      <textarea
+        className="PerfilUsuarioMensajeInput"
+        placeholder="Escribe tu mensaje..."
+        value={mensaje}
+        onChange={(e) => setMensaje(e.target.value)}
+      />
       <button className="PerfilUsuarioBoton" onClick={manejarMensaje}>
         Enviar Mensaje
       </button>

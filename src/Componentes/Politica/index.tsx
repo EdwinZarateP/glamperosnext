@@ -49,7 +49,7 @@ const Politicas: React.FC<PoliticasProps> = ({ diasCancelacion, fechaInicio }) =
         ) : (
           <>
             <p className="Politicas-descripcion">
-              1. <b>Reembolso 90%:</b> si cancelas hasta{" "}
+              1. <b>Reembolso 95%:</b> si cancelas hasta{" "}
               <b>{diasCancelacion} días antes</b> del check-in, es decir, hasta el{" "}
               <b>{fechaLimiteCancelacion.toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}</b>.
             </p>

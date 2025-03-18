@@ -3,6 +3,7 @@
 import React from "react";
 import { GiTowel, GiWashingMachine, GiFireplace, GiSmokeBomb, GiThermometerHot, GiCoffeeCup, GiFishingNet, GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
 import { IoWifi } from "react-icons/io5";
+import { FaWater } from "react-icons/fa";
 import { IoIosBonfire, IoIosRestaurant } from "react-icons/io";
 import { TbDeviceTv } from "react-icons/tb";
 import { FaFan, FaRegSnowflake, FaLaptopHouse, FaShower, FaUmbrellaBeach, FaChess, FaPumpSoap } from "react-icons/fa";
@@ -35,6 +36,7 @@ export const opcionesAmenidades = [
   { id: "Juegos de mesa", label: "Juegos de mesa", icono: <FaChess /> },  
   { id: "Lavadora", label: "Lavadora", icono: <GiWashingMachine /> },
   { id: "Clima Calido", label: "Clima Calido", icono: <FaTemperatureArrowUp /> },
+  { id: "Vista al lago", label: "Vista al lago", icono: <FaWater /> },
   { id: "Ventilador", label: "Ventilador", icono: <FaFan /> },
   { id: "Aire acondicionado", label: "Aire acondicionado", icono: <FaRegSnowflake /> },
   { id: "Clima Frio", label: "Clima Frio", icono: <FaTemperatureArrowDown /> },

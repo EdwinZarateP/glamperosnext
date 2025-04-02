@@ -23,14 +23,12 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   fechasBooking,
 }) => {
   const almacenVariables = useContext(ContextoApp);
-
   if (!almacenVariables) {
     throw new Error(
-      "El almacenVariables no está disponible. Asegúrate de envolver el componente en un proveedor de ContextoApp."
+      "El ContextoApp no está disponible. Asegúrate de envolver el componente en su proveedor."
     );
   }
 
-  // Extraemos las variables de nuestro contexto
   const {
     fechaInicio,
     setFechaInicio,
@@ -39,7 +37,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     setTotalDias,
     setFechaInicioConfirmado,
     setFechaFinConfirmado,
-    FechasSeparadas, // Aunque para este componente ahora usamos los arrays separados vía props, FechasSeparadas puede seguir existiendo
+    FechasSeparadas,
   } = almacenVariables;
 
   const [mesesVisibles, setMesesVisibles] = useState<{ mes: number; anio: number }[]>([]);
@@ -58,7 +56,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     setMesesVisibles(mesesCalculados);
   }, []);
 
-  // Función que retorna una clase extra según el origen de la fecha reservada
+  // Retorna la clase según el origen de la fecha reservada
   const obtenerClasePorFecha = (fecha: Date): string => {
     const fechaStr = fecha.toISOString().split("T")[0];
     if (fechasManual.includes(fechaStr)) return "CalendarioGeneral2-dia-reservada-manual";
@@ -72,8 +70,6 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     if (fechaInicio && fechaFin) {
       const diferenciaTiempo = fechaFin.getTime() - fechaInicio.getTime();
       let dias = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
-
-      // Restamos los días que coincidan con fechas ya reservadas (usando FechasSeparadas, si lo necesitas)
       if (FechasSeparadas.length > 0) {
         const diasReservadosEnRango: Date[] = [];
         for (let i = 0; i < dias; i++) {
@@ -94,10 +90,10 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     }
   }, [fechaInicio, fechaFin, FechasSeparadas, setTotalDias]);
 
-  // Validación para evitar fecha de inicio posterior a fecha de fin
+  // Validación: la fecha de inicio no puede ser igual o posterior a la de fin
   const validarFechas = (): boolean => {
     if (fechaInicio && fechaFin) {
-      if (fechaInicio.getTime() === fechaFin.getTime() || fechaInicio > fechaFin) {
+      if (fechaInicio > fechaFin) {
         Swal.fire({
           icon: "error",
           title: "Error en el rango de fechas",
@@ -109,36 +105,49 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     return true;
   };
 
-  // Función para manejar el clic en una fecha
+  // Función para manejar el clic en una fecha (modificada para permitir selección de un solo día y rangos)
   const manejarClickFecha = (fecha: Date) => {
-    // Si la fecha está reservada, no hacemos nada
     if (esFechaReservada(fecha)) return;
 
-    // Si no hay fechaInicio o ambas están definidas, reiniciamos el rango
-    if (!fechaInicio || (fechaInicio && fechaFin)) {
+    // Caso 1: No hay selección: asignamos fechaInicio y dejamos fechaFin nula.
+    if (!fechaInicio) {
       setFechaInicio(fecha);
       setFechaFin(null);
-    } else if (fechaInicio && !fechaFin && fecha >= fechaInicio) {
-      const nuevaFechaFin = new Date(fecha);
-      if (nuevaFechaFin.toDateString() === fechaInicio.toDateString()) {
-        nuevaFechaFin.setDate(nuevaFechaFin.getDate() + 1);
-      }
-      if (verificarRango(fechaInicio, nuevaFechaFin)) {
-        setFechaFin(nuevaFechaFin);
+      return;
+    }
+
+    // Caso 2: Hay fechaInicio definida pero no fechaFin (esperamos segunda selección)
+    if (fechaInicio && !fechaFin) {
+      // Si el usuario hace clic en el mismo día, se confirma como un solo día
+      if (fecha.toDateString() === fechaInicio.toDateString()) {
+        setFechaFin(fecha);
+      } else if (fecha > fechaInicio) {
+        if (verificarRango(fechaInicio, fecha)) {
+          setFechaFin(fecha);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Rango de fechas no disponible",
+            text: "El rango de fechas seleccionado incluye fechas reservadas. Por favor, elige otro rango.",
+          });
+        }
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Rango de fechas no disponible",
-          text: "El rango de fechas seleccionado incluye fechas reservadas. Por favor, elige otro rango.",
-        });
+        // Si se selecciona una fecha anterior a la de inicio, reiniciamos la selección con ese día
+        setFechaInicio(fecha);
+        setFechaFin(null);
       }
-    } else {
+      return;
+    }
+
+    // Caso 3: Ya hay una selección completa: reiniciamos la selección asignando el nuevo día como único día
+    if (fechaInicio && fechaFin) {
       setFechaInicio(fecha);
       setFechaFin(null);
+      return;
     }
   };
 
-  // Borrar el rango de fechas seleccionado
+  // Borrar la selección actual
   const manejarBorrarFechas = () => {
     setFechaInicio(null);
     setFechaFin(null);
@@ -153,7 +162,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     return fechaInicio?.toDateString() === fecha.toDateString();
   };
 
-  // Determina si la fecha ya fue reservada (usando la unión que se muestra en el calendario)
+  // Determina si la fecha ya fue reservada (usando FechasSeparadas)
   const esFechaReservada = (fecha: Date): boolean => {
     return FechasSeparadas.length > 0
       ? FechasSeparadas.some(
@@ -167,11 +176,10 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     return fecha <= fechaHoy;
   };
 
-  // Verifica que en todo el rango (inicio - fin) no haya fechas reservadas
+  // Verifica que en el rango (inicio - fin) no haya fechas reservadas
   const verificarRango = (inicio: Date, fin: Date): boolean => {
     const diferenciaTiempo = fin.getTime() - inicio.getTime();
     const totalDiasRango = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
-
     for (let i = 0; i <= totalDiasRango; i++) {
       const diaEnRango = new Date(inicio.getTime() + i * (1000 * 60 * 60 * 24));
       if (
@@ -185,7 +193,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     return true;
   };
 
-  // Renderizamos el encabezado de los días de la semana
+  // Encabezado de días de la semana
   const renderizarEncabezadoDias = () => {
     const diasSemana = ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"];
     return (
@@ -212,23 +220,40 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
       );
     }
 
-    // Creamos un botón para cada día
+    // Por cada día, renderizamos un botón
     for (let dia = 1; dia <= totalDias; dia++) {
       const fechaDia = new Date(anio, mes, dia);
       const estaDeshabilitada = esFechaDeshabilitada(fechaDia);
       const estaReservada = esFechaReservada(fechaDia);
       const estaSeleccionada = esFechaSeleccionada(fechaDia);
-      // Si la fecha está reservada, obtenemos la clase correspondiente según el origen
+      // Obtenemos la clase según el origen, si está reservada
       const reservaClase = estaReservada ? obtenerClasePorFecha(fechaDia) : "";
+      // Si la selección es única (fechaInicio y fechaFin iguales) y coincide con este día
+      const esBloqueoUnico =
+        fechaInicio &&
+        fechaFin &&
+        (fechaInicio.toDateString() === fechaFin.toDateString()) &&
+        (fechaDia.toDateString() === fechaInicio.toDateString());
 
       diasEnMes.push(
         <button
           key={dia}
           className={`CalendarioGeneral2-dia
             ${estaDeshabilitada ? " CalendarioGeneral2-dia-deshabilitado" : ""}
-            ${estaSeleccionada ? " CalendarioGeneral2-dia-seleccionado" : ""}
             ${
-              estaSeleccionada && fechaInicio && fechaFin && fechaDia > fechaInicio && fechaDia < fechaFin
+              estaSeleccionada
+                ? esBloqueoUnico
+                  ? " CalendarioGeneral2-dia-seleccionado-unico"
+                  : " CalendarioGeneral2-dia-seleccionado"
+                : ""
+            }
+            ${
+              // Si está en el rango (entre fechaInicio y fechaFin, pero no igual a ninguno)
+              estaSeleccionada &&
+              fechaInicio &&
+              fechaFin &&
+              fechaDia > fechaInicio &&
+              fechaDia < fechaFin
                 ? " CalendarioGeneral2-dia-rango"
                 : ""
             }
@@ -241,7 +266,6 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
         </button>
       );
     }
-
     return diasEnMes;
   };
 
@@ -249,23 +273,28 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     <>
       <div className="CalendarioGeneral2-fondo" onClick={cerrarCalendario}></div>
       <div className="CalendarioGeneral2-contenedor">
-        <button className="CalendarioGeneral2-boton-cerrar" onClick={cerrarCalendario}>✖</button>
+        <button className="CalendarioGeneral2-boton-cerrar" onClick={cerrarCalendario}>
+          ✖
+        </button>
         <h2 className="CalendarioGeneral2-titulo">Escoge tu viaje en el susurro del tiempo</h2>
         <div className="CalendarioGeneral2-meses">
           {mesesVisibles.map(({ mes, anio }, idx) => (
             <div key={idx} className="CalendarioGeneral2-mes">
               <h3 className="CalendarioGeneral2-mes-titulo">
-                {new Date(anio, mes).toLocaleDateString("es-ES", { month: "long", year: "numeric" })}
+                {new Date(anio, mes).toLocaleDateString("es-ES", {
+                  month: "long",
+                  year: "numeric",
+                })}
               </h3>
               {renderizarEncabezadoDias()}
-              <div className="CalendarioGeneral2-grid">
-                {renderizarCalendario(mes, anio)}
-              </div>
+              <div className="CalendarioGeneral2-grid">{renderizarCalendario(mes, anio)}</div>
             </div>
           ))}
         </div>
         <div className="CalendarioGeneral2-botones">
-          <button className="CalendarioGeneral2-boton-borrar" onClick={manejarBorrarFechas}>Borrar fechas</button>
+          <button className="CalendarioGeneral2-boton-borrar" onClick={manejarBorrarFechas}>
+            Borrar fechas
+          </button>
           <button
             className="CalendarioGeneral2-boton-confirmar"
             onClick={() => {

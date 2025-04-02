@@ -1,4 +1,4 @@
-/* Fondo semitransparente que oscurece el fondo al abrir el calendario */
+/* Fondo semitransparente */
 .CalendarioGeneral2-fondo {
   position: fixed;
   top: 0;
@@ -38,7 +38,7 @@
   font-size: 1.3rem;
 }
 
-/* Sección que agrupa todos los meses */
+/* Sección de meses */
 .CalendarioGeneral2-meses {
   display: flex;
   flex-wrap: wrap;
@@ -47,7 +47,7 @@
   overflow-y: auto;
 }
 
-/* Encapsula un mes completo */
+/* Cada mes */
 .CalendarioGeneral2-mes {
   margin: 10px;
   border: 1px solid #e2e2e2;
@@ -62,7 +62,7 @@
   margin-bottom: 10px;
 }
 
-/* Encabezado de días (Do, Lu, Ma, etc.) */
+/* Encabezado de días */
 .CalendarioGeneral2-dias-semana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -75,14 +75,14 @@
   padding: 5px 0;
 }
 
-/* Contenedor grid para los días de un mes */
+/* Grid de días */
 .CalendarioGeneral2-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 3px;
 }
 
-/* Cada cuadro/día */
+/* Cada día */
 .CalendarioGeneral2-dia {
   width: 100%;
   padding: 8px;
@@ -93,19 +93,14 @@
   border: none;
 }
 
-/* Día vacío para alinear la cuadrícula */
+/* Día vacío */
 .CalendarioGeneral2-dia-vacio {
   visibility: hidden;
 }
 
-/* Estados especiales de cada día */
+/* Estados especiales */
 .CalendarioGeneral2-dia-deshabilitado {
   background: #ddd;
-  cursor: not-allowed;
-}
-
-.CalendarioGeneral2-dia-reservada {
-  background: #ffcccc;
   cursor: not-allowed;
 }
 
@@ -114,7 +109,11 @@
   font-weight: bold;
 }
 
-/* Cuando está dentro del rango y no es la fechaInicio ni fechaFin exacta */
+.CalendarioGeneral2-dia-seleccionado-unico {
+  background: #4CAF50; /* Verde intenso para bloqueo único */
+  font-weight: bold;
+}
+
 .CalendarioGeneral2-dia-rango {
   background: #b2ebc2;
 }
@@ -156,7 +155,7 @@
 }
 
 .CalendarioGeneral2-dia-reservada-airbnb {
-  background-color:  #fe5d63; 
+  background-color: #fe5d63; /* Azul para Airbnb */
   color: #fff;
   cursor: not-allowed;
 }
@@ -167,12 +166,10 @@
   cursor: not-allowed;
 }
 
-
 /* Diseño responsive */
 @media (max-width: 900px) {
   .CalendarioGeneral2-titulo {
     text-align: left;
     font-size: 1rem;
   }
-  }
-
+}

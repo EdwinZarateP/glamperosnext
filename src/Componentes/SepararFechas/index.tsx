@@ -55,18 +55,15 @@ const SepararFechas: React.FC = () => {
         console.error("No se proporcionó un ID de glamping.");
         return;
       }
-
       const datos = await ObtenerGlampingPorId(glampingId);
       if (datos) {
-        // Se guardan los tres arrays separados y la unión (fechasReservadas)
         setInformacionGlamping({
           fechasReservadas: datos.fechasReservadas || [],
           fechasManual: datos.fechasReservadasManual || [],
           fechasAirbnb: datos.fechasReservadasAirbnb || [],
           fechasBooking: datos.fechasReservadasBooking || [],
         });
-
-        // Para el calendario, se usa la unión de fechas (o puedes crear otra lógica si deseas diferenciarlas)
+        // Se usa la unión para el calendario
         if (datos.fechasReservadas) {
           const fechasComoDate = datos.fechasReservadas.map((fechaString: string) => {
             const [year, month, day] = fechaString.split("-").map(Number);
@@ -76,7 +73,6 @@ const SepararFechas: React.FC = () => {
         }
       }
     };
-
     consultarGlamping();
   }, [glampingId, setFechasSeparadas]);
 
@@ -144,6 +140,8 @@ const SepararFechas: React.FC = () => {
     }
   }, [fechaInicioUrl, fechaFinUrl, fechaInicioConfirmado, fechaFinConfirmado, setFechaInicioConfirmado, setFechaFinConfirmado]);
 
+  // Función para enviar las fechas manualmente
+  // Se incluye la fecha final, por lo que si el usuario selecciona un solo día, se bloquea ese día
   const enviarFechasAPI = async () => {
     try {
       if (!fechaInicio || !fechaFin) {
@@ -153,12 +151,13 @@ const SepararFechas: React.FC = () => {
       const fechasArray: string[] = [];
       let fechaActual = new Date(fechaInicio);
 
-      while (fechaActual < fechaFin) {
+      // Si se selecciona un solo día, el bucle se ejecutará una vez
+      while (fechaActual <= fechaFin) {
         fechasArray.push(new Date(fechaActual).toISOString().split("T")[0]);
         fechaActual.setDate(fechaActual.getDate() + 1);
       }
 
-      // Se utiliza el endpoint de fechasReservadasManual para agregar las fechas manualmente
+      // Se utiliza el endpoint de fechasReservadasManual
       const updateResponse = await fetch(
         `https://glamperosapi.onrender.com/glampings/${glampingId}/fechasReservadasManual`,
         {
@@ -240,8 +239,8 @@ const SepararFechas: React.FC = () => {
     <>
       <div className="SepararFechas-contenedor">
         <p>
-          Haz clic en este botón para bloquear fechas y evitar que estén disponibles para reservas. Ten en cuenta que la fecha "Hasta" 
-          no se incluye en el rango seleccionado.
+          Haz clic en este botón para bloquear fechas y evitar que estén disponibles para reservas.
+          Ten en cuenta que la fecha "Hasta" se incluye en el rango.
         </p>
         <div
           className="SepararFechas-fechas"
@@ -270,13 +269,11 @@ const SepararFechas: React.FC = () => {
         </button>
       </div>
       {mostrarCalendario && (
-        // Se pasan también los arrays separados para que CalendarioGeneral2 pueda usarlos y mostrarlos en diferentes colores
         <CalendarioGeneral2 
           cerrarCalendario={() => setMostrarCalendario(false)}
           fechasManual={informacionGlamping?.fechasManual || []}
           fechasAirbnb={informacionGlamping?.fechasAirbnb || []}
           fechasBooking={informacionGlamping?.fechasBooking || []}
-          // Si CalendarioGeneral2 aún requiere la unión, se le puede pasar:
           fechasUnidas={informacionGlamping?.fechasReservadas || []}
         />
       )}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation"; // Cambio de useParams a useSearchParams
+import { useSearchParams } from "next/navigation"; 
 import { ContextoApp } from "@/context/AppContext";
 import { GiCampingTent } from "react-icons/gi";
 import CalendarioGeneral from "@/Componentes/CalendarioGeneral";
@@ -36,7 +36,7 @@ const SepararFechas: React.FC = () => {
     setFechasSeparadas,
   } = almacenVariables;
 
-  const searchParams = useSearchParams(); // Cambio de useParams a useSearchParams
+  const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId") || "";
   const fechaInicioUrl = searchParams.get("fechaInicioUrl");
   const fechaFinUrl = searchParams.get("fechaFinUrl");
@@ -84,7 +84,6 @@ const SepararFechas: React.FC = () => {
     : null;
 
   let totalDiasRender = 1;
-
   if (fechaInicioRender && fechaFinRender) {
     const diferenciaMillis = fechaFinRender.getTime() - fechaInicioRender.getTime();
     totalDiasRender = Math.ceil(diferenciaMillis / (24 * 60 * 60 * 1000));
@@ -171,11 +170,7 @@ const SepararFechas: React.FC = () => {
         icon: "success",
         confirmButtonText: "Aceptar",
       }).then(() => {
-        window.scrollTo({
-          top: 0,
-          behavior: "auto",
-        });
-
+        // window.scrollTo({ top: 0, behavior: "auto" });
         window.location.reload();
       });
     } catch (error) {
@@ -188,11 +183,55 @@ const SepararFechas: React.FC = () => {
     }
   };
 
+  const sincronizarCalendarios = async () => {
+    try {
+      const glamping = await ObtenerGlampingPorId(glampingId);
+      if (!glamping) {
+        throw new Error("No se encontró el glamping");
+      }
+      const urls: string[] = [];
+      for (const campo of ["urlIcal", "urlIcalBooking"]) {
+        const valor = glamping[campo];
+        if (typeof valor === "string") {
+          valor.split("\n").forEach((linea) => {
+            const url = linea.trim();
+            if (url && url.toLowerCase() !== "sin url") {
+              urls.push(url);
+            }
+          });
+        }
+      }
+      if (urls.length === 0) {
+        Swal.fire("Sin URL válida", "No hay URLs válidas para sincronizar.", "info");
+        return;
+      }
+      const resultados: { url: string; ok: boolean; mensaje: string }[] = [];
+      for (const url of urls) {
+        const response = await fetch(
+          `https://glamperosapi.onrender.com/ical/importar?glamping_id=${glampingId}&url_ical=${encodeURIComponent(url)}`,
+          { method: "POST" }
+        );
+        const data = await response.json();
+        resultados.push({ url, ok: response.ok, mensaje: data.mensaje || data.detail });
+      }
+      const exitosos = resultados.filter((r) => r.ok).length;
+      Swal.fire({
+        icon: "success",
+        title: "Sincronización completada",
+        html: `${exitosos} de ${resultados.length} URLs sincronizadas correctamente.`,
+      });
+      window.location.reload();
+    } catch (error) {
+      Swal.fire("Error", "Ocurrió un error al sincronizar los calendarios.", "error");
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <div className="SepararFechas-contenedor">
         <p>
-          Haz clic en este botón para bloquear fechas y evitar que estén disponibles para reservas. Ten en cuenta que la fecha 'Hasta' 
+          Haz clic en este botón para bloquear fechas y evitar que estén disponibles para reservas. Ten en cuenta que la fecha "Hasta" 
           no se incluye en el rango seleccionado.
         </p>
         <div
@@ -213,13 +252,14 @@ const SepararFechas: React.FC = () => {
             <span>{formatearFecha(fechaFinRender)}</span>
           </div>
         </div>
-
         <button className="SepararFechas-botonReserva" onClick={enviarFechasAPI}>
           Bloquear Fechas
           <GiCampingTent />
         </button>
+        <button className="SepararFechas-botonSincronizar" onClick={sincronizarCalendarios}>
+          Sincronizar calendarios
+        </button>
       </div>
-
       {mostrarCalendario && <CalendarioGeneral cerrarCalendario={() => setMostrarCalendario(false)} />}
     </>
   );

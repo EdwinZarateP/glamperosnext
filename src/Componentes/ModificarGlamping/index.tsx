@@ -19,6 +19,8 @@ const ModificarGlamping: React.FC = () => {
   const [descuento, setDescuento] = useState<number>(0);
   const [descripcionGlamping, setDescripcionGlamping] = useState('');
   const [video_youtube, setVideo_youtube] = useState('');
+  const [urlIcal, setUrlIcal] = useState('');
+  const [urlIcalBooking, setUrlIcalBooking] = useState('');
   const [amenidadesGlobal, setAmenidadesGlobal] = useState<string[]>([]);
 
   const opcionesAmenidades = [
@@ -48,6 +50,8 @@ const ModificarGlamping: React.FC = () => {
         setDescuento(data.descuento ?? 0);
         setDescripcionGlamping(data.descripcionGlamping || '');
         setVideo_youtube(data.video_youtube || '');
+        setUrlIcal(data.urlIcal || '');
+        setUrlIcalBooking(data.urlIcalBooking || '');        
         setAmenidadesGlobal(data.amenidadesGlobal || []);
       })
     .catch((error) => {
@@ -164,6 +168,8 @@ const ModificarGlamping: React.FC = () => {
     formData.append("diasCancelacion", diasCancelacion.toString());    
     formData.append("descuento", descuento.toString());
     formData.append("descripcionGlamping", descripcionGlamping);
+    formData.append("urlIcal", urlIcal|| 'Sin url');
+    formData.append("urlIcalBooking", urlIcalBooking|| 'Sin url');
     formData.append("video_youtube", video_youtube || 'sin video');
     formData.append("amenidadesGlobal", amenidadesGlobal.join(","));
 
@@ -361,7 +367,42 @@ const ModificarGlamping: React.FC = () => {
             value={video_youtube}
             onChange={(e) => setVideo_youtube(e.target.value)}
           />
-          </div>  
+
+          <label className="ModificarGlamping-label" htmlFor="urlIcal">
+            Calendario Airbnb:
+          </label>
+          <input
+            id="urlIcal"
+            className="ModificarGlamping-input"
+            type="text"
+            value={urlIcal}
+            onChange={(e) => setUrlIcal(e.target.value)}
+          />
+
+          <label className="ModificarGlamping-label" htmlFor="urlIcalBooking">
+            Calendario Booking:
+          </label>
+          <input
+            id="urlIcalBooking"
+            className="ModificarGlamping-input"
+            type="text"
+            value={urlIcalBooking}
+            onChange={(e) => setUrlIcalBooking(e.target.value)}
+          />
+
+          <label className="ModificarGlamping-label" htmlFor="urlIcalGlamperos">
+            Calendario Glamperos:
+          </label>
+          <a
+            href={`https://glamperosapi.onrender.com/ical/exportar/${glampingId ?? ''}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ wordBreak: "break-all", color: "#0070f3" }}
+          >
+            https://glamperosapi.onrender.com/ical/exportar/{glampingId}
+          </a>
+
+          </div>
           
           <label className="ModificarGlamping-label" htmlFor="descripcionGlamping">
             Descripción del Glamping:

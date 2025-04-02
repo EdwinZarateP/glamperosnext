@@ -4,13 +4,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation"; 
 import { ContextoApp } from "@/context/AppContext";
 import { GiCampingTent } from "react-icons/gi";
-import CalendarioGeneral from "@/Componentes/CalendarioGeneral";
+import CalendarioGeneral2 from "@/Componentes/CalendarioGeneral2";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
 import Swal from "sweetalert2";
 import "./estilos.css";
 
+// Se amplía la interfaz para incluir los arrays separados
 interface Glamping {
-  fechasReservadas?: string[];
+  fechasReservadas?: string[]; // Unión (combinada)
+  fechasManual?: string[];     // Fechas ingresadas manualmente
+  fechasAirbnb?: string[];     // Fechas importadas desde Airbnb
+  fechasBooking?: string[];    // Fechas importadas desde Booking
 }
 
 const SepararFechas: React.FC = () => {
@@ -42,7 +46,8 @@ const SepararFechas: React.FC = () => {
   const fechaFinUrl = searchParams.get("fechaFinUrl");
   const totalDiasUrl = searchParams.get("totalDiasUrl");
 
-  const [, setInformacionGlamping] = useState<Glamping | null>(null);
+  // Se guarda toda la información del glamping, incluyendo los arrays separados
+  const [informacionGlamping, setInformacionGlamping] = useState<Glamping | null>(null);
 
   useEffect(() => {
     const consultarGlamping = async () => {
@@ -52,12 +57,16 @@ const SepararFechas: React.FC = () => {
       }
 
       const datos = await ObtenerGlampingPorId(glampingId);
-
       if (datos) {
+        // Se guardan los tres arrays separados y la unión (fechasReservadas)
         setInformacionGlamping({
           fechasReservadas: datos.fechasReservadas || [],
+          fechasManual: datos.fechasReservadasManual || [],
+          fechasAirbnb: datos.fechasReservadasAirbnb || [],
+          fechasBooking: datos.fechasReservadasBooking || [],
         });
 
+        // Para el calendario, se usa la unión de fechas (o puedes crear otra lógica si deseas diferenciarlas)
         if (datos.fechasReservadas) {
           const fechasComoDate = datos.fechasReservadas.map((fechaString: string) => {
             const [year, month, day] = fechaString.split("-").map(Number);
@@ -149,6 +158,7 @@ const SepararFechas: React.FC = () => {
         fechaActual.setDate(fechaActual.getDate() + 1);
       }
 
+      // Se utiliza el endpoint de fechasReservadasManual para agregar las fechas manualmente
       const updateResponse = await fetch(
         `https://glamperosapi.onrender.com/glampings/${glampingId}/fechasReservadasManual`,
         {
@@ -170,7 +180,6 @@ const SepararFechas: React.FC = () => {
         icon: "success",
         confirmButtonText: "Aceptar",
       }).then(() => {
-        // window.scrollTo({ top: 0, behavior: "auto" });
         window.location.reload();
       });
     } catch (error) {
@@ -260,7 +269,17 @@ const SepararFechas: React.FC = () => {
           Sincronizar calendarios
         </button>
       </div>
-      {mostrarCalendario && <CalendarioGeneral cerrarCalendario={() => setMostrarCalendario(false)} />}
+      {mostrarCalendario && (
+        // Se pasan también los arrays separados para que CalendarioGeneral2 pueda usarlos y mostrarlos en diferentes colores
+        <CalendarioGeneral2 
+          cerrarCalendario={() => setMostrarCalendario(false)}
+          fechasManual={informacionGlamping?.fechasManual || []}
+          fechasAirbnb={informacionGlamping?.fechasAirbnb || []}
+          fechasBooking={informacionGlamping?.fechasBooking || []}
+          // Si CalendarioGeneral2 aún requiere la unión, se le puede pasar:
+          fechasUnidas={informacionGlamping?.fechasReservadas || []}
+        />
+      )}
     </>
   );
 };

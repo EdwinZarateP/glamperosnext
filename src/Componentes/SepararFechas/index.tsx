@@ -239,8 +239,7 @@ const SepararFechas: React.FC = () => {
     <>
       <div className="SepararFechas-contenedor">
         <p>
-          Haz clic en este botón para bloquear fechas y evitar que estén disponibles para reservas.
-          Ten en cuenta que la fecha "Hasta" se incluye en el rango.
+          Haz clic en este botón para bloquear fechas y evitar que estén disponibles para reservas.    
         </p>
         <div
           className="SepararFechas-fechas"

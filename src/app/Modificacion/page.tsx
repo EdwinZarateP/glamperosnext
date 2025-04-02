@@ -10,12 +10,12 @@ function Modificacion() {
   return (
     <div className="Modificacion-contenedor">
       <HeaderIcono descripcion="Glamperos" />
+      <h1 className="Modificacion-titulo">Bloquear fechas</h1>
+      <SepararFechas />
       <h1 className="Modificacion-titulo">Modificar datos del glamping</h1>
       <ModificarGlamping />
       <h1 className="Modificacion-titulo">Modifica tus fotos</h1>
       <ModificarFotos />
-      <h1 className="Modificacion-titulo">Bloquear fechas</h1>
-      <SepararFechas />
     </div>
   );
 }

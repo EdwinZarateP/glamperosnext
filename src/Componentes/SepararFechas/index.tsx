@@ -150,7 +150,7 @@ const SepararFechas: React.FC = () => {
       }
 
       const updateResponse = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/fechasReservadas`,
+        `https://glamperosapi.onrender.com/glampings/${glampingId}/fechasReservadasManual`,
         {
           method: "PATCH",
           headers: {

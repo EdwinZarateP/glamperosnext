@@ -433,6 +433,7 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
 
       <button
         className="formularioFechasMoviles-botonReserva"
+        id="formularioFechasMoviles-botonReserva"
         onClick={handleReservarClick}
         disabled={TotalFinal === null}
       >

@@ -474,7 +474,9 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
 
         {/* Botón Reservar */}
         <button className="FormularioFechas-botonReserva" onClick={handleReservarClick}>
-          <GiCampingTent className="FormularioFechas-botonReserva-icono" />
+          <GiCampingTent 
+          id="FormularioFechas-botonReserva"
+          className="FormularioFechas-botonReserva-icono" />
           Reservar
         </button>
 

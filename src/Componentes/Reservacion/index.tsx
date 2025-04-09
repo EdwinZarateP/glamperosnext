@@ -429,7 +429,9 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
               ) : (
                 <>
                   <InputTelefono />
-                  <button className="Reservacion-boton" onClick={handleConfirmarReserva}>
+                  <button className="Reservacion-boton"
+                   onClick={handleConfirmarReserva}
+                   id="Reservacion-botonReserva">
                     Confirmar y pagar
                   </button>
                 </>

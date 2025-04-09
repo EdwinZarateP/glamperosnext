@@ -65,7 +65,7 @@ const Paso3B: React.FC = () => {
     }
   };
   const handleIncreaseDiasCancelacion = () => {
-    if (diasCancelacion < 10) {
+    if (diasCancelacion < 15) {
       setDiasCancelacion(diasCancelacion + 1);
     }
   };

@@ -31,7 +31,7 @@ const Lottie = dynamic<MyLottieProps>(
 const ConfettiEffect = dynamic(() => import("@/Componentes/ConfettiEffect"), { ssr: false });
 
 interface Glamping {
-  nombreGlamping: string;
+  tipoGlamping: string;
   ciudad_departamento: string;
   imagenes: string[] | string | null;
   ubicacion: { lat: number; lng: number };
@@ -369,11 +369,11 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                   ? glamping.imagenes[0] ?? undefined
                   : glamping.imagenes ?? undefined
               }
-              alt={glamping.nombreGlamping}
+              alt={glamping.tipoGlamping}
               className="Reservacion-imagen"
             />
             <div className="Reservacion-info-superpuesta">
-              <h1>{glamping.nombreGlamping}</h1>
+              <h1>{glamping.tipoGlamping}</h1>
               <p>{glamping.ciudad_departamento}</p>
             </div>
           </div>

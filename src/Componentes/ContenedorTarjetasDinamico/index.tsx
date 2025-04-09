@@ -497,6 +497,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
           Cantidad_Huespedes={glamping.Cantidad_Huespedes}
           precioEstandarAdicional={glamping.precioEstandarAdicional}
           Cantidad_Huespedes_Adicional={glamping.Cantidad_Huespedes_Adicional}
+          amenidadesGlobal={glamping.amenidadesGlobal}
         />
       ))}
     </div>

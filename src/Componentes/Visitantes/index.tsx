@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ContextoApp } from "@/context/AppContext"; 
 import Image from "next/image";
 import "./estilos.css";
@@ -43,26 +43,36 @@ const Visitantes: React.FC<VisitantesProps> = ({
   } = almacenVariables;
 
   const MAX_HUESPEDES = max_huespedes;
+  // Estado para controlar la visualización del popup de capacidad máxima
+  const [showPopup, setShowPopup] = useState(false);
 
-  // Actualiza el total de huéspedes cuando cambia cualquier cantidad
+  // Actualiza el total de huéspedes cuando cambia la cantidad de adultos o niños
   useEffect(() => {
     const nuevoTotal = Cantidad_Adultos + Cantidad_Ninos;
     setTotalHuespedes(nuevoTotal);
   }, [Cantidad_Adultos, Cantidad_Ninos, setTotalHuespedes]);
 
-  // Función para incrementar
+  // Función para incrementar el valor
   const incrementar = (
     setter: React.Dispatch<React.SetStateAction<number>>,
     valor: number,
     limite: number,
     totalActual: number
   ) => {
-    if (valor < limite && totalActual < MAX_HUESPEDES) {
+    if (totalActual >= MAX_HUESPEDES) {
+      // Mostrar popup indicando la capacidad máxima
+      setShowPopup(true);
+      setTimeout(() => {
+        setShowPopup(false);
+      }, 2000);
+      return;
+    }
+    if (valor < limite) {
       setter(valor + 1);
     }
   };
 
-  // Función para decrementar
+  // Función para decrementar el valor
   const decrementar = (
     setter: React.Dispatch<React.SetStateAction<number>>,
     valor: number,
@@ -196,6 +206,12 @@ const Visitantes: React.FC<VisitantesProps> = ({
           </p>
         </div>
       </div>
+
+      {showPopup && (
+        <div className="popupMessage">
+          El glamping admite máximo {MAX_HUESPEDES} personas (entre niños y adultos)
+        </div>
+      )}
     </div>
   );
 };

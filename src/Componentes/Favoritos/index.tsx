@@ -27,6 +27,7 @@ interface Glamping {
   precioEstandarAdicional: number;
   Cantidad_Huespedes: number;
   Cantidad_Huespedes_Adicional: number;
+  amenidadesGlobal: string[];
 }
 
 const Favoritos: React.FC = () => {
@@ -137,6 +138,7 @@ const Favoritos: React.FC = () => {
             Cantidad_Huespedes={glamping.Cantidad_Huespedes}
             precioEstandarAdicional={glamping.precioEstandarAdicional}
             Cantidad_Huespedes_Adicional={glamping.Cantidad_Huespedes_Adicional}
+            amenidadesGlobal={glamping.amenidadesGlobal}
           />
         ))}
       </div>

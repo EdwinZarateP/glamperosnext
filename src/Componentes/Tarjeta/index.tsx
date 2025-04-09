@@ -33,6 +33,7 @@ interface TarjetaProps {
   };
   Acepta_Mascotas: boolean;
   fechasReservadas: string[];
+  amenidadesGlobal: string[];
   Cantidad_Huespedes: number;
   precioEstandarAdicional: number;
   Cantidad_Huespedes_Adicional: number;
@@ -53,7 +54,8 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   Acepta_Mascotas,
   Cantidad_Huespedes,
   precioEstandarAdicional,
-  Cantidad_Huespedes_Adicional
+  Cantidad_Huespedes_Adicional,
+  amenidadesGlobal,
 }) => {
   const [esFavorito, setEsFavorito] = useState(favorito);
   const [imagenActual, setImagenActual] = useState(0);
@@ -286,9 +288,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
               {puntosVisibles.map((_, index) => (
                 <span
                   key={start + index}
-                  className={`punto ${
-                    start + index === imagenActual ? "activo" : ""
-                  }`}
+                  className={`punto ${start + index === imagenActual ? "activo" : ""}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setImagenActual(start + index);
@@ -334,9 +334,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
               {puntosVisibles.map((_, index) => (
                 <span
                   key={start + index}
-                  className={`punto ${
-                    start + index === imagenActual ? "activo" : ""
-                  }`}
+                  className={`punto ${start + index === imagenActual ? "activo" : ""}`}
                   onClick={(e) => {
                     e.stopPropagation();
                     setImagenActual(start + index);
@@ -372,9 +370,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
         <MdOutlineKeyboardArrowLeft />
       </div>
       <div
-        className={`flecha derecha ${
-          imagenActual === imagenes.length - 1 ? "oculta" : ""
-        }`}
+        className={`flecha derecha ${imagenActual === imagenes.length - 1 ? "oculta" : ""}`}
         onClick={(e) => {
           e.stopPropagation();
           siguienteImagen();
@@ -385,8 +381,38 @@ const Tarjeta: React.FC<TarjetaProps> = ({
 
       <div className="tarjeta-info">
         <div className="tarjeta-contenido">
-          <span className="tarjeta-nombre">            
-            Glamping tipo {tipoGlamping.toLowerCase().replace(/\b\w/, (c) => c.toUpperCase())}
+          <span className="tarjeta-nombre">
+            {(() => {
+              // Formatear el tipoGlamping
+              const tipoFormateado = tipoGlamping.toLowerCase().replace(/\b\w/, (c) => c.toUpperCase());
+              // Lista de amenidades a buscar en orden y sus respectivos prefijos
+              const amenidadesSufijo = [
+                { valor: "Vista al lago", prefijo: "con" },
+                { valor: "Playa", prefijo: "cerca a la" },
+                { valor: "Desierto", prefijo: "en el" },
+                { valor: "Jacuzzi", prefijo: "con" },
+                { valor: "Piscina", prefijo: "con" },
+                { valor: "Tina", prefijo: "con" },
+                { valor: "Rio", prefijo: "cerca al" },
+                { valor: "Maya catamaran", prefijo: "con" },
+                { valor: "En la montaña", prefijo: "" },
+                { valor: "Zona fogata", prefijo: "con" },
+              ];
+              let amenidadEncontrada = null;
+              for (let item of amenidadesSufijo) {
+                if (amenidadesGlobal.includes(item.valor)) {
+                  amenidadEncontrada = item;
+                  break;
+                }
+              }
+              if (amenidadEncontrada) {
+                // Si la amenidad es "En la montaña" se muestra sin prefijo o puedes ajustar el formato si lo deseas.
+                return amenidadEncontrada.prefijo === ""
+                  ? `${tipoFormateado} ${amenidadEncontrada.valor}`
+                  : `${tipoFormateado} ${amenidadEncontrada.prefijo} ${amenidadEncontrada.valor}`;
+              }
+              return tipoFormateado;
+            })()}
           </span>
           <div className="tarjeta-calificacion">
             <FaStar className="tarjeta-estrella" />

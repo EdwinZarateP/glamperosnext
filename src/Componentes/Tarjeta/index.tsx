@@ -48,6 +48,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   favorito,
   onFavoritoChange,
   descuento,
+  tipoGlamping,
   nombreGlamping,
   Acepta_Mascotas,
   Cantidad_Huespedes,
@@ -384,8 +385,8 @@ const Tarjeta: React.FC<TarjetaProps> = ({
 
       <div className="tarjeta-info">
         <div className="tarjeta-contenido">
-          <span className="tarjeta-nombre">
-            {nombreGlamping.toLowerCase().replace(/\b\w/, (c) => c.toUpperCase())}
+          <span className="tarjeta-nombre">            
+            Glamping tipo {tipoGlamping.toLowerCase().replace(/\b\w/, (c) => c.toUpperCase())}
           </span>
           <div className="tarjeta-calificacion">
             <FaStar className="tarjeta-estrella" />

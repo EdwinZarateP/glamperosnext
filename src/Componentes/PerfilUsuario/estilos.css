@@ -127,6 +127,7 @@
     width: 100%;
     margin-bottom: 130px;
     padding-bottom: 10px;
+    padding: auto;
   }
 
   .PerfilUsuarioFoto {

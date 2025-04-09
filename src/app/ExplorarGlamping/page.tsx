@@ -191,7 +191,7 @@ export default function ExplorarGlamping() {
           <main>
             <div className="encabezado-explorado-container">
               <EncabezadoExplorado 
-                nombreGlamping={`${informacionGlamping.nombreGlamping} - ${informacionGlamping.ciudad_departamento.split(" - ")[0] || ""}`} 
+                nombreGlamping={`${informacionGlamping.tipoGlamping} en ${informacionGlamping.ciudad_departamento.split(" - ")[0] || ""}`} 
               />
             </div>
             <div className="imagenes-exploradas-container">
@@ -231,7 +231,7 @@ export default function ExplorarGlamping() {
             </div>
             <div className="nombre-glamping-container">
               <NombreGlamping 
-                nombreGlamping={`${informacionGlamping.nombreGlamping} - ${informacionGlamping.ciudad_departamento.split(" - ")[0] || ""}`} 
+                nombreGlamping={`${informacionGlamping.tipoGlamping} en ${informacionGlamping.ciudad_departamento.split(" - ")[0] || ""}`} 
               />
             </div>
             <div className="contenedor-descripcion-glamping">
@@ -247,7 +247,7 @@ export default function ExplorarGlamping() {
                 </div>
                 <div className="contenedor-calendario">
                   <Calendario 
-                    nombreGlamping={`${informacionGlamping.nombreGlamping} - ${informacionGlamping.ciudad_departamento.split(" - ")[0] || ""}`}
+                    nombreGlamping={`${informacionGlamping.tipoGlamping} en ${informacionGlamping.ciudad_departamento.split(" - ")[0] || ""}`}
                   />
                 </div>
               </div>

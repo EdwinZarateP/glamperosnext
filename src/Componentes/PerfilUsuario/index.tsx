@@ -147,7 +147,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
           <div className="PerfilUsuarioSinFoto">{inicial}</div>
         )}
       </div>
-      <div className="PerfilUsuarioNombre">{usuario.nombre}</div>
+      <div className="PerfilUsuarioNombre">Escríbele a tu anfitrión</div>
       <textarea
         className="PerfilUsuarioMensajeInput"
         placeholder="Escribe tu mensaje..."

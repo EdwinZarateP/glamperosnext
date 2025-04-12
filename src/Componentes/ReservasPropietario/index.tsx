@@ -197,13 +197,13 @@ const ReservasPropietario: React.FC = () => {
         );
         
         // Eliminar las fechas antiguas
-        await fetch(`https://glamperosapi.onrender.com/glampings/${reservaOriginal.idGlamping}/eliminar_fechas`, {
+        await fetch(`https://glamperosapi.onrender.com/glampings/${reservaOriginal.idGlamping}/eliminar_fechas_manual`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ fechas_a_eliminar: fechasAnt })
         });
         // Añadir las fechas nuevas
-        await fetch(`https://glamperosapi.onrender.com/glampings/${reservaOriginal.idGlamping}/fechasReservadas`, {
+        await fetch(`https://glamperosapi.onrender.com/glampings/${reservaOriginal.idGlamping}/fechasReservadasManual`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ fechas: fechasNuevas })

@@ -14,7 +14,7 @@ export const EliminarFechas = async (glampingId: string, fechasAEliminar: string
       return false;
     }
 
-    const url = `https://glamperosapi.onrender.com/glampings/${glampingId}/eliminar_fechas`;
+    const url = `https://glamperosapi.onrender.com/glampings/${glampingId}/eliminar_fechas_manual`;
 
     const response = await axios.patch(url, { fechas_a_eliminar: fechasAEliminar });
 

@@ -14,7 +14,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Para pantallas superiores a 600px: top=70px, centrado horizontalmente */
+/* En pantallas superiores a 600px: top=70px, centrado horizontalmente */
 @media (min-width: 600px) {
   .CalendarioGeneral2-contenedor {
     top: 70px;
@@ -22,7 +22,7 @@
   }
 }
 
-/* Para pantallas inferiores a 600px: centrado vertical y horizontal */
+/* En pantallas inferiores a 600px: centrado vertical y horizontal */
 @media (max-width: 599px) {
   .CalendarioGeneral2-contenedor {
     top: 50%;
@@ -37,7 +37,7 @@
   font-size: 1.3rem;
 }
 
-/* Nombre del glamping (debajo del título) */
+/* Nombre del glamping debajo del título */
 .CalendarioGeneral2-nombre-glamping {
   text-align: center;
   font-size: 1.1rem;
@@ -139,22 +139,22 @@
   font-weight: bold;
 }
 
-/* Colores para fechas reservadas según origen */
+/* Colores para fechas reservadas según su origen */
 /* Fechas manuales */
 .CalendarioGeneral2-dia-reservada-manual {
-  background-color: #f6b93b;
+  background-color: #f6b93b; /* Rojo para manual */
   color: #fff;
   cursor: pointer;
 }
 
-/* Fechas de Airbnb: se mantienen en su color */
+/* Fechas de Airbnb: se muestran con su color original (#fe5d63) */
 .CalendarioGeneral2-dia-reservada-airbnb {
   background-color: #fe5d63;
   color: #fff;
   cursor: not-allowed;
 }
 
-/* Fechas de Booking: se mantienen en su color */
+/* Fechas de Booking: se muestran con su color original (#163a8f) */
 .CalendarioGeneral2-dia-reservada-booking {
   background-color: #163a8f;
   color: #fff;
@@ -173,7 +173,7 @@
   cursor: not-allowed;
 }
 
-/* Sobrescribe el gris para fechas de Airbnb y Booking */
+/* Si son fechas de Airbnb o Booking y están deshabilitadas, forzamos su color */
 .CalendarioGeneral2-dia-reservada-airbnb.CalendarioGeneral2-dia-deshabilitado {
   background-color: #fe5d63 !important;
   color: #fff !important;

@@ -133,7 +133,7 @@ const Cuenta: React.FC = () => {
   const manejarEditarGlamping = () => {
     const propietarioId = Cookies.get("idUsuario");
     if (propietarioId) {
-      router.push(`/EdicionGlamping?propietarioId=${propietarioId}`); // Cambio de params a query params
+      router.push(`/EdicionGlamping?propietarioId=${propietarioId}`);
     }
   };
 

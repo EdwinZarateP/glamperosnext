@@ -13,7 +13,7 @@ import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
 // =============================================================================
 
 export interface PropiedadesCalendarioGeneral2 {
-  cerrarCalendario: () => void;
+  // Se eliminar la propiedad "cerrarCalendario"
   fechasManual?: string[];
   fechasAirbnb?: string[];
   fechasBooking?: string[];
@@ -46,12 +46,12 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   }
   const { setFechasSeparadas } = almacenVariables;
 
-  // 2. Estado para almacenar la información del glamping
+  // 2. Estado para la información del glamping (incluye nombre)
   const [informacionGlamping, setInformacionGlamping] = useState<Glamping | null>(null);
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId") || "";
 
-  // 3. Consulta los datos del glamping
+  // 3. Consulta los datos del glamping, incluyendo el nombre, al cargar
   useEffect(() => {
     const consultarGlamping = async () => {
       if (!glampingId) {
@@ -82,28 +82,31 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     consultarGlamping();
   }, [glampingId, setFechasSeparadas]);
 
-  // 4. Estado para almacenar las fechas seleccionadas (en formato "YYYY-MM-DD")
+  // 4. Estado para almacenar las fechas seleccionadas (formato "YYYY-MM-DD")
   const [fechasSeleccionadas, setFechasSeleccionadas] = useState<string[]>([]);
 
-  // 5. Declaramos la variable "hoy" (fecha actual a medianoche)
-  const hoy: Date = new Date();
-  hoy.setHours(0, 0, 0, 0);
+  // 5. Declaramos "hoy" una sola vez usando useMemo (fecha actual a medianoche)
+  const hoy = React.useMemo(() => {
+    const fecha = new Date();
+    fecha.setHours(0, 0, 0, 0);
+    return fecha;
+  }, []);
 
   // =============================================================================
-  //        HELPERS PARA FORMATEAR FECHAS Y GESTIONAR LA SELECCIÓN
+  //           HELPERS PARA FORMATEAR FECHAS Y GESTIONAR LA SELECCIÓN
   // =============================================================================
 
   // Formatea un objeto Date a "YYYY-MM-DD"
   const formatDate = (date: Date): string => date.toISOString().split("T")[0];
 
-  // Verifica si la fecha (formateada) está dentro de las fechas manuales (editable)
+  // Verifica si una fecha (formateada) está en el array de fechas manuales (editable)
   const isManualBloqueada = (fechaStr: string): boolean => {
     const manual = informacionGlamping?.fechasManual || fechasManualProp;
     return manual.includes(fechaStr);
   };
 
   // Función toggle para seleccionar/deseleccionar una fecha.
-  // Si se intenta mezclar fechas manuales con otras, se reinicia la selección.
+  // Si se intenta mezclar fechas manuales con otras (por ejemplo, Airbnb/Booking), se reinicia la selección.
   const toggleFecha = (fecha: Date) => {
     const fechaStr = formatDate(fecha);
     const nuevaEsBloqueada = isManualBloqueada(fechaStr);
@@ -130,13 +133,16 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
 
   const [mesesVisibles, setMesesVisibles] = useState<{ mes: number; anio: number }[]>([]);
   useEffect(() => {
+    // Usamos una variable local para la fecha de hoy
+    const fechaHoy = new Date();
+    fechaHoy.setHours(0, 0, 0, 0);
     const meses = [];
     for (let i = 0; i < 18; i++) {
-      const nuevoMes = new Date(hoy.getFullYear(), hoy.getMonth() + i, 1);
+      const nuevoMes = new Date(fechaHoy.getFullYear(), fechaHoy.getMonth() + i, 1);
       meses.push({ mes: nuevoMes.getMonth(), anio: nuevoMes.getFullYear() });
     }
     setMesesVisibles(meses);
-  }, [hoy]);
+  }, []);
 
   // =============================================================================
   //          OBTENCIÓN DE CLASES CSS SEGÚN EL ORIGEN DE LA FECHA
@@ -153,7 +159,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     return "";
   };
 
-  // Verifica si la fecha está seleccionada (para cambiar estilo)
+  // Verifica si una fecha está seleccionada (para aplicar estilos)
   const isFechaSeleccionada = (fecha: Date): boolean => {
     return fechasSeleccionadas.includes(formatDate(fecha));
   };
@@ -167,30 +173,27 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
     const primerDiaDelMes = new Date(anio, mes, 1).getDay();
 
-    // Añade espacios vacíos para alinear el primer día del mes.
+    // Agrega espacios vacíos para alinear el primer día
     for (let i = 0; i < primerDiaDelMes; i++) {
       diasEnMes.push(<div key={`vacio-${i}`} className="CalendarioGeneral2-dia-vacio" />);
     }
+    // Para cada día, se crea un botón que muestra el número del día
     for (let dia = 1; dia <= totalDiasMes; dia++) {
       const fechaDia = new Date(anio, mes, dia);
-      // Si la fecha es menor o igual a hoy, se deshabilita
+      // Se deshabilita si la fecha es menor o igual a hoy
       const deshabilitada = fechaDia.getTime() <= hoy.getTime();
       const claseReserva = obtenerClasePorFecha(fechaDia);
-      // Si la fecha es de Airbnb o Booking, no se puede editar y se mantiene su color original.
+      // Si la fecha es de Airbnb o Booking, no se permite la edición (y se conservan sus colores)
       const noEditable =
         claseReserva === "CalendarioGeneral2-dia-reservada-airbnb" ||
         claseReserva === "CalendarioGeneral2-dia-reservada-booking";
       const disabled = deshabilitada || noEditable;
       // Solo las fechas manuales seleccionadas se muestran en verde
-      const claseSeleccionada = isFechaSeleccionada(fechaDia) && !noEditable
-        ? " CalendarioGeneral2-dia-seleccionado"
-        : "";
+      const claseSeleccionada = isFechaSeleccionada(fechaDia) && !noEditable ? " CalendarioGeneral2-dia-seleccionado" : "";
       diasEnMes.push(
         <button
           key={dia}
-          className={`CalendarioGeneral2-dia ${claseReserva}${claseSeleccionada}${
-            disabled ? " CalendarioGeneral2-dia-deshabilitado" : ""
-          }`}
+          className={`CalendarioGeneral2-dia ${claseReserva}${claseSeleccionada}${disabled ? " CalendarioGeneral2-dia-deshabilitado" : ""}`}
           onClick={() => !disabled && toggleFecha(fechaDia)}
           disabled={disabled}
         >
@@ -202,7 +205,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   };
 
   // =============================================================================
-  //        FUNCIONES PARA BLOQUEAR Y DESBLOQUEAR LAS FECHAS
+  //         FUNCIONES PARA BLOQUEAR Y DESBLOQUEAR LAS FECHAS
   // =============================================================================
 
   // Bloqueo: se envía un PATCH al endpoint de bloqueo de fechas manuales.
@@ -210,14 +213,11 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   const bloquearFechasAPI = async () => {
     if (fechasSeleccionadas.length === 0) return;
     try {
-      const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/fechasReservadasManual`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fechas: fechasSeleccionadas })
-        }
-      );
+      const response = await fetch(`https://glamperosapi.onrender.com/glampings/${glampingId}/fechasReservadasManual`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fechas: fechasSeleccionadas })
+      });
       if (!response.ok) throw new Error("Error al bloquear las fechas");
       Swal.fire({
         icon: "success",
@@ -248,14 +248,11 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
       return;
     }
     try {
-      const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/eliminar_fechas_manual`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fechas_a_eliminar: fechasSeleccionadas })
-        }
-      );
+      const response = await fetch(`https://glamperosapi.onrender.com/glampings/${glampingId}/eliminar_fechas_manual`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fechas_a_eliminar: fechasSeleccionadas })
+      });
       if (!response.ok) throw new Error("Error al desbloquear las fechas");
       Swal.fire({
         icon: "success",
@@ -272,12 +269,12 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   };
 
   // =============================================================================
-  //            RENDERIZACIÓN FINAL DEL COMPONENTE (UI)
+  //               RENDERIZACIÓN FINAL DEL COMPONENTE (UI)
   // =============================================================================
 
   return (
     <div className="CalendarioGeneral2-contenedor">
-      <h2 className="CalendarioGeneral2-titulo">Calendario {informacionGlamping?.nombreGlamping}</h2>      
+      <h2 className="CalendarioGeneral2-titulo">Calendario {informacionGlamping?.nombreGlamping}</h2>
       <div className="CalendarioGeneral2-header">
         <div className="CalendarioGeneral2-botonesAccion">
           <button
@@ -341,10 +338,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
         ))}
       </div>
       <div className="CalendarioGeneral2-botones">
-        <button
-          className="CalendarioGeneral2-boton-borrar"
-          onClick={() => setFechasSeleccionadas([])}
-        >
+        <button className="CalendarioGeneral2-boton-borrar" onClick={() => setFechasSeleccionadas([])}>
           Borrar selección
         </button>
         {fechasSeleccionadas.length > 0 && (

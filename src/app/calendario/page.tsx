@@ -56,8 +56,7 @@ const CalendarioPage: React.FC = () => {
     <div className="calendarioPage-contenedor">
       <HeaderIcono descripcion="Glamperos" />
       
-      <CalendarioGeneral2 
-        cerrarCalendario={() => { /* Puedes dejar vacía la función o implementar algo si lo requieres */ }}
+      <CalendarioGeneral2         
         fechasManual={informacionGlamping?.fechasManual || []}
         fechasAirbnb={informacionGlamping?.fechasAirbnb || []}
         fechasBooking={informacionGlamping?.fechasBooking || []}
@@ -68,3 +67,4 @@ const CalendarioPage: React.FC = () => {
 };
 
 export default CalendarioPage;
+  

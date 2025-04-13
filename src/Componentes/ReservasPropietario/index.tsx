@@ -332,7 +332,7 @@ const ReservasPropietario: React.FC = () => {
         </div>
       ) : reservas.length === 0 ? (
         <div className="ReservasPropietario-sinReservas">
-          <Image src={"/meme.jpg"} alt="Meme" className="ReservasPropietario-imagen" width={300} height={300} />
+          <Image src={"https://storage.googleapis.com/glamperos-imagenes/Imagenes/dameTiempo.png"} alt="Meme" className="ReservasPropietario-imagen" width={300} height={300} />
           <p className="ReservasPropietario-mensaje">No tienes reservaciones aún</p>
         </div>
       ) : (

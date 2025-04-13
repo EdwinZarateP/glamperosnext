@@ -1,18 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation"; // Se agregó useSearchParams
+import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import "./estilos.css";
 
 const EditarGlamping = () => {
-  const [glampings, setGlampings] = useState<{ id: string; nombreGlamping: string }[]>([]); 
-  const [selectedGlamping, setSelectedGlamping] = useState<string>(""); 
-  const router = useRouter(); 
-  const searchParams = useSearchParams(); // Manejo de query params en Next.js
+  const [glampings, setGlampings] = useState<{ id: string; nombreGlamping: string }[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Obtener el propietarioId desde los query params o cookies
-  const propietarioId = searchParams.get("propietarioId") || Cookies.get("idUsuario") || ""; 
+  // Se obtiene el propietarioId desde los query params o Cookies
+  const propietarioId = searchParams.get("propietarioId") || Cookies.get("idUsuario") || "";
 
   useEffect(() => {
     if (!propietarioId) {
@@ -20,14 +19,13 @@ const EditarGlamping = () => {
       return;
     }
 
-    // Función para consultar los glampings de la API
+    // Función para consultar los glampings del propietario
     const consultarGlampings = async () => {
       try {
         const response = await fetch(
           `https://glamperosapi.onrender.com/glampings/por_propietario/${propietarioId}`
         );
         const data = await response.json();
-        // Extraemos tanto el nombre como el _id
         const glampingsData = data.map((glamping: { _id: string; nombreGlamping: string }) => ({
           id: glamping._id,
           nombreGlamping: glamping.nombreGlamping,
@@ -41,41 +39,28 @@ const EditarGlamping = () => {
     consultarGlampings();
   }, [propietarioId]);
 
-  // Función para manejar la selección del glamping y redirigir
-  const manejarSeleccion = () => {
-    if (selectedGlamping) {
-      router.push(`/Modificacion?glampingId=${selectedGlamping}`); // Uso de query params en lugar de ruta dinámica
-    }
-  };
-
   return (
     <div className="EditarGlamping">
       <h2 className="EditarGlamping-titulo">Edita la información de tu Glamping</h2>
       <div className="EditarGlamping-lista">
-        <label htmlFor="glampingSelect" className="EditarGlamping-label">
-          Selecciona un Glamping
-        </label>
-        <select
-          id="glampingSelect"
-          className="EditarGlamping-select"
-          value={selectedGlamping}
-          onChange={(e) => setSelectedGlamping(e.target.value)}
-        >
-          <option value="">-- Selecciona un glamping --</option>
-          {glampings.map((glamping, index) => (
-            <option key={index} value={glamping.id}>
-              {glamping.nombreGlamping}
-            </option>
-          ))}
-        </select>
+        {glampings.map((glamping, index) => (
+          <div key={index} className="EditarGlamping-item">
+            <span className="EditarGlamping-nombre">{glamping.nombreGlamping}</span>
+            <button
+              className="EditarGlamping-boton"
+              onClick={() => router.push(`/Modificacion?glampingId=${glamping.id}`)}
+            >
+              Información
+            </button>
+            <button
+              className="EditarGlamping-boton"
+              onClick={() => router.push(`/calendario?glampingId=${glamping.id}`)}
+            >
+              Calendario 📅
+            </button>
+          </div>
+        ))}
       </div>
-      <button
-        className="EditarGlamping-boton"
-        onClick={manejarSeleccion}
-        disabled={!selectedGlamping}
-      >
-        Ir a Modificación
-      </button>
     </div>
   );
 };

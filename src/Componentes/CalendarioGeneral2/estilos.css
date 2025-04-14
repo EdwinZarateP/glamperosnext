@@ -2,31 +2,31 @@
 /*                     ESTILOS DEL COMPONENTE CALENDARIO                     */
 /* ========================================================================= */
 
-/* Contenedor principal del calendario (sin fondo ni botón de cerrar) */
+/* Contenedor principal del calendario (modal) */
 .CalendarioGeneral2-contenedor {
   position: fixed;
+  top: 70px; /* Para pantallas grandes */
   left: 50%;
+  transform: translateX(-50%);
   background: #ffffff;
   border-radius: 8px;
   padding: 20px;
   width: 90%;
-  height: 90%;
+  max-height: 80%; /* Limita la altura, pero sin scroll global */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  /* Disposición en columna para que podamos 
+     distribuir wrapper y otros elementos verticalmente */
+  display: flex;
+  flex-direction: column;
 }
 
-/* En pantallas superiores a 600px: top=70px, centrado horizontalmente */
-@media (min-width: 600px) {
-  .CalendarioGeneral2-contenedor {
-    top: 70px;
-    transform: translateX(-50%);
-  }
-}
-
-/* En pantallas inferiores a 600px: centrado vertical y horizontal */
+/* Para pantallas inferiores a 600px: centrado vertical y horizontal */
 @media (max-width: 599px) {
   .CalendarioGeneral2-contenedor {
     top: 50%;
     transform: translate(-50%, -50%);
+    height: 100%;
   }
 }
 
@@ -37,7 +37,7 @@
   font-size: 1.3rem;
 }
 
-/* Nombre del glamping debajo del título */
+/* Nombre del glamping */
 .CalendarioGeneral2-nombre-glamping {
   text-align: center;
   font-size: 1.1rem;
@@ -63,7 +63,7 @@
   margin-right: 5px;
 }
 
-/* Botón para sincronizar calendarios en el header */
+/* Botón para sincronizar calendarios (si se usa en header) */
 .CalendarioGeneral2-boton-sincronizar {
   padding: 8px 16px;
   border: none;
@@ -71,15 +71,42 @@
   cursor: pointer;
   background: #2F6B3E;
   color: #fff;
+  margin-top: 20px;
 }
 
-/* Sección de meses */
+/* Wrapper que contiene el calendario y el sidebar */
+.CalendarioGeneral2-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  /* Ocupar todo el espacio disponible del contenedor,
+     pero sin scroll aquí */
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Contenedor del calendario */
+.CalendarioGeneral2-calendario {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  /* Ocupamos todo el espacio de la columna y
+     delegamos el scroll a .CalendarioGeneral2-meses */
+  overflow: hidden;
+}
+
+/* Sección de meses (dentro del calendario) 
+   - Esta es la ÚNICA con scroll vertical */
 .CalendarioGeneral2-meses {
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  height: 70%;
-  overflow-y: auto;
+
+  margin-bottom: 10px; /* Espacio para no chocar con los botones sticky */
 }
 
 /* Cada mes */
@@ -128,7 +155,7 @@
   border: none;
 }
 
-/* Espacio vacío para alinear días */
+/* Espacio vacío para alinear días (cuando el mes no empieza en lunes) */
 .CalendarioGeneral2-dia-vacio {
   visibility: hidden;
 }
@@ -139,41 +166,40 @@
   font-weight: bold;
 }
 
-/* Colores para fechas reservadas según su origen */
 /* Fechas manuales */
 .CalendarioGeneral2-dia-reservada-manual {
-  background-color: #f6b93b; /* Rojo para manual */
+  background-color: #f6b93b; 
   color: #fff;
   cursor: pointer;
 }
 
-/* Fechas de Airbnb: se muestran con su color original (#fe5d63) */
+/* Fechas de Airbnb (#fe5d63) */
 .CalendarioGeneral2-dia-reservada-airbnb {
   background-color: #fe5d63;
   color: #fff;
   cursor: not-allowed;
 }
 
-/* Fechas de Booking: se muestran con su color original (#163a8f) */
+/* Fechas de Booking (#163a8f) */
 .CalendarioGeneral2-dia-reservada-booking {
   background-color: #163a8f;
   color: #fff;
   cursor: not-allowed;
 }
 
-/* Solo las fechas manuales seleccionadas se muestran en verde */
+/* Si es manual y está seleccionada, que se vea en verde */
 .CalendarioGeneral2-dia-reservada-manual.CalendarioGeneral2-dia-seleccionado {
   background-color: #8ade8f !important;
   color: #000 !important;
 }
 
-/* Estilo para fechas deshabilitadas (fechas ≤ hoy o no editables de Airbnb/Booking) */
+/* Fechas <= hoy o de Airbnb/Booking se ven deshabilitadas */
 .CalendarioGeneral2-dia-deshabilitado {
   background: #ddd;
   cursor: not-allowed;
 }
 
-/* Si son fechas de Airbnb o Booking y están deshabilitadas, forzamos su color */
+/* Forzamos el color de Airbnb/Booking si están deshabilitadas */
 .CalendarioGeneral2-dia-reservada-airbnb.CalendarioGeneral2-dia-deshabilitado {
   background-color: #fe5d63 !important;
   color: #fff !important;
@@ -183,13 +209,20 @@
   color: #fff !important;
 }
 
-/* Botones inferiores */
+/* Botones sticky en la parte inferior de .CalendarioGeneral2-calendario */
 .CalendarioGeneral2-botones {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: inherit;
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  padding: 10px 0;
+  z-index: 10;
 }
 
+/* Botones de acción */
 .CalendarioGeneral2-boton-borrar,
 .CalendarioGeneral2-boton-bloquear,
 .CalendarioGeneral2-boton-desbloquear {
@@ -203,11 +236,7 @@
   background: #ccc;
 }
 
-.CalendarioGeneral2-boton-bloquear {
-  background: #2F6B3E;
-  color: #ffffff;
-}
-
+.CalendarioGeneral2-boton-bloquear,
 .CalendarioGeneral2-boton-desbloquear {
   background: #2F6B3E;
   color: #ffffff;
@@ -219,7 +248,7 @@
   cursor: not-allowed;
 }
 
-/* Diseño responsive para pantallas menores a 900px */
+/* Responsive para pantallas menores a 900px */
 @media (max-width: 900px) {
   .CalendarioGeneral2-titulo {
     text-align: left;
@@ -227,6 +256,143 @@
   }
 }
 
-/* ========================================================================= */
-/*                            FIN DEL ARCHIVO CSS                           */
-/* ========================================================================= */
+/* Contenedor del sidebar en desktop */
+.CalendarioGeneral2-sidebar-container {
+  width: 300px;
+  margin-left: 20px;
+  display: none;
+}
+
+/* Mostrar sidebar en >900px, ocultar toggle */
+@media (min-width: 900px) {
+  .CalendarioGeneral2-sidebar-container {
+    display: block;
+  }
+  .CalendarioGeneral2-mobile-toggle {
+    display: none;
+  }
+}
+
+/* Ocultar sidebar en <900px, mostrar botón toggle */
+@media (max-width: 899px) {
+  .CalendarioGeneral2-sidebar-container {
+    display: none;
+  }
+  .CalendarioGeneral2-mobile-toggle {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    border-radius: 16px;
+  }
+
+  .CalendarioGeneral2-mobile-toggle button {
+    padding: 10px;
+    background-color: #2F6B3E;
+    border-radius: 4px;
+    color: white;
+  }
+}
+
+/* Modal en móvil */
+.CalendarioGeneral2-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.CalendarioGeneral2-modal {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.CalendarioGeneral2-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Sidebar interno */
+.CalendarioGeneral2-sidebar-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.CalendarioGeneral2-sidebar-content h3 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.CalendarioGeneral2-field {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.CalendarioGeneral2-field label {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.CalendarioGeneral2-field input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Botón para guardar calendarios */
+.CalendarioGeneral2-btn-guardar {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #2F6B3E;
+  color: #fff;
+  margin-top: 10px;
+}
+
+
+.CalendarioGeneral2-copy-wrapper {
+  position: relative;
+}
+
+.CalendarioGeneral2-copy-field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.CalendarioGeneral2-copy-field input {
+  width: 80%;
+}
+
+.CalendarioGeneral2-copy-button {
+  background-color: transparent;
+  color: black;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s ease;
+}
+
+.CalendarioGeneral2-copy-button:hover {
+  background-color: #24542e;
+}

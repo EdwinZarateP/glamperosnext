@@ -6,6 +6,7 @@ import { ContextoApp } from "@/context/AppContext";
 import CalendarioGeneral2 from "@/Componentes/CalendarioGeneral2";
 import HeaderIcono from "@/Componentes/HeaderIcono";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
+import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 interface Glamping {
@@ -62,6 +63,8 @@ const CalendarioPage: React.FC = () => {
         fechasBooking={informacionGlamping?.fechasBooking || []}
         fechasUnidas={informacionGlamping?.fechasReservadas || []}
       />
+
+      <MenuUsuariosInferior />
     </div>
   );
 };

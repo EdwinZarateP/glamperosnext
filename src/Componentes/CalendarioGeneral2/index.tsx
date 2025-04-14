@@ -503,10 +503,10 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
 
 
       <button className="CalendarioGeneral2-btn-guardar" onClick={actualizarCalendarios}>
-        Guardar Calendarios
+        Guardar calendarios
       </button>
       <button className="CalendarioGeneral2-boton-sincronizar" onClick={sincronizarCalendarios}>
-        Sincronizar calendarios
+        ↻ Sincronizar calendarios
       </button>
     </div>
   );
@@ -572,7 +572,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
 
       {/* Modo móvil: botón para abrir el sidebar */}
       <div className="CalendarioGeneral2-mobile-toggle">
-        <button onClick={() => setMostrarModal(true)}>Configurar Calendarios</button>
+        <button onClick={() => setMostrarModal(true)}>Otros Calendarios</button>
       </div>
 
       {mostrarModal && (

@@ -368,7 +368,7 @@ const ModificarGlamping: React.FC = () => {
             onChange={(e) => setVideo_youtube(e.target.value)}
           />
 
-          <label className="ModificarGlamping-label" htmlFor="urlIcal">
+          {/* <label className="ModificarGlamping-label" htmlFor="urlIcal">
             Calendario Airbnb:
           </label>
           <input
@@ -388,9 +388,9 @@ const ModificarGlamping: React.FC = () => {
             type="text"
             value={urlIcalBooking}
             onChange={(e) => setUrlIcalBooking(e.target.value)}
-          />
+          /> */}
 
-          <label className="ModificarGlamping-label" htmlFor="urlIcalGlamperos">
+          {/* <label className="ModificarGlamping-label" htmlFor="urlIcalGlamperos">
             Calendario Glamperos:
           </label>
           <a
@@ -400,7 +400,7 @@ const ModificarGlamping: React.FC = () => {
             style={{ wordBreak: "break-all", color: "#0070f3" }}
           >
             https://glamperosapi.onrender.com/ical/exportar/{glampingId}
-          </a>
+          </a> */}
 
           </div>
           

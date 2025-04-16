@@ -42,7 +42,7 @@ const LandingPropietarios: React.FC = () => {
     {
       question: "¿Es seguro registrarme en Glamperos?",
       answer:
-        "¡Claro! Glamperos es una plataforma especializada en glampings y alojamientos en la naturaleza. Verificamos a los propietarios y mantenemos altos estándares de seguridad para que puedas operar con total confianza.",
+        "¡Claro! puedes consultar nuestro RNT 246204. Glamperos es una plataforma especializada en glampings y alojamientos en la naturaleza. Verificamos a los propietarios y mantenemos altos estándares de seguridad para que puedas operar con total confianza.",
     },
     {
       question: "¿Cómo harán que reserven mi Glamping?",
@@ -57,12 +57,12 @@ const LandingPropietarios: React.FC = () => {
     {
       question: "¿Qué pasa si mi glamping está reservado en otras plataformas?",
       answer:
-        "Debes actualizar la disponibilidad de tu calendario muy fácil en la plataforma de Glamperos. Así evitas sobrecupos o reservas duplicadas.",
+        "Contamos con sincronización de calendarios ICAL para que tu calendario de airbnb y booking se sincronice con Glamperos. Así evitas sobrecupos o reservas duplicadas.",
     },
     {
       question: "¿Cuándo y cómo recibiré el pago de mis reservas?",
       answer:
-        "El pago se libera al finalizar la reserva o según lo acordado entre Glamperos y tu. Trabajamos con métodos de pago seguros para que puedas recibir tu dinero de forma rápida y confiable a tu cuenta bancaria.",
+        "El pago se libera antes de inicar la prestacion de tu servicio en las primeras reservaciones hechas por medio de nuestra plataforma, posteriormente será al finalizar la reserva o según lo acordado entre Glamperos y tu. Trabajamos con métodos de pago seguros para que puedas recibir tu dinero de forma rápida y confiable a tu cuenta bancaria.",
     },
   ];
 

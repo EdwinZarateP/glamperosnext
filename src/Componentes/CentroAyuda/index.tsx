@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import "./estilos.css";
 
 const CentroAyuda: React.FC = () => {
-  const router = useRouter(); // Hook para navegación en Next.js
+  const router = useRouter();
 
   const redirigirWhatsApp = () => {
     const numeroWhatsApp = "+573218695196";
@@ -29,7 +29,7 @@ const CentroAyuda: React.FC = () => {
           <li className="CentroAyuda-item">
             <button className="CentroAyuda-boton" onClick={redirigirWhatsApp}>
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" // Acceder a imágenes desde la carpeta "public"
+                src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
                 alt="WhatsApp"
                 className="CentroAyuda-icono-whatsapp"
               />
@@ -44,30 +44,29 @@ const CentroAyuda: React.FC = () => {
           </li>
         </ul>
 
-        {/* Preguntas Frecuentes siempre visibles */}
         <div className="CentroAyuda-faq">
           <h3 className="CentroAyuda-faq-titulo">Preguntas Frecuentes</h3>
           <ul>
             <li>
-              <strong>¿Cómo cancelo o modifico mi reserva?</strong> Puedes hacerlo en la sección "Perfil"-"Mis Viajes",
+              <strong>¿Cómo cancelo o modifico mi reserva?</strong> Puedes hacerlo en la sección "Perfil" - "Mis Viajes",
               siempre que no infrinja las políticas establecidas antes de realizar la reserva.
             </li>
             <li>
               <strong>¿Qué métodos de pago aceptan?</strong>
               <ul>
                 <li>Tarjetas de crédito y débito (Visa, Mastercard, American Express)</li>
-                <li>PSE</li>
-                <li>Nequi</li>
-                <li>E-prepago Bancolombia</li>
-                <li>Corresponsales bancarios</li>
-                <li>Botón de pago Bancolombia</li>
-                <li>Compra y Paga Después (BNPL) Bancolombia</li>
-                <li>DaviPlata</li>
+                <li>Pago con QR Bancolombia</li>
+                <li>Transferencia desde cuenta Bancolombia (ahorro o corriente)</li>
+                <li>Cuenta Nequi</li>
+                <li>Cuenta PSE</li>
+                <li>Pago en efectivo en corresponsales bancarios</li>
+                <li>Compra y paga después Bancolombia</li>
+                <li>Pago con Daviplata</li>
+                <li>Compra hoy, paga luego con SU+ Pay</li>
               </ul>
             </li>
             <li>
-              <strong>¿Cómo contacto al anfitrión?</strong> En la página de cada Glamping tienes un botón para enviarle
-              un mensaje.
+              <strong>¿Cómo contacto al anfitrión?</strong> En la página de cada Glamping tienes un botón para enviarle un mensaje.
             </li>
             <li>
               <strong>¿Qué es Glamperos?</strong>

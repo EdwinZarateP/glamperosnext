@@ -21,7 +21,17 @@ const DatosEmpresa: React.FC = () => {
         <p>Financiada por el fondo emprender del Gobierno Colombiano</p>
         <p><strong>Sede:</strong> Cl. 71 # 58 - 102, Santa Maria, Itagüí</p>
         <p><strong>NIT:</strong>  901923029-2</p>
-        {/* <p><strong>Número de Registro Nacional de Turismo (RNT):</strong> En tramite</p> */}
+        <p>
+          <strong>Registro Nacional de Turismo (RNT):</strong> 246204{" "}
+          <a
+            href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/RNT%20GLAMPEROS%20SAS.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="boton-rnt"
+          >
+            Ver PDF
+          </a>
+        </p>
       </section>
 
       <section className="DatosEmpresa-pagos">
@@ -39,18 +49,18 @@ const DatosEmpresa: React.FC = () => {
         <h2 className="DatosEmpresa-subtitulo">Nuestros patrocinadores</h2>
         <div className="DatosEmpresa-galeria">
           <img
-            src={imagenes[1]} // Imagen principal (sena%20fondo.png)
+            src={imagenes[1]}
             alt="Imagen principal"
             className="imagen-principal"
           />
           <div className="imagen-secundaria-contenedor">
             <img
-              src={imagenes[0]} // Imagen secundaria (oso.webp)
+              src={imagenes[0]}
               alt="Imagen secundaria 1"
               className="imagen-secundaria"
             />
             <img
-              src={imagenes[2]} // Imagen secundaria (logo%20presidencia.jpeg)
+              src={imagenes[2]}
               alt="Imagen secundaria 2"
               className="imagen-secundaria"
             />

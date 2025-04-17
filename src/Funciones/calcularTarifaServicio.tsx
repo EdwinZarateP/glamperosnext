@@ -1,77 +1,81 @@
-"use client"; 
+"use client";
 
 import { differenceInCalendarDays, isWithinInterval, parseISO, addDays } from "date-fns";
 import { precioConRecargo } from "@/Funciones/precioConRecargo";
 
 /**
- * Función para calcular la tarifa del servicio considerando fechas especiales.
+ * Calcula la tarifa total del servicio en un rango de fechas.
+ *
+ * - Las fechas incluidas en `diasEspeciales` (viernes, sábados y festivos) se cobran con recargo.
+ * - El resto de noches reciben el mismo recargo, pero se les aplica el descuento indicado.
+ *
+ * @param precioBase        Precio base por noche.
+ * @param diasEspeciales    Array de fechas con recargo (formato ISO).
+ * @param descuentoPorc     Porcentaje de descuento (solo se aplica a noches normales).
+ * @param fechaInicio       Fecha de entrada (Date o string ISO).
+ * @param fechaFin          F echa de salida (Date o string ISO), no incluida en el cómputo.
+ * @returns                 Total a cobrar por el rango de noches.
  */
 export function calcularTarifaServicio(
-  precio: number,
-  viernesysabadosyfestivos: { viernesysabadosyfestivos: string[] },
-  descuento?: number,
+  precioBase: number,
+  diasEspeciales: string[],
+  descuentoPorc = 0,
   fechaInicio?: Date | string,
   fechaFin?: Date | string
 ): number {
   try {
-    if (precio <= 0) return 0;
+    // Validación básica de precio
+    if (precioBase <= 0) return 0;
 
-    // Aplicar recargo al precio utilizando la función separada
-    let precioConRecargoCalculado = precioConRecargo(precio);
-
-    // Asegurarse de que las fechas existen y son válidas
+    // Validación de fechas requeridas
     if (!fechaInicio || !fechaFin) {
-      console.error("Error: Las fechas de inicio y fin son requeridas.");
+      console.error("Error: Se requieren fecha de inicio y fecha de fin.");
       return 0;
     }
 
-    // Convertir fechas a objetos Date si vienen como string
+    // Parsear fechas si vienen como string
     const inicio = typeof fechaInicio === "string" ? parseISO(fechaInicio) : fechaInicio;
     const fin = typeof fechaFin === "string" ? parseISO(fechaFin) : fechaFin;
 
-    // Validar que las fechas sean válidas
-    if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
-      console.error("Error: Una o ambas fechas no son válidas.");
+    // Verificación de fechas válidas y orden
+    if (isNaN(inicio.getTime()) || isNaN(fin.getTime()) || inicio >= fin) {
+      console.error("Error: Fechas inválidas o mal ordenadas.");
       return 0;
     }
 
-    // Validar que el rango de fechas sea correcto
-    if (inicio >= fin) {
-      console.error("Error: La fecha de inicio debe ser anterior a la fecha de fin.");
-      return 0;
-    }
+    // Precios con recargo y con descuento aplicado (solo a noches normales)
+    const precioRecargado = precioConRecargo(precioBase);
+    const factorDescuento = 1 - descuentoPorc / 100;
+    const precioConDescuento = precioRecargado * factorDescuento;
 
-    // Filtrar las fechas de viernes y sábados dentro del rango (sin incluir fechaFin)
-    const fechasCoincidentes = viernesysabadosyfestivos.viernesysabadosyfestivos.filter((fecha) => {
-      if (!fecha) return false; // Si la fecha es undefined o null, la ignoramos
+    // Cálculo de noches totales (fechaFin no incluida)
+    const totalNoches = differenceInCalendarDays(fin, inicio);
 
-      const fechaISO = parseISO(fecha);
+    // Identificar cuántas noches están en fechas especiales
+    const nochesEspeciales = diasEspeciales
+      .map((fecha) => {
+        const f = parseISO(fecha);
+        return isNaN(f.getTime()) ? null : f;
+      })
+      .filter(
+        (fecha) =>
+          fecha &&
+          isWithinInterval(fecha, {
+            start: inicio,
+            end: addDays(fin, -1), // Excluir la fecha de salida
+          })
+      ).length;
 
-      // Validar si `fechaISO` es un objeto Date válido
-      if (isNaN(fechaISO.getTime())) {
-        console.warn(`Advertencia: Fecha inválida detectada en el array - ${fecha}`);
-        return false;
-      }
+    // Calcular noches normales (restantes)
+    const nochesNormales = totalNoches - nochesEspeciales;
 
-      return isWithinInterval(fechaISO, { start: inicio, end: addDays(fin, -1) });
-    });
+    // Cálculo final
+    const total =
+      nochesEspeciales * precioRecargado + nochesNormales * precioConDescuento;
 
-    // Calcular los días totales (excluyendo fechaFin)
-    const diasTotales = differenceInCalendarDays(fin, inicio);
-    const diasRestantes = diasTotales - fechasCoincidentes.length;
-
-    // Calcular el total para los días coincidentes (viernes y sábados)
-    const totalCoincidentes = fechasCoincidentes.length * precioConRecargoCalculado;
-
-    // Calcular el total para los días restantes, con o sin descuento
-    const totalRestantes = descuento
-      ? diasRestantes * (precioConRecargoCalculado * (1 - descuento / 100))
-      : diasRestantes * precioConRecargoCalculado;
-
-    // Retornar el total combinado
-    return totalCoincidentes + totalRestantes;
+    return total;
   } catch (error) {
     console.error("Error en calcularTarifaServicio:", error);
-    return 0; // Evita que la aplicación se rompa
+    return 0;
   }
 }

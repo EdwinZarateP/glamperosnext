@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { ContextoApp } from "@/context/AppContext";
 import CalendarioSecundario from "@/Componentes/CalendarioSecundario";
 import Visitantes from "../Visitantes";
-import viernesysabadosyfestivos from "@/Componentes/BaseFinesSemana/fds.json";
+import fds from "@/Componentes/BaseFinesSemana/fds.json";
 import { calcularTarifaServicio } from "@/Funciones/calcularTarifaServicio";
 import { ExtraerTarifaGlamperos } from "@/Funciones/ExtraerTarifaGlamperos";
 import { encryptData } from "@/Funciones/Encryptacion";
@@ -201,21 +201,21 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
   }
 
   // Calcular tarifas
-  const precioConTarifa = calcularTarifaServicio(
-    precioPorNoche,
-    viernesysabadosyfestivos,
-    descuento,
-    fechaInicioReservada ?? fechaInicioPorDefecto,
-    fechaFinReservada ?? fechaFinPorDefecto
-  );
-
-  const precioConTarifaAdicional = calcularTarifaServicio(
-    precioPersonaAdicional,
-    viernesysabadosyfestivos,
-    0,
-    fechaInicioReservada ?? fechaInicioPorDefecto,
-    fechaFinReservada ?? fechaFinPorDefecto
-  );
+ const precioConTarifa = calcularTarifaServicio(
+     precioPorNoche,
+     fds.viernesysabadosyfestivos,
+     descuento,
+     fechaInicioReservada ?? fechaInicioPorDefecto,
+     fechaFinReservada ?? fechaFinPorDefecto
+   );
+   
+   const precioConTarifaAdicional = calcularTarifaServicio(
+     precioPersonaAdicional,
+     fds.viernesysabadosyfestivos,
+     0,
+     fechaInicioReservada ?? fechaInicioPorDefecto,
+     fechaFinReservada ?? fechaFinPorDefecto
+   );
 
   const porcentajeGlamperos = ExtraerTarifaGlamperos(precioPorNoche);
 

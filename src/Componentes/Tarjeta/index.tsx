@@ -12,7 +12,7 @@ import axios from "axios";
 
 import { ContextoApp } from "@/context/AppContext";
 import { calcularTarifaServicio } from "@/Funciones/calcularTarifaServicio";
-import viernesysabadosyfestivos from "@/Componentes/BaseFinesSemana/fds.json";
+import fds from "@/Componentes/BaseFinesSemana/fds.json";
 
 import "./estilos.css";
 
@@ -110,11 +110,11 @@ const Tarjeta: React.FC<TarjetaProps> = ({
 
   const precioConTarifa = calcularTarifaServicio(
     precio,
-    viernesysabadosyfestivos,
+    fds.viernesysabadosyfestivos,
     descuento,
     fechaInicioConfirmado ?? fechaInicioPorDefecto,
     fechaFinConfirmado ?? fechaFinPorDefecto
-  );
+  );  
   const precioFinalNoche = precioConTarifa / totalDiasUrl;
 
   const verificarFavorito = async (): Promise<boolean> => {

@@ -8,10 +8,11 @@ import { GiCampingTent } from "react-icons/gi";
 import { ContextoApp } from "@/context/AppContext";
 import CalendarioSecundario from "@/Componentes/CalendarioSecundario";
 import Visitantes from "../Visitantes";
-import viernesysabadosyfestivos from "@/Componentes/BaseFinesSemana/fds.json";
+import fds from "@/Componentes/BaseFinesSemana/fds.json";
 import { calcularTarifaServicio } from "@/Funciones/calcularTarifaServicio";
 import { ExtraerTarifaGlamperos } from "@/Funciones/ExtraerTarifaGlamperos";
 import { encryptData } from "@/Funciones/Encryptacion";
+import { calcularValorDescuento } from "@/Funciones/calcularValorDescuento";
 import "./estilos.css";
 
 interface FormularioFechasProps {
@@ -206,19 +207,29 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
   // Calcular tarifas
   const precioConTarifa = calcularTarifaServicio(
     precioPorNoche,
-    viernesysabadosyfestivos,
+    fds.viernesysabadosyfestivos,
     descuento,
     fechaInicioReservada ?? fechaInicioPorDefecto,
     fechaFinReservada ?? fechaFinPorDefecto
   );
 
+  const valorDescuento = calcularValorDescuento(
+    precioPorNoche,
+    fds.viernesysabadosyfestivos,
+    descuento,
+    fechaInicioReservada ?? fechaInicioPorDefecto,
+    fechaFinReservada ?? fechaFinPorDefecto
+  );
+  
+  
   const precioConTarifaAdicional = calcularTarifaServicio(
     precioPersonaAdicional,
-    viernesysabadosyfestivos,
+    fds.viernesysabadosyfestivos,
     0,
     fechaInicioReservada ?? fechaInicioPorDefecto,
     fechaFinReservada ?? fechaFinPorDefecto
   );
+  
 
   const porcentajeGlamperos = ExtraerTarifaGlamperos(precioPorNoche);
 
@@ -488,7 +499,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
             <span>
               {Math.round(
                 (precioConTarifa / totalDiasRender) *
-                  (1 / (1 + porcentajeGlamperos))
+                  (1 / (1 + porcentajeGlamperos))+valorDescuento
               ).toLocaleString()}{" "}
               x{" "}
               {totalDiasRender === 1
@@ -498,7 +509,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
             </span>
             <span>
               {Math.round(
-                precioConTarifa * (1 / (1 + porcentajeGlamperos))
+                precioConTarifa * (1 / (1 + porcentajeGlamperos))+valorDescuento
               ).toLocaleString()}{" "}
               COP
             </span>
@@ -542,6 +553,14 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
             <span>Tarifa por servicio Glamperos</span>
             <span>{tarifaFinalGlamperos.toLocaleString()} COP</span>
           </div>
+
+          {valorDescuento > 0 && (
+          <div className="FormularioFechas-item descuento">
+            <span>Descuento aplicado</span>
+            <span>-{valorDescuento.toLocaleString()} COP</span>
+          </div>
+          )}
+
         </div>
 
         {/* Total */}

@@ -499,7 +499,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
             <span>
               {Math.round(
                 (precioConTarifa / totalDiasRender) *
-                  (1 / (1 + porcentajeGlamperos))+valorDescuento
+                  (1 / (1 + porcentajeGlamperos))+(valorDescuento/totalDiasRender)
               ).toLocaleString()}{" "}
               x{" "}
               {totalDiasRender === 1
@@ -556,7 +556,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
 
           {valorDescuento > 0 && (
           <div className="FormularioFechas-item descuento">
-            <span>Descuento aplicado</span>
+            <span>Descuento😮</span>
             <span>-{valorDescuento.toLocaleString()} COP</span>
           </div>
           )}

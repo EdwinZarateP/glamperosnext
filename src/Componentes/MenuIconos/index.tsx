@@ -107,7 +107,7 @@ const MenuIconos: React.FC = () => {
     { titulo: "Pet Friendly", icono: <MdOutlinePets />, accion: setActivarFiltrosMascotas },
     { titulo: "Domo", icono: <GiHabitatDome />, accion: setActivarFiltrosDomo },
     { titulo: "Tienda", icono: <GiCampingTent />, accion: setActivarFiltrosTienda },
-    { titulo: "Lumipod",icono: (<Image src="/imagenes/lumi.svg" alt="Lumipod" width={24} height={24}/>), accion: setActivarFiltrosLumipod },
+    { titulo: "Lumipod",icono: (<Image src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" width={24} height={24}/>), accion: setActivarFiltrosLumipod },
     { titulo: "Cabaña", icono: <MdCabin />, accion: setActivarFiltrosCabaña },
     { titulo: "Casa del arbol", icono: <GiTreehouse />, accion: setActivarFiltrosCasaArbol },
     { titulo: "Remolque", icono: <FaCaravan />, accion: setActivarFiltrosRemolques },

@@ -257,42 +257,34 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   const sincronizarCalendarios = async () => {
     try {
       if (!glampingId) throw new Error("Glamping no encontrado");
-
+  
       const glamping = await ObtenerGlampingPorId(glampingId);
       if (!glamping) throw new Error("Glamping no encontrado");
-
-      const urls: string[] = [];
+  
+      const resultados: { url: string; ok: boolean; mensaje: string }[] = [];
+  
       for (const campo of ["urlIcal", "urlIcalBooking"]) {
         const valor = glamping[campo];
+        const source = campo === "urlIcal" ? "airbnb" : "booking";
+  
         if (typeof valor === "string") {
-          valor.split("\n").forEach(linea => {
-            const url = linea.trim();
-            if (url && url.toLowerCase() !== "sin url") {
-              urls.push(url);
-            }
-          });
+          const urls = valor.split("\n").map(linea => linea.trim()).filter(u => u && u.toLowerCase() !== "sin url");
+  
+          for (const url of urls) {
+            const response = await fetch(
+              `https://glamperosapi.onrender.com/ical/importar?glamping_id=${glampingId}&url_ical=${encodeURIComponent(url)}&source=${source}`,
+              { method: "POST" }
+            );
+            const data = await response.json();
+            resultados.push({
+              url,
+              ok: response.ok,
+              mensaje: data.mensaje || data.detail
+            });
+          }
         }
       }
-      if (urls.length === 0) {
-        Swal.fire("Sin URL válida", "No hay URLs válidas para sincronizar.", "info");
-        return;
-      }
-
-      const resultados: { url: string; ok: boolean; mensaje: string }[] = [];
-      for (const url of urls) {
-        const response = await fetch(
-          `https://glamperosapi.onrender.com/ical/importar?glamping_id=${glampingId}&url_ical=${encodeURIComponent(
-            url
-          )}`,
-          { method: "POST" }
-        );
-        const data = await response.json();
-        resultados.push({
-          url,
-          ok: response.ok,
-          mensaje: data.mensaje || data.detail
-        });
-      }
+  
       const exitosos = resultados.filter(r => r.ok).length;
       Swal.fire({
         icon: "success",
@@ -304,6 +296,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
       Swal.fire("Error", "Ocurrió un error al sincronizar los calendarios.", "error");
     }
   };
+  
 
   // =============================================================================
   //          LÓGICA DE FECHAS MANUALES (BLOQUEO / DESBLOQUEO)

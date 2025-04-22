@@ -149,23 +149,24 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   const actualizarCalendarios = async () => {
     if (!glampingId || !informacionGlamping) return;
      // Validar URLs antes de continuar
-    if (urlAirbnb && !urlAirbnb.toLowerCase().includes("airbnb")) {
+     if (urlAirbnb && urlAirbnb.toLowerCase().includes("glamperos")) {
       Swal.fire({
         icon: "warning",
         title: "URL incorrecta",
-        text: "Parece que pegaste mal el link de Airbnb. Asegúrate de copiarlo desde la sección correcta."
+        text: "No debes pegar el link de Glamperos en el campo de Airbnb. Asegúrate de copiarlo desde tu panel de Airbnb."
       });
       return;
     }
-
-    if (urlBooking && !urlBooking.toLowerCase().includes("booking")) {
+    
+    if (urlBooking && urlBooking.toLowerCase().includes("glamperos")) {
       Swal.fire({
         icon: "warning",
         title: "URL incorrecta",
-        text: "Parece que pegaste mal el link de Booking. Verifica que sea la URL de calendario."
+        text: "No debes pegar el link de Glamperos en el campo de Booking. Copia el enlace desde tu cuenta de Booking.com."
       });
       return;
     }
+    
 
     try {
       // Creamos un FormData con todos los campos que el backend requiere

@@ -72,6 +72,7 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     setActivarFiltrosCasaArbol,
     setActivarFiltrosRemolques,
     setActivarFiltrosChoza,
+    setActivarFiltrosLumipod,
     setActivarFiltrosClimaCalido,
     setActivarFiltrosClimaFrio,
     setActivarFiltrosPlaya,
@@ -113,6 +114,7 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     setActivarFiltrosCabaña(false);
     setActivarFiltrosRemolques(false);
     setActivarFiltrosChoza(false);
+    setActivarFiltrosLumipod(false);
     setActivarFiltrosDomo(false);
     setActivarFiltrosMascotas(false);
     setActivarFiltrosClimaCalido(false);

@@ -218,6 +218,8 @@ interface ContextProps {
   setActivarFiltrosRemolques: Dispatch<SetStateAction<boolean>>;
   activarFiltrosChoza: boolean;
   setActivarFiltrosChoza: Dispatch<SetStateAction<boolean>>;
+  activarFiltrosLumipod: boolean;
+  setActivarFiltrosLumipod: Dispatch<SetStateAction<boolean>>; 
   activarFiltrosMascotas: boolean;
   setActivarFiltrosMascotas: Dispatch<SetStateAction<boolean>>;
   activarFiltrosClimaCalido: boolean;
@@ -359,6 +361,7 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
     const [activarFiltrosCasaArbol, setActivarFiltrosCasaArbol] = useState<boolean>(false);
     const [activarFiltrosRemolques, setActivarFiltrosRemolques] = useState<boolean>(false);
     const [activarFiltrosChoza, setActivarFiltrosChoza] = useState<boolean>(false);
+    const [activarFiltrosLumipod, setActivarFiltrosLumipod] = useState<boolean>(false);
     const [activarFiltrosMascotas, setActivarFiltrosMascotas] = useState<boolean>(false);
     const [activarFiltrosClimaCalido, setActivarFiltrosClimaCalido] = useState<boolean>(false);  
     const [activarFiltrosClimaFrio, setActivarFiltrosClimaFrio] = useState<boolean>(false);  
@@ -456,6 +459,7 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
         activarFiltrosCasaArbol, setActivarFiltrosCasaArbol,
         activarFiltrosRemolques, setActivarFiltrosRemolques,
         activarFiltrosChoza, setActivarFiltrosChoza,
+        activarFiltrosLumipod, setActivarFiltrosLumipod,        
         activarFiltrosMascotas, setActivarFiltrosMascotas,
         activarFiltrosClimaCalido, setActivarFiltrosClimaCalido,
         activarFiltrosClimaFrio, setActivarFiltrosClimaFrio,

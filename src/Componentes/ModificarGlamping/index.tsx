@@ -342,6 +342,8 @@ const ModificarGlamping: React.FC = () => {
             <option value="Casa del arbol">Casa del árbol</option>
             <option value="Remolque">Remolque</option>
             <option value="Choza">Choza</option>
+            <option value="Lumipod">Lumipod</option>
+
           </select>
 
           <label className="ModificarGlamping-label" htmlFor="Acepta_Mascotas">

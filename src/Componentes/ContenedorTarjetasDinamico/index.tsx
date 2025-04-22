@@ -68,6 +68,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
     activarFiltrosCasaArbol,
     activarFiltrosRemolques,
     activarFiltrosChoza,
+    activarFiltrosLumipod,
     activarFiltrosMascotas,
     activarFiltrosClimaCalido,
     activarFiltrosClimaFrio,
@@ -363,6 +364,9 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       !activarFiltrosRemolques || glamping.tipoGlamping === "Remolque";
     const filtraChoza =
       !activarFiltrosChoza || glamping.tipoGlamping === "Choza";
+    const filtraLumipod =
+      !activarFiltrosLumipod || glamping.tipoGlamping === "Lumipod";
+      
 
     // 7) Mascotas y amenidades
     const filtraMascotas =
@@ -408,6 +412,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       filtraCasaArbol &&
       filtraRemolque &&
       filtraChoza &&
+      filtraLumipod &&
       filtraMascotas &&
       filtraClimaCalido &&
       filtraClimaFrio &&

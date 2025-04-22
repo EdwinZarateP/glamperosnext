@@ -61,6 +61,7 @@ const ContenedorTarjetas: React.FC = () => {
     activarFiltrosCasaArbol,
     activarFiltrosRemolques,
     activarFiltrosChoza,
+    activarFiltrosLumipod,
     activarFiltrosMascotas,
     activarFiltrosClimaCalido,
     activarFiltrosClimaFrio,
@@ -361,6 +362,9 @@ const ContenedorTarjetas: React.FC = () => {
       !activarFiltrosRemolques || glamping.tipoGlamping === "Remolque";
     const filtraChoza =
       !activarFiltrosChoza || glamping.tipoGlamping === "Choza";
+    const filtraLumipod =
+      !activarFiltrosLumipod || glamping.tipoGlamping === "Lumipod";
+      
     const filtraMascotas =
       !activarFiltrosMascotas || glamping.Acepta_Mascotas === true;
     const filtraClimaCalido =
@@ -409,6 +413,7 @@ const ContenedorTarjetas: React.FC = () => {
       filtraCasaArbol &&
       filtraRemolque &&
       filtraChoza &&
+      filtraLumipod &&
       filtraMascotas &&
       filtraClimaCalido &&
       filtraClimaFrio &&

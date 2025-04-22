@@ -18,6 +18,7 @@ const Paso1B: React.FC = () => {
     { id: "Remolque", label: "Remolque", icono: <FaCaravan /> },
     { id: "Cabaña", label: "Cabaña", icono: <MdOutlineCabin /> },
     { id: "Choza", label: "Choza", icono: <GiHut /> },
+    { id: "Lumipod", label: "Lumipod", icono: (<img src="/imagenes/lumi.svg" alt="Lumipod" className="Paso1B-svg-icono" />),},
   ];
 
   const manejarSeleccion = (opcionId: string) => {

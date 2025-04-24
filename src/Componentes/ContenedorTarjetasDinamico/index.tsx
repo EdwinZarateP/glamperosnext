@@ -166,7 +166,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       // Mapeamos para garantizar valores por defecto
       const parsedData = data.map((g) => ({
         _id: g._id,
-        habilitado: g.habilitado || true,
+        habilitado: g.habilitado || false,//Esto es lo que hace que se vean solo los true
         nombreGlamping: g.nombreGlamping || "Nombre no disponible",
         tipoGlamping: g.tipoGlamping || "Choza",
         ciudad_departamento: g.ciudad_departamento || "Ciudad no disponible",

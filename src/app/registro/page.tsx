@@ -8,7 +8,7 @@ export default function RegistrarsePage() {
   return (
     <div className="Registro-contenedor">
       {/* Video de fondo para dar dinamismo */}
-      <video className="Registro-fondo-video" autoPlay muted loop>
+      <video className="Registro-fondo-video" autoPlay muted loop playsInline>
         <source src="/Videos/Paso1AVideo.mp4" type="video/mp4" />
       </video>
 

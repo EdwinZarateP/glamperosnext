@@ -26,6 +26,9 @@
     height: 100%;
     object-fit: cover;
     z-index: -2;
+    pointer-events: none;
+    transform: translateZ(0);
+    will-change: transform;
   }
   
   /* Capa Oscura para Mejorar Legibilidad */

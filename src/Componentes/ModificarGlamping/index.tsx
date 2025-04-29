@@ -25,7 +25,7 @@ const ModificarGlamping: React.FC = () => {
 
   const opcionesAmenidades = [
     'Wifi', 'Zona de trabajo', 'Desayuno', 'Jacuzzi', 'Tina', 'Piscina',
-    'Maya catamaran', 'Parrilla', 'Cocina', 'Zona fogata', 'Chimenea',
+    'Malla catamaran', 'Parrilla', 'Cocina', 'Zona fogata', 'Chimenea',
     'Mini bar', 'Tv', 'Proyector', 'Juegos de mesa', 'Lavadora', 'Clima Calido',
     'Aire acondicionado', 'Clima Frio', 'Calefaccion', 'Ducha', 'Detector de humo',
     'Extintor', 'Botiquin', 'Playa', 'Naturaleza', 'Rio', 'Cascada', 'En la montaña',

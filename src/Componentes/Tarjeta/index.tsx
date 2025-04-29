@@ -394,7 +394,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
                 { valor: "Piscina", prefijo: "con" },
                 { valor: "Tina", prefijo: "con" },
                 { valor: "Rio", prefijo: "cerca al" },
-                { valor: "Maya catamaran", prefijo: "con" },
+                { valor: "Malla catamaran", prefijo: "con" },
                 { valor: "En la montaña", prefijo: "" },
                 { valor: "Zona fogata", prefijo: "con" },
               ];

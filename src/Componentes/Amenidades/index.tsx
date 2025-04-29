@@ -22,7 +22,7 @@ export const opcionesAmenidades = [
   { id: "Jacuzzi", label: "Jacuzzi", icono: <FaHotTubPerson /> },
   { id: "Tina", label: "Tina", icono: <MdOutlineBathtub /> },
   { id: "Piscina", label: "Piscina", icono: <MdPool /> },
-  { id: "Maya catamaran", label: "Maya catamaran", icono: <GiFishingNet /> },
+  { id: "Malla catamaran", label: "Malla catamaran", icono: <GiFishingNet /> },
   { id: "Parrilla", label: "Parrilla", icono: <MdOutdoorGrill /> },
   { id: "Cocina", label: "Cocina", icono: <FaKitchenSet /> },
   { id: "Zona fogata", label: "Zona fogata", icono: <IoIosBonfire /> },

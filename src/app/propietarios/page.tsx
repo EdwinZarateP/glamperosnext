@@ -243,8 +243,8 @@ const LandingPropietarios: React.FC = () => {
             <span className="LandingPropietarios-contacto-icono">
               <FaStar />
             </span>
-            Consulta nuestra regulación con el NIT 901.923.029-2 para mayor
-            tranquilidad.
+            Consulta nuestra regulación con el NIT 901923029-2 para mayor
+            tranquilidad y RNT 246204.
           </li>
         </ul>
       </section>

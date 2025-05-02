@@ -1,11 +1,12 @@
 "use client";
+import "./estilos.css";
 
 import React from "react";
-import { GiTowel, GiWashingMachine, GiFireplace, GiSmokeBomb, GiThermometerHot, GiCoffeeCup, GiFishingNet, GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
-import { IoWifi } from "react-icons/io5";
+import { GiWineBottle, GiTowel, GiWashingMachine, GiFireplace, GiSmokeBomb, GiThermometerHot, GiCoffeeCup, GiFishingNet, GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
+import { IoWifi, IoTelescope } from "react-icons/io5";
 import { FaWater } from "react-icons/fa";
 import { IoIosBonfire, IoIosRestaurant } from "react-icons/io";
-import { TbDeviceTv } from "react-icons/tb";
+import { TbDeviceTv, TbMassage } from "react-icons/tb";
 import { FaFan, FaRegSnowflake, FaLaptopHouse, FaShower, FaUmbrellaBeach, FaChess, FaPumpSoap } from "react-icons/fa";
 import { FaFireExtinguisher, FaKitMedical, FaKitchenSet, FaHotTubPerson, FaTemperatureArrowUp, FaTemperatureArrowDown} from "react-icons/fa6";
 import { MdOutdoorGrill, MdPool, MdOutlineBathtub, MdOutlinePets } from "react-icons/md";
@@ -19,10 +20,14 @@ export const opcionesAmenidades = [
   { id: "Mascotas", label: "Mascotas", icono: <MdOutlinePets /> },
   { id: "Zona de trabajo", label: "Zona de trabajo", icono: <FaLaptopHouse /> },
   { id: "Desayuno", label: "Desayuno", icono: <GiCoffeeCup /> },
+  { id: "Coctel bienvenida", label: "Coctel bienvenida", icono: <GiWineBottle /> },  
   { id: "Jacuzzi", label: "Jacuzzi", icono: <FaHotTubPerson /> },
+  { id: "Sauna", label: "Sauna", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/sauna.svg" alt="Sauna" className="Amenidades-svg-icono" />),},
   { id: "Tina", label: "Tina", icono: <MdOutlineBathtub /> },
   { id: "Piscina", label: "Piscina", icono: <MdPool /> },
   { id: "Malla catamaran", label: "Malla catamaran", icono: <GiFishingNet /> },
+  { id: "Zona Hamaca", label: "Zona Hamaca", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/hamaca.svg" alt="Hamaca" className="Amenidades-svg-icono" />),},
+  { id: "Zona masajes", label: "Zona masajes", icono: <TbMassage /> },  
   { id: "Parrilla", label: "Parrilla", icono: <MdOutdoorGrill /> },
   { id: "Cocina", label: "Cocina", icono: <FaKitchenSet /> },
   { id: "Zona fogata", label: "Zona fogata", icono: <IoIosBonfire /> },
@@ -31,6 +36,7 @@ export const opcionesAmenidades = [
   { id: "Mini bar", label: "Mini bar", icono: <LuRefrigerator /> },
   { id: "Tv", label: "Tv", icono: <TbDeviceTv /> },
   { id: "Proyector", label: "Proyector", icono: <BsFillProjectorFill /> },
+  { id: "Telescopio", label: "Telescopio", icono: <IoTelescope /> },  
   { id: "Toallas", label: "Toallas", icono: <GiTowel /> },  
   { id: "Jabon y shampoo", label: "Jabon y shampoo", icono: <FaPumpSoap /> },  
   { id: "Juegos de mesa", label: "Juegos de mesa", icono: <FaChess /> },  
@@ -53,4 +59,5 @@ export const opcionesAmenidades = [
   { id: "Desierto", label: "Desierto", icono: <GiDesert /> },
   { id: "Caminata", label: "Caminata", icono: <GiHiking /> },
   { id: "Parqueadero", label: "Parqueadero", icono: <AiTwotoneCar /> },
+  
 ];

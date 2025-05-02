@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './estilos.css';
 import axios from 'axios';
 import { useSearchParams} from "next/navigation";
+import { opcionesAmenidades } from "@/Componentes/Amenidades/index"; 
 import Swal from 'sweetalert2';
 
 const ModificarGlamping: React.FC = () => {
@@ -23,14 +24,14 @@ const ModificarGlamping: React.FC = () => {
   const [urlIcalBooking, setUrlIcalBooking] = useState('');
   const [amenidadesGlobal, setAmenidadesGlobal] = useState<string[]>([]);
 
-  const opcionesAmenidades = [
-    'Wifi', 'Zona de trabajo', 'Desayuno', 'Jacuzzi', 'Tina', 'Piscina',
-    'Malla catamaran', 'Parrilla', 'Cocina', 'Zona fogata', 'Chimenea',
-    'Mini bar', 'Tv', 'Proyector', 'Juegos de mesa', 'Lavadora', 'Clima Calido',
-    'Aire acondicionado', 'Clima Frio', 'Calefaccion', 'Ducha', 'Detector de humo',
-    'Extintor', 'Botiquin', 'Playa', 'Naturaleza', 'Rio', 'Cascada', 'En la montaña',
-    'Desierto', 'Caminata', 'Parqueadero'
-  ];
+  // const opcionesAmenidades = [
+  //   'Wifi', 'Zona de trabajo', 'Desayuno', 'Jacuzzi', 'Tina', 'Piscina',
+  //   'Malla catamaran', 'Parrilla', 'Cocina', 'Zona fogata', 'Chimenea',
+  //   'Mini bar', 'Tv', 'Proyector', 'Juegos de mesa', 'Lavadora', 'Clima Calido',
+  //   'Aire acondicionado', 'Clima Frio', 'Calefaccion', 'Ducha', 'Detector de humo',
+  //   'Extintor', 'Botiquin', 'Playa', 'Naturaleza', 'Rio', 'Cascada', 'En la montaña',
+  //   'Desierto', 'Caminata', 'Parqueadero'
+  // ];
 
   useEffect(() => {
     if (glampingId && glampingId.trim() !== "") {
@@ -420,15 +421,16 @@ const ModificarGlamping: React.FC = () => {
             Amenidades:
           </label>
           <div className="amenidades-container">
-            {opcionesAmenidades.map((amenidad) => (
+            {opcionesAmenidades.map(({ id, label }) => (
               <button
-                key={amenidad}
-                className={`amenidad-button ${amenidadesGlobal.includes(amenidad) ? 'selected' : ''}`}
-                onClick={() => toggleAmenidad(amenidad)}
-              >
-                {amenidad}
+                key={id}
+                className={`amenidad-button ${amenidadesGlobal.includes(id) ? 'selected' : ''}`}
+                onClick={() => toggleAmenidad(id)}
+              >                
+                {label}
               </button>
             ))}
+
           </div>
         </div>
 

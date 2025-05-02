@@ -276,12 +276,12 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
     const [precioPorNoche, setPrecioPorNoche] = useState<number | undefined>(undefined);
     const [tarifaServicio, setTarifaServicio] = useState<number | undefined>(undefined);
     const [totalSinImpuestos, setTotalSinImpuestos] = useState<number | undefined>(undefined);
-    const [Cantidad_Adultos, setCantidad_Adultos] = useState<number>(1);
+    const [Cantidad_Adultos, setCantidad_Adultos] = useState<number>(2);
     const [Cantidad_Ninos, setCantidad_Ninos] = useState<number>(0);
     const [Cantidad_Bebes, setCantidad_Bebes] = useState<number>(0);
     const [Cantidad_Mascotas, setCantidad_Mascotas] = useState<number>(0);
-    const [totalHuespedes, setTotalHuespedes] = useState<number>(1);
-    const [Cantidad_Huespedes, setCantidad_Huespedes] = useState<number>(1);
+    const [totalHuespedes, setTotalHuespedes] = useState<number>(2);
+    const [Cantidad_Huespedes, setCantidad_Huespedes] = useState<number>(2);
     const [Cantidad_Huespedes_Adicional, setCantidad_Huespedes_Adicional] = useState<number>(0);  
     const [Acepta_Mascotas, setAcepta_Mascotas] = useState<boolean>(false); 
     const [siono, setSiono] = useState<boolean>(false);   

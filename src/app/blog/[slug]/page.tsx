@@ -27,8 +27,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         className="blog-post-content"
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
       />
-      <Link className="blog-back-link" href="/blog">
-        ← Volver al blog
+      <Link href="/blog">
+        <span className="blog-back-link">← Volver al blog</span>
       </Link>
     </main>
   );

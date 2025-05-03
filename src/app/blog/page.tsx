@@ -1,4 +1,3 @@
-// src/app/blog/page.tsx
 import Link from "next/link";
 import "./estilos.css";
 
@@ -15,15 +14,13 @@ export default async function BlogIndex() {
         {posts.map((post: any) => (
           <li key={post.id}>
             <Link href={`/blog/${post.slug}`}>
-              <h2
+              <div
                 className="blog-post-title"
-                suppressHydrationWarning
                 dangerouslySetInnerHTML={{ __html: post.title.rendered }}
               />
             </Link>
-            <p
+            <div
               className="blog-post-excerpt"
-              suppressHydrationWarning
               dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
             />
           </li>

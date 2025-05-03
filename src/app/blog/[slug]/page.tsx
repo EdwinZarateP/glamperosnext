@@ -5,12 +5,19 @@ import "./estilos.css";
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.WORDPRESS_API}/posts`);
   const posts: any[] = await res.json();
-  return posts.map((p) => ({ slug: p.slug }));
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
+export default async function BlogPost({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  // ─── AQUI EL AWAIT ───────────────────────────────────────────────
+  const { slug } = await params;
+
   const res = await fetch(
-    `${process.env.WORDPRESS_API}/posts?slug=${params.slug}`
+    `${process.env.WORDPRESS_API}/posts?slug=${slug}`
   );
   const posts: any[] = await res.json();
   const post = posts[0];

@@ -1,20 +1,25 @@
-// "use client";
+// app/Modificacion/page.tsx
 
-import ModificarGlamping from "@/Componentes/ModificarGlamping/index";
-import ModificarFotos from "@/Componentes/ModificarFotos/index";
+import React, { Suspense } from "react";
 import HeaderIcono from "@/Componentes/HeaderIcono";
+import ModificarGlamping from "@/Componentes/ModificarGlamping";
+import ModificarFotos from "@/Componentes/ModificarFotos";
 import "./estilos.css";
 
-function Modificacion() {
+export default function Modificacion() {
   return (
     <div className="Modificacion-contenedor">
       <HeaderIcono descripcion="Glamperos" />
+
       <h1 className="Modificacion-titulo">Modificar datos del glamping</h1>
-      <ModificarGlamping />
+      <Suspense fallback={<div>Cargando formulario…</div>}>
+        <ModificarGlamping />
+      </Suspense>
+
       <h1 className="Modificacion-titulo">Modifica tus fotos</h1>
-      <ModificarFotos />
+      <Suspense fallback={<div>Cargando fotos…</div>}>
+        <ModificarFotos />
+      </Suspense>
     </div>
   );
 }
-
-export default Modificacion;

@@ -14,22 +14,15 @@ export default async function BlogIndex() {
       <ul className="blog-post-list">
         {posts.map((post) => (
           <li key={post.id}>
-            <Link
-              href={`/blog/${post.slug}`}
-              prefetch={false}              // <-- aquí
-            >
+            <Link href={`/blog/${post.slug}`} prefetch={false}>
               <h2
                 className="blog-post-title"
-                dangerouslySetInnerHTML={{
-                  __html: post.title.rendered,
-                }}
+                dangerouslySetInnerHTML={{ __html: post.title.rendered }}
               />
             </Link>
             <div
               className="blog-post-excerpt"
-              dangerouslySetInnerHTML={{
-                __html: post.excerpt.rendered,
-              }}
+              dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
             />
           </li>
         ))}

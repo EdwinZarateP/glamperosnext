@@ -1,5 +1,6 @@
 "use client";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior"; 
+import { Suspense } from "react";
+import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import Conversaciones from "@/Componentes/Conversaciones";
 import ListadoConversaciones from "@/Componentes/ListadoConversaciones/index";
 import HeaderIcono from "@/Componentes/HeaderIcono";
@@ -7,21 +8,19 @@ import { useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/Funciones/useMediaQuery";
 import "./estilos.css";
 
-function Mensajes() {
-  const isMobile = useMediaQuery('(max-width: 900px)'); // Hook para detectar pantallas pequeñas
+function MensajesInner() {
+  const isMobile = useMediaQuery("(max-width: 900px)");
   const searchParams = useSearchParams();
-  const idUsuarioReceptor = searchParams.get('idUsuarioReceptor'); // Obtener el ID del receptor desde la URL
+  const idUsuarioReceptor = searchParams.get("idUsuarioReceptor");
 
   return (
     <div className="Mensajes-contenedor">
       <HeaderIcono descripcion="Glamperos" />
-      
-      {/* Listado de conversaciones (siempre visible) */}
+
       <div className="Mensajes-ListadoConversaciones">
-        <ListadoConversaciones/>
+        <ListadoConversaciones />
       </div>
 
-      {/* Conversaciones (condicional según el tamaño de pantalla) */}
       {!isMobile ? (
         <div className="Mensajes-Conversaciones">
           <Conversaciones />
@@ -32,9 +31,15 @@ function Mensajes() {
         </div>
       ) : null}
 
-      <MenuUsuariosInferior/>
+      <MenuUsuariosInferior />
     </div>
   );
 }
 
-export default Mensajes;
+export default function Mensajes() {
+  return (
+    <Suspense fallback={<div>Cargando mensajes...</div>}>
+      <MensajesInner />
+    </Suspense>
+  );
+}

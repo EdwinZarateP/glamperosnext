@@ -2,24 +2,22 @@
 import Link from "next/link";
 import "./estilos.css";
 
-// Esto genera el listado de slugs estáticos
+// ✅ Generar slugs estáticos
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.WORDPRESS_API}/posts`);
   const posts: any[] = await res.json();
-  return posts.map((p) => ({ slug: p.slug }));
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-// Aquí params **es async**, así que lo recibimos como Promise<{slug: string}>
+// ✅ Tipado adecuado sin Promise para params
 export default async function BlogPost({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  // ¡Muy importante! primero await params
-  const { slug } = await params;
-
   const res = await fetch(
-    `${process.env.WORDPRESS_API}/posts?slug=${slug}`
+    `${process.env.WORDPRESS_API}/posts?slug=${params.slug}`,
+    { next: { revalidate: 60 } }
   );
   const posts: any[] = await res.json();
   const post = posts[0];

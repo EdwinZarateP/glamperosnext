@@ -1,26 +1,26 @@
+// src/app/blog/[slug]/page.tsx
 import Link from "next/link";
 import "./estilos.css";
 
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.WORDPRESS_API}/posts`);
-  const posts = await res.json();
-
-  return posts.map((post: any) => ({
-    slug: post.slug,
-  }));
+  const posts: any[] = await res.json();
+  return posts.map((p) => ({ slug: p.slug }));
 }
 
 export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${params.slug}`);
-  const posts = await res.json();
+  const res = await fetch(
+    `${process.env.WORDPRESS_API}/posts?slug=${params.slug}`
+  );
+  const posts: any[] = await res.json();
   const post = posts[0];
 
   if (!post) {
     return (
       <main className="blog-container">
         <p>No se encontró el post.</p>
-        <Link href="/blog">
-          <span className="blog-back-link">← Volver al blog</span>
+        <Link href="/blog" prefetch={false}>
+          ← Volver al blog
         </Link>
       </main>
     );
@@ -28,7 +28,7 @@ export default async function BlogPost({ params }: { params: { slug: string } })
 
   return (
     <main className="blog-container">
-      <div
+      <h1
         className="blog-title"
         dangerouslySetInnerHTML={{ __html: post.title.rendered }}
       />
@@ -36,8 +36,8 @@ export default async function BlogPost({ params }: { params: { slug: string } })
         className="blog-post-content"
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
       />
-      <Link href="/blog">
-        <span className="blog-back-link">← Volver al blog</span>
+      <Link href="/blog" prefetch={false}>
+        ← Volver al blog
       </Link>
     </main>
   );

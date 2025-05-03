@@ -1,0 +1,44 @@
+import Link from "next/link";
+import "./estilos.css";
+
+export async function generateStaticParams() {
+  const res = await fetch(`${process.env.WORDPRESS_API}/posts`);
+  const posts = await res.json();
+
+  return posts.map((post: any) => ({
+    slug: post.slug,
+  }));
+}
+
+export default async function BlogPost({ params }: { params: { slug: string } }) {
+  const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${params.slug}`);
+  const posts = await res.json();
+  const post = posts[0];
+
+  if (!post) {
+    return (
+      <main className="blog-container">
+        <p>No se encontró el post.</p>
+        <Link href="/blog">
+          <span className="blog-back-link">← Volver al blog</span>
+        </Link>
+      </main>
+    );
+  }
+
+  return (
+    <main className="blog-container">
+      <div
+        className="blog-title"
+        dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+      />
+      <div
+        className="blog-post-content"
+        dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+      />
+      <Link href="/blog">
+        <span className="blog-back-link">← Volver al blog</span>
+      </Link>
+    </main>
+  );
+}

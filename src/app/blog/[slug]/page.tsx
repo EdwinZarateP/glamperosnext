@@ -2,23 +2,20 @@
 import Link from "next/link";
 import "./estilos.css";
 
-// ✅ Generar slugs estáticos
+// Generación de rutas estáticas para cada post
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.WORDPRESS_API}/posts`);
   const posts: any[] = await res.json();
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-// ✅ Tipado adecuado sin Promise para params
+// Este es el componente de la página individual de blog
 export default async function BlogPost({
   params,
 }: {
   params: { slug: string };
 }) {
-  const res = await fetch(
-    `${process.env.WORDPRESS_API}/posts?slug=${params.slug}`,
-    { next: { revalidate: 60 } }
-  );
+  const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${params.slug}`);
   const posts: any[] = await res.json();
   const post = posts[0];
 

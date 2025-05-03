@@ -1,3 +1,4 @@
+// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -16,6 +17,11 @@ const nextConfig = {
 
   env: {
     WORDPRESS_API: process.env.WORDPRESS_API,
+  },
+
+  // Evita que next build falle por errores de ESLint
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

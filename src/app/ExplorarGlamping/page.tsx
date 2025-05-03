@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import { useEffect, useContext, useState } from "react";
 import Header from "@/Componentes/Header";

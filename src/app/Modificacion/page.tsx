@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import ModificarGlamping from "@/Componentes/ModificarGlamping/index";
 import ModificarFotos from "@/Componentes/ModificarFotos/index";

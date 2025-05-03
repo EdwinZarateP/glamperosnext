@@ -8,7 +8,8 @@ export default function sitemap() {
     { url: `${baseUrl}/cali`, lastModified: new Date().toISOString() },
     { url: `${baseUrl}/glampings`, lastModified: new Date().toISOString() },  
     { url: `${baseUrl}/registro`, lastModified: new Date().toISOString() },  
-    { url: `${baseUrl}/propietarios`, lastModified: new Date().toISOString() },  
+    { url: `${baseUrl}/propietarios`, lastModified: new Date().toISOString() },
+    { url: `${baseUrl}/blog`, lastModified: new Date().toISOString() },  
   ];
 }
 

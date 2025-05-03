@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */ 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -6,9 +6,17 @@ const nextConfig = {
         protocol: "https",
         hostname: "storage.googleapis.com",
       },
+      {
+        protocol: "https",
+        hostname: "seashell-hyena-290200.hostingersite.com",
+      },
     ],
   },
-  reactStrictMode: true, // Opcional: habilita el modo estricto de React
+  reactStrictMode: true,
+
+  env: {
+    WORDPRESS_API: process.env.WORDPRESS_API,
+  },
 };
 
 module.exports = nextConfig;

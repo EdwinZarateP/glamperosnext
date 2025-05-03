@@ -1,3 +1,4 @@
+// src/app/blog/page.tsx
 import Link from "next/link";
 import "./estilos.css";
 
@@ -5,7 +6,6 @@ export default async function BlogIndex() {
   const res = await fetch(`${process.env.WORDPRESS_API}/posts`, {
     next: { revalidate: 60 },
   });
-
   const posts = await res.json();
 
   return (
@@ -17,11 +17,13 @@ export default async function BlogIndex() {
             <Link href={`/blog/${post.slug}`}>
               <h2
                 className="blog-post-title"
+                suppressHydrationWarning
                 dangerouslySetInnerHTML={{ __html: post.title.rendered }}
               />
             </Link>
             <p
               className="blog-post-excerpt"
+              suppressHydrationWarning
               dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
             />
           </li>

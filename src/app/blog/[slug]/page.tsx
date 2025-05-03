@@ -1,3 +1,4 @@
+// src/app/blog/[slug]/page.tsx
 import Link from "next/link";
 import "./estilos.css";
 
@@ -11,7 +12,9 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${params.slug}`);
+  const res = await fetch(
+    `${process.env.WORDPRESS_API}/posts?slug=${params.slug}`
+  );
   const posts = await res.json();
   const post = posts[0];
 
@@ -21,10 +24,12 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     <main className="blog-container">
       <h1
         className="blog-title"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: post.title.rendered }}
       />
       <article
         className="blog-post-content"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
       />
       <Link href="/blog">

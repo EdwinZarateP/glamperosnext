@@ -8,7 +8,7 @@ import { CrearReserva } from "../../Funciones/CrearReserva";
 import { ObtenerUsuarioPorId } from "../../Funciones/ObtenerUsuario";
 import { ObtenerFechasReservadas } from "../../Funciones/ObtenerFechasReservadas";
 import InputTelefono from "../../Componentes/InputTelefono/index";
-import { ContextoApp } from "../../../context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import Politicas from "../../Componentes/Politica/index";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";

@@ -2,7 +2,7 @@
 
 import { useContext, useState, useEffect } from 'react';
 import './estilos.css';
-import { ContextoApp } from '@/context/AppContext';
+import { ContextoApp } from "../../../context/AppContext";
 
 const Paso2F: React.FC = () => {
   const { descripcionGlamping, setDescripcionGlamping } = useContext(ContextoApp)!;

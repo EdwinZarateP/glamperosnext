@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import { ContextoApp } from "../../../context/AppContext"; 
+import { ContextoApp } from "../../context/AppContext"; 
 import Image from "next/image";
 import "./estilos.css";
 

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ContextoApp } from "../../../context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import "./estilos.css"; 
 
 interface PoliticasProps {

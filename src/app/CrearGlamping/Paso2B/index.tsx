@@ -3,7 +3,7 @@
 import { useState, useContext, useEffect } from "react";
 import { ContextoApp } from "../../../context/AppContext";
 import "./estilos.css";
-import { opcionesAmenidades } from "../../Componentes/Amenidades";
+import { opcionesAmenidades } from "../../../Componentes/Amenidades/index";
 
 const Paso2B: React.FC = () => {
   const [seleccionados, setSeleccionados] = useState<string[]>([]);

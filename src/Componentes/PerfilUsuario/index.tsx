@@ -4,7 +4,7 @@ import { useEffect, useState, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation"; // Reemplazo de useNavigate y useParams
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
-import { ContextoApp } from "../../../context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import "./estilos.css"; // Importado en _app.tsx
 
 // IMPORTAMOS LA FUNCIÓN DE WHATSAPP

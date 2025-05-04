@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, KeyboardEvent, useContext } from "react";
 import Cookies from "js-cookie";
 import { useSearchParams, useRouter } from "next/navigation";
-import { ContextoApp } from "../../../context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import { useMediaQuery } from "../../Funciones/useMediaQuery";
 import Swal from "sweetalert2";
 import "./estilos.css";

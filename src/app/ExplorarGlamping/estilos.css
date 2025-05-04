@@ -10,6 +10,8 @@
   
   .encabezado-explorado {
     border-bottom: none;
+    padding-top:35px;
+    margin: 0;
   }
   
   .contenedor-lo-que-ofrece {

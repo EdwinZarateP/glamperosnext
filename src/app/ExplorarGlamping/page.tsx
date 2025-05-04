@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import ExplorarGlampingContenido from "./ExplorarGlampingContenido";
-import "./estilos.css";
+// import "./estilos.css";
 
 interface MyLottieProps {
   animationData: unknown;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useContext } from "react";
 // import { useRouter } from "next/navigation";
-import { ContextoApp } from "../../../context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import Tarjeta from "../../Componentes/Tarjeta/index";
 import { precioConRecargo } from "../../Funciones/precioConRecargo";
 import FiltrosContenedor from "../../Componentes/FiltrosContenedor/index";

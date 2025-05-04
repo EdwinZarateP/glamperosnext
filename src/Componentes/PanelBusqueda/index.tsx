@@ -5,7 +5,7 @@ import { FiSearch } from "react-icons/fi";
 import { MdClose } from "react-icons/md";
 import CalendarioGeneral from "../../Componentes/CalendarioGeneral";
 import Visitantes from "../../Componentes/Visitantes/index";
-import { ContextoApp } from "../../../context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import { useRouter } from "next/navigation";
 import municipios from "../../Componentes/Municipios/municipios.json";
 import "./estilos.css";

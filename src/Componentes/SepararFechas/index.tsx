@@ -1,8 +1,8 @@
 // "use client";
 
-// import React, { useContext, useEffect, useState } from "react";
+// import { useContext, useEffect, useState } from "react";
 // import { useSearchParams } from "next/navigation"; 
-// import { ContextoApp } from "../../context/AppContext";
+// import { ContextoApp } from "../../../context/AppContext";
 // import { GiCampingTent } from "react-icons/gi";
 // import CalendarioGeneral2 from "../../Componentes/CalendarioGeneral2";
 // import { ObtenerGlampingPorId } from "../../Funciones/ObtenerGlamping";

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import "./estilos.css";
 
 const Paso2A: React.FC = () => {

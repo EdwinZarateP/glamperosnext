@@ -1,7 +1,7 @@
 /// <reference types="@types/google.maps" />
 "use client";
 
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import Map, {
   Marker,
   NavigationControl,
@@ -10,7 +10,7 @@ import Map, {
 // Importar el tipo explícitamente
 
 import { GiCampingTent } from "react-icons/gi";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import "mapbox-gl/dist/mapbox-gl.css";

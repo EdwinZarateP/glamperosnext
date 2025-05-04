@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
 import { GiCampingTent } from "react-icons/gi";
 import "./estilos.css";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import { ObtenerGlampingPorId } from "../../Funciones/ObtenerGlamping";
 import { FaCopy } from "react-icons/fa";
 

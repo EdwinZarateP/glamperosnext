@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { opcionesAmenidades } from "../../Componentes/Amenidades/index"; // Ajusta la ruta según tu estructura
 import "./estilos.css";
 import { GiCircleClaws } from "react-icons/gi";

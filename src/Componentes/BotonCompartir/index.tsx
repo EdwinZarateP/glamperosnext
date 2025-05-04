@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import  { useState } from "react";
 import { FiShare } from "react-icons/fi";
 import { FaWhatsapp, FaClipboard } from "react-icons/fa";
 import "./estilos.css";

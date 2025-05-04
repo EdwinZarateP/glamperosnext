@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import './estilos.css';
 import { ContextoApp } from '@/context/AppContext';
 

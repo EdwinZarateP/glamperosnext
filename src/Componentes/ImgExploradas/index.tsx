@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FiGrid } from "react-icons/fi";
 import { MdOutlinePets, MdOndemandVideo } from "react-icons/md";
 import VerVideo from "../../Componentes/VerVideo/index";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import "./estilos.css";
 
 interface ImgExploradasProps {

@@ -4,7 +4,7 @@ import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FiMenu, FiSearch } from "react-icons/fi";
 import PanelBusqueda from "../../Componentes/PanelBusqueda/index";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import { evaluarVariable } from "../../Funciones/ValidarVariable";
 import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
 import Image from "next/image";

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useContext } from "react";
+import { useContext } from "react";
 import Swal from "sweetalert2";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import "./estilos.css";
 
 // Componente Principal

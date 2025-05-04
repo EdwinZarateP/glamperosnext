@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import "./estilos.css";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 
 const Paso2E: React.FC = () => {
   const { nombreGlamping, setNombreGlamping } = useContext(ContextoApp)!;

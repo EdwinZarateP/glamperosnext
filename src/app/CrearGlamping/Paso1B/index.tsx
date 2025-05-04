@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { GiCampingTent, GiHabitatDome, GiTreehouse, GiHut } from "react-icons/gi";
 import { MdOutlineCabin } from "react-icons/md";
 import { FaCaravan } from "react-icons/fa";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import "./estilos.css";
 
 const Paso1B: React.FC = () => {

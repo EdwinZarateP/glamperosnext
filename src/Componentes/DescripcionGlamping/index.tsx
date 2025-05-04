@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Calificacion from "../../Componentes/Calificacion/index"; // Ajusta según tu estructura
 import DetalleGlampingTexto from "../../Componentes/DetalleGlampingTexto/index"; // Ajusta según tu estructura
 import "./estilos.css";

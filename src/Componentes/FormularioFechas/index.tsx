@@ -1,11 +1,11 @@
 "use client"; 
 
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import { GiCampingTent } from "react-icons/gi";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import CalendarioSecundario from "../../Componentes/CalendarioSecundario";
 import Visitantes from "../Visitantes";
 import fds from "../../Componentes/BaseFinesSemana/fds.json";

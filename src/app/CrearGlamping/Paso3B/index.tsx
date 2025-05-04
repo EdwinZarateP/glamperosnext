@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useContext } from "react";
+import { useContext } from "react";
 import "./estilos.css";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 
 const Paso3B: React.FC = () => {
   const {

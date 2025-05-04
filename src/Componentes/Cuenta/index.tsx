@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import Cookies from "js-cookie";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import { useRouter } from "next/navigation"; // Se agregó useSearchParams

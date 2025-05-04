@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import Cookies from "js-cookie";
 import { useSearchParams, useRouter } from "next/navigation";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import { useMediaQuery } from "../../Funciones/useMediaQuery";

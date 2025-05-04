@@ -13,7 +13,7 @@ import LoQueOfrece from "../../Componentes/LoQueOfrece/index";
 import Calendario from "../../Componentes/Calendario";
 import MapaGlampings from "../../Componentes/Mapa/index";
 import Comentarios from "../../Componentes/Comentarios/index";
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from "../../../context/AppContext";
 import ManejoErrores from "../../Funciones/ManejoErrores";
 import { ObtenerGlampingPorId } from "../../Funciones/ObtenerGlamping";
 import { useSearchParams, useRouter } from "next/navigation";

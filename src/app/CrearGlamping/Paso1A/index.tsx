@@ -1,4 +1,4 @@
-import React from 'react';
+
 import './estilos.css';
 
 const Paso1A: React.FC = () => {

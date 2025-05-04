@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useContext, useEffect } from "react";
-import { ContextoApp } from "../../context/AppContext";
+import { useState, useContext, useEffect } from "react";
+import { ContextoApp } from "../../../context/AppContext";
 import "./estilos.css";
 import { opcionesAmenidades } from "../../Componentes/Amenidades";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { ContextoApp } from "../../context/AppContext";
-import React, { useState, useContext, useEffect  } from "react";
+import { ContextoApp } from "../../../context/AppContext";
+import { useState, useContext, useEffect  } from "react";
 import Paso1A from "./Paso1A/index";
 import Paso1B from "./Paso1B/index";
 import Paso1C from "./Paso1C/index";

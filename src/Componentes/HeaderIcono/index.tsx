@@ -1,6 +1,6 @@
 "use client"; // Indica que es un Client Component para usar hooks del cliente
 
-import React from "react";
+// import React from "react";
 // import { useRouter } from "next/navigation";
 import Image from "next/image"; // ✅ Optimización de imagen
 import "./estilos.css";

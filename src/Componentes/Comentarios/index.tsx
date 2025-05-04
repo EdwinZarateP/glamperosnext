@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Comentario from "@/Componentes/Comentario/index"; // Asegúrate de que la ruta sea correcta según tu alias
+import Comentario from "../../Componentes/Comentario/index"; // Asegúrate de que la ruta sea correcta según tu alias
 import "./estilos.css";
 
 interface ComentarioData {

@@ -3,9 +3,9 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { ContextoApp } from "@/context/AppContext";
-import { CalificarGlamping } from "@/Funciones/CalificarGlamping";
-import { CalificacionPromedio } from "@/Funciones/CalificacionPromedio";
+import { ContextoApp } from "../../context/AppContext";
+import { CalificarGlamping } from "../../Funciones/CalificarGlamping";
+import { CalificacionPromedio } from "../../Funciones/CalificacionPromedio";
 import './estilos.css';
 
 interface EvaluarGlampingProps {

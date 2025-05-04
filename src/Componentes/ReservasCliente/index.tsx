@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useContext } from 'react';
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import EvaluarGlamping from "@/Componentes/EvaluarGlamping/index";
+import EvaluarGlamping from "../../Componentes/EvaluarGlamping/index";
 
 import dynamic from "next/dynamic";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import './estilos.css';
 
 // Tipado para lottie-react

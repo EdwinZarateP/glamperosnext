@@ -4,13 +4,13 @@ import React, { useContext, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import { ContextoApp } from "@/context/AppContext";
-import CalendarioSecundario from "@/Componentes/CalendarioSecundario";
+import { ContextoApp } from "../../context/AppContext";
+import CalendarioSecundario from "../../Componentes/CalendarioSecundario";
 import Visitantes from "../Visitantes";
-import fds from "@/Componentes/BaseFinesSemana/fds.json";
-import { calcularTarifaServicio } from "@/Funciones/calcularTarifaServicio";
-import { ExtraerTarifaGlamperos } from "@/Funciones/ExtraerTarifaGlamperos";
-import { encryptData } from "@/Funciones/Encryptacion";
+import fds from "../../Componentes/BaseFinesSemana/fds.json";
+import { calcularTarifaServicio } from "../../Funciones/calcularTarifaServicio";
+import { ExtraerTarifaGlamperos } from "../../Funciones/ExtraerTarifaGlamperos";
+import { encryptData } from "../../Funciones/Encryptacion";
 import "./estilos.css";
 
 interface formularioFechasMovilesProps {

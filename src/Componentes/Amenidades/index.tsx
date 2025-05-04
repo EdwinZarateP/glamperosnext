@@ -1,7 +1,7 @@
 "use client";
 import "./estilos.css";
 
-import React from "react";
+// import React from "react";
 import { GiWineBottle, GiTowel, GiWashingMachine, GiFireplace, GiSmokeBomb, GiThermometerHot, GiCoffeeCup, GiFishingNet, GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
 import { IoWifi, IoTelescope } from "react-icons/io5";
 import { FaWater } from "react-icons/fa";

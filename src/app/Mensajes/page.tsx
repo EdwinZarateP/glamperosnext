@@ -1,11 +1,11 @@
 "use client";
 import { Suspense } from "react";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
-import Conversaciones from "@/Componentes/Conversaciones";
-import ListadoConversaciones from "@/Componentes/ListadoConversaciones/index";
-import HeaderIcono from "@/Componentes/HeaderIcono";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
+import Conversaciones from "../../Componentes/Conversaciones";
+import ListadoConversaciones from "../../Componentes/ListadoConversaciones/index";
+import HeaderIcono from "../../Componentes/HeaderIcono";
 import { useSearchParams } from "next/navigation";
-import { useMediaQuery } from "@/Funciones/useMediaQuery";
+import { useMediaQuery } from "../../Funciones/useMediaQuery";
 import "./estilos.css";
 
 function MensajesInner() {

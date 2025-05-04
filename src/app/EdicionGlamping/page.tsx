@@ -1,8 +1,8 @@
 "use client";
 
-import EditarGlamping from "@/Componentes/EditarGlamping";
-import HeaderIcono from "@/Componentes/HeaderIcono";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import EditarGlamping from "../../Componentes/EditarGlamping";
+import HeaderIcono from "../../Componentes/HeaderIcono";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 function EdicionGlamping() {

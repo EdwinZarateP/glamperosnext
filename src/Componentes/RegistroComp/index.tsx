@@ -5,7 +5,7 @@ import axios, { AxiosError } from "axios";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 // import FacebookLogin from "react-facebook-login";
 import { jwtDecode } from "jwt-decode";
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import "./estilos.css";

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation"; 
-import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping"; // Uso del alias "@"
+import { ObtenerGlampingPorId } from "../../Funciones/ObtenerGlamping"; // Uso del alias "@"
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from "react-icons/md";
 import "./estilos.css";
 

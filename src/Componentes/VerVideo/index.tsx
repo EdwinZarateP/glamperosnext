@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { ContextoApp } from "@/context/AppContext"; // Ajusta la ruta según tu estructura
+import { ContextoApp } from "../../context/AppContext"; // Ajusta la ruta según tu estructura
 import "./estilos.css";
 
 interface Props {

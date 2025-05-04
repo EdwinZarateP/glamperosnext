@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useContext } from "react";
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import "./estilos.css";
 
 const Paso2D: React.FC = () => {

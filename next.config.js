@@ -1,4 +1,5 @@
-// next.config.js
+const path = require("path");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -13,15 +14,20 @@ const nextConfig = {
       },
     ],
   },
+
   reactStrictMode: true,
 
   env: {
     WORDPRESS_API: process.env.WORDPRESS_API,
   },
 
-  // Evita que next build falle por errores de ESLint
   eslint: {
     ignoreDuringBuilds: true,
+  },
+
+  webpack: (config) => {
+    config.resolve.alias["@"] = path.resolve(__dirname, "src");
+    return config;
   },
 };
 

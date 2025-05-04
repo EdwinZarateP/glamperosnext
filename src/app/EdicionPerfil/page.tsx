@@ -1,8 +1,8 @@
 "use client";
 
-import EditarPerfil from "@/Componentes/EditarPerfil";
-import HeaderIcono from "@/Componentes/HeaderIcono";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import EditarPerfil from "../../Componentes/EditarPerfil";
+import HeaderIcono from "../../Componentes/HeaderIcono";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 function EdicionPerfil() {

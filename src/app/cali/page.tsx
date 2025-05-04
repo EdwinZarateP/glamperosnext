@@ -2,12 +2,12 @@
 
 import { useContext } from "react";
 import Head from "next/head";
-import HeaderDinamico from "@/Componentes/HeaderDinamico";
-import ContenedorTarjetasDinamico from "@/Componentes/ContenedorTarjetasDinamico/index";
-import MenuIconos from "@/Componentes/MenuIconos";
-import FiltrosContenedor from "@/Componentes/FiltrosContenedor/index";
-import { ContextoApp } from "@/context/AppContext";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import HeaderDinamico from "../../Componentes/HeaderDinamico";
+import ContenedorTarjetasDinamico from "../../Componentes/ContenedorTarjetasDinamico/index";
+import MenuIconos from "../../Componentes/MenuIconos";
+import FiltrosContenedor from "../../Componentes/FiltrosContenedor/index";
+import { ContextoApp } from "../../context/AppContext";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 const cali: React.FC = () => {

@@ -2,19 +2,32 @@
 import Link from "next/link";
 import "./estilos.css";
 
-// Generación de rutas estáticas para cada post
+// Habilitar revalidación ISR para esta página
+export const revalidate = 60;
+
+// Generar rutas estáticas para los posts
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.WORDPRESS_API}/posts`);
   const posts: any[] = await res.json();
+
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-// Este es el componente de la página individual de blog
+// Página individual del post
 export default async function BlogPost({
   params,
 }: {
   params: { slug: string };
 }) {
+  if (!params?.slug) {
+    return (
+      <main className="blog-container">
+        <p>Error: slug no proporcionado.</p>
+        <Link href="/blog" prefetch={false}>← Volver al blog</Link>
+      </main>
+    );
+  }
+
   const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${params.slug}`);
   const posts: any[] = await res.json();
   const post = posts[0];
@@ -23,9 +36,7 @@ export default async function BlogPost({
     return (
       <main className="blog-container">
         <p>No se encontró el post.</p>
-        <Link href="/blog" prefetch={false}>
-          ← Volver al blog
-        </Link>
+        <Link href="/blog" prefetch={false}>← Volver al blog</Link>
       </main>
     );
   }
@@ -40,9 +51,7 @@ export default async function BlogPost({
         className="blog-post-content"
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
       />
-      <Link href="/blog" prefetch={false}>
-        ← Volver al blog
-      </Link>
+      <Link href="/blog" prefetch={false}>← Volver al blog</Link>
     </main>
   );
 }

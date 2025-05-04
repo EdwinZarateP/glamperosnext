@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import HeaderIcono from "@/Componentes/HeaderIcono/index";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior/index";
+import HeaderIcono from "../../Componentes/HeaderIcono/index";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior/index";
 import "./estilos.css";
 
 const Gracias: React.FC = () => {

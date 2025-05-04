@@ -1,7 +1,7 @@
 "use client";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
-import RegistroComp from "@/Componentes/RegistroComp/index";
-import HeaderIcono from "@/Componentes/HeaderIcono/index";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
+import RegistroComp from "../../Componentes/RegistroComp/index";
+import HeaderIcono from "../../Componentes/HeaderIcono/index";
 import "./estilos.css";
 
 export default function RegistrarsePage() {

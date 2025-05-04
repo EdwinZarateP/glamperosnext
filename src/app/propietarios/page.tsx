@@ -8,7 +8,7 @@ import { GoGraph } from "react-icons/go";
 import { CiCalendar } from "react-icons/ci";
 import { FaStar, FaWhatsapp } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 const LandingPropietarios: React.FC = () => {

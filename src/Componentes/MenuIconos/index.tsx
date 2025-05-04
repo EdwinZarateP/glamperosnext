@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useContext } from "react";
+import { useRef, useContext } from "react";
 import Link from "next/link";
 import {
   FaUmbrellaBeach,
@@ -30,7 +30,7 @@ import {
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import Image from "next/image";
 import "./estilos.css"; 
 

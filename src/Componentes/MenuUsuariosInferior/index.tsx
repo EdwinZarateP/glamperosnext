@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+// import React from "react";
 import { CiSearch } from "react-icons/ci";
 import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { TiMessage } from "react-icons/ti";

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import dynamic from "next/dynamic";
 import Swal from "sweetalert2";
 import * as XLSX from 'xlsx';
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import './estilos.css';
 
 interface MyLottieProps {

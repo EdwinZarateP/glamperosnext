@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import  { useState, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AiTwotoneHeart } from "react-icons/ai";
@@ -9,11 +9,9 @@ import { FaStar } from "react-icons/fa6";
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlinePets } from "react-icons/md";
 import Cookies from "js-cookie";
 import axios from "axios";
-
-import { ContextoApp } from "@/context/AppContext";
-import { calcularTarifaServicio } from "@/Funciones/calcularTarifaServicio";
-import fds from "@/Componentes/BaseFinesSemana/fds.json";
-
+import { ContextoApp } from "../../context/AppContext";
+import { calcularTarifaServicio } from "../../Funciones/calcularTarifaServicio";
+import fds from "../BaseFinesSemana/fds.json";
 import "./estilos.css";
 
 interface TarjetaProps {

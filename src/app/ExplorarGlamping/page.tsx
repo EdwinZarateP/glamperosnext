@@ -1,27 +1,27 @@
 "use client";
 
 import { useEffect, useContext, useState } from "react";
-import Header from "@/Componentes/Header";
-import ImagenesExploradas from "@/Componentes/ImgExploradas/index";
-import EncabezadoExplorado from "@/Componentes/EncabezadoExplorado";
-import ImgExploradasIndividual from "@/Componentes/ImgExploradasIndividual/index";
-import NombreGlamping from "@/Componentes/NombreGlamping";
-import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
-import FormularioFechas from "@/Componentes/FormularioFechas";
-import FormularioFechasMoviles from "@/Componentes/FormularioFechasMoviles";
-import LoQueOfrece from "@/Componentes/LoQueOfrece/index";
-import Calendario from "@/Componentes/Calendario";
-import MapaGlampings from "@/Componentes/Mapa/index";
-import Comentarios from "@/Componentes/Comentarios/index";
-import { ContextoApp } from "@/context/AppContext";
-import ManejoErrores from "@/Funciones/ManejoErrores";
-import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
+import Header from "../../Componentes/Header";
+import ImagenesExploradas from "../../Componentes/ImgExploradas/index";
+import EncabezadoExplorado from "../../Componentes/EncabezadoExplorado";
+import ImgExploradasIndividual from "../../Componentes/ImgExploradasIndividual/index";
+import NombreGlamping from "../../Componentes/NombreGlamping";
+import DescripcionGlamping from "../../Componentes/DescripcionGlamping/index";
+import FormularioFechas from "../../Componentes/FormularioFechas";
+import FormularioFechasMoviles from "../../Componentes/FormularioFechasMoviles";
+import LoQueOfrece from "../../Componentes/LoQueOfrece/index";
+import Calendario from "../../Componentes/Calendario";
+import MapaGlampings from "../../Componentes/Mapa/index";
+import Comentarios from "../../Componentes/Comentarios/index";
+import { ContextoApp } from "../../context/AppContext";
+import ManejoErrores from "../../Funciones/ManejoErrores";
+import { ObtenerGlampingPorId } from "../../Funciones/ObtenerGlamping";
 import { useSearchParams, useRouter } from "next/navigation";
-import VerVideo from "@/Componentes/VerVideo";
-import PerfilUsuario from "@/Componentes/PerfilUsuario";
+import VerVideo from "../../Componentes/VerVideo";
+import PerfilUsuario from "../../Componentes/PerfilUsuario";
 import { MdOndemandVideo } from "react-icons/md";
 import dynamic from "next/dynamic";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";
 
 interface MyLottieProps {

@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import TraerDatosBancarios, { DatosBancariosProps } from "@/Funciones/TraerDatosBancarios";
+import TraerDatosBancarios, { DatosBancariosProps } from "../../Funciones/TraerDatosBancarios";
 import dynamic from "next/dynamic";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import Swal from "sweetalert2";
 import "./estilos.css";
 

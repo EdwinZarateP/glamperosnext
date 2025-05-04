@@ -3,14 +3,14 @@
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FiMenu, FiSearch } from "react-icons/fi";
-import PanelBusqueda from "@/Componentes/PanelBusqueda/index";
-import { ContextoApp } from "@/context/AppContext";
-import { evaluarVariable } from "@/Funciones/ValidarVariable";
+import PanelBusqueda from "../../Componentes/PanelBusqueda/index";
+import { ContextoApp } from "../../context/AppContext";
+import { evaluarVariable } from "../../Funciones/ValidarVariable";
 import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
 import Image from "next/image";
 import { BsIncognito } from "react-icons/bs";
 import Cookies from "js-cookie";
-import MenuUsuario from "@/Componentes/MenuUsuario/index";
+import MenuUsuario from "../../Componentes/MenuUsuario/index";
 import "./estilos.css"; 
 
 const Header: React.FC = () => {

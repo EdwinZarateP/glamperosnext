@@ -1,6 +1,6 @@
 // /Componentes/ContenedorTarjetasServer.tsx
 
-import Tarjeta from "@/Componentes/Tarjeta/index";
+import Tarjeta from "../../Componentes/Tarjeta/index";
 
 
 // Define la interfaz para los datos de un glamping

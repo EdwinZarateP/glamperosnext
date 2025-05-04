@@ -2,18 +2,18 @@
 
 import { useEffect, useState, useContext } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { decryptData } from "@/Funciones/Encryptacion";
-import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
-import { CrearReserva } from "@/Funciones/CrearReserva"; 
-import { ObtenerUsuarioPorId } from "@/Funciones/ObtenerUsuario";
-import { ObtenerFechasReservadas } from "@/Funciones/ObtenerFechasReservadas";
-import InputTelefono from "@/Componentes/InputTelefono/index";
-import { ContextoApp } from "@/context/AppContext";
-import Politicas from "@/Componentes/Politica/index";
+import { decryptData } from "../../Funciones/Encryptacion";
+import { ObtenerGlampingPorId } from "../../Funciones/ObtenerGlamping";
+import { CrearReserva } from "../../Funciones/CrearReserva"; 
+import { ObtenerUsuarioPorId } from "../../Funciones/ObtenerUsuario";
+import { ObtenerFechasReservadas } from "../../Funciones/ObtenerFechasReservadas";
+import InputTelefono from "../../Componentes/InputTelefono/index";
+import { ContextoApp } from "../../context/AppContext";
+import Politicas from "../../Componentes/Politica/index";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";
 
 interface MyLottieProps {

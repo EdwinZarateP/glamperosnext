@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx"; // Asegúrate de tener la librería instalada: npm install xlsx
 import "./estilos.css";
-import { enviarCorreoContabilidad } from "@/Funciones/enviarCorreoContabilidad";
+import { enviarCorreoContabilidad } from "../../Funciones/enviarCorreoContabilidad";
 
 // -------------------------
 //   Tipos de datos

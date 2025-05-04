@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import './estilos.css';
 import axios from 'axios';
 import { useSearchParams} from "next/navigation";
-import { opcionesAmenidades } from "@/Componentes/Amenidades/index"; 
+import { opcionesAmenidades } from "../../Componentes/Amenidades/index"; 
 import Swal from 'sweetalert2';
 
 const ModificarGlamping: React.FC = () => {

@@ -1,5 +1,5 @@
 "use client";
-import HeaderIcono from "@/Componentes/HeaderIcono";
+import HeaderIcono from "../../Componentes/HeaderIcono";
 import "./estilos.css";
 
 const PoliticasPrivacidad = () => {

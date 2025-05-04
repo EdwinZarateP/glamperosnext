@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import * as XLSX from "xlsx"; // npm install xlsx
 import "./estilos.css";
-import { enviarCorreoPagoPropietario } from "@/Funciones/enviarCorreoPagoPropietario";
+import { enviarCorreoPagoPropietario } from "../../Funciones/enviarCorreoPagoPropietario";
 
 // Definición de la solicitud de pago según la API
 interface SolicitudPago {

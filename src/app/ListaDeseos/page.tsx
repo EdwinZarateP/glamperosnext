@@ -1,7 +1,7 @@
 "use client";
 
-import Favoritos from "@/Componentes/Favoritos";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import Favoritos from "../../Componentes/Favoritos";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 const ListaDeseos: React.FC = () => {

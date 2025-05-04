@@ -1,8 +1,8 @@
 "use client";
 
-import CentroAyuda from "@/Componentes/CentroAyuda";
-import HeaderIcono from "@/Componentes/HeaderIcono"; 
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior"; 
+import CentroAyuda from "../../Componentes/CentroAyuda";
+import HeaderIcono from "../../Componentes/HeaderIcono"; 
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior"; 
 import "./estilos.css";
 
 function Ayuda() {

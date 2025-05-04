@@ -1,9 +1,9 @@
 // app/Modificacion/page.tsx
 
-import React, { Suspense } from "react";
-import HeaderIcono from "@/Componentes/HeaderIcono";
-import ModificarGlamping from "@/Componentes/ModificarGlamping";
-import ModificarFotos from "@/Componentes/ModificarFotos";
+import { Suspense } from "react";
+import HeaderIcono from "../../Componentes/HeaderIcono";
+import ModificarGlamping from "../../Componentes/ModificarGlamping";
+import ModificarFotos from "../../Componentes/ModificarFotos";
 import "./estilos.css";
 
 export default function Modificacion() {

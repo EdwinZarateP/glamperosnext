@@ -1,8 +1,8 @@
 "use client";
 
-import DatosBancarios from "@/Componentes/DatosBancarios/index";
-import HeaderIcono from "@/Componentes/HeaderIcono";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import DatosBancarios from "../../Componentes/DatosBancarios/index";
+import HeaderIcono from "../../Componentes/HeaderIcono";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 function GestionBancos() {

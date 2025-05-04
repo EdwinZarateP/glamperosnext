@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Swal from "sweetalert2";
-import { enviarWhatsAppReagendamiento } from "@/Funciones/enviarWhatsAppReagendamiento";
+import { enviarWhatsAppReagendamiento } from "../../Funciones/enviarWhatsAppReagendamiento";
 import "./estilos.css";
 
 interface CalendarioReagendaProps {

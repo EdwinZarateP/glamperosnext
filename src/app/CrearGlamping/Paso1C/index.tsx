@@ -10,7 +10,7 @@ import Map, {
 // Importar el tipo explícitamente
 
 import { GiCampingTent } from "react-icons/gi";
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import "mapbox-gl/dist/mapbox-gl.css";

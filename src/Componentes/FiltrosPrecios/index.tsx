@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useContext, useState, useEffect } from "react";
-import { ContextoApp } from "@/context/AppContext";
+import { useContext, useState, useEffect } from "react";
+import { ContextoApp } from "../../context/AppContext";
 import "./estilos.css";
 
 const FiltroPrecios: React.FC = () => {

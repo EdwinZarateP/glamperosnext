@@ -1,9 +1,9 @@
 // src/components/ClientProviders.tsx
 "use client";
 
-import React from "react";
+// import React from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ProveedorVariables } from "@/context/AppContext";
+import { ProveedorVariables } from "../../context/AppContext";
 
 export default function ClientProviders({
   children,

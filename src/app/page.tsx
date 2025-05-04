@@ -1,8 +1,8 @@
 // app/page.tsx
-import Header from "@/Componentes/Header";
-import ContenedorTarjetas from "@/Componentes/ContenedorTarjetas/index";
-import MenuIconos from "@/Componentes/MenuIconos";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import Header from "../Componentes/Header";
+import ContenedorTarjetas from "../Componentes/ContenedorTarjetas/index";
+import MenuIconos from "../Componentes/MenuIconos";
+import MenuUsuariosInferior from "../Componentes/MenuUsuariosInferior";
 import Image from "next/image";
 import "./page.css";
 

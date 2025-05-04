@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from "next/navigation";
 import Swal from 'sweetalert2';
 import dynamic from "next/dynamic";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
-import { enviarWhatsAppCancelacion } from "@/Funciones/enviarWhatsAppCancelacion";
-import { EliminarFechas } from "@/Funciones/EliminarFechas";
-import CalendarioReagenda from "@/Componentes/CalendarioReagenda"; 
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
+import { enviarWhatsAppCancelacion } from "../../Funciones/enviarWhatsAppCancelacion";
+import { EliminarFechas } from "../../Funciones/EliminarFechas";
+import CalendarioReagenda from "../../Componentes/CalendarioReagenda"; 
 import './estilos.css';
 
 interface Reserva {

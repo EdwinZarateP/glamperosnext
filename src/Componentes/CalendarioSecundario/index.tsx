@@ -3,7 +3,7 @@
 import { useContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import "./estilos.css";
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface PropiedadesCalendarioSecundario {

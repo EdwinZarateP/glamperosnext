@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import HeaderIcono from "@/Componentes/HeaderIcono";
-import SolicitarPago from "@/Componentes/SolicitarPago/index";
-import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import HeaderIcono from "../../Componentes/HeaderIcono";
+import SolicitarPago from "../../Componentes/SolicitarPago/index";
+import MenuUsuariosInferior from "../../Componentes/MenuUsuariosInferior";
 import "./estilos.css";
 
 function Pagos() {

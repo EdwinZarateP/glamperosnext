@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import dynamic from "next/dynamic";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import Reservacion from '@/Componentes/Reservacion/index';
 import HeaderIcono from '@/Componentes/HeaderIcono/index';
 import './estilos.css';

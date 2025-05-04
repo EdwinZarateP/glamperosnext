@@ -1,4 +1,4 @@
-import FiltersComponent from "@/Componentes/Filter/index";
+import FiltersComponent from "../../Componentes/Filter/index";
 
 interface Props {
   params: {

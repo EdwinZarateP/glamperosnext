@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState, useContext } from 'react';
 import Cookies from 'js-cookie';
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import dynamic from "next/dynamic";
-import animationData from "@/Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import codigosPaises from '@/Componentes/IndicativosPaises/index'; // Usando alias @
 import './estilos.css';
 

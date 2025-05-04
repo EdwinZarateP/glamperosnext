@@ -4,11 +4,11 @@ import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FiMenu } from "react-icons/fi";
 import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
-import { ContextoApp } from "@/context/AppContext";
+import { ContextoApp } from "../../context/AppContext";
 import Image from "next/image";
 import { BsIncognito } from "react-icons/bs";
 import Cookies from "js-cookie";
-import MenuUsuario from "@/Componentes/MenuUsuario/index";
+import MenuUsuario from "../../Componentes/MenuUsuario/index";
 import "./estilos.css";
 
 interface HeaderDinamicoProps {

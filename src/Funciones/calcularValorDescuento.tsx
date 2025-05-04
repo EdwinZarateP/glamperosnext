@@ -1,7 +1,7 @@
 "use client";
 
 import { differenceInCalendarDays, isWithinInterval, parseISO, addDays } from "date-fns";
-import { precioConRecargo } from "@/Funciones/precioConRecargo";
+import { precioConRecargo } from "../Funciones/precioConRecargo";
 
 /**
  * Calcula el valor total del descuento aplicado en noches normales.

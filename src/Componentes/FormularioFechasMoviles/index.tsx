@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import { ContextoApp } from "../../context/AppContext";
 import CalendarioSecundario from "../../Componentes/CalendarioSecundario";

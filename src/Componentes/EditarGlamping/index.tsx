@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
 import "./estilos.css";
 
 const EditarGlamping = () => {

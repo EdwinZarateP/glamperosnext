@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
 import axios from "axios";
 import Tarjeta from "../../Componentes/Tarjeta";
 import Image from "next/image";

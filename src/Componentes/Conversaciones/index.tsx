@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, KeyboardEvent, useContext } from "react";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ContextoApp } from "../../context/AppContext";
 import { useMediaQuery } from "../../Funciones/useMediaQuery";

@@ -98,6 +98,17 @@ const MenuUsuario: React.FC = () => {
             </li>
           </>
         )}
+
+        <li
+          className="MenuUsuario-opcion"
+          onClick={() => {
+            setMostrarMenuUsuarios(false);
+            router.push("/blog");
+          }}
+        >
+          Blog
+        </li>  
+
         <li
           className="MenuUsuario-opcion"
           onClick={() => {

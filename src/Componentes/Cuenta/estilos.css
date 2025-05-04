@@ -163,9 +163,11 @@
   content: "👨🏻‍💼"; /* Cambia a icono de día */
 }
 
-.Cuenta-CentroAyuda{
+.Cuenta-CentroAyuda,
+.Cuenta-Blog{
   display: none;
 }
+
 
 /* 📱 Corrección del problema en dispositivos pequeños */
 @media (max-width: 600px) {
@@ -201,6 +203,11 @@
   }
 
   .Cuenta-CentroAyuda{
+    display: flex;
+    justify-content: left;
+  }
+
+  .Cuenta-Blog{
     display: flex;
     justify-content: left;
   }

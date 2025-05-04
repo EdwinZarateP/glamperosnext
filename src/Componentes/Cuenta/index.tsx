@@ -142,6 +142,10 @@ const Cuenta: React.FC = () => {
     router.push("/Ayuda");
   };
 
+  const manejarBlog = () => {
+    router.push("/blog");
+  };
+
   const manejarCrear = () => {
     quitarSetters();
     router.push("/CrearGlamping");
@@ -222,6 +226,9 @@ const Cuenta: React.FC = () => {
           <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
             <h3>Centro de ayuda 🆘 </h3>
           </div>
+          <div className="Cuenta-tarjeta Cuenta-Blog" onClick={manejarBlog}>
+              <h3>Blog</h3>
+          </div>
         </div>
       ) : (
         usuario?.glampings && usuario.glampings.length > 0 && (
@@ -251,6 +258,9 @@ const Cuenta: React.FC = () => {
             </div>
             <div className="Cuenta-tarjeta Cuenta-CentroAyuda" onClick={manejarCentroAyuda}>
               <h3>Centro de ayuda 🆘</h3>
+            </div>
+            <div className="Cuenta-tarjeta Cuenta-Blog" onClick={manejarBlog}>
+              <h3>Blog</h3>
             </div>
           </div>
         )

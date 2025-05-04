@@ -3,7 +3,8 @@
 import { useContext, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ContextoApp } from "../../context/AppContext";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
+
 import "./estilos.css";
 
 const MenuUsuario: React.FC = () => {

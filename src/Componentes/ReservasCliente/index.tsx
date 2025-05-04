@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useContext } from 'react';
 import { ContextoApp } from "../../context/AppContext";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
+
 import { useRouter } from 'next/navigation';
 import EvaluarGlamping from "../../Componentes/EvaluarGlamping/index";
 

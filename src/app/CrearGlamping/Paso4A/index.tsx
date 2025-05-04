@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ContextoApp } from "../../../context/AppContext";
 import * as confetti from "canvas-confetti";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
 import dynamic from "next/dynamic";
-import animationData from "../../../Componentes/Animaciones/AnimationPuntos.json";
+import animationData from "../../../Componentes/Animaciones/";
 import "./estilos.css";
 
 interface MyLottieProps {

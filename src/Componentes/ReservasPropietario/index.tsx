@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
+
 import Image from 'next/image';
 import dynamic from "next/dynamic";
 import Swal from "sweetalert2";

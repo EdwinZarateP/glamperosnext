@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
+
 import axios from "axios";
 import Swal from "sweetalert2";
 import codigosPaises from "../../Componentes/IndicativosPaises/index"; // Uso de alias "@"

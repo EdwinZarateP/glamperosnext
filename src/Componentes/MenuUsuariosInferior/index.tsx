@@ -5,7 +5,8 @@ import { CiSearch } from "react-icons/ci";
 import { FaRegHeart, FaRegUser } from "react-icons/fa";
 import { TiMessage } from "react-icons/ti";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
+
 import "./estilos.css";
 
 const MenuUsuariosInferior: React.FC = () => {

@@ -7,7 +7,8 @@ import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { ContextoApp } from "../../context/AppContext";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
+
 import "./estilos.css";
 
 const RegistroComp: React.FC = () => {

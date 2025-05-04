@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useContext, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import Header from "../../Componentes/Header";
@@ -61,7 +61,7 @@ interface Glamping {
 }
 
 export default function ExplorarGlampingContenido() {
-  const router = useRouter();
+  // const router = useRouter();
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId") || "";
 

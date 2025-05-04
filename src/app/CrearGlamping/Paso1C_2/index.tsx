@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useContext, useEffect } from "react";
 import { ContextoApp } from "../../../context/AppContext";
-import municipios from "../../Componentes/Municipios/municipios.json";
+import municipios from "../../../Componentes/Municipios/municipios.json";
 import "./estilos.css";
 
 const Paso1C_2: React.FC = () => {

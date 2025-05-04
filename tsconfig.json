@@ -31,7 +31,9 @@
     "next-env.d.ts",
     "next.config.js",
     "src/**/*.{ts,tsx}",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "json.d.ts",
+    "types/**/*"
   ],
   "exclude": ["node_modules", ".next"]
 }

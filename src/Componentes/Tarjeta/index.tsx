@@ -1,14 +1,18 @@
+// src/components/Tarjeta/index.tsx
 "use client";
 
-import  { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AiTwotoneHeart } from "react-icons/ai";
 import { BsBalloonHeartFill } from "react-icons/bs";
 import { FaStar } from "react-icons/fa6";
-import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlinePets } from "react-icons/md";
+import {
+  MdOutlineKeyboardArrowLeft,
+  MdOutlineKeyboardArrowRight,
+  MdOutlinePets,
+} from "react-icons/md";
 import Cookies from "js-cookie";
-
 import axios from "axios";
 import { ContextoApp } from "../../context/AppContext";
 import { calcularTarifaServicio } from "../../Funciones/calcularTarifaServicio";
@@ -56,9 +60,10 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   Cantidad_Huespedes_Adicional,
   amenidadesGlobal,
 }) => {
-  const [esFavorito, setEsFavorito] = useState(favorito);
-  const [imagenActual, setImagenActual] = useState(0);
+  // ➡️ siempre usamos la prop para saber si es favorito
+  const esFavoritoState = favorito;
 
+  const [imagenActual, setImagenActual] = useState(0);
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -69,7 +74,6 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   if (!almacenVariables) {
     throw new Error("El contexto no está disponible. Verifica el proveedor.");
   }
-
   const {
     totalDias,
     fechaInicio,
@@ -79,14 +83,14 @@ const Tarjeta: React.FC<TarjetaProps> = ({
     Cantidad_Adultos,
     Cantidad_Ninos,
     Cantidad_Bebes,
-    Cantidad_Mascotas
+    Cantidad_Mascotas,
   } = almacenVariables;
 
   if (!imagenes || imagenes.length === 0) {
     return <div>No hay imágenes para mostrar.</div>;
   }
-  
-  const audio = new Audio("/Sonidos/Favorito.mp3")
+
+  const audio = new Audio("/Sonidos/Favorito.mp3");
   const hoy = new Date();
   const fechaInicioPorDefecto = new Date();
   fechaInicioPorDefecto.setDate(hoy.getDate() + 1);
@@ -96,16 +100,15 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   const fechaInicioUrl = fechaInicio
     ? fechaInicio.toISOString().split("T")[0]
     : fechaInicioPorDefecto.toISOString().split("T")[0];
-
   const fechaFinUrl = fechaFin
     ? fechaFin.toISOString().split("T")[0]
     : fechaFinPorDefecto.toISOString().split("T")[0];
 
-  const totalDiasUrl = totalDias ? totalDias : 1;
-  const totalAdultosUrl = Cantidad_Adultos ? Cantidad_Adultos : 1;
-  const totalNinosUrl = Cantidad_Ninos ? Cantidad_Ninos : 0;
-  const totalBebesUrl = Cantidad_Bebes ? Cantidad_Bebes : 0;
-  const totalMascotasUrl = Cantidad_Mascotas ? Cantidad_Mascotas : 0;
+  const totalDiasUrl = totalDias ?? 1;
+  const totalAdultosUrl = Cantidad_Adultos ?? 1;
+  const totalNinosUrl = Cantidad_Ninos ?? 0;
+  const totalBebesUrl = Cantidad_Bebes ?? 0;
+  const totalMascotasUrl = Cantidad_Mascotas ?? 0;
 
   const precioConTarifa = calcularTarifaServicio(
     precio,
@@ -113,33 +116,36 @@ const Tarjeta: React.FC<TarjetaProps> = ({
     descuento,
     fechaInicioConfirmado ?? fechaInicioPorDefecto,
     fechaFinConfirmado ?? fechaFinPorDefecto
-  );  
+  );
   const precioFinalNoche = precioConTarifa / totalDiasUrl;
 
   const verificarFavorito = async (): Promise<boolean> => {
     try {
-      const respuesta = await axios.get("https://glamperosapi.onrender.com/favoritos/buscar", {
-        params: { usuario_id: idUsuarioCookie, glamping_id: glampingId }
-      });
+      const respuesta = await axios.get(
+        "https://glamperosapi.onrender.com/favoritos/buscar",
+        {
+          params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
+        }
+      );
       return respuesta.data.favorito_existe;
     } catch (error) {
       console.error("Error al verificar favorito:", error);
       return false;
     }
-  }; 
+  };
 
   const handleFavoritoChange = async () => {
     if (!idUsuarioCookie) {
       router.push("/registro");
       return;
     }
-  
+
+    // ➡️ invertimos el estado basándonos en la prop
+    const nuevoEstado = !esFavoritoState;
+    audio.play();
+    onFavoritoChange(nuevoEstado);
+
     try {
-      const nuevoEstado = !esFavorito;
-      audio.play();
-      setEsFavorito(nuevoEstado);
-      onFavoritoChange(nuevoEstado);
-  
       if (nuevoEstado) {
         await axios.post("https://glamperosapi.onrender.com/favoritos/", {
           usuario_id: idUsuarioCookie,
@@ -147,47 +153,34 @@ const Tarjeta: React.FC<TarjetaProps> = ({
         });
       } else {
         const existe = await verificarFavorito();
-        if (!existe) {
-          console.warn("El favorito ya fue eliminado, no es necesario hacer otra petición.");
-          return;
-        }
-  
+        if (!existe) return;
         await axios.delete("https://glamperosapi.onrender.com/favoritos/", {
-          params: { usuario_id: idUsuarioCookie, glamping_id: glampingId }
+          params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
         });
       }
     } catch (error) {
       console.error("Error al actualizar el favorito:", error);
       alert("Hubo un problema al actualizar el favorito. Intenta nuevamente.");
-      setEsFavorito(!esFavorito);
-      onFavoritoChange(!esFavorito);
+      // opcional: podrías querer revertir el cambio en el padre
+      onFavoritoChange(!nuevoEstado);
     }
   };
-  
 
   const siguienteImagen = () => {
-    setImagenActual((prev) => (prev < imagenes.length - 1 ? prev + 1 : prev));
+    setImagenActual((prev) =>
+      prev < imagenes.length - 1 ? prev + 1 : prev
+    );
   };
-
   const anteriorImagen = () => {
     setImagenActual((prev) => (prev > 0 ? prev - 1 : prev));
   };
-
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX = e.touches[0].clientX;
   };
-
   const handleTouchEnd = (e: React.TouchEvent) => {
     touchEndX = e.changedTouches[0].clientX;
-    handleSwipe();
-  };
-
-  const handleSwipe = () => {
-    if (touchStartX - touchEndX > 50) {
-      siguienteImagen();
-    } else if (touchEndX - touchStartX > 50) {
-      anteriorImagen();
-    }
+    if (touchStartX - touchEndX > 50) siguienteImagen();
+    else if (touchEndX - touchStartX > 50) anteriorImagen();
   };
 
   const maxPuntos = 5;
@@ -204,33 +197,37 @@ const Tarjeta: React.FC<TarjetaProps> = ({
     });
 
   const renderPrecio = () => {
-    if (totalDiasUrl === 0 || totalDiasUrl === 1) {
+    if (totalDiasUrl <= 1) {
       return (
         <div className="tarjeta-precio">
           <span>
             {precioConFormato(precioFinalNoche)} noche para {Cantidad_Huespedes}
           </span>
-          <br />
           {Cantidad_Huespedes_Adicional > 0 && (
-            <span>
-              {precioConFormato(precioEstandarAdicional)} por persona adicional
-            </span>
+            <>
+              <br />
+              <span>
+                {precioConFormato(precioEstandarAdicional)} por persona adicional
+              </span>
+            </>
           )}
         </div>
       );
     }
-
     return (
       <>
         <span className="tarjeta-precio-base">
           {precioConFormato(precioFinalNoche)} por noche
         </span>
         <div className="tarjeta-precio-variosDias">
-          {precioConFormato(precioConTarifa)} por {totalDiasUrl} noches <br />
+          {precioConFormato(precioConTarifa)} por {totalDiasUrl} noches
           {Cantidad_Huespedes_Adicional > 0 && (
-            <span>
-              {precioConFormato(precioEstandarAdicional)} por persona adicional
-            </span>
+            <>
+              <br />
+              <span>
+                {precioConFormato(precioEstandarAdicional)} por persona adicional
+              </span>
+            </>
           )}
         </div>
       </>
@@ -240,18 +237,16 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   const isClient = typeof window !== "undefined";
   const esPantallaPequena = isClient ? window.innerWidth <= 600 : false;
 
-  // Construcción de query parameters
   const queryParams = new URLSearchParams({
-    glampingId: glampingId,
-    fechaInicioUrl: fechaInicioUrl,
-    fechaFinUrl: fechaFinUrl,
+    glampingId,
+    fechaInicioUrl,
+    fechaFinUrl,
     totalDiasUrl: totalDiasUrl.toString(),
     totalAdultosUrl: totalAdultosUrl.toString(),
     totalNinosUrl: totalNinosUrl.toString(),
     totalBebesUrl: totalBebesUrl.toString(),
-    totalMascotasUrl: totalMascotasUrl.toString()
+    totalMascotasUrl: totalMascotasUrl.toString(),
   });
-
   const urlDestino = `/ExplorarGlamping?${queryParams.toString()}`;
 
   return (
@@ -265,32 +260,30 @@ const Tarjeta: React.FC<TarjetaProps> = ({
           >
             <div
               className="carrusel"
-              style={{
-                transform: `translateX(-${imagenActual * 100}%)`,
-              }}
+              style={{ transform: `translateX(-${imagenActual * 100}%)` }}
             >
-              {imagenes.map((url, index) => (
+              {imagenes.map((url, idx) => (
                 <img
-                  key={index}
+                  key={idx}
                   src={url}
                   alt={`Glamping ${nombreGlamping}`}
                   className="tarjeta-imagen visible"
                 />
               ))}
             </div>
-
             {Acepta_Mascotas && (
               <MdOutlinePets className="tarjeta-icono-mascota" />
             )}
-
             <div className="puntos">
-              {puntosVisibles.map((_, index) => (
+              {puntosVisibles.map((_, i) => (
                 <span
-                  key={start + index}
-                  className={`punto ${start + index === imagenActual ? "activo" : ""}`}
+                  key={start + i}
+                  className={`punto ${
+                    start + i === imagenActual ? "activo" : ""
+                  }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setImagenActual(start + index);
+                    setImagenActual(start + i);
                   }}
                 />
               ))}
@@ -311,32 +304,30 @@ const Tarjeta: React.FC<TarjetaProps> = ({
           >
             <div
               className="carrusel"
-              style={{
-                transform: `translateX(-${imagenActual * 100}%)`,
-              }}
+              style={{ transform: `translateX(-${imagenActual * 100}%)` }}
             >
-              {imagenes.map((url, index) => (
+              {imagenes.map((url, idx) => (
                 <img
-                  key={index}
+                  key={idx}
                   src={url}
                   alt={`Glamping ${nombreGlamping}`}
                   className="tarjeta-imagen visible"
                 />
               ))}
             </div>
-
             {Acepta_Mascotas && (
               <MdOutlinePets className="tarjeta-icono-mascota" />
             )}
-
             <div className="puntos">
-              {puntosVisibles.map((_, index) => (
+              {puntosVisibles.map((_, i) => (
                 <span
-                  key={start + index}
-                  className={`punto ${start + index === imagenActual ? "activo" : ""}`}
+                  key={start + i}
+                  className={`punto ${
+                    start + i === imagenActual ? "activo" : ""
+                  }`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setImagenActual(start + index);
+                    setImagenActual(start + i);
                   }}
                 />
               ))}
@@ -352,7 +343,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
           handleFavoritoChange();
         }}
       >
-        {esFavorito ? (
+        {esFavoritoState ? (
           <BsBalloonHeartFill className="corazon activo" />
         ) : (
           <AiTwotoneHeart className="corazon" />
@@ -360,7 +351,9 @@ const Tarjeta: React.FC<TarjetaProps> = ({
       </div>
 
       <div
-        className={`flecha izquierda ${imagenActual === 0 ? "oculta" : ""}`}
+        className={`flecha izquierda ${
+          imagenActual === 0 ? "oculta" : ""
+        }`}
         onClick={(e) => {
           e.stopPropagation();
           anteriorImagen();
@@ -369,7 +362,9 @@ const Tarjeta: React.FC<TarjetaProps> = ({
         <MdOutlineKeyboardArrowLeft />
       </div>
       <div
-        className={`flecha derecha ${imagenActual === imagenes.length - 1 ? "oculta" : ""}`}
+        className={`flecha derecha ${
+          imagenActual === imagenes.length - 1 ? "oculta" : ""
+        }`}
         onClick={(e) => {
           e.stopPropagation();
           siguienteImagen();
@@ -382,9 +377,9 @@ const Tarjeta: React.FC<TarjetaProps> = ({
         <div className="tarjeta-contenido">
           <span className="tarjeta-nombre">
             {(() => {
-              // Formatear el tipoGlamping
-              const tipoFormateado = tipoGlamping.toLowerCase().replace(/\b\w/, (c) => c.toUpperCase());
-              // Lista de amenidades a buscar en orden y sus respectivos prefijos
+              const tipoFormateado = tipoGlamping
+                .toLowerCase()
+                .replace(/\b\w/, (c) => c.toUpperCase());
               const amenidadesSufijo = [
                 { valor: "Vista al lago", prefijo: "con" },
                 { valor: "Playa", prefijo: "cerca a la" },
@@ -405,10 +400,11 @@ const Tarjeta: React.FC<TarjetaProps> = ({
                 }
               }
               if (amenidadEncontrada) {
-                // Si la amenidad es "En la montaña" se muestra sin prefijo o puedes ajustar el formato si lo deseas.
                 return amenidadEncontrada.prefijo === ""
                   ? `${tipoFormateado} ${amenidadEncontrada.valor}`
-                  : `${tipoFormateado} ${amenidadEncontrada.prefijo} ${amenidadEncontrada.valor}`;
+                  : `${tipoFormateado} ${
+                      amenidadEncontrada.prefijo
+                    } ${amenidadEncontrada.valor}`;
               }
               return tipoFormateado;
             })()}

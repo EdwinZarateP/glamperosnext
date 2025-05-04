@@ -1,3 +1,4 @@
 {
-    "liveServer.settings.multiRootWorkspaceName": "glamperos"
+    "liveServer.settings.multiRootWorkspaceName": "glamperos",
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }

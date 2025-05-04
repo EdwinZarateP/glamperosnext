@@ -110,7 +110,12 @@ const ContenedorTarjetas: React.FC = () => {
             `https://glamperosapi.onrender.com/favoritos/${idUsuarioCookie}`
           );
           const data = await response.json();
-          setFavoritos(data);
+          // ➡️ transformamos en array de strings limpios
+          const favIds: string[] = Array.isArray(data)
+            ? data.map((id: any) => id.toString().trim())
+            : [];
+          setFavoritos(favIds);
+
         } catch (error) {
           console.error("Error al obtener los favoritos:", error);
         }
@@ -548,9 +553,14 @@ const ContenedorTarjetas: React.FC = () => {
             lat: glamping.ubicacion.lat ?? 0,
             lng: glamping.ubicacion.lng ?? 0,
           }}
-          onFavoritoChange={(nuevoEstado) =>
-            console.log(`Favorito en tarjeta ${index + 1}:`, nuevoEstado)
-          }
+          onFavoritoChange={(nuevoEstado) => {
+            // ➡️ si nuevoEstado es true agrego; si es false, quito
+            if (nuevoEstado) {
+              setFavoritos(prev => [...prev, glamping._id]);
+            } else {
+              setFavoritos(prev => prev.filter(id => id !== glamping._id));
+            }
+          }}
           Acepta_Mascotas={glamping.Acepta_Mascotas}
           fechasReservadas={glamping.fechasReservadas}
           Cantidad_Huespedes={glamping.Cantidad_Huespedes}

@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useContext } from "react";
 import { ContextoApp } from "../../context/AppContext";
 import Tarjeta from "../../Componentes/Tarjeta/index";
 import { precioConRecargo } from "../../Funciones/precioConRecargo";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import "./estilos.css";
 

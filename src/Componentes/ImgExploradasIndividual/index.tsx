@@ -2,7 +2,7 @@
 
 import { useState, useEffect, TouchEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import axios from "axios";
 import { AiTwotoneHeart } from "react-icons/ai";

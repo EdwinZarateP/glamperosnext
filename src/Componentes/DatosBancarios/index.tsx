@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import TraerDatosBancarios, { DatosBancariosProps } from "../../Funciones/TraerDatosBancarios";
 import dynamic from "next/dynamic";

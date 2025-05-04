@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import axios from "axios";
 import Swal from "sweetalert2";

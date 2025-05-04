@@ -10,7 +10,7 @@ import { ObtenerFechasReservadas } from "../../Funciones/ObtenerFechasReservadas
 import InputTelefono from "../../Componentes/InputTelefono/index";
 import { ContextoApp } from "../../context/AppContext";
 import Politicas from "../../Componentes/Politica/index";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";

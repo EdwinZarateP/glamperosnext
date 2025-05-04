@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useContext } from "react";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import { useSearchParams, useRouter } from "next/navigation";
 import { ContextoApp } from "../../context/AppContext";

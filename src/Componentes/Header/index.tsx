@@ -9,7 +9,7 @@ import { evaluarVariable } from "../../Funciones/ValidarVariable";
 import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
 import Image from "next/image";
 import { BsIncognito } from "react-icons/bs";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import MenuUsuario from "../../Componentes/MenuUsuario/index";
 import "./estilos.css"; 

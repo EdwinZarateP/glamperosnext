@@ -7,7 +7,7 @@ import { AiTwotoneHeart } from "react-icons/ai";
 import { BsBalloonHeartFill } from "react-icons/bs";
 import { FaStar } from "react-icons/fa6";
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight, MdOutlinePets } from "react-icons/md";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import axios from "axios";
 import { ContextoApp } from "../../context/AppContext";

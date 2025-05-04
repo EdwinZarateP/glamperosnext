@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import Swal from "sweetalert2";
 import { GiCampingTent } from "react-icons/gi";

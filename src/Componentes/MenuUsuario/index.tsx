@@ -3,7 +3,7 @@
 import { useContext, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ContextoApp } from "../../context/AppContext";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 import "./estilos.css";
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ContextoApp } from "../../../context/AppContext";
 import * as confetti from "canvas-confetti";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 import dynamic from "next/dynamic";
 import animationData from "../../../Componentes/Animaciones/AnimationPuntos.json";
 import "./estilos.css";

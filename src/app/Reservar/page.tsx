@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from 'react';
+
+import { Suspense, useEffect, useState } from 'react';
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
 import Reservacion from '../../Componentes/Reservacion/index';
 import HeaderIcono from '../../Componentes/HeaderIcono/index';
 import './estilos.css';
-
 
 interface MyLottieProps {
   animationData: unknown;
@@ -14,20 +14,13 @@ interface MyLottieProps {
   style?: React.CSSProperties;
 }
 
-// Transformamos la importación de `lottie-react` a un componente que acepte MyLottieProps
+// Import dinámico de lottie-react
 const Lottie = dynamic<MyLottieProps>(
-  () =>
-    import("lottie-react").then((mod) => {
-      // forzamos el default a un componente tipado
-      return mod.default as React.ComponentType<MyLottieProps>;
-    }),
-  {
-    ssr: false,
-  }
+  () => import("lottie-react").then(mod => mod.default as React.ComponentType<MyLottieProps>),
+  { ssr: false }
 );
 
 function Reservar() {
-  // Estado para mostrar/ocultar la animación de carga
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +29,6 @@ function Reservar() {
     }
   }, []);
 
-  // Función que se ejecuta cuando Reservacion avisa que terminó de cargar
   const handleReservacionLoaded = () => {
     setIsLoading(false);
   };
@@ -49,15 +41,16 @@ function Reservar() {
         <div className="lottie-container">
           <Lottie
             animationData={animationData}
-            loop={true}
-            autoplay={true}
+            loop
+            autoplay
             style={{ height: 200, width: "100%", margin: "auto" }}
           />
         </div>
       )}
 
-      {/* Pasamos la función de notificación como prop al componente Reservacion */}
-      <Reservacion onLoaded={handleReservacionLoaded} />
+      <Suspense fallback={<div>Cargando reservación…</div>}>
+        <Reservacion onLoaded={handleReservacionLoaded} />
+      </Suspense>
     </div>
   );
 }

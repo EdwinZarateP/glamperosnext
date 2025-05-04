@@ -4,7 +4,7 @@ import { useRef, useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation"; 
 import axios from "axios";
 import { ContextoApp } from "../../../context/AppContext";
-import confetti from 'canvas-confetti'; 
+import * as confetti from "canvas-confetti";
 import Cookies from 'js-cookie';
 import dynamic from "next/dynamic";
 import animationData from "../../../Componentes/Animaciones/AnimationPuntos.json";

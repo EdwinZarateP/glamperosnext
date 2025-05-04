@@ -1,8 +1,12 @@
-.blog-container {
+.blog-contenedor {
   max-width: 900px;
   margin: 0 auto;
-  padding: 3rem 1rem;
+  padding: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.blog-contenedor-listas{
+  margin-top: 50px;
 }
 
 .blog-title {
@@ -89,8 +93,15 @@
   color: #2563eb;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 900px) {
   .blog-post-list {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (max-width: 900px) {
+  .blog-contenedor-listas{
+    margin-top: 0;
+  }
+}
+

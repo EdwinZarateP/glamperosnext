@@ -1,5 +1,6 @@
 // src/app/blog/page.tsx
 import Link from "next/link";
+import HeaderIcono from "../../Componentes/HeaderIcono"; 
 import "./estilos.css";
 
 export const revalidate = 60;
@@ -11,8 +12,10 @@ export default async function BlogIndex() {
   const posts: any[] = await res.json();
 
   return (
-    <main className="blog-container">
-      <h1 className="blog-title">Experiencias Glamperos</h1>
+    <main className="blog-contenedor">
+      <HeaderIcono descripcion="Blog Glamperos" />
+      <div className="blog-contenedor-listas">
+      <h1 className="blog-title">Experiencias</h1>
       <ul className="blog-post-list">
         {posts.map((post) => {
           const featuredMedia =
@@ -49,6 +52,7 @@ export default async function BlogIndex() {
           );
         })}
       </ul>
+      </div>
     </main>
   );
 }

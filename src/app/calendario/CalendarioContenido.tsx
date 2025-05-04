@@ -1,4 +1,4 @@
-// app/calendario/CalendarioContenido.tsx
+// src/app/calendario/CalendarioContenido.tsx
 "use client";
 
 import { useContext, useEffect, useState } from "react";
@@ -27,7 +27,10 @@ const CalendarioContenido: React.FC = () => {
 
   useEffect(() => {
     async function consultarGlamping() {
-      if (!glampingId) return console.error("Falta glampingId");
+      if (!glampingId) {
+        console.error("Falta glampingId");
+        return;
+      }
       const datos = await ObtenerGlampingPorId(glampingId);
       if (!datos) return;
       setInformacionGlamping({
@@ -36,7 +39,7 @@ const CalendarioContenido: React.FC = () => {
         fechasAirbnb: datos.fechasReservadasAirbnb || [],
         fechasBooking: datos.fechasReservadasBooking || [],
       });
-      // también actualizamos el contexto con las fechas ya parseadas:
+      // Actualizamos el contexto con todas las fechas parseadas
       const todas = datos.fechasReservadas || [];
       const comoDate = todas.map((str: string) => {
         const [y, m, d] = str.split("-").map(Number);

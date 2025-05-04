@@ -1,4 +1,4 @@
-// app/calendario/page.tsx
+// src/app/calendario/page.tsx
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
@@ -14,7 +14,7 @@ interface MyLottieProps {
 
 const Lottie = dynamic<MyLottieProps>(
   () =>
-    import("lottie-react").then((mod) => 
+    import("lottie-react").then((mod) =>
       mod.default as React.ComponentType<MyLottieProps>
     ),
   { ssr: false }

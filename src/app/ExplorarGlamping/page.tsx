@@ -1,4 +1,5 @@
 // app/ExplorarGlamping/page.tsx
+"use client";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";

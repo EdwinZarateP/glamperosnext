@@ -1,7 +1,7 @@
 "use client";
-import ReservasPropietario from '@/Componentes/ReservasPropietario'; 
-import HeaderIcono from '@/Componentes/HeaderIcono'; 
-import MenuUsuariosInferior from '@/Componentes/MenuUsuariosInferior'; 
+import ReservasPropietario from '../../Componentes/ReservasPropietario'; 
+import HeaderIcono from '../../Componentes/HeaderIcono'; 
+import MenuUsuariosInferior from '../../Componentes/MenuUsuariosInferior'; 
 import './estilos.css';
 
 function ReservasPropiedades() {

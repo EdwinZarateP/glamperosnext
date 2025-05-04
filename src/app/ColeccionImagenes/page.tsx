@@ -1,7 +1,7 @@
-"use client"; // Asegura que el componente solo se renderiza en el cliente
+"use client";
 
-import FotosCollage from '@/Componentes/FotosCollage/index'; // Usando alias para la ruta
-import HeaderIcono from '@/Componentes/HeaderIcono'; // Usando alias para la ruta
+import FotosCollage from '../../Componentes/FotosCollage/index';
+import HeaderIcono from '../../Componentes/HeaderIcono'; // Usando alias para la ruta
 import './estilos.css'; // Manteniendo la importación de los estilos
 
 function ColeccionImagenes() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import * as Cookies from "js-cookie";
+import Cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 import { AiTwotoneHeart } from "react-icons/ai";
 import { BsBalloonHeartFill } from "react-icons/bs";

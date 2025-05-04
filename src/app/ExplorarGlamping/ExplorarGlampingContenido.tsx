@@ -31,6 +31,7 @@ interface MyLottieProps {
   autoplay?: boolean;
   style?: React.CSSProperties;
 }
+
 const Lottie = dynamic<MyLottieProps>(
   () =>
     import("lottie-react").then((mod) =>
@@ -61,24 +62,28 @@ interface Glamping {
 }
 
 export default function ExplorarGlampingContenido() {
-  // const router = useRouter();
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId") || "";
+  const { setTarifaServicio, setFechasSeparadas, setVerVideo } =
+    useContext(ContextoApp)!;
 
-  const { setTarifaServicio, setFechasSeparadas, setVerVideo } = useContext(ContextoApp)!;
+  // Inicializar tarifa y scroll
+  useEffect(() => {
+    setTarifaServicio(1.12);
+    window.scrollTo({ top: 0 });
+  }, [setTarifaServicio]);
 
-  // Ajustes iniciales
-  useEffect(() => { setTarifaServicio(1.12); }, [setTarifaServicio]);
-  useEffect(() => { window.scrollTo({ top: 0 }); }, []);
+  const [informacionGlamping, setInformacionGlamping] = useState<
+    Glamping | null
+  >(null);
 
-  const [informacionGlamping, setInformacionGlamping] = useState<Glamping | null>(null);
-
-  // Carga de datos del glamping
+  // Cargar datos del glamping
   useEffect(() => {
     if (!glampingId) return;
     (async () => {
       const datos = await ObtenerGlampingPorId(glampingId);
       if (!datos) return;
+
       setInformacionGlamping({
         nombreGlamping: datos.nombreGlamping || "",
         ciudad_departamento: datos.ciudad_departamento || "",
@@ -89,7 +94,8 @@ export default function ExplorarGlampingContenido() {
         precioEstandarAdicional: datos.precioEstandarAdicional || 0,
         descuento: Number(datos.descuento) || 0,
         Cantidad_Huespedes: datos.Cantidad_Huespedes || 0,
-        Cantidad_Huespedes_Adicional: datos.Cantidad_Huespedes_Adicional || 0,
+        Cantidad_Huespedes_Adicional:
+          datos.Cantidad_Huespedes_Adicional || 0,
         descripcionGlamping: datos.descripcionGlamping || "",
         imagenes: datos.imagenes || [],
         ubicacion: datos.ubicacion
@@ -102,7 +108,7 @@ export default function ExplorarGlampingContenido() {
         minimoNoches: datos.minimoNoches || 1,
       });
 
-      // Convertir fechas a Date[]
+      // Convertir strings a Date[]
       const fechas = (datos.fechasReservadas || []).map((f: string) => {
         const [y, m, d] = f.split("-").map(Number);
         return new Date(y, m - 1, d);
@@ -128,14 +134,24 @@ export default function ExplorarGlampingContenido() {
     })();
   }, [glampingId]);
 
-  // Scroll al navegar atrás
+  // Reset scroll on back navigation
   useEffect(() => {
-    const irArriba = () => window.scrollTo({ top: 0, behavior: "auto" });
+    const irArriba = () =>
+      window.scrollTo({ top: 0, behavior: "auto" });
     window.addEventListener("popstate", irArriba);
-    return () => window.removeEventListener("popstate", irArriba);
+    return () =>
+      window.removeEventListener("popstate", irArriba);
   }, []);
 
   const onVideo = () => setVerVideo(true);
+
+  // Determinar si el vídeo es válido (no vacío ni placeholder)
+  const tieneVideo =
+    informacionGlamping?.video_youtube &&
+    informacionGlamping.video_youtube.trim() !== "" &&
+    informacionGlamping.video_youtube
+      .trim()
+      .toLowerCase() !== "sin video";
 
   return (
     <div className="contenedor-principal-exploracion">
@@ -170,7 +186,11 @@ export default function ExplorarGlampingContenido() {
                     animationData={animationData}
                     loop
                     autoplay
-                    style={{ height: 200, width: "100%", margin: "auto" }}
+                    style={{
+                      height: 200,
+                      width: "100%",
+                      margin: "auto",
+                    }}
                   />
                 </div>
               )}
@@ -178,8 +198,10 @@ export default function ExplorarGlampingContenido() {
 
             {/* Vista móvil de imágenes individuales */}
             <div className="img-exploradas-individual-container">
-              <ImgExploradasIndividual imagenes={informacionGlamping.imagenes} />
-              {informacionGlamping.video_youtube && (
+              <ImgExploradasIndividual
+                imagenes={informacionGlamping.imagenes}
+              />
+              {tieneVideo && (
                 <button
                   className="ImgExploradas-iconoVideo-peque"
                   onClick={onVideo}
@@ -201,16 +223,20 @@ export default function ExplorarGlampingContenido() {
 
             {/* Descripción y formulario lado a lado */}
             <div className="contenedor-descripcion-glamping">
-              {/* Izquierda: descripción, amenidades y calendario */}
+              {/* Izquierda */}
               <div className="contenedor-descripcion-glamping-izq">
                 <DescripcionGlamping
                   calificacionNumero={calProm}
                   calificacionEvaluaciones={calCount}
                   calificacionMasAlta="Su piscina fue lo mejor calificado"
-                  descripcion_glamping={informacionGlamping.descripcionGlamping}
+                  descripcion_glamping={
+                    informacionGlamping.descripcionGlamping
+                  }
                 />
                 <div className="contenedor-lo-que-ofrece">
-                  <LoQueOfrece amenidades={informacionGlamping.amenidadesGlobal} />
+                  <LoQueOfrece
+                    amenidades={informacionGlamping.amenidadesGlobal}
+                  />
                 </div>
                 <div className="contenedor-calendario">
                   <Calendario
@@ -220,8 +246,7 @@ export default function ExplorarGlampingContenido() {
                   />
                 </div>
               </div>
-
-              {/* Derecha: formulario de reserva */}
+              {/* Derecha */}
               <div className="contenedor-descripcion-glamping-der">
                 <FormularioFechas
                   precioPorNoche={informacionGlamping.precioEstandar}
@@ -230,7 +255,9 @@ export default function ExplorarGlampingContenido() {
                   }
                   descuento={informacionGlamping.descuento}
                   admiteMascotas={informacionGlamping.Acepta_Mascotas}
-                  Cantidad_Huespedes={informacionGlamping.Cantidad_Huespedes}
+                  Cantidad_Huespedes={
+                    informacionGlamping.Cantidad_Huespedes
+                  }
                   Cantidad_Huespedes_Adicional={
                     informacionGlamping.Cantidad_Huespedes_Adicional
                   }
@@ -248,12 +275,14 @@ export default function ExplorarGlampingContenido() {
               />
             </ManejoErrores>
             {informacionGlamping.propietario_id ? (
-              <PerfilUsuario propietario_id={informacionGlamping.propietario_id} />
+              <PerfilUsuario
+                propietario_id={informacionGlamping.propietario_id}
+              />
             ) : (
               <p>El propietario no está disponible</p>
             )}
 
-            {/* Formulario para móvil */}
+            {/* Móvil */}
             <FormularioFechasMoviles
               precioPorNoche={informacionGlamping.precioEstandar}
               precioPersonaAdicional={
@@ -261,7 +290,9 @@ export default function ExplorarGlampingContenido() {
               }
               descuento={informacionGlamping.descuento}
               admiteMascotas={informacionGlamping.Acepta_Mascotas}
-              Cantidad_Huespedes={informacionGlamping.Cantidad_Huespedes}
+              Cantidad_Huespedes={
+                informacionGlamping.Cantidad_Huespedes
+              }
               Cantidad_Huespedes_Adicional={
                 informacionGlamping.Cantidad_Huespedes_Adicional
               }
@@ -276,7 +307,11 @@ export default function ExplorarGlampingContenido() {
             animationData={animationData}
             loop
             autoplay
-            style={{ height: 200, width: "100%", margin: "auto" }}
+            style={{
+              height: 200,
+              width: "100%",
+              margin: "auto",
+            }}
           />
         </div>
       )}

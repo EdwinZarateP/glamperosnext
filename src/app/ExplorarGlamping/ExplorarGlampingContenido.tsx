@@ -148,7 +148,7 @@ export default function ExplorarGlampingContenido() {
 
           <main>
             {/* Encabezado sin borde */}
-            <div className="encabezado-explorado">
+            <div className="encabezado-explorado-container">
               <EncabezadoExplorado
                 nombreGlamping={`${informacionGlamping.tipoGlamping} en ${
                   informacionGlamping.ciudad_departamento.split(" - ")[0]

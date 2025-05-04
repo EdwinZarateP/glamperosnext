@@ -1,16 +1,20 @@
+// app/ColeccionImagenes/page.tsx
+
 "use client";
 
-import FotosCollage from '../../Componentes/FotosCollage/index';
-import HeaderIcono from '../../Componentes/HeaderIcono'; // Usando alias para la ruta
-import './estilos.css'; // Manteniendo la importación de los estilos
+import { Suspense } from "react";
+import FotosCollage from '../../Componentes/FotosCollage';
+import HeaderIcono from '../../Componentes/HeaderIcono';
+import './estilos.css';
 
-function ColeccionImagenes() {
+export default function ColeccionImagenes() {
   return (
     <div className="ColeccionImagenes-contenedor">
       <HeaderIcono descripcion="Glamperos" />
-      <FotosCollage />
+
+      <Suspense fallback={<div>Cargando imágenes…</div>}>
+        <FotosCollage />
+      </Suspense>
     </div>
   );
 }
-
-export default ColeccionImagenes;

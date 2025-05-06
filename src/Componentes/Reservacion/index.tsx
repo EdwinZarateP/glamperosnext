@@ -57,7 +57,9 @@ declare global {
   }
 }
 
-const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
+// activacion de wompi a produccion real para pagos
+// const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
+const PUBLIC_KEY = "pub_prod_SemHaHOa4P0B0DW56uXAJcGyaXSS5z1w"; 
 
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);
@@ -311,7 +313,10 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         if (result && result.transaction && result.transaction.id) {
           try {
             const transactionId = result.transaction.id;
-            const response = await fetch(`https://sandbox.wompi.co/v1/transactions/${transactionId}`);
+            // aqui activamos wompi en produccion
+            // const response = await fetch(`https://sandbox.wompi.co/v1/transactions/${transactionId}`);
+            const response = await fetch(`https://production.wompi.co/v1/transactions/${transactionId}`);
+
             const transactionData = await response.json();
             const estadoPago = transactionData?.data?.status;
 

@@ -59,7 +59,7 @@ declare global {
 
 // activacion de wompi a produccion real para pagos
 // const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
-const PUBLIC_KEY = "pub_prod_SemHaHOa4P0B0DW56uXAJcGyaXSS5z1w"; 
+const PUBLIC_KEY = "pub_prod_SemHaHOa4POB0DW56uXAJc0yaXSS5z1w"; 
 
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);

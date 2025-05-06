@@ -57,13 +57,13 @@ declare global {
   }
 }
 
-// activacion de wompi a produccion real para pagos
-const isProd = process.env.NEXT_PUBLIC_WOMPI_MODE === "prod";
+// Detectar entorno dinámicamente desde variable de entorno
+const wompiEnv = process.env.NEXT_PUBLIC_WOMPI_ENV || "sandbox";
+const isProd = wompiEnv === "prod";
 
 const PUBLIC_KEY = isProd
   ? process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_PROD!
   : process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_SANDBOX!;
-
 
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);

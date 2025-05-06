@@ -16,7 +16,7 @@ const Paso2F: React.FC = () => {
   }, [descripcionGlamping]);
 
   const manejarCambio = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const valor = e.target.value.slice(0, 1000); // Limitar a 1000 caracteres
+    const valor = e.target.value.slice(0, 2000); // Limitar a 2000 caracteres
     setInputDescripcion(valor);
     setDescripcionGlamping(valor);
   };
@@ -41,7 +41,7 @@ const Paso2F: React.FC = () => {
           />
           {/* Mostrar la cantidad de caracteres ingresados */}
           <p className="Paso2F-caracteres">
-            {inputDescripcion.length}/1000
+            {inputDescripcion.length}/2000
           </p>
         </div>
       </div>

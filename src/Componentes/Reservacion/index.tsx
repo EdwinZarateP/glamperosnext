@@ -315,7 +315,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
             const transactionId = result.transaction.id;
             // aqui activamos wompi en produccion
             // const response = await fetch(`https://sandbox.wompi.co/v1/transactions/${transactionId}`);
-            const response = await fetch(`https://production.wompi.co/v1/transactions/${transactionId}`);
+            const response = await fetch(`https://api.wompi.co/v1/transactions/${transactionId}`);
 
             const transactionData = await response.json();
             const estadoPago = transactionData?.data?.status;

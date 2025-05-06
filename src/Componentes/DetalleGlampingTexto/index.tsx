@@ -59,7 +59,11 @@ export default function DescripcionGlampingTexto({
             >
               ×
             </button>
-            <p>{descripcionGlamping}</p>
+            <div>
+              {descripcionGlamping.split("\n").map((linea, index) => (
+                <p key={index}>{linea}</p>
+              ))}
+            </div>
           </div>
         </div>
       )}

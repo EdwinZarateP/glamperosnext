@@ -152,7 +152,22 @@ export default function ExplorarGlampingContenido() {
     informacionGlamping.video_youtube
       .trim()
       .toLowerCase() !== "sin video";
-
+  
+  const redirigirWhatsApp = () => {
+    const numeroWhatsApp = "+573218695196";
+    const urlActual = typeof window !== "undefined" ? window.location.href : "";
+    const mensaje = encodeURIComponent(
+      `Hola equipo Glamperos, ¡Quiero información sobre este glamping! 👉 ${urlActual}`
+    );
+    const esPantallaPequena =
+      typeof window !== "undefined" && window.innerWidth < 600;
+    const urlWhatsApp = esPantallaPequena
+      ? `https://wa.me/${numeroWhatsApp}?text=${mensaje}`
+      : `https://web.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensaje}`;
+    window.open(urlWhatsApp, "_blank");
+  };
+  
+  
   return (
     <div className="contenedor-principal-exploracion">
       {informacionGlamping ? (
@@ -315,6 +330,20 @@ export default function ExplorarGlampingContenido() {
           />
         </div>
       )}
+      <button
+        type="button"
+        className="contenedor-principal-whatsapp-button"
+        onClick={redirigirWhatsApp}
+        aria-label="Chatea por WhatsApp"
+      >
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+          alt="WhatsApp"
+          width={32}
+          height={32}
+        />
+      </button>
+
     </div>
   );
 }

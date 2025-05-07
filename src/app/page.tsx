@@ -48,7 +48,7 @@ export default function Home() {
       {/* Botón fijo de WhatsApp que llama a redirigirWhatsApp */}
       <button
         type="button"
-        className="whatsapp-button"
+        className="Home-whatsapp-button"
         onClick={redirigirWhatsApp}
         aria-label="Chatea por WhatsApp"
       >

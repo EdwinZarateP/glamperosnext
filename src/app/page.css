@@ -30,7 +30,7 @@ border-radius: 7px;
 }
 
 /* Estilos para el botón sticky de WhatsApp */
-.whatsapp-button {
+.Home-whatsapp-button {
 position: fixed;
 bottom: 20px;       /* separación inferior */
 right: 10px;        /* separación lateral */
@@ -48,13 +48,13 @@ z-index: 1000;
 text-decoration: none;
 }
 
-.whatsapp-button:hover {
+.Home-whatsapp-button:hover {
 transform: scale(1.1);
 box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
-.whatsapp-button img,
-.whatsapp-button svg {
+.Home-whatsapp-button img,
+.Home-whatsapp-button svg {
 display: block;
 width: 36px;
 height: 36px;
@@ -71,7 +71,7 @@ height: 36px;
   .Home-Titulo p {
     display: none;
   }
-  .whatsapp-button {
+  .Home-whatsapp-button {
     width: 2.5rem;
     height: 2.5rem;
     bottom: 80px;

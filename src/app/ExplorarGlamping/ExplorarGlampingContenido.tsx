@@ -157,7 +157,7 @@ export default function ExplorarGlampingContenido() {
     const numeroWhatsApp = "+573218695196";
     const urlActual = typeof window !== "undefined" ? window.location.href : "";
     const mensaje = encodeURIComponent(
-      `Hola equipo Glamperos, ¡Quiero información sobre este glamping! 👉 ${urlActual}`
+      `Hola equipo Glamperos, ¡Quiero información sobre este glamping!\n \n${urlActual}`
     );
     const esPantallaPequena =
       typeof window !== "undefined" && window.innerWidth < 600;

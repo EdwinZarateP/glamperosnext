@@ -57,8 +57,20 @@ declare global {
   }
 }
 
-// const PUBLIC_KEY = process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_SANDBOX!;
-const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
+// ------------ cambiar entre "produccion" o "pruebas"-------------
+type Modo = "produccion" | "pruebas";
+const modo: Modo = "produccion"; // ✅ Cambia aquí entre "produccion" o "pruebas"
+// -------------------------------------
+
+const PUBLIC_KEY = {
+  produccion: process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY!,
+  pruebas: process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_SANDBOX!,
+}[modo];
+
+const WOMPI_API_URL_BASE = {
+  produccion: "https://production.wompi.co/v1/transactions",
+  pruebas: "https://sandbox.wompi.co/v1/transactions",
+}[modo];
 
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);
@@ -273,8 +285,8 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       const montoCentavos = Math.round(montoPesos * 100);
 
       const respFirma = await fetch(
-        `https://glamperosapi.onrender.com/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP`
-        // `http://127.0.0.1:8000/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP`        
+        `https://glamperosapi.onrender.com/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`
+        // `http://127.0.0.1:8000/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`        
       );
       const dataFirma = await respFirma.json();
 
@@ -330,9 +342,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         if (result && result.transaction && result.transaction.id) {
           try {
             const transactionId = result.transaction.id;
-            const response = await fetch(
-              `https://sandbox.wompi.co/v1/transactions/${transactionId}`
-            );
+            const response = await fetch(`${WOMPI_API_URL_BASE}/${transactionId}`);
             const transactionData = await response.json();
             const estadoPago = transactionData?.data?.status;
 

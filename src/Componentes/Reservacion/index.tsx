@@ -57,9 +57,8 @@ declare global {
   }
 }
 
-// activacion de wompi a produccion real para pagos
-// const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
-const PUBLIC_KEY = "pub_prod_SemHaHOa4POB0DW56uXAJc0yaXSS5z1w"; 
+// const PUBLIC_KEY = process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_SANDBOX!;
+const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
 
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);
@@ -116,10 +115,13 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       script.id = scriptId;
       script.src = "https://checkout.wompi.co/widget.js";
       script.async = true;
-      script.onload = () => console.log("✅ Wompi script cargado correctamente");
+      script.onload = () => {
+        console.log("🔑 PUBLIC_KEY cargado en onload:", PUBLIC_KEY);
+        // Podrías hacer aquí una validación o seteo si quieres asegurar algo
+      };
       document.body.appendChild(script);
     }
-  }, []);
+  }, [PUBLIC_KEY]);  
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -272,8 +274,14 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
 
       const respFirma = await fetch(
         `https://glamperosapi.onrender.com/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP`
+        // `http://127.0.0.1:8000/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP`        
       );
       const dataFirma = await respFirma.json();
+
+      console.log("Referencia:", reservationReference);
+      console.log("Monto Centavos:", montoCentavos);
+      console.log("Firma:", dataFirma.firma_integridad);
+
 
       if (!dataFirma.firma_integridad) {
         console.error("No se pudo obtener la firma de integridad");
@@ -297,35 +305,38 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         return;
       }
 
-      const checkout = new window.WidgetCheckout({
-        currency: "COP",
-        amountInCents: montoCentavos,
-        reference: reservationReference,
-        publicKey: PUBLIC_KEY,
-        signature: {
-          integrity: dataFirma.firma_integridad,
-        },
-        redirectUrl: "https://glamperos.com/gracias",
-      });
+    console.log("🧪 Validación previa al checkout:");
+    console.log("Public Key:", PUBLIC_KEY);
+    console.log("Reference:", reservationReference);
+    console.log("Monto:", montoCentavos);
+    console.log("Firma:", dataFirma.firma_integridad);
 
-      checkout.open(async (result: any) => {
+    const checkout = new window.WidgetCheckout({
+      currency: "COP",
+      amountInCents: montoCentavos,
+      reference: reservationReference,
+      publicKey: PUBLIC_KEY,
+      signature: {
+        integrity: dataFirma.firma_integridad,
+      },
+      redirectUrl: "https://glamperos.com/gracias",
+    });
+
+    // 👉 Aquí abrimos el widget con dos callbacks: éxito y error
+    checkout.open(
+      // 1️⃣ Callback de éxito:
+      async (result: any) => {
         console.log("Resultado de la transacción:", result);
         if (result && result.transaction && result.transaction.id) {
           try {
             const transactionId = result.transaction.id;
-            // aqui activamos wompi en produccion
-            // const response = await fetch(`https://sandbox.wompi.co/v1/transactions/${transactionId}`);
-            const response = await fetch(`https://api.wompi.co/v1/transactions/${transactionId}`);
-
+            const response = await fetch(
+              `https://sandbox.wompi.co/v1/transactions/${transactionId}`
+            );
             const transactionData = await response.json();
             const estadoPago = transactionData?.data?.status;
 
             if (estadoPago === "APPROVED") {
-              let telefonoUsuarioFormateado = telefonoUsuarioCookie ?? "sin teléfono";
-              if (telefonoUsuarioFormateado.startsWith("57")) {
-                telefonoUsuarioFormateado = telefonoUsuarioFormateado.slice(2);
-              }
-              
               setShowConfetti(true);
               setTimeout(() => {
                 router.push("/gracias");
@@ -355,7 +366,28 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
             confirmButtonText: "Aceptar",
           });
         }
-      });
+      },
+      // 2️⃣ Callback de error (captura 422 u otros errores del widget):
+      (error: any) => {
+        console.error("❌ Error en la transacción Wompi:", error);
+      
+        if (error?.status === 422) {
+          Swal.fire({
+            title: "Firma inválida",
+            text: "Hubo un problema con la firma de seguridad. Por favor verifica los datos o recarga la página.",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        } else {
+          Swal.fire({
+            title: "Ups, algo falló",
+            text: "No se pudo procesar el pago. Por favor inténtalo de nuevo.",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
+        }
+      }      
+    );
     } catch (error) {
       console.error("Error al crear la reserva y procesar el pago:", error);
     } finally {

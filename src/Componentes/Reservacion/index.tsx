@@ -57,13 +57,9 @@ declare global {
   }
 }
 
-// Detectar entorno dinámicamente desde variable de entorno
-const wompiEnv = process.env.NEXT_PUBLIC_WOMPI_ENV || "sandbox";
-const isProd = wompiEnv === "prod";
-
-const PUBLIC_KEY = isProd
-  ? process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_PROD!
-  : process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_SANDBOX!;
+// activacion de wompi a produccion real para pagos
+// const PUBLIC_KEY = "pub_test_XqijBLlWjkdPW4ymCgi2XPTLLlN2ykne";
+const PUBLIC_KEY = "pub_prod_SemHaHOa4POB0DW56uXAJc0yaXSS5z1w"; 
 
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);
@@ -318,11 +314,9 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
           try {
             const transactionId = result.transaction.id;
             // aqui activamos wompi en produccion
-            const apiUrl = isProd
-            ? "https://api.wompi.co/v1/transactions"
-            : "https://sandbox.wompi.co/v1/transactions";
+            // const response = await fetch(`https://sandbox.wompi.co/v1/transactions/${transactionId}`);
+            const response = await fetch(`https://api.wompi.co/v1/transactions/${transactionId}`);
 
-            const response = await fetch(`${apiUrl}/${transactionId}`);
             const transactionData = await response.json();
             const estadoPago = transactionData?.data?.status;
 

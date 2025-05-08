@@ -7,8 +7,8 @@ import { IoWifi, IoTelescope } from "react-icons/io5";
 import { FaWater } from "react-icons/fa";
 import { IoIosBonfire, IoIosRestaurant } from "react-icons/io";
 import { TbDeviceTv, TbMassage } from "react-icons/tb";
-import { FaFan, FaRegSnowflake, FaLaptopHouse, FaShower, FaUmbrellaBeach, FaChess, FaPumpSoap } from "react-icons/fa";
-import { FaFireExtinguisher, FaKitMedical, FaKitchenSet, FaHotTubPerson, FaTemperatureArrowUp, FaTemperatureArrowDown} from "react-icons/fa6";
+import { FaToilet, FaFan, FaRegSnowflake, FaLaptopHouse, FaShower, FaUmbrellaBeach, FaChess, FaPumpSoap } from "react-icons/fa";
+import { FaRadio , FaToiletsPortable, FaFireExtinguisher, FaKitMedical, FaKitchenSet, FaHotTubPerson, FaTemperatureArrowUp, FaTemperatureArrowDown} from "react-icons/fa6";
 import { MdOutdoorGrill, MdPool, MdOutlineBathtub, MdOutlinePets } from "react-icons/md";
 import { BsTreeFill, BsFillProjectorFill } from "react-icons/bs";
 import { PiMountainsBold } from "react-icons/pi";
@@ -17,6 +17,7 @@ import { LuRefrigerator } from "react-icons/lu";
 
 export const opcionesAmenidades = [
   { id: "Wifi", label: "Wifi", icono: <IoWifi /> },
+  { id: "Parlante", label: "Parlante", icono: <FaRadio /> },
   { id: "Mascotas", label: "Mascotas", icono: <MdOutlinePets /> },
   { id: "Zona de trabajo", label: "Zona de trabajo", icono: <FaLaptopHouse /> },
   { id: "Desayuno", label: "Desayuno", icono: <GiCoffeeCup /> },
@@ -33,12 +34,15 @@ export const opcionesAmenidades = [
   { id: "Zona fogata", label: "Zona fogata", icono: <IoIosBonfire /> },
   { id: "Chimenea", label: "Chimenea", icono: <GiFireplace /> },
   { id: "Servicio restaurante", label: "Servicio restaurante", icono: <IoIosRestaurant /> },
+  { id: "Servicio cuatrimoto", label: "Servicio cuatrimoto", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/cuatrimoto.svg" alt="Cuatrimoto" className="Amenidades-svg-icono" />),},
   { id: "Mini bar", label: "Mini bar", icono: <LuRefrigerator /> },
   { id: "Tv", label: "Tv", icono: <TbDeviceTv /> },
   { id: "Proyector", label: "Proyector", icono: <BsFillProjectorFill /> },
   { id: "Telescopio", label: "Telescopio", icono: <IoTelescope /> },  
   { id: "Toallas", label: "Toallas", icono: <GiTowel /> },  
   { id: "Jabon y shampoo", label: "Jabon y shampoo", icono: <FaPumpSoap /> },  
+  { id: "Baño privado", label: "Baño privado", icono: <FaToilet /> },  
+  { id: "Baño compartido", label: "Baño compartido", icono: <FaToiletsPortable /> },  
   { id: "Juegos de mesa", label: "Juegos de mesa", icono: <FaChess /> },  
   { id: "Lavadora", label: "Lavadora", icono: <GiWashingMachine /> },
   { id: "Clima Calido", label: "Clima Calido", icono: <FaTemperatureArrowUp /> },

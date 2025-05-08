@@ -380,15 +380,16 @@ const Tarjeta: React.FC<TarjetaProps> = ({
               const tipoFormateado = tipoGlamping
                 .toLowerCase()
                 .replace(/\b\w/, (c) => c.toUpperCase());
-              const amenidadesSufijo = [
+              const amenidadesSufijo = [              
+                { valor: "Malla catamaran", prefijo: "con" },
                 { valor: "Vista al lago", prefijo: "con" },
                 { valor: "Playa", prefijo: "cerca a la" },
                 { valor: "Desierto", prefijo: "en el" },
                 { valor: "Jacuzzi", prefijo: "con" },
+                { valor: "Baño privado", prefijo: "con" },
                 { valor: "Piscina", prefijo: "con" },
                 { valor: "Tina", prefijo: "con" },
-                { valor: "Rio", prefijo: "cerca al" },
-                { valor: "Malla catamaran", prefijo: "con" },
+                { valor: "Rio", prefijo: "cerca al" },                
                 { valor: "En la montaña", prefijo: "" },
                 { valor: "Zona fogata", prefijo: "con" },
               ];

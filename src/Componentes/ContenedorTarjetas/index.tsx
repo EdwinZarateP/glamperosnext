@@ -61,7 +61,7 @@ const ContenedorTarjetas: React.FC = () => {
     activarFiltrosCabaña,
     activarFiltrosCasaArbol,
     activarFiltrosRemolques,
-    activarFiltrosChoza,
+    activarFiltrosTipi,
     activarFiltrosLumipod,
     activarFiltrosMascotas,
     activarFiltrosClimaCalido,
@@ -186,7 +186,7 @@ const ContenedorTarjetas: React.FC = () => {
         _id: glamping._id,
         habilitado: glamping.habilitado || false,//Esto es lo que hace que se vean solo los true
         nombreGlamping: glamping.nombreGlamping || "Nombre no disponible",
-        tipoGlamping: glamping.tipoGlamping || "Choza",
+        tipoGlamping: glamping.tipoGlamping || "Tipi",
         ciudad_departamento:
           glamping.ciudad_departamento || "Ciudad no disponible",
         precioEstandar: glamping.precioEstandar || 0,
@@ -366,8 +366,8 @@ const ContenedorTarjetas: React.FC = () => {
       !activarFiltrosCasaArbol || glamping.tipoGlamping === "Casa del arbol";
     const filtraRemolque =
       !activarFiltrosRemolques || glamping.tipoGlamping === "Remolque";
-    const filtraChoza =
-      !activarFiltrosChoza || glamping.tipoGlamping === "Choza";
+    const filtraTipi =
+      !activarFiltrosTipi || glamping.tipoGlamping === "Tipi";
     const filtraLumipod =
       !activarFiltrosLumipod || glamping.tipoGlamping === "Lumipod";
       
@@ -418,7 +418,7 @@ const ContenedorTarjetas: React.FC = () => {
       filtraCabaña &&
       filtraCasaArbol &&
       filtraRemolque &&
-      filtraChoza &&
+      filtraTipi &&
       filtraLumipod &&
       filtraMascotas &&
       filtraClimaCalido &&

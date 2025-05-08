@@ -68,7 +68,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
     activarFiltrosCabaña,
     activarFiltrosCasaArbol,
     activarFiltrosRemolques,
-    activarFiltrosChoza,
+    activarFiltrosTipi,
     activarFiltrosLumipod,
     activarFiltrosMascotas,
     activarFiltrosClimaCalido,
@@ -174,7 +174,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
         _id: g._id,
         habilitado: g.habilitado || false,//Esto es lo que hace que se vean solo los true
         nombreGlamping: g.nombreGlamping || "Nombre no disponible",
-        tipoGlamping: g.tipoGlamping || "Choza",
+        tipoGlamping: g.tipoGlamping || "Tipi",
         ciudad_departamento: g.ciudad_departamento || "Ciudad no disponible",
         precioEstandar: g.precioEstandar || 0,
         descuento: g.descuento || 0,
@@ -368,8 +368,8 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       !activarFiltrosCasaArbol || glamping.tipoGlamping === "Casa del arbol";
     const filtraRemolque =
       !activarFiltrosRemolques || glamping.tipoGlamping === "Remolque";
-    const filtraChoza =
-      !activarFiltrosChoza || glamping.tipoGlamping === "Choza";
+    const filtraTipi =
+      !activarFiltrosTipi || glamping.tipoGlamping === "Tipi";
     const filtraLumipod =
       !activarFiltrosLumipod || glamping.tipoGlamping === "Lumipod";
       
@@ -417,7 +417,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       filtraCabaña &&
       filtraCasaArbol &&
       filtraRemolque &&
-      filtraChoza &&
+      filtraTipi &&
       filtraLumipod &&
       filtraMascotas &&
       filtraClimaCalido &&

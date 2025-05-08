@@ -216,8 +216,8 @@ interface ContextProps {
   setActivarFiltrosCasaArbol: Dispatch<SetStateAction<boolean>>;
   activarFiltrosRemolques: boolean;
   setActivarFiltrosRemolques: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosChoza: boolean;
-  setActivarFiltrosChoza: Dispatch<SetStateAction<boolean>>;
+  activarFiltrosTipi: boolean;
+  setActivarFiltrosTipi: Dispatch<SetStateAction<boolean>>;
   activarFiltrosLumipod: boolean;
   setActivarFiltrosLumipod: Dispatch<SetStateAction<boolean>>; 
   activarFiltrosMascotas: boolean;
@@ -360,7 +360,7 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
     const [activarFiltrosCabaña, setActivarFiltrosCabaña] = useState<boolean>(false);
     const [activarFiltrosCasaArbol, setActivarFiltrosCasaArbol] = useState<boolean>(false);
     const [activarFiltrosRemolques, setActivarFiltrosRemolques] = useState<boolean>(false);
-    const [activarFiltrosChoza, setActivarFiltrosChoza] = useState<boolean>(false);
+    const [activarFiltrosTipi, setActivarFiltrosTipi] = useState<boolean>(false);
     const [activarFiltrosLumipod, setActivarFiltrosLumipod] = useState<boolean>(false);
     const [activarFiltrosMascotas, setActivarFiltrosMascotas] = useState<boolean>(false);
     const [activarFiltrosClimaCalido, setActivarFiltrosClimaCalido] = useState<boolean>(false);  
@@ -458,7 +458,7 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
         activarFiltrosCabaña, setActivarFiltrosCabaña,
         activarFiltrosCasaArbol, setActivarFiltrosCasaArbol,
         activarFiltrosRemolques, setActivarFiltrosRemolques,
-        activarFiltrosChoza, setActivarFiltrosChoza,
+        activarFiltrosTipi, setActivarFiltrosTipi,
         activarFiltrosLumipod, setActivarFiltrosLumipod,        
         activarFiltrosMascotas, setActivarFiltrosMascotas,
         activarFiltrosClimaCalido, setActivarFiltrosClimaCalido,

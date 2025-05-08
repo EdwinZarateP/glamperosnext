@@ -41,7 +41,7 @@ export async function getGlampings(page = 1, limit = 18): Promise<GlampingData[]
     _id: glamping._id,
     habilitado: glamping.habilitado || true,
     nombreGlamping: glamping.nombreGlamping || "Nombre no disponible",
-    tipoGlamping: glamping.tipoGlamping || "Choza",
+    tipoGlamping: glamping.tipoGlamping || "Tipi",
     ciudad_departamento: glamping.ciudad_departamento || "Ciudad no disponible",
     precioEstandar: glamping.precioEstandar || 0,
     descuento: glamping.descuento || 0,

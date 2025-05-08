@@ -17,7 +17,7 @@ const Paso1B: React.FC = () => {
     { id: "Casa del árbol", label: "Casa del árbol", icono: <GiTreehouse /> },
     { id: "Remolque", label: "Remolque", icono: <FaCaravan /> },
     { id: "Cabaña", label: "Cabaña", icono: <MdOutlineCabin /> },
-    { id: "Choza", label: "Choza", icono: <GiHut /> },
+    { id: "Tipi", label: "Tipi", icono: <GiHut /> },
     { id: "Lumipod", label: "Lumipod", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="Paso1B-svg-icono" />),},
   ];
 

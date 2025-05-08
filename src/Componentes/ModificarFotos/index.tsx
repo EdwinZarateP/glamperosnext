@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import "./estilos.css";
 
-const MAX_IMAGENES = 20;
+const MAX_IMAGENES = 30;
 
 const ModificarFotos: React.FC = () => {
   const searchParams = useSearchParams();

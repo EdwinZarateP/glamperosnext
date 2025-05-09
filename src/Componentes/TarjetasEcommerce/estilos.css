@@ -1,0 +1,72 @@
+.contenedor-tarjetas {
+  padding: 32px;
+  max-width: 1280px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.filtros-activos {
+  margin-bottom: 16px;
+}
+
+.tag {
+  display: inline-block;
+  margin: 4px;
+  padding: 6px 10px;
+  background-color: #e0f0ff;
+  border-radius: 16px;
+  color: #0070f3;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.tag:hover {
+  background-color: #b3e0ff;
+}
+
+.panel-filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.bloque-filtro h4 {
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.opciones a {
+  font-size: 14px;
+  color: #0070f3;
+  text-decoration: underline;
+}
+
+.tarjetas-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.scroll-loader {
+  height: 50px;
+}
+
+.sin-mas-resultados {
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+  margin-top: 20px;
+}

@@ -14,9 +14,9 @@ const Paso1B: React.FC = () => {
   const opciones = [
     { id: "tienda", label: "tienda", icono: <GiCampingTent /> },
     { id: "domo", label: "Domo", icono: <GiHabitatDome /> },
-    { id: "casa del árbol", label: "Casa del árbol", icono: <GiTreehouse /> },
+    { id: "casa del arbol", label: "Casa del árbol", icono: <GiTreehouse /> },
     { id: "remolque", label: "Remolque", icono: <FaCaravan /> },
-    { id: "cabana", label: "cabana", icono: <MdOutlineCabin /> },
+    { id: "cabana", label: "Cabaña", icono: <MdOutlineCabin /> },
     { id: "tipi", label: "Tipi", icono: <GiHut /> },
     { id: "lumipod", label: "Lumipod", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="Paso1B-svg-icono" />),},
   ];

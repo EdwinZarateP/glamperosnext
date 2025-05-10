@@ -137,6 +137,17 @@
   color: hsl(0, 0%, 33%);
 }
 
+/* Ajusta aquí el tamaño que quieras: 2rem, 24px, etc. */
+/* fuerza el tamaño de SVGs e imágenes dentro del icon-wrapper */
+.TarjetasEcommerce-filtro-icono svg,
+.TarjetasEcommerce-filtro-icono img {
+  width: 1.5rem;    /* cámbialo a 1.5rem, 2.5rem, 24px… como prefieras */
+  height: 1.5rem;
+  /* opcional: para que el color del svg herede el texto activo */
+  fill: currentColor;
+}
+
+
 
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 600px) {

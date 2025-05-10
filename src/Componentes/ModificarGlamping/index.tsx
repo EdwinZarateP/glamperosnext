@@ -1,6 +1,6 @@
 "use client";
 
-import  { useState, useEffect } from 'react';
+import  { useState, useEffect, useCallback} from 'react';
 import './estilos.css';
 import axios from 'axios';
 import { useSearchParams} from "next/navigation";
@@ -61,15 +61,21 @@ const ModificarGlamping: React.FC = () => {
     }
   }, [Cantidad_Huespedes_Adicional]);
 
-  const toggleAmenidad = (amenidad: string) => {
-    setAmenidadesGlobal((prevState) => {
-      if (prevState.includes(amenidad)) {
-        return prevState.filter((item) => item !== amenidad);
-      } else {
-        return [...prevState, amenidad];
-      }
-    });
-  };
+const toggleAmenidad = useCallback((amenidad: string) => {
+  setAmenidadesGlobal((prevState) => {
+    const yaExiste = prevState.includes(amenidad);
+    const nuevoEstado = yaExiste
+      ? prevState.filter((item) => item !== amenidad)
+      : [...prevState, amenidad];
+
+    console.log("🟡 Amenidad clickeada:", amenidad);
+    console.log("🔹 Antes del clic:", prevState);
+    console.log("🔸 Después del clic:", nuevoEstado);
+
+    return nuevoEstado;
+  });
+}, []);
+
 
   const actualizarGlamping = async () => {
     // Validaciones
@@ -380,15 +386,22 @@ const ModificarGlamping: React.FC = () => {
             Amenidades:
           </label>
           <div className="amenidades-container">
-            {opcionesAmenidades.map(({ id, label }) => (
-              <button
-                key={id}
-                className={`amenidad-button ${amenidadesGlobal.includes(id) ? 'selected' : ''}`}
-                onClick={() => toggleAmenidad(id)}
-              >                
-                {label}
-              </button>
-            ))}
+            {opcionesAmenidades.map(({ id, label }) => {
+              const normalizar = (str: string) => str.trim().toLowerCase();
+              const isSelected = amenidadesGlobal.map(normalizar).includes(normalizar(id));                        
+              return (
+                <button
+                  type="button"
+                  key={`${id}-${isSelected}`}
+                  className={`amenidad-button ${isSelected ? 'selected' : ''}`}
+                  onClick={() => toggleAmenidad(id)}
+                >
+                  {label}
+                </button>
+              );
+            })}
+
+
 
           </div>
         </div>

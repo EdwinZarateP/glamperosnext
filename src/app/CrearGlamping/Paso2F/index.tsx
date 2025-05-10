@@ -28,7 +28,7 @@ const Paso2F: React.FC = () => {
           <h1 className="Paso2F-titulo-principal">Describe tu Glamping</h1>
           <p className="Paso2F-descripcion">
             Comparte lo que hace tu Glamping especial, ejemplo "Conoce un lugar mágico donde naturaleza
-            se encuentra con el confort, somos una cabaña única para vivir experiencias exclusivas bajo
+            se encuentra con el confort, somos una cabana única para vivir experiencias exclusivas bajo
             las estrellas y servicios personalizados para ti"
           </p>
         </div>

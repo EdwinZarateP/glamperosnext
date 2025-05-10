@@ -56,11 +56,11 @@ const ContenedorTarjetas: React.FC = () => {
     huespedesConfirmado,
     fechaInicio,
     fechaFin,
-    activarFiltrosDomo,
-    activarFiltrosTienda,
-    activarFiltrosCabaña,
+    activarFiltrosdomo,
+    activarFiltrostienda,
+    activarFiltroscabana,
     activarFiltrosCasaArbol,
-    activarFiltrosRemolques,
+    activarFiltrosremolques,
     activarFiltrosTipi,
     activarFiltrosLumipod,
     activarFiltrosMascotas,
@@ -357,15 +357,15 @@ const ContenedorTarjetas: React.FC = () => {
       (huespedesConfirmado &&
         glamping.Cantidad_Huespedes + glamping.Cantidad_Huespedes_Adicional >=
           huespedesConfirmado);
-    const filtraDomo = !activarFiltrosDomo || glamping.tipoGlamping === "Domo";
-    const filtraTienda =
-      !activarFiltrosTienda || glamping.tipoGlamping === "Tienda";
-    const filtraCabaña =
-      !activarFiltrosCabaña || glamping.tipoGlamping === "Cabaña";
+    const filtradomo = !activarFiltrosdomo || glamping.tipoGlamping === "domo";
+    const filtratienda =
+      !activarFiltrostienda || glamping.tipoGlamping === "tienda";
+    const filtracabana =
+      !activarFiltroscabana || glamping.tipoGlamping === "cabana";
     const filtraCasaArbol =
-      !activarFiltrosCasaArbol || glamping.tipoGlamping === "Casa del arbol";
-    const filtraRemolque =
-      !activarFiltrosRemolques || glamping.tipoGlamping === "Remolque";
+      !activarFiltrosCasaArbol || glamping.tipoGlamping === "casa del arbol";
+    const filtraremolque =
+      !activarFiltrosremolques || glamping.tipoGlamping === "remolque";
     const filtraTipi =
       !activarFiltrosTipi || glamping.tipoGlamping === "Tipi";
     const filtraLumipod =
@@ -413,11 +413,11 @@ const ContenedorTarjetas: React.FC = () => {
       cumpleCoordenadasCali &&
       cumpleFechasReservadas &&
       cumpleHuespedes &&
-      filtraDomo &&
-      filtraTienda &&
-      filtraCabaña &&
+      filtradomo &&
+      filtratienda &&
+      filtracabana &&
       filtraCasaArbol &&
-      filtraRemolque &&
+      filtraremolque &&
       filtraTipi &&
       filtraLumipod &&
       filtraMascotas &&

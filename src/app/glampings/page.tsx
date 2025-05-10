@@ -1,5 +1,8 @@
-import TarjetasEcommerce from "../../Componentes/TarjetasEcommerce";
+// sin 'use client', sin async, sin hooks aquí
+import TarjetasEcommerce from '@/Componentes/TarjetasEcommerce'
 
-export default function Page() {
-  return <TarjetasEcommerce filtros={[]} />;
+export default function GlampingsPage() {
+  // al usar key="all" garantizamos un remount limpio de TarjetasEcommerce
+  return <TarjetasEcommerce key="all" />
 }
+

@@ -339,12 +339,12 @@ const ModificarGlamping: React.FC = () => {
             value={tipoGlamping}
             onChange={(e) => setTipoGlamping(e.target.value)}
           >
-            <option value="Tienda">Tienda</option>
-            <option value="Cabaña">Cabaña</option>
-            <option value="Domo">Domo</option>
-            <option value="Casa del arbol">Casa del árbol</option>
-            <option value="Remolque">Remolque</option>
-            <option value="Tipi">Tipi</option>
+            <option value="tienda">tienda</option>
+            <option value="cabana">cabana</option>
+            <option value="domo">domo</option>
+            <option value="casa del arbol">Casa del árbol</option>
+            <option value="remolque">remolque</option>
+            <option value="tipi">tipi</option>
             <option value="Lumipod">Lumipod</option>
 
           </select>

@@ -16,10 +16,7 @@ export const metadata: Metadata = {
   title: "Glamperos | Encuentra y reserva los mejores glampings en Colombia",
   description:
     "Descubre y reserva glampings exclusivos en los mejores destinos naturales de Colombia. Vive una experiencia única en alojamientos de lujo en medio de la naturaleza.",
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
   openGraph: {
     title: "Glamperos | Encuentra y reserva los mejores glampings en Colombia",
     description:
@@ -47,13 +44,9 @@ export const metadata: Metadata = {
       "https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg",
     ],
   },
-  alternates: {
-    canonical: "https://glamperos.com",
-  },
+  alternates: { canonical: "https://glamperos.com" },
 };
 
-// Export separado para viewport según la nueva API,
-// sin tipo explícito para que TS infiera correctamente
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -72,6 +65,11 @@ export default function RootLayout({
         <meta
           name="google-site-verification"
           content="TU-CODIGO-DE-VERIFICACION"
+        />
+        {/* Carga el web component de Lottie antes de renderizar */}
+        <Script
+          src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
+          strategy="beforeInteractive"
         />
         <Script
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP8Es7GVLkm_qdCItKb60pGH7ov_tEif0&libraries=places"

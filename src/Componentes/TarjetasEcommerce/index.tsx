@@ -1,217 +1,210 @@
-// src/Componentes/TarjetasEcommerce/index.tsx
-'use client';
+'use client'
 
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import Link from 'next/link';
-import Tarjeta from '../Tarjeta';
-import './estilos.css';
-
-interface Glamping {
-  glampingId: string;
-  imagenes: string[];
-  ciudad_departamento: string;
-  precioEstandar: number;
-  precioEstandarAdicional: number;
-  calificacion: number;
-  favorito: boolean;
-  descuento?: number;
-  tipoGlamping: string;
-  nombreGlamping: string;
-  Acepta_Mascotas: boolean;
-  amenidadesGlobal: string[];
-  ubicacion: { lat: number; lng: number };
-  fechasReservadas: string[];
-  Cantidad_Huespedes: number;
-  Cantidad_Huespedes_Adicional: number;
-}
-
-interface CityFilter {
-  slug: string;
-  label: string;
-  lat: number;
-  lng: number;
-}
-const CITY_FILTERS: CityFilter[] = [
-  { slug: 'cerca-bogota',   label: 'Cerca a Bogotá',  lat: 4.7110,   lng: -74.0721 },
-  { slug: 'cerca-medellin', label: 'Cerca a Medellín', lat: 6.2442,   lng: -75.5812 },
-  { slug: 'cerca-cali',     label: 'Cerca a Cali',     lat: 3.4516,   lng: -76.5320 },
-];
-
-interface TypeFilter {
-  slug: string;
-  label: string;
-}
-const TYPE_FILTERS: TypeFilter[] = [
-  { slug: 'jacuzzi',        label: 'Jacuzzi' },
-  { slug: 'pet-friendly',   label: 'Pet Friendly' },
-  { slug: 'domo',           label: 'Domo' },
-  { slug: 'lumipod',        label: 'Lumipod' },
-  { slug: 'tienda',         label: 'Tienda' },
-  { slug: 'cabana',         label: 'Cabaña' },
-  { slug: 'casa-del-arbol', label: 'Casa del árbol' },
-  { slug: 'tipi',           label: 'Tipi' },
-];
-
-function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat/2)**2 +
-    Math.cos((lat1 * Math.PI)/180) *
-    Math.cos((lat2 * Math.PI)/180) *
-    Math.sin(dLon/2)**2;
-  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
-
-type Criterios = {
-  cityCoords: { lat: number; lng: number } | null;
-  types: string[];
-};
+import React, { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import Tarjeta from '../Tarjeta'
+import './estilos.css'
 
 interface TarjetasEcommerceProps {
-  filtros: string[];
+  filtros?: string[]
 }
 
-const API_URL = 'https://glamperosapi.onrender.com/glampings';
-const PAGE_LIMIT = 30;
+const API_BASE = 'http://127.0.0.1:8000/glampings/glampingfiltrados'
+const PAGE_SIZE = 30
+
+
+// Define aquí tus ciudades, tipos y amenidades válidos
+const CIUDADES = ['bogota', 'medellin', 'guatavita']
+const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lulipod']
+const AMENIDADES = ['Jacuzzi', 'Piscina']
+
 
 export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
-  const [data, setData] = useState<Glamping[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const loader = useRef<HTMLDivElement>(null);
+  const router = useRouter()
+  const [glampings, setGlampings] = useState<any[]>([])
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [queryEnviada, setQueryEnviada] = useState('')
+  const observerRef = useRef<HTMLDivElement>(null)
+  const observerInstance = useRef<IntersectionObserver | null>(null)
 
-  const criterios = useMemo<Criterios>(() => {
-    let cityCoords: { lat: number; lng: number } | null = null;
-    const types: string[] = [];
+  // Limpia y categoriza filtros: ciudad, tipo, amenidades
+  const applied = filtros ?? []
+  const ciudadFilter = applied.find(f => CIUDADES.includes(f.toLowerCase())) || null
+  const tipoFilter = applied.find(f => TIPOS.includes(f)) || null
+  const amenidadesFilter = applied.filter(
+    f => f !== ciudadFilter && f !== tipoFilter
+  )
+  // Orden canónico para URL y key
+  const canonical = [ciudadFilter, tipoFilter, ...amenidadesFilter]
+    .filter(Boolean) as string[]
+  const filtersKey = canonical.join(',')
 
-    filtros.forEach(slug => {
-      const city = CITY_FILTERS.find(f => f.slug === slug);
-      if (city) {
-        cityCoords = { lat: city.lat, lng: city.lng };
-        return;
-      }
-      if (TYPE_FILTERS.some(f => f.slug === slug)) {
-        types.push(slug);
-      }
-    });
+  // Helper para coordenadas según ciudad
+  const getCoords = (c: string) => {
+    const map: Record<string, { lat: number; lng: number }> = {
+      bogota:    { lat: 4.710989, lng: -74.07209 },
+      medellin:  { lat: 6.244203, lng: -75.5812119 },
+      guatavita: { lat: 4.925296, lng: -73.838533 },
+    }
+    return map[c.toLowerCase()] || map['bogota']
+  }
 
-    return { cityCoords, types };
-  }, [filtros]);
+  // Normaliza respuesta de la API
+  const normalize = (json: any): any[] => {
+    if (Array.isArray(json)) return json
+    if (json && Array.isArray(json.glampings)) return json.glampings
+    return []
+  }
 
-  const fetchGlampings = useCallback(async () => {
-    const res = await fetch(`${API_URL}?page=${page}&limit=${PAGE_LIMIT}`);
-    const items: Glamping[] = await res.json();
-    if (items.length < PAGE_LIMIT) setHasMore(false);
-    setData(prev => [...prev, ...items]);
-  }, [page]);
+  const mapProps = (g: any) => {
+    const ubic = typeof g.ubicacion === 'string' ? JSON.parse(g.ubicacion) : g.ubicacion
+    return {
+      glampingId: g._id,
+      imagenes: g.imagenes,
+      ciudad: g.ciudad_departamento,
+      precio: g.precioEstandar,
+      calificacion: g.calificacion,
+      favorito: false,
+      onFavoritoChange: () => {},
+      descuento: g.descuento,
+      tipoGlamping: g.tipoGlamping,
+      nombreGlamping: g.nombreGlamping,
+      ubicacion: { lat: ubic.lat, lng: ubic.lng },
+      Acepta_Mascotas: g.Acepta_Mascotas,
+      fechasReservadas: g.fechasReservadas,
+      amenidadesGlobal: g.amenidadesGlobal,
+      Cantidad_Huespedes: g.Cantidad_Huespedes,
+      precioEstandarAdicional: g.precioEstandarAdicional,
+      Cantidad_Huespedes_Adicional: g.Cantidad_Huespedes_Adicional,
+    }
+  }
 
-  useEffect(() => { fetchGlampings(); }, [fetchGlampings]);
-
+  // Al cambiar filtros, reset
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      entries => { if (entries[0].isIntersecting && hasMore) setPage(p => p+1); },
-      { rootMargin: '200px' }
-    );
-    if (loader.current) obs.observe(loader.current);
-    return () => obs.disconnect();
-  }, [hasMore]);
+    setPage(1)
+    setHasMore(true)
+    setGlampings([])
+  }, [filtersKey])
 
-  const filtered = data.filter(item => {
-    if (criterios.cityCoords) {
-      const dist = haversine(
-        item.ubicacion.lat,
-        item.ubicacion.lng,
-        criterios.cityCoords.lat,
-        criterios.cityCoords.lng
-      );
-      if (dist > 100) return false;
-    }
-    for (const slug of criterios.types) {
-      if (slug === 'pet-friendly' && !item.Acepta_Mascotas) return false;
-      if (slug === 'jacuzzi' && !item.amenidadesGlobal.includes('Jacuzzi')) return false;
-      if (slug !== 'pet-friendly' && slug !== 'jacuzzi') {
-        const tf = TYPE_FILTERS.find(f => f.slug === slug)!;
-        if (item.tipoGlamping !== tf.label) return false;
+  // Fetch glampings
+  useEffect(() => {
+    const load = async () => {
+      if (!hasMore) return
+      setLoading(true)
+      const qp = new URLSearchParams()
+      qp.set('page', page.toString())
+      qp.set('limit', PAGE_SIZE.toString())
+      if (tipoFilter) qp.set('tipoGlamping', tipoFilter)
+      amenidadesFilter.forEach(a => qp.append('amenidades', a))
+      if (ciudadFilter) {
+        const { lat, lng } = getCoords(ciudadFilter)
+        qp.set('lat', lat.toString())
+        qp.set('lng', lng.toString())
+        qp.set('distanciaMax', '150') // Puedes ajustarlo según la UX
+      }
+      try {
+        const res = await fetch(`${API_BASE}?${qp}`)
+        const queryURL = `${API_BASE}?${qp}`
+        setQueryEnviada(queryURL)
+
+        if (res.status === 404) {
+          setHasMore(false)
+          return
+        }
+        const json = await res.json()
+        const data = normalize(json)
+        setGlampings(prev => page === 1 ? data : [...prev, ...data])
+        if (data.length < PAGE_SIZE) setHasMore(false)
+      } catch {
+        setHasMore(false)
+      } finally {
+        setLoading(false)
       }
     }
-    return true;
-  });
+    load()
+  }, [page, filtersKey, ciudadFilter, tipoFilter, JSON.stringify(amenidadesFilter)])
 
-  const buildLink = (slug: string) => {
-    const present = filtros.includes(slug);
-    const newFiltros = present
-      ? filtros.filter(f => f!==slug)
-      : [...filtros, slug];
-    return '/glampings/' + newFiltros.join('/');
-  };
+  // Infinite scroll init
+  useEffect(() => {
+    const onIntersect: IntersectionObserverCallback = entries => {
+      if (entries[0].isIntersecting && !loading && hasMore) {
+        observerInstance.current?.unobserve(observerRef.current!)
+        setPage(p => p + 1)
+      }
+    }
+    observerInstance.current = new IntersectionObserver(onIntersect, {
+      rootMargin: '200px', threshold: 0.1
+    })
+    if (observerRef.current) observerInstance.current.observe(observerRef.current)
+    return () => observerInstance.current?.disconnect()
+  }, [])
+
+  // Re-observe after load
+  useEffect(() => {
+    if (!loading && hasMore && observerRef.current) {
+      observerInstance.current?.observe(observerRef.current)
+    }
+  }, [loading, hasMore])
+
+  // Toggle de filtros en URL (orden canónico)
+  const toggleFilter = (f: string) => {
+    const list = [...canonical]
+    const idx = list.indexOf(f)
+    if (idx >= 0) list.splice(idx, 1)
+    else list.push(f)
+    // Reordena según ciudad, tipo, amenidades
+    const city = list.find(x => CIUDADES.includes(x.toLowerCase()))
+    const type = list.find(x => TIPOS.includes(x))
+    const ams = list.filter(x => x !== city && x !== type)
+    const newPath = [...(city ? [city] : []), ...(type ? [type] : []), ...ams]
+    const path = newPath.length ? `/glampings/${newPath.join('/')}` : '/glampings'
+    router.push(path)
+  }
 
   return (
-    <div className="contenedor-tarjetas">
-      <div className="filtros-activos">
-        {filtros.map(slug => {
-          const city = CITY_FILTERS.find(f => f.slug===slug);
-          const type = TYPE_FILTERS.find(f => f.slug===slug);
-          const label = city?.label || type?.label || slug;
+    <div className="TarjetasEcommerce-container">
+      <div className="TarjetasEcommerce-results">{glampings.length} resultados</div>
+        <pre style={{ background: "#f8f8f8", padding: "8px", fontSize: "12px", border: "1px solid #ccc" }}>
+          {queryEnviada}
+        </pre>
+
+      {canonical.length > 0 && (
+        <div className="TarjetasEcommerce-breadcrumbs">
+          {canonical.map((f, i) => (
+            <span key={i} className="TarjetasEcommerce-breadcrumb-item">
+              {f}
+              <button className="TarjetasEcommerce-breadcrumb-remove" onClick={() => toggleFilter(f)}>×</button>
+            </span>
+          ))}
+        </div>
+      )}
+      <nav className="TarjetasEcommerce-filtros">
+        {[...CIUDADES, ...TIPOS, ...AMENIDADES].map(label => {
+          const isActive = canonical.includes(label)
+          const kind = CIUDADES.includes(label.toLowerCase()) || TIPOS.includes(label)
+            ? 'primary' : 'secondary'
+          // Etiqueta legible
+          const text = CIUDADES.includes(label.toLowerCase())
+            ? `Cerca a ${label.charAt(0).toUpperCase() + label.slice(1)}`
+            : label
           return (
-            <Link key={slug} href={buildLink(slug)} className="tag">
-              {label} ×
-            </Link>
-          );
+            <button
+              key={label}
+              className={`TarjetasEcommerce-filtro ${kind} ${isActive ? 'TarjetasEcommerce-filtro-activo' : ''}`}
+              onClick={() => toggleFilter(label)}
+            >
+              {text}
+            </button>
+          )
         })}
+      </nav>
+      <div className="TarjetasEcommerce-lista">
+        {glampings.map(g => <Tarjeta key={g._id} {...mapProps(g)} />)}
       </div>
-
-      <aside className="panel-filtros">
-        <div className="bloque-filtro">
-          <h4>Ubicación</h4>
-          <div className="opciones">
-            {CITY_FILTERS.map(f => (
-              <Link key={f.slug} href={buildLink(f.slug)}>
-                {f.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-        <div className="bloque-filtro">
-          <h4>Tipo</h4>
-          <div className="opciones">
-            {TYPE_FILTERS.map(f => (
-              <Link key={f.slug} href={buildLink(f.slug)}>
-                {f.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </aside>
-
-      <div className="tarjetas-grid">
-        {filtered.map(g => (
-          <Tarjeta
-            key={g.glampingId}
-            glampingId={g.glampingId}
-            imagenes={g.imagenes}
-            ciudad={g.ciudad_departamento}
-            precio={g.precioEstandar}
-            calificacion={g.calificacion}
-            favorito={false}
-            onFavoritoChange={() => {}}
-            descuento={g.descuento}
-            tipoGlamping={g.tipoGlamping}
-            nombreGlamping={g.nombreGlamping}
-            ubicacion={g.ubicacion}
-            Acepta_Mascotas={g.Acepta_Mascotas}
-            fechasReservadas={g.fechasReservadas}
-            amenidadesGlobal={g.amenidadesGlobal}
-            Cantidad_Huespedes={g.Cantidad_Huespedes}
-            precioEstandarAdicional={g.precioEstandarAdicional}
-            Cantidad_Huespedes_Adicional={g.Cantidad_Huespedes_Adicional}
-          />
-        ))}
-      </div>
-
-      <div ref={loader} className="scroll-loader" />
-      {!hasMore && <p className="sin-mas-resultados">No hay más resultados.</p>}
+      {loading && <p className="TarjetasEcommerce-loading">Cargando...</p>}
+      {glampings.length > 0 && <div ref={observerRef} />}
     </div>
-  );
+  )
 }

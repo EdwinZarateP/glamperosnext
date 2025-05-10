@@ -81,7 +81,7 @@ const medellin: React.FC = () => {
             </h1>
             <p className="Medellin-descripcion">
             🌺Entre montañas de esmeralda y ríos que cantan, te espera un refugio donde el alma se encanta.
-            Cabañas de ensueño, bajo cielos dorados, susurros del viento, abrazos callados.          El café y las nubes danzan al alba,
+            cabanas de ensueño, bajo cielos dorados, susurros del viento, abrazos callados.          El café y las nubes danzan al alba,
             mientras el sol besa la tierra y la calma. Despierta en un bosque, duerme con estrellas,
             cerca a Medellín hay noches eternas. 🌄
             </p>

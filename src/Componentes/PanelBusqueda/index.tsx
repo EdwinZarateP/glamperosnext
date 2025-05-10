@@ -66,11 +66,11 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     cordenadasElegidas,
     setCordenadasElegidas,
     setActivarFiltrosMascotas,
-    setActivarFiltrosDomo,
-    setActivarFiltrosTienda,
-    setActivarFiltrosCabaña,
+    setActivarFiltrosdomo,
+    setActivarFiltrostienda,
+    setActivarFiltroscabana,
     setActivarFiltrosCasaArbol,
-    setActivarFiltrosRemolques,
+    setActivarFiltrosremolques,
     setActivarFiltrosTipi,
     setActivarFiltrosLumipod,
     setActivarFiltrosClimaCalido,
@@ -109,13 +109,13 @@ const PanelBusqueda: React.FC<PanelBusquedaProps> = ({ onBuscar, onCerrar }) => 
     }
 
     // 🔸 Desactiva distintos filtros especiales
-    setActivarFiltrosTienda(false);
+    setActivarFiltrostienda(false);
     setActivarFiltrosCasaArbol(false);
-    setActivarFiltrosCabaña(false);
-    setActivarFiltrosRemolques(false);
+    setActivarFiltroscabana(false);
+    setActivarFiltrosremolques(false);
     setActivarFiltrosTipi(false);
     setActivarFiltrosLumipod(false);
-    setActivarFiltrosDomo(false);
+    setActivarFiltrosdomo(false);
     setActivarFiltrosMascotas(false);
     setActivarFiltrosClimaCalido(false);
     setActivarFiltrosClimaFrio(false);

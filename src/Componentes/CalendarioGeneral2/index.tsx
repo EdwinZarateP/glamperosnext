@@ -173,7 +173,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
 
       // Rellenar datos básicos: (ajusta según lo que tu API exija)
       formData.append("nombreGlamping", informacionGlamping.nombreGlamping ?? "");
-      formData.append("tipoGlamping", informacionGlamping.tipoGlamping ?? "Tienda");
+      formData.append("tipoGlamping", informacionGlamping.tipoGlamping ?? "tienda");
       formData.append(
         "Cantidad_Huespedes",
         (informacionGlamping.Cantidad_Huespedes ?? 1).toString()

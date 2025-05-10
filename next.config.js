@@ -29,6 +29,17 @@ const nextConfig = {
     config.resolve.alias["@"] = path.resolve(__dirname, "src");
     return config;
   },
+
+    async rewrites() {
+    return [
+      {
+        source: "/api/:path*",                      // las llamadas fetch("/api/…")
+        destination: "http://localhost:8000/glampings/:path*",  
+        // redirige a tu FastAPI en el puerto 8000
+      },
+    ];
+  },
+
 };
 
 module.exports = nextConfig;

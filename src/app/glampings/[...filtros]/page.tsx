@@ -1,11 +1,10 @@
-// src/app/glampings/[...filtros]/page.tsx
+// sin 'use client', sin async, sin hooks aquí
+import TarjetasEcommerce from '@/Componentes/TarjetasEcommerce'
 
-import TarjetasEcommerce from "../../../Componentes/TarjetasEcommerce";
-
-interface PageProps {
-  params: { filtros?: string[] };
+interface Props {
+  params: { filtros?: string[] }
 }
-
-export default function Page({ params }: PageProps) {
-  return <TarjetasEcommerce filtros={params.filtros || []} />;
+export default function FiltradosPage({ params }: Props) {
+  const filtros = params.filtros ?? []
+  return <TarjetasEcommerce filtros={filtros} />
 }

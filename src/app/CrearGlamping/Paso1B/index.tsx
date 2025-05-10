@@ -12,13 +12,13 @@ const Paso1B: React.FC = () => {
   const { tipoGlamping, setTipoGlamping } = useContext(ContextoApp)!;
 
   const opciones = [
-    { id: "Tienda", label: "Tienda", icono: <GiCampingTent /> },
-    { id: "Domo", label: "Domo", icono: <GiHabitatDome /> },
-    { id: "Casa del árbol", label: "Casa del árbol", icono: <GiTreehouse /> },
-    { id: "Remolque", label: "Remolque", icono: <FaCaravan /> },
-    { id: "Cabaña", label: "Cabaña", icono: <MdOutlineCabin /> },
-    { id: "Tipi", label: "Tipi", icono: <GiHut /> },
-    { id: "Lumipod", label: "Lumipod", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="Paso1B-svg-icono" />),},
+    { id: "tienda", label: "tienda", icono: <GiCampingTent /> },
+    { id: "domo", label: "Domo", icono: <GiHabitatDome /> },
+    { id: "casa del árbol", label: "Casa del árbol", icono: <GiTreehouse /> },
+    { id: "remolque", label: "Remolque", icono: <FaCaravan /> },
+    { id: "cabana", label: "cabana", icono: <MdOutlineCabin /> },
+    { id: "tipi", label: "Tipi", icono: <GiHut /> },
+    { id: "lumipod", label: "Lumipod", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="Paso1B-svg-icono" />),},
   ];
 
   const manejarSeleccion = (opcionId: string) => {

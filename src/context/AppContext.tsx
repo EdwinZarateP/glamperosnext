@@ -206,16 +206,16 @@ interface ContextProps {
   // Filtros del menuIcons
   iconoSeleccionado: number;
   setIconoSeleccionado: React.Dispatch<React.SetStateAction<number>>;
-  activarFiltrosDomo: boolean;
-  setActivarFiltrosDomo: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosTienda: boolean;
-  setActivarFiltrosTienda: Dispatch<SetStateAction<boolean>>;  
-  activarFiltrosCabaña: boolean;
-  setActivarFiltrosCabaña: Dispatch<SetStateAction<boolean>>;  
+  activarFiltrosdomo: boolean;
+  setActivarFiltrosdomo: Dispatch<SetStateAction<boolean>>;
+  activarFiltrostienda: boolean;
+  setActivarFiltrostienda: Dispatch<SetStateAction<boolean>>;  
+  activarFiltroscabana: boolean;
+  setActivarFiltroscabana: Dispatch<SetStateAction<boolean>>;  
   activarFiltrosCasaArbol: boolean;
   setActivarFiltrosCasaArbol: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosRemolques: boolean;
-  setActivarFiltrosRemolques: Dispatch<SetStateAction<boolean>>;
+  activarFiltrosremolques: boolean;
+  setActivarFiltrosremolques: Dispatch<SetStateAction<boolean>>;
   activarFiltrosTipi: boolean;
   setActivarFiltrosTipi: Dispatch<SetStateAction<boolean>>;
   activarFiltrosLumipod: boolean;
@@ -355,11 +355,11 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
   
     // Estado para filtros MenuIcons
     const [iconoSeleccionado, setIconoSeleccionado] = useState<number>(100);
-    const [activarFiltrosDomo, setActivarFiltrosDomo] = useState<boolean>(false);
-    const [activarFiltrosTienda, setActivarFiltrosTienda] = useState<boolean>(false);
-    const [activarFiltrosCabaña, setActivarFiltrosCabaña] = useState<boolean>(false);
+    const [activarFiltrosdomo, setActivarFiltrosdomo] = useState<boolean>(false);
+    const [activarFiltrostienda, setActivarFiltrostienda] = useState<boolean>(false);
+    const [activarFiltroscabana, setActivarFiltroscabana] = useState<boolean>(false);
     const [activarFiltrosCasaArbol, setActivarFiltrosCasaArbol] = useState<boolean>(false);
-    const [activarFiltrosRemolques, setActivarFiltrosRemolques] = useState<boolean>(false);
+    const [activarFiltrosremolques, setActivarFiltrosremolques] = useState<boolean>(false);
     const [activarFiltrosTipi, setActivarFiltrosTipi] = useState<boolean>(false);
     const [activarFiltrosLumipod, setActivarFiltrosLumipod] = useState<boolean>(false);
     const [activarFiltrosMascotas, setActivarFiltrosMascotas] = useState<boolean>(false);
@@ -452,12 +452,12 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
         tipoGlampingFiltrado,setTipoGlampingFiltrado,
         cordenadasElegidas, setCordenadasElegidas,
         // filtros menuIcons
-        activarFiltrosDomo, setActivarFiltrosDomo,
+        activarFiltrosdomo, setActivarFiltrosdomo,
         iconoSeleccionado, setIconoSeleccionado,
-        activarFiltrosTienda, setActivarFiltrosTienda,
-        activarFiltrosCabaña, setActivarFiltrosCabaña,
+        activarFiltrostienda, setActivarFiltrostienda,
+        activarFiltroscabana, setActivarFiltroscabana,
         activarFiltrosCasaArbol, setActivarFiltrosCasaArbol,
-        activarFiltrosRemolques, setActivarFiltrosRemolques,
+        activarFiltrosremolques, setActivarFiltrosremolques,
         activarFiltrosTipi, setActivarFiltrosTipi,
         activarFiltrosLumipod, setActivarFiltrosLumipod,        
         activarFiltrosMascotas, setActivarFiltrosMascotas,

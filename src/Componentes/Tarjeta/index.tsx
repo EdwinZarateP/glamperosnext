@@ -235,6 +235,18 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   };
 
   const isClient = typeof window !== "undefined";
+  
+  const formatearTipoGlamping = (valor: string): string => {
+  const mapa = {
+    cabana: "Cabaña",
+    tienda: "Tienda",
+    domo: "Domo",
+    tipi: "Tipi",
+    lulipod: "Lulipod",
+  };
+  return mapa[valor.toLowerCase() as keyof typeof mapa] || valor;
+};
+
   const esPantallaPequena = isClient ? window.innerWidth <= 600 : false;
 
   const queryParams = new URLSearchParams({
@@ -377,13 +389,11 @@ const Tarjeta: React.FC<TarjetaProps> = ({
         <div className="tarjeta-contenido">
           <span className="tarjeta-nombre">
             {(() => {
-              const tipoFormateado = tipoGlamping
-                .toLowerCase()
-                .replace(/\b\w/, (c) => c.toUpperCase());
+              const tipoFormateado = formatearTipoGlamping(tipoGlamping);
               const amenidadesSufijo = [              
-                { valor: "Malla catamaran", prefijo: "con" },
-                { valor: "Vista al lago", prefijo: "con" },
                 { valor: "Playa", prefijo: "cerca a la" },
+                { valor: "Malla catamaran", prefijo: "con" },
+                { valor: "Vista al lago", prefijo: "con" },                
                 { valor: "Desierto", prefijo: "en el" },
                 { valor: "Jacuzzi", prefijo: "con" },
                 { valor: "Baño privado", prefijo: "con" },

@@ -26,15 +26,6 @@ const ModificarGlamping: React.FC = () => {
   const [urlIcalBooking, setUrlIcalBooking] = useState('');
   const [amenidadesGlobal, setAmenidadesGlobal] = useState<string[]>([]);
 
-  // const opcionesAmenidades = [
-  //   'Wifi', 'Zona de trabajo', 'Desayuno', 'Jacuzzi', 'Tina', 'Piscina',
-  //   'Malla catamaran', 'Parrilla', 'Cocina', 'Zona fogata', 'Chimenea',
-  //   'Mini bar', 'Tv', 'Proyector', 'Juegos de mesa', 'Lavadora', 'Clima Calido',
-  //   'Aire acondicionado', 'Clima Frio', 'Calefaccion', 'Ducha', 'Detector de humo',
-  //   'Extintor', 'Botiquin', 'Playa', 'Naturaleza', 'Rio', 'Cascada', 'En la montaña',
-  //   'Desierto', 'Caminata', 'Parqueadero'
-  // ];
-
   useEffect(() => {
     if (glampingId && glampingId.trim() !== "") {
       axios
@@ -372,40 +363,6 @@ const ModificarGlamping: React.FC = () => {
             value={video_youtube}
             onChange={(e) => setVideo_youtube(e.target.value)}
           />
-
-          {/* <label className="ModificarGlamping-label" htmlFor="urlIcal">
-            Calendario Airbnb:
-          </label>
-          <input
-            id="urlIcal"
-            className="ModificarGlamping-input"
-            type="text"
-            value={urlIcal}
-            onChange={(e) => setUrlIcal(e.target.value)}
-          />
-
-          <label className="ModificarGlamping-label" htmlFor="urlIcalBooking">
-            Calendario Booking:
-          </label>
-          <input
-            id="urlIcalBooking"
-            className="ModificarGlamping-input"
-            type="text"
-            value={urlIcalBooking}
-            onChange={(e) => setUrlIcalBooking(e.target.value)}
-          /> */}
-
-          {/* <label className="ModificarGlamping-label" htmlFor="urlIcalGlamperos">
-            Calendario Glamperos:
-          </label>
-          <a
-            href={`https://glamperosapi.onrender.com/ical/exportar/${glampingId ?? ''}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ wordBreak: "break-all", color: "#0070f3" }}
-          >
-            https://glamperosapi.onrender.com/ical/exportar/{glampingId}
-          </a> */}
 
           </div>
           

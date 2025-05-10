@@ -9,7 +9,8 @@ interface TarjetasEcommerceProps {
   filtros?: string[]
 }
 
-const API_BASE = 'http://127.0.0.1:8000/glampings/glampingfiltrados'
+// const API_BASE = 'http://127.0.0.1:8000/glampings/glampingfiltrados'
+const API_BASE = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados'
 const PAGE_SIZE = 30
 
 
@@ -37,8 +38,11 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     f => f !== ciudadFilter && f !== tipoFilter
   )
   // Orden canónico para URL y key
-  const canonical = [ciudadFilter, tipoFilter, ...amenidadesFilter]
-    .filter(Boolean) as string[]
+  const canonical = [
+    ciudadFilter,
+    tipoFilter,
+    ...amenidadesFilter.sort()
+  ].filter(Boolean) as string[]
   const filtersKey = canonical.join(',')
 
   // Helper para coordenadas según ciudad
@@ -150,18 +154,32 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
 
   // Toggle de filtros en URL (orden canónico)
   const toggleFilter = (f: string) => {
-    const list = [...canonical]
-    const idx = list.indexOf(f)
-    if (idx >= 0) list.splice(idx, 1)
-    else list.push(f)
-    // Reordena según ciudad, tipo, amenidades
-    const city = list.find(x => CIUDADES.includes(x.toLowerCase()))
-    const type = list.find(x => TIPOS.includes(x))
-    const ams = list.filter(x => x !== city && x !== type)
-    const newPath = [...(city ? [city] : []), ...(type ? [type] : []), ...ams]
-    const path = newPath.length ? `/glampings/${newPath.join('/')}` : '/glampings'
-    router.push(path)
+  const list = [...canonical]
+  const idx = list.indexOf(f)
+
+  const esTipo = TIPOS.includes(f)
+
+  // Si se trata de un tipo y ya hay uno seleccionado, reemplázalo
+  if (esTipo) {
+    const tipoExistente = list.find(x => TIPOS.includes(x))
+    if (tipoExistente && tipoExistente !== f) {
+      list.splice(list.indexOf(tipoExistente), 1)
+    }
   }
+
+  if (idx >= 0) {
+    list.splice(idx, 1)
+  } else {
+    list.push(f)
+  }
+
+  const city = list.find(x => CIUDADES.includes(x.toLowerCase()))
+  const type = list.find(x => TIPOS.includes(x.toLowerCase()))
+  const ams = list.filter(x => x !== city && x !== type)
+  const newPath = [...(city ? [city] : []), ...(type ? [type] : []), ...ams]
+  const path = newPath.length ? `/glampings/${newPath.join('/')}` : '/glampings'
+  router.push(path)
+}
 
   return (
     <div className="TarjetasEcommerce-container">
@@ -183,8 +201,10 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
       <nav className="TarjetasEcommerce-filtros">
         {[...CIUDADES, ...TIPOS, ...AMENIDADES].map(label => {
           const isActive = canonical.includes(label)
-          const kind = CIUDADES.includes(label.toLowerCase()) || TIPOS.includes(label)
-            ? 'primary' : 'secondary'
+          const kind = CIUDADES.includes(label.toLowerCase()) || TIPOS.includes(label.toLowerCase())
+            ? 'primary'
+            : 'secondary'
+
           // Etiqueta legible
           const text = CIUDADES.includes(label.toLowerCase())
             ? `Cerca a ${label.charAt(0).toUpperCase() + label.slice(1)}`

@@ -38,48 +38,89 @@
   color: #333;
 }
 
-.TarjetasEcommerce-filtros {
+/* Scroll wrapper que incluye las flechas */
+.TarjetasEcommerce-filtros-wrapper {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
 
-.TarjetasEcommerce-filtro {
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
+.TarjetasEcommerce-scroll-btn {
+  background: #f1f5f9;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  color: #1e293b;
+  transition: background 0.2s ease;
+}
+
+.TarjetasEcommerce-scroll-btn:hover {
+  background: #e2e8f0;
+}
+
+.TarjetasEcommerce-scroll-btn.izquierda {
+  margin-right: -0.5rem;
+}
+
+.TarjetasEcommerce-scroll-btn.derecha {
+  margin-left: -0.5rem;
+}
+
+/* Scroll horizontal del grupo de filtros */
+.TarjetasEcommerce-filtros-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  scrollbar-width: none; /* Firefox */
+  flex: 1;
+}
+
+.TarjetasEcommerce-filtros-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.TarjetasEcommerce-filtro-item {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-width: 60px;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
   font-weight: 500;
+  cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
-  cursor: pointer;
+  color: #000000;
 }
 
-.TarjetasEcommerce-filtro.primary {
-  background: #0070f3;
-  color: white;
+.TarjetasEcommerce-filtro-item svg {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
 }
 
-.TarjetasEcommerce-filtro.primary.TarjetasEcommerce-filtro-activo {
-  background: white;
-  color: #0070f3;
-  border: 1px solid #0070f3;
+.TarjetasEcommerce-filtro-item:hover {
+  
+  color: #2F6B3E;;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.TarjetasEcommerce-filtro.secondary {
-  background: #f1f5f9;
-  color: #1e293b;
+.TarjetasEcommerce-filtro-item.activo {
+  color: #2F6B3E;
+  border: 1px solid #aaaeab;
 }
 
-.TarjetasEcommerce-filtro.secondary.TarjetasEcommerce-filtro-activo {
-  background: #1e293b;
-  color: white;
-  border: 1px solid #1e293b;
-}
-
-.TarjetasEcommerce-filtro:hover {
-  opacity: 0.92;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+.TarjetasEcommerce-filtro-label {
+  text-align: center;
+  font-size: 0.85rem;
+  color: gray;
 }
 
 .TarjetasEcommerce-lista {

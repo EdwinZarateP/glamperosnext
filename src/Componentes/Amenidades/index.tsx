@@ -20,7 +20,7 @@ export const opcionesAmenidades = [
   { id: "parlante", label: "Parlante", icono: <FaRadio /> },
   { id: "mascotas", label: "Mascotas", icono: <MdOutlinePets /> },
   { id: "zona de trabajo", label: "Zona de trabajo", icono: <FaLaptopHouse /> },
-  { id: "desayuno", label: "Desayuno", icono: <GiCoffeeCup /> },
+  { id: "incluye desayuno", label: "Incluye desayuno", icono: <GiCoffeeCup /> },
   { id: "coctel bienvenida", label: "Coctel bienvenida", icono: <GiWineBottle /> },  
   { id: "jacuzzi", label: "Jacuzzi", icono: <FaHotTubPerson /> },
   { id: "sauna", label: "Sauna", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/sauna.svg" alt="Sauna" className="Amenidades-svg-icono" />),},

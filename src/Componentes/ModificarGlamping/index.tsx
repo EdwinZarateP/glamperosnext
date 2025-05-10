@@ -68,9 +68,9 @@ const toggleAmenidad = useCallback((amenidad: string) => {
       ? prevState.filter((item) => item !== amenidad)
       : [...prevState, amenidad];
 
-    console.log("🟡 Amenidad clickeada:", amenidad);
-    console.log("🔹 Antes del clic:", prevState);
-    console.log("🔸 Después del clic:", nuevoEstado);
+    // console.log("🟡 Amenidad clickeada:", amenidad);
+    // console.log("🔹 Antes del clic:", prevState);
+    // console.log("🔸 Después del clic:", nuevoEstado);
 
     return nuevoEstado;
   });

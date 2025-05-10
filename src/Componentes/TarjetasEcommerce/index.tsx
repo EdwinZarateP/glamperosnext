@@ -154,17 +154,20 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
 
   // Toggle de filtros en URL (orden canónico)
   const toggleFilter = (f: string) => {
-  const list = [...canonical]
+  let list = [...canonical]
   const idx = list.indexOf(f)
 
+  const esCiudad = CIUDADES.includes(f.toLowerCase())
   const esTipo = TIPOS.includes(f)
 
-  // Si se trata de un tipo y ya hay uno seleccionado, reemplázalo
+  // Reemplazar ciudad si ya hay otra
+  if (esCiudad) {
+    list = list.filter(x => !CIUDADES.includes(x.toLowerCase()))
+  }
+
+  // Reemplazar tipo si ya hay otro
   if (esTipo) {
-    const tipoExistente = list.find(x => TIPOS.includes(x))
-    if (tipoExistente && tipoExistente !== f) {
-      list.splice(list.indexOf(tipoExistente), 1)
-    }
+    list = list.filter(x => !TIPOS.includes(x))
   }
 
   if (idx >= 0) {
@@ -173,13 +176,15 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     list.push(f)
   }
 
-  const city = list.find(x => CIUDADES.includes(x.toLowerCase()))
-  const type = list.find(x => TIPOS.includes(x.toLowerCase()))
-  const ams = list.filter(x => x !== city && x !== type)
-  const newPath = [...(city ? [city] : []), ...(type ? [type] : []), ...ams]
+  const ciudad = list.find(x => CIUDADES.includes(x.toLowerCase()))
+  const tipo = list.find(x => TIPOS.includes(x))
+  const amenidades = list.filter(x => x !== ciudad && x !== tipo)
+
+  const newPath = [...(ciudad ? [ciudad] : []), ...(tipo ? [tipo] : []), ...amenidades]
   const path = newPath.length ? `/glampings/${newPath.join('/')}` : '/glampings'
   router.push(path)
 }
+
 
   return (
     <div className="TarjetasEcommerce-container">

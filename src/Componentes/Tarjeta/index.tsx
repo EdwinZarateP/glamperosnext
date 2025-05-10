@@ -391,17 +391,17 @@ const Tarjeta: React.FC<TarjetaProps> = ({
             {(() => {
               const tipoFormateado = formatearTipoGlamping(tipoGlamping);
               const amenidadesSufijo = [              
-                { valor: "Playa", prefijo: "cerca a la" },
-                { valor: "Malla catamaran", prefijo: "con" },
-                { valor: "Vista al lago", prefijo: "con" },                
-                { valor: "Desierto", prefijo: "en el" },
-                { valor: "Jacuzzi", prefijo: "con" },
-                { valor: "Baño privado", prefijo: "con" },
-                { valor: "Piscina", prefijo: "con" },
-                { valor: "Tina", prefijo: "con" },
-                { valor: "Rio", prefijo: "cerca al" },                
-                { valor: "En la montaña", prefijo: "" },
-                { valor: "Zona fogata", prefijo: "con" },
+                { valor: "playa", prefijo: "cerca a la" },
+                { valor: "malla catamaran", prefijo: "con" },
+                { valor: "vista al lago", prefijo: "con" },
+                { valor: "desierto", prefijo: "en el" },
+                { valor: "jacuzzi", prefijo: "con" },
+                { valor: "baño privado", prefijo: "con" },
+                { valor: "piscina", prefijo: "con" },
+                { valor: "tina", prefijo: "con" },
+                { valor: "rio", prefijo: "cerca al" },
+                { valor: "en la montaña", prefijo: "" },
+                { valor: "zona fogata", prefijo: "con" },
               ];
               let amenidadEncontrada = null;
               for (let item of amenidadesSufijo) {

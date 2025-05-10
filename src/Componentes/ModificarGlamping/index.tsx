@@ -67,15 +67,9 @@ const toggleAmenidad = useCallback((amenidad: string) => {
     const nuevoEstado = yaExiste
       ? prevState.filter((item) => item !== amenidad)
       : [...prevState, amenidad];
-
-    // console.log("🟡 Amenidad clickeada:", amenidad);
-    // console.log("🔹 Antes del clic:", prevState);
-    // console.log("🔸 Después del clic:", nuevoEstado);
-
     return nuevoEstado;
   });
 }, []);
-
 
   const actualizarGlamping = async () => {
     // Validaciones

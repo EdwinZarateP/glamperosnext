@@ -10,61 +10,34 @@
   color: #333;
 }
 
-.TarjetasEcommerce-breadcrumbs {
-  margin-bottom: 0.75rem;
-}
-
-.TarjetasEcommerce-breadcrumb-item {
-  display: inline-flex;
-  align-items: center;
-  background: #f0f0f0;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  margin-right: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.TarjetasEcommerce-breadcrumb-remove {
-  border: none;
-  background: transparent;
-  margin-left: 0.5rem;
-  cursor: pointer;
-  font-weight: bold;
-  color: #999;
-  transition: color 0.2s;
-}
-
-.TarjetasEcommerce-breadcrumb-remove:hover {
-  color: #333;
-}
-
 /* Scroll wrapper que incluye las flechas */
 .TarjetasEcommerce-filtros-wrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 2rem;
+  /* reducimos un poco el espacio abajo, para que las migas queden más cerca */
+  margin-bottom: 1rem;
 }
 
 .TarjetasEcommerce-scroll-btn {
   background: #f1f5f9;
   border: none;
-  font-size: 1.25rem;
   cursor: pointer;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem;
   border-radius: 0.5rem;
   color: #1e293b;
   transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .TarjetasEcommerce-scroll-btn:hover {
   background: #e2e8f0;
 }
-
 .TarjetasEcommerce-scroll-btn.izquierda {
   margin-right: -0.5rem;
 }
-
 .TarjetasEcommerce-scroll-btn.derecha {
   margin-left: -0.5rem;
 }
@@ -78,17 +51,17 @@
   scrollbar-width: none; /* Firefox */
   flex: 1;
 }
-
 .TarjetasEcommerce-filtros-scroll::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
 
+/* Item de cada filtro */
 .TarjetasEcommerce-filtro-item {
   flex: 0 0 auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
   min-width: 60px;
   padding: 0.5rem;
   border-radius: 1rem;
@@ -98,31 +71,60 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
-  color: #000000;
+  color: #000;
 }
-
 .TarjetasEcommerce-filtro-item svg {
   font-size: 1.5rem;
   margin-bottom: 0.25rem;
 }
-
 .TarjetasEcommerce-filtro-item:hover {
-  
-  color: #2F6B3E;;
+  color: #2F6B3E;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
 .TarjetasEcommerce-filtro-item.activo {
   color: #2F6B3E;
   border: 1px solid #aaaeab;
 }
 
+/* Etiqueta de texto dentro del filtro */
 .TarjetasEcommerce-filtro-label {
   text-align: center;
   font-size: 0.85rem;
   color: gray;
 }
 
+/* Miga de navegación: ahora abajo de los filtros */
+.TarjetasEcommerce-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;    /* separa un poco del scroll */
+  margin-bottom: 1.5rem;
+}
+
+.TarjetasEcommerce-breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f0f0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+}
+
+.TarjetasEcommerce-breadcrumb-remove {
+  border: none;
+  background: transparent;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+  color: #999;
+  transition: color 0.2s;
+}
+.TarjetasEcommerce-breadcrumb-remove:hover {
+  color: #333;
+}
+
+/* Lista de tarjetas */
 .TarjetasEcommerce-lista {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -132,5 +134,15 @@
 .TarjetasEcommerce-loading {
   text-align: center;
   margin: 1.5rem 0;
-  color: #555;
+  color: hsl(0, 0%, 33%);
 }
+
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 600px) {
+.TarjetasEcommerce-scroll-btn {
+  display: none;
+}
+
+}
+

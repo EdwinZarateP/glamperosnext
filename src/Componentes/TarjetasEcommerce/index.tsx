@@ -5,17 +5,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Tarjeta from '../Tarjeta';
 import './estilos.css';
-import { MdPool } from "react-icons/md";
-import { FaHotTubPerson, FaCat } from 'react-icons/fa6';
-import { GiFishingNet, GiCampfire, GiCampingTent, GiHabitatDome, GiTreehouse, GiHut } from "react-icons/gi";
-import { MdOutlineCabin } from "react-icons/md";
-import { FaCaravan } from "react-icons/fa";
-import { PiCoffeeBeanFill } from "react-icons/pi";
-import { GiEagleEmblem } from "react-icons/gi";
-import { FaUmbrellaBeach, FaTemperatureArrowUp, FaTemperatureArrowDown } from "react-icons/fa6";
+
+import {
+  MdPool,
+  MdOutlineCabin,
+  MdOutlineKeyboardArrowLeft,
+  MdOutlineKeyboardArrowRight
+} from "react-icons/md";
+import { FaHotTubPerson, FaCat, FaCaravan, FaUmbrellaBeach, FaTemperatureArrowUp, FaTemperatureArrowDown } from 'react-icons/fa6';
+import { GiFishingNet, GiCampfire, GiCampingTent, GiHabitatDome, GiTreehouse, GiHut, GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
+import { PiCoffeeBeanFill, PiMountainsBold } from 'react-icons/pi';
 import { BsTreeFill } from "react-icons/bs";
-import { PiMountainsBold } from "react-icons/pi";
-import { GiDesert, GiHiking, GiRiver, GiWaterfall } from "react-icons/gi";
 
 interface TarjetasEcommerceProps {
   filtros?: string[];
@@ -30,7 +30,7 @@ const AMENIDADES = ['jacuzzi', 'piscina', 'malla-catamaran', 'clima-calido', 'cl
 
 const obtenerIcono = (label: string) => {
   switch (label.toLowerCase()) {
-    case 'cerca-bogota': return <GiEagleEmblem />;
+    case 'cerca-bogota': return <GiHut />;
     case 'cerca-medellin': return <PiCoffeeBeanFill />;
     case 'cerca-cali': return <FaCat />;
     case 'jacuzzi': return <FaHotTubPerson />;
@@ -68,35 +68,33 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (dir: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const amount = dir === 'left' ? -200 : 200;
-      scrollRef.current.scrollBy({ left: amount, behavior: 'smooth' });
-    }
+    if (!scrollRef.current) return;
+    const amount = dir === 'left' ? -200 : 200;
+    scrollRef.current.scrollBy({ left: amount, behavior: 'smooth' });
   };
 
+  // filtros aplicados
   const applied = filtros ?? [];
   const ciudadFilter = applied.find(f => CIUDADES.includes(f.toLowerCase())) || null;
   const tipoFilter = applied.find(f => TIPOS.includes(f)) || null;
   const amenidadesFilter = applied.filter(f => f !== ciudadFilter && f !== tipoFilter);
 
-  const canonical = [ciudadFilter, tipoFilter, ...amenidadesFilter.sort()].filter(Boolean) as string[];
+  // clave única para reconstruir URL y disparar efectos
+  const canonical = [ciudadFilter, tipoFilter, ...amenidadesFilter].filter(Boolean) as string[];
   const filtersKey = canonical.join(',');
 
-  const getCoords = (c: string) => {
-    const map: Record<string, { lat: number; lng: number }> = {
-      'cerca-bogota': { lat: 4.710989, lng: -74.07209 },
-      'cerca-medellin': { lat: 6.244203, lng: -75.5812119 },
-      'cerca-cali': { lat: 3.451647, lng: -76.531985 },
-    };
-    return map[c.toLowerCase()] || map['cerca-bogota'];
-  };
+  // coordenadas por ciudad
+  const getCoords = (c: string) => ({
+    'cerca-bogota': { lat: 4.710989, lng: -74.07209 },
+    'cerca-medellin': { lat: 6.244203, lng: -75.5812119 },
+    'cerca-cali': { lat: 3.451647, lng: -76.531985 },
+  }[c.toLowerCase()] || { lat: 4.710989, lng: -74.07209 });
 
-  const normalize = (json: any): any[] => {
-    if (Array.isArray(json)) return json;
-    if (json && Array.isArray(json.glampings)) return json.glampings;
-    return [];
-  };
+  // normalización de respuesta
+  const normalize = (json: any): any[] =>
+    Array.isArray(json) ? json : Array.isArray(json.glampings) ? json.glampings : [];
 
+  // mapeo a props de Tarjeta
   const mapProps = (g: any) => {
     const ubic = typeof g.ubicacion === 'string' ? JSON.parse(g.ubicacion) : g.ubicacion;
     return {
@@ -120,37 +118,35 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     };
   };
 
+  // reset al cambiar filtros
   useEffect(() => {
     setPage(1);
     setHasMore(true);
     setGlampings([]);
   }, [filtersKey]);
 
+  // carga de datos
   useEffect(() => {
     const load = async () => {
       if (!hasMore) return;
       setLoading(true);
       const qp = new URLSearchParams();
-      qp.set('page', page.toString());
-      qp.set('limit', PAGE_SIZE.toString());
-      if (tipoFilter) qp.set('tipoGlamping', tipoFilter);
+      qp.set('page', String(page));
+      qp.set('limit', String(PAGE_SIZE));
+      if (tipoFilter)        qp.set('tipoGlamping', tipoFilter);
       amenidadesFilter.forEach(a => qp.append('amenidades', a));
       if (ciudadFilter) {
         const { lat, lng } = getCoords(ciudadFilter);
-        qp.set('lat', lat.toString());
-        qp.set('lng', lng.toString());
+        qp.set('lat', String(lat));
+        qp.set('lng', String(lng));
         qp.set('distanciaMax', '150');
       }
       try {
-        const res = await fetch(`${API_BASE}?${qp}`);
-        const queryURL = `${API_BASE}?${qp}`;
-        setQueryEnviada(queryURL);
-        if (res.status === 404) {
-          setHasMore(false);
-          return;
-        }
-        const json = await res.json();
-        const data = normalize(json);
+        const url = `${API_BASE}?${qp}`;
+        setQueryEnviada(url);
+        const res = await fetch(url);
+        if (res.status === 404) { setHasMore(false); return; }
+        const data = normalize(await res.json());
         setGlampings(prev => page === 1 ? data : [...prev, ...data]);
         if (data.length < PAGE_SIZE) setHasMore(false);
       } catch {
@@ -162,6 +158,7 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     load();
   }, [page, filtersKey, ciudadFilter, tipoFilter, JSON.stringify(amenidadesFilter)]);
 
+  // infinite scroll observer
   useEffect(() => {
     const onIntersect: IntersectionObserverCallback = entries => {
       if (entries[0].isIntersecting && !loading && hasMore) {
@@ -169,9 +166,7 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
         setPage(p => p + 1);
       }
     };
-    observerInstance.current = new IntersectionObserver(onIntersect, {
-      rootMargin: '200px', threshold: 0.1
-    });
+    observerInstance.current = new IntersectionObserver(onIntersect, { rootMargin: '200px', threshold: 0.1 });
     if (observerRef.current) observerInstance.current.observe(observerRef.current);
     return () => observerInstance.current?.disconnect();
   }, []);
@@ -182,63 +177,93 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     }
   }, [loading, hasMore]);
 
+  // alternar filtro
   const toggleFilter = (f: string) => {
-    let list = [...canonical];
-    const idx = list.indexOf(f);
-    const esCiudad = CIUDADES.includes(f.toLowerCase());
-    const esTipo = TIPOS.includes(f);
-    if (esCiudad) list = list.filter(x => !CIUDADES.includes(x.toLowerCase()));
-    if (esTipo) list = list.filter(x => !TIPOS.includes(x));
-    if (idx >= 0) list.splice(idx, 1); else list.push(f);
-
-    const ciudad = list.find(x => CIUDADES.includes(x.toLowerCase()));
-    const tipo = list.find(x => TIPOS.includes(x));
-    const amenidades = list.filter(x => x !== ciudad && x !== tipo);
-
-    const newPath = [...(ciudad ? [ciudad] : []), ...(tipo ? [tipo] : []), ...amenidades];
-    const path = newPath.length ? `/glampings/${newPath.join('/')}` : '/glampings';
+    let newList = [...canonical];
+    if (canonical.includes(f)) {
+      // si existe, solo lo quito
+      newList = newList.filter(x => x !== f);
+    } else {
+      // si no existe, agrego (y quito ciudad/tipo previas si aplica)
+      if (CIUDADES.includes(f.toLowerCase())) {
+        newList = newList.filter(x => !CIUDADES.includes(x.toLowerCase()));
+      }
+      if (TIPOS.includes(f)) {
+        newList = newList.filter(x => !TIPOS.includes(x));
+      }
+      newList.push(f);
+    }
+    const ciudad = newList.find(x => CIUDADES.includes(x.toLowerCase()));
+    const tipo = newList.find(x => TIPOS.includes(x));
+    const amenidades = newList.filter(x => x !== ciudad && x !== tipo);
+    const pathSegments = [...(ciudad ? [ciudad] : []), ...(tipo ? [tipo] : []), ...amenidades];
+    const path = pathSegments.length ? `/glampings/${pathSegments.join('/')}` : '/glampings';
     router.push(path);
   };
 
   return (
     <div className="TarjetasEcommerce-container">
-      <div className="TarjetasEcommerce-results">{glampings.length} resultados</div>
-      <pre style={{ background: "#f8f8f8", padding: "8px", fontSize: "12px", border: "1px solid #ccc" }}>{queryEnviada}</pre>
-      {canonical.length > 0 && (
-        <div className="TarjetasEcommerce-breadcrumbs">
-          {canonical.map((f, i) => (
-            <span key={i} className="TarjetasEcommerce-breadcrumb-item">
-              {f}
-              <button className="TarjetasEcommerce-breadcrumb-remove" onClick={() => toggleFilter(f)}>×</button>
-            </span>
-          ))}
-        </div>
-      )}
+      <div className="TarjetasEcommerce-results">
+        {glampings.length} resultados
+      </div>
+      <pre className="TarjetasEcommerce-debug">{queryEnviada}</pre>
 
       <div className="TarjetasEcommerce-filtros-wrapper">
-        <button className="TarjetasEcommerce-scroll-btn izquierda" onClick={() => scroll('left')}>&lt;</button>
+        <button
+          className="TarjetasEcommerce-scroll-btn izquierda"
+          onClick={() => scroll('left')}
+        >
+          <MdOutlineKeyboardArrowLeft size={24}/>
+        </button>
         <div className="TarjetasEcommerce-filtros-scroll" ref={scrollRef}>
           {[...CIUDADES, ...TIPOS, ...AMENIDADES].map(label => {
             const isActive = canonical.includes(label);
-            const icon = obtenerIcono(label);
             return (
               <div
                 key={label}
                 className={`TarjetasEcommerce-filtro-item ${isActive ? 'activo' : ''}`}
                 onClick={() => toggleFilter(label)}
               >
-                <div className="TarjetasEcommerce-filtro-icono">{icon}</div>
-                <span className="TarjetasEcommerce-filtro-label">{label.replace(/-/g, ' ')}</span>
+                <div className="TarjetasEcommerce-filtro-icono">
+                  {obtenerIcono(label)}
+                </div>
+                <span className="TarjetasEcommerce-filtro-label">
+                  {label.replace(/-/g, ' ')}
+                </span>
               </div>
             );
           })}
         </div>
-        <button className="TarjetasEcommerce-scroll-btn derecha" onClick={() => scroll('right')}>&gt;</button>
+        <button
+          className="TarjetasEcommerce-scroll-btn derecha"
+          onClick={() => scroll('right')}
+        >
+          <MdOutlineKeyboardArrowRight size={24}/>
+        </button>
       </div>
 
+      {canonical.length > 0 && (
+        <div className="TarjetasEcommerce-breadcrumbs">
+          {canonical.map((f, i) => (
+            <span key={i} className="TarjetasEcommerce-breadcrumb-item">
+              {f.replace(/-/g, ' ')}
+              <button
+                className="TarjetasEcommerce-breadcrumb-remove"
+                onClick={() => toggleFilter(f)}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="TarjetasEcommerce-lista">
-        {glampings.map(g => <Tarjeta key={g._id} {...mapProps(g)} />)}
+        {glampings.map(g => (
+          <Tarjeta key={g._id} {...mapProps(g)} />
+        ))}
       </div>
+
       {loading && <p className="TarjetasEcommerce-loading">Cargando...</p>}
       {glampings.length > 0 && <div ref={observerRef} />}
     </div>

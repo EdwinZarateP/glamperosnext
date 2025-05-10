@@ -9,8 +9,8 @@ interface TarjetasEcommerceProps {
   filtros?: string[]
 }
 
-const API_BASE = 'http://127.0.0.1:8000/glampings/glampingfiltrados'
-// const API_BASE = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados'
+// const API_BASE = 'http://127.0.0.1:8000/glampings/glampingfiltrados'
+const API_BASE = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados'
 const PAGE_SIZE = 30
 
 

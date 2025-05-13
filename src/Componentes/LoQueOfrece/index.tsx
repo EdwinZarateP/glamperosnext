@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { opcionesAmenidades } from "../../Componentes/Amenidades/index"; // Ajusta la ruta según tu estructura
+import { useState, useEffect, useMemo } from "react";
+import { opcionesAmenidades } from "../../Componentes/Amenidades/index";
 import "./estilos.css";
 import { GiCircleClaws } from "react-icons/gi";
 
@@ -11,20 +11,43 @@ interface Props {
 
 export default function LoQueOfrece({ amenidades }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // Bloquear el scroll del fondo cuando el modal esté abierto
+  // 1) Deduplicar manteniendo orden de primera aparición
+  const amenidadesUnicas = useMemo(() => {
+    const seen = new Set<string>();
+    return amenidades.filter(item => {
+      const key = item.trim().toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [amenidades]);
+
+  // helper para renderizar cada amenidad
+  const renderAmenidad = (amenidad: string, index: number) => {
+    const texto = amenidad.trim().toLowerCase();
+    const opcion = opcionesAmenidades.find(o =>
+      o.id.trim().toLowerCase() === texto ||
+      o.label.trim().toLowerCase() === texto
+    );
+
+    const icono    = opcion?.icono || <GiCircleClaws />;
+    const etiqueta = opcion?.label || amenidad;
+
+    return (
+      <div key={index} className="LoQueOfrece-item">
+        <span className="LoQueOfrece-icono">{icono}</span>
+        <span className="LoQueOfrece-etiqueta">{etiqueta}</span>
+      </div>
+    );
+  };
+
+  // controlar scroll cuando abre/cierra modal
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
+    document.body.style.overflow = isModalOpen ? "hidden" : "auto";
+    return () => { document.body.style.overflow = "auto"; };
   }, [isModalOpen]);
 
   return (
@@ -33,25 +56,11 @@ export default function LoQueOfrece({ amenidades }: Props) {
 
       <div className="LoQueOfrece-lista-contenida">
         <div className="LoQueOfrece-lista">
-          {amenidades.slice(0, 8).map((amenidad, index) => {
-            const opcionEncontrada = opcionesAmenidades.find(
-              (opcion) =>
-                opcion.label.trim().toLowerCase() ===
-                amenidad.trim().toLowerCase()
-            );
-            return (
-              <div key={index} className="LoQueOfrece-item">
-                <span className="LoQueOfrece-icono">
-                  {opcionEncontrada?.icono || <GiCircleClaws />}
-                </span>
-                <span className="LoQueOfrece-etiqueta">{amenidad}</span>
-              </div>
-            );
-          })}
+          {amenidadesUnicas.slice(0, 8).map(renderAmenidad)}
         </div>
       </div>
 
-      {amenidades.length > 6 && (
+      {amenidadesUnicas.length > 6 && (
         <p className="mostrar-mas-texto" onClick={openModal}>
           Mostrar más &gt;
         </p>
@@ -65,21 +74,7 @@ export default function LoQueOfrece({ amenidades }: Props) {
             </button>
             <h1>Lo que este lugar te ofrece</h1>
             <div className="LoQueOfrece-lista">
-              {amenidades.map((amenidad, index) => {
-                const opcionEncontrada = opcionesAmenidades.find(
-                  (opcion) =>
-                    opcion.label.trim().toLowerCase() ===
-                    amenidad.trim().toLowerCase()
-                );
-                return (
-                  <div key={index} className="LoQueOfrece-item">
-                    <span className="LoQueOfrece-icono">
-                      {opcionEncontrada?.icono || <GiCircleClaws />}
-                    </span>
-                    <span className="LoQueOfrece-etiqueta">{amenidad}</span>
-                  </div>
-                );
-              })}
+              {amenidadesUnicas.map(renderAmenidad)}
             </div>
           </div>
         </div>

@@ -1,37 +1,18 @@
-// src/components/TarjetasEcommerce.tsx
+// components/TarjetasEcommerce.tsx
+
 "use client"
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Tarjeta from '../Tarjeta';
+import HeaderGeneral from '../HeaderGeneral';
+import { FILTROS } from './filtros';
 import './estilos.css';
 
 import {
-  MdPool,
-  MdOutlineCabin,
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight
 } from "react-icons/md";
-import {
-  FaHotTubPerson,
-  FaCat,
-  FaUmbrellaBeach,
-  FaTemperatureArrowUp,
-  FaTemperatureArrowDown
-} from 'react-icons/fa6';
-import {
-  GiFishingNet,
-  GiCampingTent,
-  GiHabitatDome,
-  GiHut,
-  GiDesert,
-  GiHiking,
-  GiRiver,
-  GiWaterfall,
-  GiEagleEmblem
-} from "react-icons/gi";
-import { PiCoffeeBeanFill, PiMountainsBold } from 'react-icons/pi';
-import { BsTreeFill } from "react-icons/bs";
 
 interface TarjetasEcommerceProps {
   filtros?: string[];
@@ -40,68 +21,85 @@ interface TarjetasEcommerceProps {
 const API_BASE  = 'http://127.0.0.1:8000/glampings/glampingfiltrados';
 const PAGE_SIZE = 30;
 
-// ----------------------------------------------------------------------------
-// 1) FILTROS DEFINIDOS
-// ----------------------------------------------------------------------------
-const FILTROS = [
-  { value: 'bogota',   label: 'Cerca a Bogotá',    icon: <GiEagleEmblem /> },
-  { value: 'medellin', label: 'Cerca a Medellín',  icon: <PiCoffeeBeanFill /> },
-  { value: 'cali',     label: 'Cerca a Cali',      icon: <FaCat /> },
-  { value: 'domo',     label: 'Domo',               icon: <GiHabitatDome /> },
-  { value: 'tipi',     label: 'Tipi',               icon: <GiHut /> },
-  { value: 'tienda',   label: 'Tienda',             icon: <GiCampingTent /> },
-  { value: 'cabana',   label: 'Cabaña',             icon: <MdOutlineCabin /> },
-  { value: 'lumipod',  label: 'Lumipod',            icon: <img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="TarjetasEcommerce-svg-icon" /> },
-  { value: 'jacuzzi',          label: 'Jacuzzi',    icon: <FaHotTubPerson /> },
-  { value: 'piscina',          label: 'Piscina',    icon: <MdPool /> },
-  { value: 'malla-catamaran',  label: 'Malla Catamarán', icon: <GiFishingNet /> },
-  { value: 'clima-calido',     label: 'Clima Cálido',    icon: <FaTemperatureArrowUp /> },
-  { value: 'clima-frio',       label: 'Clima Frío',      icon: <FaTemperatureArrowDown /> },
-  { value: 'playa',            label: 'Playa',           icon: <FaUmbrellaBeach /> },
-  { value: 'naturaleza',       label: 'Naturaleza',      icon: <BsTreeFill /> },
-  { value: 'en-la-montana',    label: 'En la Montaña',   icon: <PiMountainsBold /> },
-  { value: 'desierto',         label: 'Desierto',        icon: <GiDesert /> },
-  { value: 'caminata',         label: 'Caminata',        icon: <GiHiking /> },
-  { value: 'cascada',          label: 'Cascada',         icon: <GiWaterfall /> },
-  { value: 'rio',              label: 'Río',             icon: <GiRiver /> },
-];
+// Coordenadas aproximadas para cada ciudad
+const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
+  bogota:   { lat: 4.711,   lng: -74.0721 },
+  medellin: { lat: 6.2442,  lng: -75.5812 },
+  cali:     { lat: 3.4516,  lng: -76.5320 },
+};
 
-const CIUDADES = FILTROS.filter(f => ['bogota','medellin','cali'].includes(f.value)).map(f => f.value);
-const TIPOS    = FILTROS.filter(f => ['domo','tipi','tienda','cabana','lumipod'].includes(f.value)).map(f => f.value);
+const CIUDADES = Object.keys(CITY_COORDS);
+const TIPOS    = FILTROS
+  .filter(f => ['domo','tipi','tienda','cabana','lumipod'].includes(f.value))
+  .map(f => f.value);
+// Lista de amenidades válidas
+const AMENIDADES = FILTROS.map(f => f.value)
+  .filter(v => !CIUDADES.includes(v) && !TIPOS.includes(v));
 
-// ----------------------------------------------------------------------------
-// 2) COMPONENTE
-// ----------------------------------------------------------------------------
 export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   const router = useRouter();
 
-  // -- Estados para fechas y huéspedes (MANUAL) --
-  const [fechaInicio, setFechaInicio]       = useState<string>('');
-  const [fechaFin,    setFechaFin]          = useState<string>('');
-  const [totalHuespedes, setTotalHuespedes]= useState<number>(1);
+  // Derivo segmentos extra (fechas y huéspedes) de la URL
+  const applied = filtros ?? [];
+  const extrasFromURL = applied.filter(
+    seg => !CIUDADES.includes(seg) && !TIPOS.includes(seg) && !AMENIDADES.includes(seg)
+  );
+  const initialFechaInicio    = extrasFromURL[0] ?? '';
+  const initialFechaFin       = extrasFromURL[1] ?? '';
+  const initialTotalHuespedes = extrasFromURL[2] ? Number(extrasFromURL[2]) : 1;
 
-  // -- Resultados y paginación --
+  // Estados para fechas y huéspedes (MANUAL)
+  const [fechaInicio,    setFechaInicio]    = useState<string>(initialFechaInicio);
+  const [fechaFin,       setFechaFin]       = useState<string>(initialFechaFin);
+  const [totalHuespedes, setTotalHuespedes]= useState<number>(initialTotalHuespedes);
+
+  // Parámetro visual de última consulta
+  const [lastQuery, setLastQuery] = useState<string>('');
+
+  // Resultados y paginación
   const [glampings, setGlampings] = useState<any[]>([]);
-  const [page,       setPage]     = useState(1);
-  const [loading,    setLoading]  = useState(false);
-  const [hasMore,    setHasMore]  = useState(true);
+  const [page,       setPage]      = useState<number>(1);
+  const [loading,    setLoading]   = useState<boolean>(false);
+  const [hasMore,    setHasMore]   = useState<boolean>(true);
 
-  // refs para scroll infinito y filtros
   const observerRef = useRef<HTMLDivElement>(null);
   const scrollRef   = useRef<HTMLDivElement>(null);
 
-  // -- Filtros original de URL --
-  const applied          = filtros ?? [];
+  // Filtros extraídos de la URL para ciudad/tipo/amenidades
   const ciudadFilter     = applied.find(f => CIUDADES.includes(f)) || null;
   const tipoFilter       = applied.find(f => TIPOS.includes(f))    || null;
-  const amenidadesFilter = applied.filter(f => f !== ciudadFilter && f !== tipoFilter);
-  const canonicalBase    = [ciudadFilter, tipoFilter, ...amenidadesFilter].filter(Boolean) as string[];
+  const amenidadesFilter = applied.filter(f => AMENIDADES.includes(f));
+  const canonicalBase    = [ciudadFilter, tipoFilter, ...amenidadesFilter]
+    .filter(Boolean) as string[];
 
-  // ----------------------------------------------------------------------------
-  // mapProps (restaurado)
-  // ----------------------------------------------------------------------------
+  // Construye el query string para la API
+  const construirQuery = (
+    pageArg: number,
+    fi?: string,
+    ff?: string,
+    th?: number
+  ) => {
+    const params = new URLSearchParams();
+    params.set('page', String(pageArg));
+    params.set('limit', String(PAGE_SIZE));
+    if (ciudadFilter && CITY_COORDS[ciudadFilter]) {
+      const { lat, lng } = CITY_COORDS[ciudadFilter];
+      params.set('lat', String(lat));
+      params.set('lng', String(lng));
+    }
+    if (tipoFilter) params.set('tipoGlamping', tipoFilter);
+    amenidadesFilter.forEach(a => params.append('amenidades', a));
+    if (fi) params.set('fechaInicio', fi);
+    if (ff) params.set('fechaFin',    ff);
+    if (th && th > 1) params.set('totalHuespedes', String(th));
+    return params.toString();
+  };
+
+  // Mapea datos para la tarjeta
   const mapProps = (g: any) => {
-    const ubic = typeof g.ubicacion === 'string' ? JSON.parse(g.ubicacion) : g.ubicacion;
+    const ubic = typeof g.ubicacion === 'string'
+      ? JSON.parse(g.ubicacion)
+      : g.ubicacion;
     return {
       glampingId: g._id,
       imagenes: g.imagenes,
@@ -123,65 +121,56 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     };
   };
 
-  // ----------------------------------------------------------------------------
-  // fetchGlampings: pide la API con los extras al final
-  // ----------------------------------------------------------------------------
-  const fetchGlampings = useCallback(async (pageArg: number, extras: string[]) => {
-    setLoading(true);
-    const params = new URLSearchParams();
-    params.set('page', String(pageArg));
-    params.set('limit', String(PAGE_SIZE));
-    if (tipoFilter)      params.set('tipoGlamping', tipoFilter);
-    amenidadesFilter.forEach(a => params.append('amenidades', a));
+  // Llamada a la API
+  const fetchGlampings = useCallback(
+    async (pageArg: number, extras: string[]) => {
+      setLoading(true);
+      const [fi, ff, thStr] = extras;
+      const th = thStr ? Number(thStr) : undefined;
+      const qs = construirQuery(pageArg, fi, ff, th);
+      setLastQuery(qs);
+      const url = `${API_BASE}?${qs}`;
+      try {
+        const res = await fetch(url);
+        if (res.status === 404) { setHasMore(false); return; }
+        const json = await res.json();
+        const arr = Array.isArray(json) ? json : json.glampings ?? [];
+        setGlampings(prev => pageArg === 1 ? arr : [...prev, ...arr]);
+        if (arr.length < PAGE_SIZE) setHasMore(false);
+      } catch {
+        setHasMore(false);
+      } finally {
+        setLoading(false);
+        setPage(pageArg);
+      }
+    },
+    [ciudadFilter, tipoFilter, amenidadesFilter]
+  );
 
-    // extras = [fechaInicio?, fechaFin?, totalHuespedes?]
-    if (extras[0]) params.set('fechaInicio', extras[0]);
-    if (extras[1]) params.set('fechaFin',    extras[1]);
-    if (extras[2]) params.set('totalHuespedes', extras[2]);
+  // Carga inicial y cuando cambian filtros rápidos
+  useEffect(() => {
+    setGlampings([]);
+    setHasMore(true);
+    fetchGlampings(1, extrasFromURL);
+  }, [ciudadFilter, tipoFilter, amenidadesFilter.join(',')]);
 
-    const url = `${API_BASE}?${params.toString()}`;
-    try {
-      const res = await fetch(url);
-      if (res.status === 404) { setHasMore(false); return; }
-      const json = await res.json();
-      const arr  = Array.isArray(json) ? json : json.glampings ?? [];
-      setGlampings(prev => pageArg === 1 ? arr : [...prev, ...arr]);
-      if (arr.length < PAGE_SIZE) setHasMore(false);
-    } catch {
-      setHasMore(false);
-    } finally {
-      setLoading(false);
-      setPage(pageArg);
-    }
-  }, [amenidadesFilter, tipoFilter]);
-
-  // ----------------------------------------------------------------------------
-  // Botón Buscar: arma fullCanonical, push y fetch página 1
-  // ----------------------------------------------------------------------------
+  // Botón Buscar: activa fechas/huespedes
   const onBuscar = () => {
     const extras = [
       ...(fechaInicio ? [fechaInicio] : []),
       ...(fechaFin    ? [fechaFin]    : []),
       ...(totalHuespedes > 1 ? [String(totalHuespedes)] : [])
     ];
-    const fullCanonical = [...canonicalBase, ...extras];
-
-    // limpia lista
+    setLastQuery(construirQuery(1, extras[0], extras[1], extras[2] ? Number(extras[2]) : undefined));
     setGlampings([]);
     setHasMore(true);
-    // dispara fetch
     fetchGlampings(1, extras);
-
-    // nueva ruta limpia
-    const path = fullCanonical.length
-      ? `/glampings/${fullCanonical.join('/')}`
-      : '/glampings';
-    router.push(path);
+    const fullPath = [...canonicalBase, ...extras];
+    const route = fullPath.length ? `/glampings/${fullPath.join('/')}` : '/glampings';
+    router.push(route);
   };
 
-  // ----------------------------------------------------------------------------
   // Scroll infinito
-  // ----------------------------------------------------------------------------
   useEffect(() => {
     const obs = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && !loading && hasMore) {
@@ -193,84 +182,61 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
         fetchGlampings(page + 1, extras);
       }
     }, { rootMargin: '200px', threshold: 0.1 });
-
     if (observerRef.current) obs.observe(observerRef.current);
     return () => obs.disconnect();
-  }, [
-    fetchGlampings,
-    loading,
-    hasMore,
-    page,
-    fechaInicio,
-    fechaFin,
-    totalHuespedes
-  ]);
+  }, [fetchGlampings, loading, hasMore, page, fechaInicio, fechaFin, totalHuespedes]);
 
-  // ----------------------------------------------------------------------------
-  // Toggle filtro horizontal
-  // ----------------------------------------------------------------------------
+  // Toggle filtros rápidos
   const toggleFilter = (value: string) => {
-    let list = [...canonicalBase];
-    if (list.includes(value)) list = list.filter(x => x !== value);
+    let listRaw = [...canonicalBase];
+    if (listRaw.includes(value)) listRaw = listRaw.filter(x => x !== value);
     else {
-      if (CIUDADES.includes(value)) list = list.filter(x => !CIUDADES.includes(x));
-      if (TIPOS.includes(value))    list = list.filter(x => !TIPOS.includes(x));
-      list.push(value);
+      if (CIUDADES.includes(value)) listRaw = listRaw.filter(x => !CIUDADES.includes(x));
+      if (TIPOS.includes(value))    listRaw = listRaw.filter(x => !TIPOS.includes(x));
+      listRaw.push(value);
     }
-    const path = list.length ? `/glampings/${list.join('/')}` : '/glampings';
-    router.push(path);
+    const city = listRaw.find(v => CIUDADES.includes(v));
+    const type = listRaw.find(v => TIPOS.includes(v));
+    const amenities = listRaw.filter(v => !CIUDADES.includes(v) && !TIPOS.includes(v));
+    const ordered = [
+      ...(city ? [city] : []),
+      ...(type ? [type] : []),
+      ...amenities
+    ];
+    const extras = [
+      ...(fechaInicio ? [fechaInicio] : []),
+      ...(fechaFin    ? [fechaFin]    : []),
+      ...(totalHuespedes > 1 ? [String(totalHuespedes)] : [])
+    ];
+    const fullPath = ordered.concat(extras);
+    const route = fullPath.length ? `/glampings/${fullPath.join('/')}` : '/glampings';
+    router.push(route);
   };
 
-  // ----------------------------------------------------------------------------
-  // RENDER
-  // ----------------------------------------------------------------------------
   return (
     <div className="TarjetasEcommerce-container">
-
-      {/* sección de inputs + botón */}
-      <div className="TarjetasEcommerce-filters-top">
-        <div className="TarjetasEcommerce-search-controls">
-          <label>
-            Fecha inicio:
-            <input
-              type="date"
-              value={fechaInicio}
-              onChange={e => setFechaInicio(e.target.value)}
-            />
-          </label>
-          <label>
-            Fecha fin:
-            <input
-              type="date"
-              value={fechaFin}
-              onChange={e => setFechaFin(e.target.value)}
-            />
-          </label>
-          <label>
-            Huéspedes:
-            <input
-              type="number"
-              min={1}
-              value={totalHuespedes}
-              onChange={e => setTotalHuespedes(Number(e.target.value))}
-            />
-          </label>
-          <button
-            className="TarjetasEcommerce-search-btn"
-            onClick={onBuscar}
-          >
-            Buscar
-          </button>
-        </div>
+      {/* Migas */}
+      <div className="TarjetasEcommerce-breadcrumbs">
+        {canonicalBase.map((c,i)=><span key={i} className="TarjetasEcommerce-breadcrumb-item">{c}</span>)}
       </div>
-
-      {/* filtros horizontales */}
+      {/* Query */}
+      <span className="TarjetasEcommerce-query">Consultando: {lastQuery}</span>
+      {/* Controles */}
+      <div className="TarjetasEcommerce-filters-top">
+        <HeaderGeneral
+          fechaInicio={fechaInicio}
+          fechaFin={fechaFin}
+          totalHuespedes={totalHuespedes}
+          onFechaInicioChange={setFechaInicio}
+          onFechaFinChange={setFechaFin}
+          onTotalHuespedesChange={setTotalHuespedes}
+          onBuscar={onBuscar}
+        />
+      </div>
+      {/* Filtros rápidos */}
       <div className="TarjetasEcommerce-filtros-wrapper">
-        <button
-          className="TarjetasEcommerce-scroll-btn izquierda"
-          onClick={() => scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}
-        >
-          <MdOutlineKeyboardArrowLeft size={24}/>
+        <button className="TarjetasEcommerce-scroll-btn izquierda" onClick={() => scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}>
+          <MdOutlineKeyboardArrowLeft size={24} />
         </button>
         <div className="TarjetasEcommerce-filtros-scroll" ref={scrollRef}>
           {FILTROS.map(f => {
@@ -287,26 +253,16 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
             );
           })}
         </div>
-        <button
-          className="TarjetasEcommerce-scroll-btn derecha"
-          onClick={() => scrollRef.current?.scrollBy({ left: 200, behavior: 'smooth' })}
-        >
-          <MdOutlineKeyboardArrowRight size={24}/>
+        <button className="TarjetasEcommerce-scroll-btn derecha" onClick={() => scrollRef.current?.scrollBy({ left: 200, behavior: 'smooth' })}>
+          <MdOutlineKeyboardArrowRight size={24} />
         </button>
       </div>
-
-      {/* resultados */}
-      <div className="TarjetasEcommerce-results">
-        {glampings.length} resultados
-      </div>
-
-      {/* lista */}
-      <div className="TarjetasEcommerce-lista">
-        {glampings.map(g => <Tarjeta key={g._id} {...mapProps(g)} />)}
-      </div>
-
+      {/* Resultados */}
+      <div className="TarjetasEcommerce-results">{glampings.length} resultados</div>
+      {/* Lista */}
+      <div className="TarjetasEcommerce-lista">{glampings.map(g => <Tarjeta key={g._id} {...mapProps(g)} />)}</div>
       {loading && <p className="TarjetasEcommerce-loading">Cargando...</p>}
-      {glampings.length > 0 && <div ref={observerRef} />}
+      {glampings.length > 0 && <div ref={observerRef} />}  
     </div>
   );
 }

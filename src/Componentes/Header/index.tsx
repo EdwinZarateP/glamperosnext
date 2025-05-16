@@ -10,7 +10,6 @@ import { HiMiniAdjustmentsHorizontal } from "react-icons/hi2";
 import Image from "next/image";
 import { BsIncognito } from "react-icons/bs";
 import Cookies from "js-cookie";
-
 import MenuUsuario from "../../Componentes/MenuUsuario/index";
 import "./estilos.css"; 
 

@@ -1,35 +1,154 @@
+/* components/HeaderGeneral.css */
 
-/* HeaderGeneral.css */
 .HeaderGeneral-container {
-  padding: 1rem;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #ddd;
-}
-.HeaderGeneral-controls {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-.HeaderGeneral-controls label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.875rem;
-  color: #333;
-}
-.HeaderGeneral-controls input {
-  margin-top: 0.25rem;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-.HeaderGeneral-search-btn {
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   padding: 0.5rem 1rem;
-  border: none;
-  background-color: #0070f3;
-  color: white;
-  border-radius: 4px;
+  position: relative; /* for absolute children */
+  z-index: 1000;
+}
+
+.HeaderGeneral-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.HeaderGeneral-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  background-color: #f1f1f1;
   cursor: pointer;
 }
+
+.HeaderGeneral-user-icon {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.HeaderGeneral-user-initial {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* MenuUsuario positioning */
+.MenuUsuario-contenedor {
+  position: absolute;
+  top: 3rem; /* adjust beneath user button */
+  left: 0.5rem; /* align under .HeaderGeneral-user */
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 1001;
+  width: 200px;
+  padding: 0.5rem 0;
+}
+
+.MenuUsuario-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.MenuUsuario-opcion {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.MenuUsuario-opcion:hover {
+  background-color: #f5f5f5;
+}
+
+.HeaderGeneral-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.HeaderGeneral-brand {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #2F6B3E;
+}
+
+.HeaderGeneral-publish-btn {
+  background-color: #F2A900;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.HeaderGeneral-publish-btn:hover {
+  background-color: #d18b00;
+}
+
+.HeaderGeneral-search-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.HeaderGeneral-date-btn,
+.HeaderGeneral-visitantes-btn,
+.HeaderGeneral-search-btn {
+  background-color: #007f5f;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.HeaderGeneral-date-btn:hover,
+.HeaderGeneral-visitantes-btn:hover,
 .HeaderGeneral-search-btn:hover {
-  background-color: #005bb5;
+  background-color: #005f44;
+}
+
+.HeaderGeneral-date-btn {
+  flex: 1 1 auto;
+  max-width: 200px;
+}
+
+.HeaderGeneral-visitantes-btn {
+  flex: 0 0 auto;
+}
+
+.HeaderGeneral-search-btn {
+  flex: 0 0 auto;
+}
+
+.HeaderGeneral-error {
+  color: #d9534f;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .HeaderGeneral-top {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .HeaderGeneral-search-controls {
+    flex-direction: column;
+  }
 }

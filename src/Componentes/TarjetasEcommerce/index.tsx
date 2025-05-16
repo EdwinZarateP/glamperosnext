@@ -49,9 +49,9 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   const initialTotalHuespedes = extrasFromURL[2] ? Number(extrasFromURL[2]) : 1;
 
   // Estados para fechas y huéspedes (MANUAL)
-  const [fechaInicio,    setFechaInicio]    = useState<string>(initialFechaInicio);
-  const [fechaFin,       setFechaFin]       = useState<string>(initialFechaFin);
-  const [totalHuespedes, setTotalHuespedes]= useState<number>(initialTotalHuespedes);
+  const [fechaInicio]    = useState<string>(initialFechaInicio);
+  const [fechaFin]       = useState<string>(initialFechaFin);
+  const [totalHuespedes]= useState<number>(initialTotalHuespedes);
 
   // Parámetro visual de última consulta
   const [lastQuery, setLastQuery] = useState<string>('');
@@ -155,20 +155,20 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   }, [ciudadFilter, tipoFilter, amenidadesFilter.join(',')]);
 
   // Botón Buscar: activa fechas/huespedes
-  const onBuscar = () => {
-    const extras = [
-      ...(fechaInicio ? [fechaInicio] : []),
-      ...(fechaFin    ? [fechaFin]    : []),
-      ...(totalHuespedes > 1 ? [String(totalHuespedes)] : [])
-    ];
-    setLastQuery(construirQuery(1, extras[0], extras[1], extras[2] ? Number(extras[2]) : undefined));
-    setGlampings([]);
-    setHasMore(true);
-    fetchGlampings(1, extras);
-    const fullPath = [...canonicalBase, ...extras];
-    const route = fullPath.length ? `/glampings/${fullPath.join('/')}` : '/glampings';
-    router.push(route);
-  };
+  // const onBuscar = () => {
+  //   const extras = [
+  //     ...(fechaInicio ? [fechaInicio] : []),
+  //     ...(fechaFin    ? [fechaFin]    : []),
+  //     ...(totalHuespedes > 1 ? [String(totalHuespedes)] : [])
+  //   ];
+  //   setLastQuery(construirQuery(1, extras[0], extras[1], extras[2] ? Number(extras[2]) : undefined));
+  //   setGlampings([]);
+  //   setHasMore(true);
+  //   fetchGlampings(1, extras);
+  //   const fullPath = [...canonicalBase, ...extras];
+  //   const route = fullPath.length ? `/glampings/${fullPath.join('/')}` : '/glampings';
+  //   router.push(route);
+  // };
 
   // Scroll infinito
   useEffect(() => {
@@ -214,24 +214,34 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   };
 
   return (
-    <div className="TarjetasEcommerce-container">
-      {/* Migas */}
-      <div className="TarjetasEcommerce-breadcrumbs">
-        {canonicalBase.map((c,i)=><span key={i} className="TarjetasEcommerce-breadcrumb-item">{c}</span>)}
-      </div>
+    <div className="TarjetasEcommerce-container">    
       {/* Query */}
       <span className="TarjetasEcommerce-query">Consultando: {lastQuery}</span>
       {/* Controles */}
       <div className="TarjetasEcommerce-filters-top">
         <HeaderGeneral
-          fechaInicio={fechaInicio}
-          fechaFin={fechaFin}
-          totalHuespedes={totalHuespedes}
-          onFechaInicioChange={setFechaInicio}
-          onFechaFinChange={setFechaFin}
-          onTotalHuespedesChange={setTotalHuespedes}
-          onBuscar={onBuscar}
+          onBuscarAction={({ fechaInicio, fechaFin, totalHuespedes }) => {
+            const extras = [fechaInicio, fechaFin, String(totalHuespedes)];
+
+            // Construye y guarda el query
+            const qs = construirQuery(1, fechaInicio, fechaFin, totalHuespedes);
+            setLastQuery(qs);
+
+            // Limpia resultados anteriores
+            setGlampings([]);
+            setHasMore(true);
+
+            // Fetch de resultados
+            fetchGlampings(1, extras);
+
+            // Actualiza la URL
+            const fullPath = [...canonicalBase, ...extras];
+            const route = fullPath.length ? `/glampings/${fullPath.join("/")}` : "/glampings";
+            router.push(route);
+          }}
         />
+
+
       </div>
       {/* Filtros rápidos */}
       <div className="TarjetasEcommerce-filtros-wrapper">
@@ -257,6 +267,22 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
           <MdOutlineKeyboardArrowRight size={24} />
         </button>
       </div>
+      {/* Migas */}
+      <div className="TarjetasEcommerce-breadcrumbs">
+        {canonicalBase.map((filtro, i) => (
+          <span key={i} className="TarjetasEcommerce-breadcrumb-item">
+            {filtro}
+            <button
+              className="TarjetasEcommerce-breadcrumb-remove"
+              onClick={() => toggleFilter(filtro)}
+            >
+              ×
+            </button>
+          </span>
+        ))}
+      </div>
+
+
       {/* Resultados */}
       <div className="TarjetasEcommerce-results">{glampings.length} resultados</div>
       {/* Lista */}

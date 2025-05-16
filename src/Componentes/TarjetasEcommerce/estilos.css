@@ -1,8 +1,8 @@
 .TarjetasEcommerce-container {
-  padding: 1.5rem;
-  width: 90%;
-  margin: auto;
-  margin-top:50px;
+  padding: 0;
+  width: 100%;
+  margin: 0;
+
 }
 
 .TarjetasEcommerce-results {
@@ -19,6 +19,8 @@
   gap: 0.5rem;
   /* reducimos un poco el espacio abajo, para que las migas queden más cerca */
   margin-bottom: 1rem;
+  width: 90%;
+  margin: auto;
 }
 
 .TarjetasEcommerce-scroll-btn {
@@ -131,6 +133,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
+  width: 90%;
+  margin: auto;
 }
 
 .TarjetasEcommerce-loading {

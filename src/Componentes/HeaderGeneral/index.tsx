@@ -1,11 +1,10 @@
-// components/HeaderGeneral.tsx
-
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiSearch } from "react-icons/fi";
+import { BsIncognito } from "react-icons/bs";
 import CalendarioGeneral from "../CalendarioGeneral";
 import Visitantes from "../Visitantes";
 import MenuUsuario from "../MenuUsuario";
@@ -23,14 +22,15 @@ interface HeaderGeneralProps {
 
 export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
   const router = useRouter();
-  const contexto = useContext(ContextoApp);
-  if (!contexto) throw new Error("ContextoApp no disponible.");
+  const ctx = useContext(ContextoApp);
+  if (!ctx) throw new Error("ContextoApp no disponible.");
 
   const {
     fechaInicioConfirmado,
     fechaFinConfirmado,
     totalHuespedes,
     setMostrarMenuUsuarios,
+    setIdUsuario,
     setSiono,
     setLatitud,
     setLongitud,
@@ -48,31 +48,33 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
     setPrecioEstandarAdicional,
     setAcepta_Mascotas,
     setCopiasGlamping,
-    setIdUsuario,
-  } = contexto;
+  } = ctx;
 
-  // Carga de usuario
+  // Estado usuario
   const [nombreUsuario, setNombreUsuario] = useState<string | null>(null);
   const [idUsuarioCookie, setIdUsuarioCookie] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
   useEffect(() => {
+    setIsClient(true);
     setNombreUsuario(Cookies.get("nombreUsuario") || null);
     setIdUsuarioCookie(Cookies.get("idUsuario") || null);
   }, []);
 
+  // UI states
   const [showCalendar, setShowCalendar] = useState(false);
   const [showVisitantes, setShowVisitantes] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
 
-  // Acciones
+  // Toggle menú usuario
+  const toggleMenu = () => setMostrarMenuUsuarios((p) => !p);
+
+  // Abrir cierres
   const abrirCalendario = () => setShowCalendar(true);
   const cerrarCalendario = () => setShowCalendar(false);
   const abrirVisitantes = () => setShowVisitantes(true);
   const cerrarVisitantes = () => setShowVisitantes(false);
 
-  // Toggle menú usuario
-  const handleToggleMenu = () => setMostrarMenuUsuarios(prev => !prev);
-
-  // Publica tu glamping
+  // Publicar glamping
   const publicarGlamping = () => {
     setSiono(true);
     setLatitud(4.123456);
@@ -99,64 +101,80 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
     }
   };
 
-  // Manejo de búsqueda
+  // Ejecutar búsqueda
   const handleSearch = () => {
     if (!fechaInicioConfirmado || !fechaFinConfirmado) {
       setError("Seleccione ambas fechas.");
       return;
     }
-    const format = (d: Date) => d.toISOString().split("T")[0];
+    const fmt = (d: Date) => d.toISOString().split("T")[0];
     onBuscarAction({
-      fechaInicio: format(fechaInicioConfirmado),
-      fechaFin: format(fechaFinConfirmado),
+      fechaInicio: fmt(fechaInicioConfirmado),
+      fechaFin: fmt(fechaFinConfirmado),
       totalHuespedes,
     });
     cerrarCalendario();
   };
 
-  const fechaText = fechaInicioConfirmado && fechaFinConfirmado
-    ? `${fechaInicioConfirmado.toISOString().split("T")[0]} → ${fechaFinConfirmado.toISOString().split("T")[0]}`
-    : "¿Cuándo?";
+  // Texto de fechas
+  const fechaText =
+    fechaInicioConfirmado && fechaFinConfirmado
+      ? `${fechaInicioConfirmado.toISOString().slice(0,10)} → ${fechaFinConfirmado
+          .toISOString()
+          .slice(0,10)}`
+      : "¿Cuándo?";
 
-  // Inicial usuario para botón
-  const inicial = nombreUsuario?.[0].toUpperCase() || "?";
+  // Inicial usuario
+  // const inicial = isClient && nombreUsuario
+  //   ? nombreUsuario[0].toUpperCase()
+  //   : "?";
 
   return (
     <div className="HeaderGeneral-container">
+      {/* Top bar */}
       <div className="HeaderGeneral-top">
-        <div className="HeaderGeneral-user" onClick={handleToggleMenu}>
-          <FiMenu className="HeaderGeneral-user-icon" />
-          <span className="HeaderGeneral-user-initial">{inicial}</span>
-        </div>
-        <MenuUsuario />
-        <div className="HeaderGeneral-logo" onClick={() => router.push("/")}>          
+
+        {/* Logo */}
+        <div
+          className="HeaderGeneral-logo"
+          onClick={() => router.push("/")}
+        >
           <Image
             src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
             alt="Glamperos logo"
-            width={40}
-            height={40}
+            width={32}
+            height={32}
+            priority
           />
           <span className="HeaderGeneral-brand">Glamperos</span>
         </div>
-        <button className="HeaderGeneral-publish-btn" onClick={publicarGlamping}>
-          Publica tu Glamping
-        </button>
-      </div>
 
-      <div className="HeaderGeneral-search-controls">
-        <button className="HeaderGeneral-date-btn" onClick={abrirCalendario}>
+              {/* Pill de búsqueda central */}
+      <div className="HeaderGeneral-search-pill">
+        <div className="HeaderGeneral-pill-segment pill-dates" onClick={abrirCalendario}>
           {fechaText}
-        </button>
-        <button className="HeaderGeneral-visitantes-btn" onClick={abrirVisitantes}>
-          {totalHuespedes} visitantes
-        </button>
-        <button className="HeaderGeneral-search-btn" onClick={handleSearch}>
-          Buscar
+        </div>
+        <div className="HeaderGeneral-pill-divider" />
+        <div className="HeaderGeneral-pill-segment pill-guests" onClick={abrirVisitantes}>
+          {totalHuespedes} huésped{totalHuespedes > 1 ? "es" : ""}
+        </div>
+        <div className="HeaderGeneral-pill-divider" />
+        <button
+          className="HeaderGeneral-pill-search-btn"
+          onClick={handleSearch}
+          aria-label="Buscar"
+        >
+          <FiSearch />
         </button>
       </div>
 
-      {error && <p className="HeaderGeneral-error">{error}</p>}
-      {showCalendar && <CalendarioGeneral cerrarCalendario={cerrarCalendario} />}
+      {error && (
+        <p className="HeaderGeneral-error">{error}</p>
+      )}
+
+      {showCalendar && (
+        <CalendarioGeneral cerrarCalendario={cerrarCalendario} />
+      )}
       {showVisitantes && (
         <Visitantes
           onCerrar={cerrarVisitantes}
@@ -167,6 +185,35 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
           max_huespedes={10}
         />
       )}
+
+
+        {/* Publica tu Glamping */}
+        <button
+          className="HeaderGeneral-publish-btn"
+          onClick={publicarGlamping}
+        >
+          Publica tu Glamping
+        </button>
+
+                {/* Menú usuario */}
+        <button
+          className="HeaderGeneral-menu-btn"
+          onClick={toggleMenu}
+          aria-label="Abrir menú"
+        >
+          <FiMenu />
+          <span className="HeaderGeneral-user-initial">
+            {isClient && nombreUsuario
+              ? nombreUsuario[0].toUpperCase()
+              : <BsIncognito />}
+          </span>
+        </button>
+
+      </div>
+
+      {/* Dropdown de usuario */}
+      <MenuUsuario />
+
     </div>
   );
 }

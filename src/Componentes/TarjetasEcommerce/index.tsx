@@ -18,7 +18,8 @@ interface TarjetasEcommerceProps {
   filtros?: string[];
 }
 
-const API_BASE  = 'http://127.0.0.1:8000/glampings/glampingfiltrados';
+// const API_BASE  = 'http://127.0.0.1:8000/glampings/glampingfiltrados';
+const API_BASE  = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados';
 const PAGE_SIZE = 30;
 
 // Coordenadas aproximadas para cada ciudad
@@ -153,22 +154,6 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     setHasMore(true);
     fetchGlampings(1, extrasFromURL);
   }, [ciudadFilter, tipoFilter, amenidadesFilter.join(',')]);
-
-  // Botón Buscar: activa fechas/huespedes
-  // const onBuscar = () => {
-  //   const extras = [
-  //     ...(fechaInicio ? [fechaInicio] : []),
-  //     ...(fechaFin    ? [fechaFin]    : []),
-  //     ...(totalHuespedes > 1 ? [String(totalHuespedes)] : [])
-  //   ];
-  //   setLastQuery(construirQuery(1, extras[0], extras[1], extras[2] ? Number(extras[2]) : undefined));
-  //   setGlampings([]);
-  //   setHasMore(true);
-  //   fetchGlampings(1, extras);
-  //   const fullPath = [...canonicalBase, ...extras];
-  //   const route = fullPath.length ? `/glampings/${fullPath.join('/')}` : '/glampings';
-  //   router.push(route);
-  // };
 
   // Scroll infinito
   useEffect(() => {

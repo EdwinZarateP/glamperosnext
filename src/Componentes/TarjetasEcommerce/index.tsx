@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import Tarjeta from '../Tarjeta';
 import HeaderGeneral from '../HeaderGeneral';
 import { FILTROS } from './filtros';
+import Image from "next/image";
 import './estilos.css';
 
 import {
@@ -55,7 +56,7 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   const [totalHuespedes]= useState<number>(initialTotalHuespedes);
 
   // Parámetro visual de última consulta
-  const [lastQuery, setLastQuery] = useState<string>('');
+  const [ , setLastQuery] = useState<string>('');
 
   // Resultados y paginación
   const [glampings, setGlampings] = useState<any[]>([]);
@@ -201,7 +202,7 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   return (
     <div className="TarjetasEcommerce-container">    
       {/* Query */}
-      <span className="TarjetasEcommerce-query">Consultando: {lastQuery}</span>
+      {/* <span className="TarjetasEcommerce-query">Consultando: {lastQuery}</span> */}
       {/* Controles */}
       <div className="TarjetasEcommerce-filters-top">
         <HeaderGeneral
@@ -267,9 +268,23 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
         ))}
       </div>
 
-
       {/* Resultados */}
-      <div className="TarjetasEcommerce-results">{glampings.length} resultados</div>
+      {/* <div className="TarjetasEcommerce-results">{glampings.length} resultados</div> */}
+
+      <div className='TarjetasEcommerce-Titulo'>
+        <h1> Descubre y reserva los Mejores Glampings en Colombia{" "}
+          <Image
+            src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Colombia.svg"
+            alt="Bandera de Colombia"
+            width={32}
+            height={24}
+          />
+        </h1>      
+        <p className="Home-descripcion">
+          ✨ Descubre la magia del glamping: lujo y naturaleza en un solo destino. 🌿🏕️
+        </p>
+      </div>
+     
       {/* Lista */}
       <div className="TarjetasEcommerce-lista">{glampings.map(g => <Tarjeta key={g._id} {...mapProps(g)} />)}</div>
       {loading && <p className="TarjetasEcommerce-loading">Cargando...</p>}

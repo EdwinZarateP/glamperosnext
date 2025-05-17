@@ -7,6 +7,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative;
   z-index: 1000;
+  font-family: inherit;;
 }
 
 /* Grid para la fila superior */
@@ -40,7 +41,7 @@
   align-items: center;
   justify-content: center;
   justify-self: center;
-  width: 100%;
+  width: 90%;
   max-width: 500px;
   border: 1px solid #ddd;
   border-radius: 9999px;
@@ -56,6 +57,7 @@
   color: #2F6B3E;
   cursor: pointer;
   white-space: nowrap;
+  font-weight: bold;
 }
 .HeaderGeneral-pill-dates:hover,
 .HeaderGeneral-pill-guests:hover {
@@ -121,8 +123,7 @@
 
 /* Publica tu Glamping */
 .HeaderGeneral-publish-btn {
-  background: #F2A900;
-  color: #fff;
+  color: black;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   font-size: 0.9rem;
@@ -176,8 +177,8 @@
   background: #f5f5f5;
 }
 
-/* Ocultar botones en pantallas menores a 600px y ajustar grid */
-@media (max-width: 600px) {
+/* Ocultar botones en pantallas menores a 900px y ajustar grid */
+@media (max-width: 900px) {
   .HeaderGeneral-top {
     grid-template-columns: auto 1fr;
   }

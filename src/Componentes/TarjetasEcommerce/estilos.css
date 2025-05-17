@@ -2,15 +2,30 @@
   padding: 0;
   width: 100%;
   margin: 0;
-
 }
 
-.TarjetasEcommerce-results {
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
+.TarjetasEcommerce-Titulo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  
+  margin-bottom: 10px;
+  width: 90%;
+  margin: auto;
 }
+
+.TarjetasEcommerce-Titulo h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  gap: 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.TarjetasEcommerce-Titulo img {
+border-radius: 7px;
+}
+
 
 /* Scroll wrapper que incluye las flechas */
 .TarjetasEcommerce-filtros-wrapper {
@@ -99,11 +114,13 @@
 
 /* Miga de navegación: ahora abajo de los filtros */
 .TarjetasEcommerce-breadcrumbs {
+  width: 90%;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 1rem;    /* separa un poco del scroll */
-  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+  margin: auto;
+  /* margin-bottom: 1.5rem; */
 }
 
 .TarjetasEcommerce-breadcrumb-item {
@@ -157,14 +174,18 @@
 
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 900px) {
-
-  .TarjetasEcommerce-container {
+.TarjetasEcommerce-container {
   width: 98%;
 
 }
-
-
 .TarjetasEcommerce-scroll-btn {
+  display: none;
+}
+
+.TarjetasEcommerce-Titulo {
+    font-size: 0.5rem;
+  }
+.TarjetasEcommerce-Titulo p {
   display: none;
 }
 

@@ -1,13 +1,13 @@
+// src/app/favoritos/page.tsx (o .tsx donde tengas la ruta /favoritos)
 "use client";
 
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-
 import axios from "axios";
-import Tarjeta from "../../Componentes/Tarjeta";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import HeaderIcono from "../../Componentes/HeaderIcono";
+import TarjetaGeneral from "../../Componentes/TarjetaGeneral";
 import "./estilos.css";
 
 interface Glamping {
@@ -34,71 +34,79 @@ interface Glamping {
 const Favoritos: React.FC = () => {
   const [glampings, setGlampings] = useState<Glamping[]>([]);
   const [error, setError] = useState<string | null>(null);
-
   const router = useRouter();
 
   const irAInicio = () => {
     router.push("/");
-    router.refresh(); // Recargar la página después de navegar
+    router.refresh();
   };
 
   useEffect(() => {
     const fetchFavoritos = async () => {
       try {
-        const idUsuarioCookie = Cookies.get("idUsuario");
-        if (!idUsuarioCookie) {
+        const idUsuario = Cookies.get("idUsuario");
+        if (!idUsuario) {
           setError("Usuario no autenticado");
           return;
         }
 
-        // Obtener los IDs de los favoritos del usuario
-        const favoritosResponse = await axios.get<string[]>(
-          `https://glamperosapi.onrender.com/favoritos/${idUsuarioCookie}`
+        const resIds = await axios.get<string[]>(
+          `https://glamperosapi.onrender.com/favoritos/${idUsuario}`
         );
 
-        if (favoritosResponse.status === 404) {
+        const favoritosIds = resIds.data;
+        if (!favoritosIds.length) {
           setError("Ups, es hora de elegir favoritos");
           return;
         }
 
-        const favoritosIds = favoritosResponse.data;
-
-        if (favoritosIds.length === 0) {
-          setError("Ups, es hora de elegir favoritos");
-          return;
-        }
-
-        // Obtener los detalles de los glampings
-        const glampingsResponse = await axios.post<Glamping[]>(
+        const resGlampings = await axios.post<Glamping[]>(
           "https://glamperosapi.onrender.com/glampings/por_ids",
           favoritosIds
         );
 
-        setGlampings(glampingsResponse.data);
+        setGlampings(resGlampings.data);
       } catch (err: any) {
-        if (err.response?.status === 404) {
-          setError("Ups, es hora de elegir favoritos");
-        } else {
-          setError(err.response?.data?.detail || "Error al cargar los favoritos");
-        }
+        const msg =
+          err.response?.status === 404
+            ? "Ups, es hora de elegir favoritos"
+            : err.response?.data?.detail || "Error al cargar los favoritos";
+        setError(msg);
       }
     };
 
     fetchFavoritos();
   }, []);
 
-  const esFavorito = (glampingId: string, favoritos: string[]) =>
-    favoritos.includes(glampingId);
+  // Mapea un Glamping al shape que TarjetaGeneral espera
+  const mapProps = (g: Glamping) => ({
+    glampingId: g._id,
+    imagenes: g.imagenes,
+    ciudad: g.ciudad_departamento,
+    precio: g.precioEstandar,
+    descuento: g.descuento,
+    calificacion: g.calificacion || 5,
+    favorito: true, // todos vienen de favoritos
+    tipoGlamping: g.tipoGlamping,
+    nombreGlamping: g.nombreGlamping,
+    ubicacion: g.ubicacion,
+    Acepta_Mascotas: g.Acepta_Mascotas,
+    fechasReservadas: g.fechasReservadas,
+    Cantidad_Huespedes: g.Cantidad_Huespedes,
+    precioEstandarAdicional: g.precioEstandarAdicional,
+    Cantidad_Huespedes_Adicional: g.Cantidad_Huespedes_Adicional,
+    amenidadesGlobal: g.amenidadesGlobal,
+  });
 
   if (error) {
     return (
-      <div className="favoritos-error-container">
-        <div className="favoritos-error">
+      <div className="Favoritos-error-container">
+        <div className="Favoritos-error">
           {error}
           <Image
-            src="/imagenes/animal.png"  
-            alt="Glamperos logo"
-            className="favoritos-logo"
+            src="/imagenes/animal.png"
+            alt="Logo Glamperos"
+            className="Favoritos-logo"
             onClick={irAInicio}
             width={50}
             height={50}
@@ -110,37 +118,15 @@ const Favoritos: React.FC = () => {
   }
 
   return (
-    <div className="favoritos-contenedor">
-      <div className="favoritos-titulo">
-        {glampings.length > 0 ? <HeaderIcono descripcion="Tu lista de deseos" /> : null}
-      </div>
-      <div className="favoritos-contenedor-tarjetas">
-        {glampings.map((glamping, index) => (
-          <Tarjeta
-            key={index}
-            glampingId={glamping._id}
-            imagenes={glamping.imagenes}
-            ciudad={glamping.ciudad_departamento}
-            precio={glamping.precioEstandar}
-            descuento={glamping.descuento}
-            calificacion={glamping.calificacion || 5}
-            favorito={esFavorito(glamping._id, glampings.map((g) => g._id))}
-            nombreGlamping={glamping.nombreGlamping}
-            tipoGlamping={glamping.tipoGlamping}
-            ubicacion={{
-              lat: glamping.ubicacion.lat ?? 0,
-              lng: glamping.ubicacion.lng ?? 0,
-            }}
-            onFavoritoChange={(nuevoEstado) =>
-              console.log(`Favorito en tarjeta ${index + 1}:`, nuevoEstado)
-            }
-            Acepta_Mascotas={glamping.Acepta_Mascotas}
-            fechasReservadas={glamping.fechasReservadas}
-            Cantidad_Huespedes={glamping.Cantidad_Huespedes}
-            precioEstandarAdicional={glamping.precioEstandarAdicional}
-            Cantidad_Huespedes_Adicional={glamping.Cantidad_Huespedes_Adicional}
-            amenidadesGlobal={glamping.amenidadesGlobal}
-          />
+    <div className="Favoritos-contenedor">
+      {glampings.length > 0 && (
+        <div className="Favoritos-titulo">
+          <HeaderIcono descripcion="Tu lista de deseos" />
+        </div>
+      )}
+      <div className="Favoritos-contenedor-tarjetas">
+        {glampings.map((g) => (
+          <TarjetaGeneral key={g._id} {...mapProps(g)} />
         ))}
       </div>
     </div>

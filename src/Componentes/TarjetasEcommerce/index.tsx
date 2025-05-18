@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Tarjeta from '../Tarjeta';
+import TarjetaGeneral from '../TarjetaGeneral';
 import HeaderGeneral from '../HeaderGeneral';
 import { FILTROS } from './filtros';
 import Image from "next/image";
@@ -316,7 +316,7 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
       ) : (
         <div className="TarjetasEcommerce-lista">
           {glampings.map(g => (
-            <Tarjeta key={g._id} {...mapProps(g)} />
+            <TarjetaGeneral key={g._id} {...mapProps(g)} />
           ))}
         </div>
       )}

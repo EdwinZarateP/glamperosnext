@@ -40,7 +40,7 @@ border-radius: 7px;
 /* Scroll wrapper que incluye las flechas */
 .TarjetasEcommerce-filtros-wrapper {
   position: sticky;
-  top: 68px; /* debajo del HeaderGeneral */
+  top: 80px; /* debajo del HeaderGeneral */
   z-index: 500;
   background: #fff;
   padding: 0.5rem 1rem;
@@ -128,6 +128,7 @@ border-radius: 7px;
   gap: 0.5rem;
   margin-top: 1rem;
   margin: auto;
+  padding: 10px;
   /* margin-bottom: 1.5rem; */
 }
 

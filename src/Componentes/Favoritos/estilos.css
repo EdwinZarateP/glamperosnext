@@ -1,4 +1,6 @@
-.favoritos-contenedor {
+/* Prefijo corregido a 'Favoritos' con mayúscula inicial */
+
+.Favoritos-contenedor {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,7 +13,7 @@
   margin-top: 90px;
 }
 
-.favoritos-contenedor-tarjetas {
+.Favoritos-contenedor-tarjetas {
   display: flex;
   flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente fila */
   justify-content: center; /* Centra los elementos horizontalmente */
@@ -25,14 +27,22 @@
   margin-bottom: 50px;
 }
 
-.favoritos-contenedor-tarjetas > * {
+.Favoritos-contenedor-tarjetas > * {
   flex: 1 1 250px; /* Tamaño base de 250px, pero puede reducirse si no cabe */
   max-width: 250px; /* Tamaño máximo de cada tarjeta */
   box-sizing: border-box; /* Incluye padding y border en las dimensiones */
 }
 
+/* Título */
+.Favoritos-titulo {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
 /* Estilo para el mensaje de error en favoritos */
-.favoritos-error {
+.Favoritos-error {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,36 +60,38 @@
   transition: background-color 0.3s ease; /* Transición suave para el color de fondo */
 }
 
-.favoritos-logo{
+.Favoritos-error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.Favoritos-logo {
   width: 120px;
   cursor: pointer;
 }
 
-.favoritos-logo-titulo{
+.Favoritos-logo-titulo {
   width: 42px;
   cursor: pointer;
 }
 
-
 @media (max-width: 600px) {
-  
-  .favoritos-contenedor {
+  .Favoritos-contenedor {
     width: 100%;
     padding: 0;
     margin-top: 70px;
   }
 
-
-  .favoritos-contenedor-tarjetas > * {
-    flex: 1 1 100%; /* Tamaño base de 250px, pero puede reducirse si no cabe */
-    max-width: 100%; /* Tamaño máximo de cada tarjeta */
-    box-sizing: border-box; /* Incluye padding y border en las dimensiones */
-
+  .Favoritos-contenedor-tarjetas > * {
+    flex: 1 1 100%; /* Tamaño base completo */
+    max-width: 100%; 
+    box-sizing: border-box;
   }
 
-  .favoritos-titulo {
+  .Favoritos-titulo {
     justify-content: center;
     margin-top: 21px;
   }
-
 }

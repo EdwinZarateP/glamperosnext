@@ -10,7 +10,7 @@
   top: 0;
   z-index: 1000;
   background-color: white;
-  padding: 0.5rem 1rem;
+  /* padding: 0.5rem 1rem; */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
@@ -40,7 +40,7 @@ border-radius: 7px;
 /* Scroll wrapper que incluye las flechas */
 .TarjetasEcommerce-filtros-wrapper {
   position: sticky;
-  top: 80px; /* debajo del HeaderGeneral */
+  top: 65px; /* debajo del HeaderGeneral */
   z-index: 500;
   background: #fff;
   padding: 0.5rem 1rem;
@@ -215,8 +215,9 @@ border-radius: 7px;
 .TarjetasEcommerce-container {
   width: 100%;
 }
-.TarjetasEcommerce-scroll-btn {
-  display: none;
+
+.TarjetasEcommerce-scroll-btn.izquierda {
+    display: none;
 }
 
 .TarjetasEcommerce-Titulo {

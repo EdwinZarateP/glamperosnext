@@ -1,0 +1,17 @@
+.GlampingsPage-container {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 50px;
+}
+
+
+.GlampingsPage-menu {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+}

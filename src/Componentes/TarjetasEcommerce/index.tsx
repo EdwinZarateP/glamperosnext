@@ -9,7 +9,7 @@ import HeaderGeneral from '../HeaderGeneral';
 import { FILTROS } from './filtros';
 import Image from "next/image";
 import './estilos.css';
-
+import SkeletonCard from '../SkeletonCard/index';
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight
@@ -285,10 +285,28 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
         </p>
       </div>
      
-      {/* Lista */}
-      <div className="TarjetasEcommerce-lista">{glampings.map(g => <Tarjeta key={g._id} {...mapProps(g)} />)}</div>
-      {loading && <p className="TarjetasEcommerce-loading">Cargando...</p>}
-      {glampings.length > 0 && <div ref={observerRef} />}  
+       {/* Lista con Skeleton */}
+      {loading && glampings.length === 0 ? (
+        <div className="TarjetasEcommerce-lista">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : (
+        <div className="TarjetasEcommerce-lista">
+          {glampings.map(g => (
+            <Tarjeta key={g._id} {...mapProps(g)} />
+          ))}
+        </div>
+      )}
+
+      {/* Si ya cargó al menos una página y sigues en loading… */}
+      {loading && glampings.length > 0 && (
+        <p className="TarjetasEcommerce-loading">Cargando más resultados…</p>
+      )}
+
+      {/* Sentinel para scroll infinito */}
+      {glampings.length > 0 && <div ref={observerRef} />}
     </div>
   );
 }

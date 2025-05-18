@@ -1,10 +1,17 @@
-// sin 'use client', sin async, sin hooks aquí
 import TarjetasEcommerce from '@/Componentes/TarjetasEcommerce'
+import MenuUsuariosInferior from '@/Componentes/MenuUsuariosInferior'
+import './estilos.css'
 
 export default function GlampingsPage() {
+  return (
+    <div className="GlampingsPage-container">
+      <div className="GlampingsPage-tarjetas">
 
-  
-  // al usar key="all" garantizamos un remount limpio de TarjetasEcommerce
-  return <TarjetasEcommerce key="all" />
+        <TarjetasEcommerce key="all" />
+      </div>
+      <div className="GlampingsPage-menu">
+        <MenuUsuariosInferior />
+      </div>
+    </div>
+  )
 }
-

@@ -2,6 +2,16 @@
   padding: 0;
   width: 100%;
   margin: 0;
+  position: relative;
+}
+
+.TarjetasEcommerce-filters-top {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: white;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .TarjetasEcommerce-Titulo {
@@ -29,31 +39,30 @@ border-radius: 7px;
 
 /* Scroll wrapper que incluye las flechas */
 .TarjetasEcommerce-filtros-wrapper {
+  position: sticky;
+  top: 68px; /* debajo del HeaderGeneral */
+  z-index: 500;
+  background: #fff;
+  padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  /* reducimos un poco el espacio abajo, para que las migas queden más cerca */
-  margin-bottom: 1rem;
-  width: 90%;
-  margin: auto;
+  gap: 1rem;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.05);
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+.TarjetasEcommerce-filtros-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome */
 }
 
 .TarjetasEcommerce-scroll-btn {
-  background: #f1f5f9;
+  background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  color: #1e293b;
-  transition: background 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 999;
+  padding: 0.25rem;
 }
 
-.TarjetasEcommerce-scroll-btn:hover {
-  background: #e2e8f0;
-}
 .TarjetasEcommerce-scroll-btn.izquierda {
   margin-right: -0.5rem;
 }
@@ -66,10 +75,9 @@ border-radius: 7px;
   display: flex;
   overflow-x: auto;
   gap: 1rem;
-  padding: 0.5rem 0;
-  scrollbar-width: none; /* Firefox */
   flex: 1;
 }
+
 .TarjetasEcommerce-filtros-scroll::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
@@ -146,12 +154,41 @@ border-radius: 7px;
 }
 
 /* Lista de tarjetas */
+/* 1 columna por defecto (móviles muy pequeños) */
 .TarjetasEcommerce-lista {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 0.7rem;
   width: 90%;
   margin: auto;
+  grid-template-columns: repeat(1, 1fr);
+}
+
+/* ≥ 600px → 2 columnas */
+@media (min-width: 600px) {
+  .TarjetasEcommerce-lista {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ≥ 900px → 4 columnas */
+@media (min-width: 900px) {
+  .TarjetasEcommerce-lista {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ≥ 1200px → 5 columnas */
+@media (min-width: 1200px) {
+  .TarjetasEcommerce-lista {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ≥ 1200px → 6 columnas */
+@media (min-width: 1400px) {
+  .TarjetasEcommerce-lista {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 .TarjetasEcommerce-loading {
@@ -175,8 +212,7 @@ border-radius: 7px;
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 900px) {
 .TarjetasEcommerce-container {
-  width: 98%;
-
+  width: 100%;
 }
 .TarjetasEcommerce-scroll-btn {
   display: none;
@@ -188,6 +224,14 @@ border-radius: 7px;
 .TarjetasEcommerce-Titulo p {
   display: none;
 }
-
 }
 
+@media (max-width: 600px) {
+.TarjetasEcommerce-lista {
+    gap: 0.2rem;
+  }
+
+.TarjetasEcommerce-lista {
+  width: 95%;
+}
+}

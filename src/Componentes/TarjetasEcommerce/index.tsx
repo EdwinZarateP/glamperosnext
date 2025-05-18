@@ -199,6 +199,17 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     router.push(route);
   };
 
+   const redirigirWhatsApp = () => {
+    const numeroWhatsApp = "+573218695196";
+    const mensaje = encodeURIComponent("Hola equipo Glamperos, ¡Quiero información sobre glampings!");
+    const esPantallaPequena =
+      typeof window !== "undefined" && window.innerWidth < 600;
+    const urlWhatsApp = esPantallaPequena
+      ? `https://wa.me/${numeroWhatsApp}?text=${mensaje}`
+      : `https://web.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensaje}`;
+    window.open(urlWhatsApp, "_blank");
+  };
+
   return (
     <div className="TarjetasEcommerce-container">    
       {/* Query */}
@@ -280,10 +291,20 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
             height={24}
           />
         </h1>      
-        <p className="Home-descripcion">
+        <p className="TarjetasEcommerce-descripcion">
           ✨ Descubre la magia del glamping: lujo y naturaleza en un solo destino. 🌿🏕️
         </p>
       </div>
+      
+      {/* Botón fijo de WhatsApp */}
+      <button
+        type="button"
+        className="TarjetasEcommerce-whatsapp-button"
+        onClick={redirigirWhatsApp}
+        aria-label="Chatea por WhatsApp"
+      >
+      </button>
+
      
        {/* Lista con Skeleton */}
       {loading && glampings.length === 0 ? (

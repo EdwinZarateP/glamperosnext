@@ -15,3 +15,36 @@
   width: 100%;
   z-index: 1000;
 }
+
+.GlampingsPage-whatsapp-button {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  /* opcional: un poco de sombra o efecto hover */
+  transition: transform 0.2s;
+}
+.GlampingsPage-whatsapp-button:hover {
+  transform: scale(1.1);
+}
+
+.GlampingsPage-whatsapp-button img{
+width: 60px;
+height: 60px;
+}
+
+
+@media (max-width: 900px) {
+  .GlampingsPage-whatsapp-button {
+  bottom: 80px;
+  right: 1rem;
+  }
+  .GlampingsPage-whatsapp-button img{
+  width: 50px;
+  height: 50px;
+  }
+}
+

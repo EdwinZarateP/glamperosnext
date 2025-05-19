@@ -252,7 +252,7 @@ border-radius: 7px;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 1000;
+  z-index: 100;
   transition: transform 0.2s;
 }
 .TarjetasEcommerce-whatsapp-button:hover {

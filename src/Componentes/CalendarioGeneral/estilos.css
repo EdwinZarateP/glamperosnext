@@ -156,5 +156,9 @@
     text-align: left;
     font-size: 1rem;
   }
+
+  .CalendarioGeneral-meses {
+  max-height: 50vh;
+}
   }
 

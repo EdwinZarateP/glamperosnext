@@ -4,7 +4,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { FiMenu, FiSearch } from "react-icons/fi";
+import { FiMenu, FiSearch, FiX} from "react-icons/fi";
 import { BsIncognito } from "react-icons/bs";
 import CalendarioGeneral from "../CalendarioGeneral";
 import Visitantes from "../Visitantes";
@@ -68,6 +68,8 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
   const [nombreUsuario, setNombreUsuario] = useState<string | null>(null);
   const [idUsuarioCookie, setIdUsuarioCookie] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
   useEffect(() => {
     setIsClient(true);
     setNombreUsuario(Cookies.get("nombreUsuario") || null);
@@ -168,10 +170,16 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
   setError("");
 };
 
-const fechaText =
+const buscadorText =
   fechaInicioConfirmado && fechaFinConfirmado
     ? `${format(fechaInicioConfirmado, 'd MMM yyyy', { locale: es })} → ${format(fechaFinConfirmado, 'd MMM yyyy', { locale: es })}`
     : "¿Cuándo y donde?";
+
+
+const fechaText =
+  fechaInicioConfirmado && fechaFinConfirmado
+    ? `${format(fechaInicioConfirmado, 'd MMM yyyy', { locale: es })} → ${format(fechaFinConfirmado, 'd MMM yyyy', { locale: es })}`
+    : "¿Cuándo?";
 
   return (
     <div className="HeaderGeneral-container">
@@ -182,7 +190,7 @@ const fechaText =
         </div>
 
         <div className="HeaderGeneral-search-pill" onClick={() => setShowSearchModal(true)}>
-          <div className="HeaderGeneral-pill-segment">{fechaText}</div>
+          <div className="HeaderGeneral-pill-segment">{buscadorText}</div>
           <div className="HeaderGeneral-pill-divider"/>
           <div className="HeaderGeneral-pill-segment">{totalHuespedes} huésped{totalHuespedes>1&&"es"}</div>
           <button className="HeaderGeneral-pill-search-btn"><FiSearch/></button>
@@ -204,16 +212,47 @@ const fechaText =
             {/* Destino */}
             <div className="HeaderGeneral-field">
               <label>Destino</label>
-              <input type="text" placeholder="Explora destinos" value={destination} onChange={e => setDestination(e.target.value)} autoFocus />
-              {suggestions.length > 0 && (
+              <div className="HeaderGeneral-input-wrapper">
+                <input
+                  type="text"
+                  placeholder="Explora destinos"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+                  autoFocus
+                />
+                {destination && (
+                  <FiX
+                    className="HeaderGeneral-clear-dest-btn"
+                    onClick={() => {
+                      setDestination("");
+                      setCiudad_departamento("");
+                      setSuggestions([]);
+                    }}
+                  />
+                )}
+              </div>
+
+
+              {showSuggestions && suggestions.length > 0 && (
                 <ul className="HeaderGeneral-suggestions-list">
                   {suggestions.map((m,i) => (
-                    <li key={i} onClick={() => { setDestination(m.CIUDAD_DEPARTAMENTO); setCiudad_departamento(m.CIUDAD_DEPARTAMENTO); setSuggestions([]); }}>
+                    <li
+                      key={i}
+                      onClick={() => {
+                        setDestination(m.CIUDAD_DEPARTAMENTO);
+                        setCiudad_departamento(m.CIUDAD_DEPARTAMENTO);
+                        setSuggestions([]);
+                        setShowSuggestions(false);
+                      }}
+                    >
                       {m.CIUDAD_DEPARTAMENTO}
                     </li>
                   ))}
                 </ul>
               )}
+
             </div>
             {/* Cuándo */}
             <div className="HeaderGeneral-field" onClick={abrirCalendario}>

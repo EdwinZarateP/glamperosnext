@@ -267,3 +267,12 @@ border-radius: 7px;
     height: 50px;
   }
 }
+
+.TarjetasEcommerce-error {
+  color: #a94442;
+  background: #f2dede;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}

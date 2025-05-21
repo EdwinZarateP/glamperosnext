@@ -181,9 +181,9 @@ export default function ExplorarGlampingContenido() {
             {/* Encabezado sin borde */}
             <div className="encabezado-explorado-container">
               <EncabezadoExplorado
-                nombreGlamping={`${informacionGlamping.tipoGlamping} en ${
-                  informacionGlamping.ciudad_departamento.split(" - ")[0]
-                }`}
+                nombreGlamping={`${
+                  informacionGlamping.tipoGlamping === 'cabana' ? 'Cabaña' : informacionGlamping.tipoGlamping
+                } en ${informacionGlamping.ciudad_departamento.split(" - ")[0]}`}
               />
             </div>
 
@@ -229,10 +229,11 @@ export default function ExplorarGlampingContenido() {
 
             {/* Título */}
             <div className="nombre-glamping-container">
+
               <NombreGlamping
-                nombreGlamping={`${informacionGlamping.tipoGlamping} en ${
-                  informacionGlamping.ciudad_departamento.split(" - ")[0]
-                }`}
+                nombreGlamping={`${
+                  informacionGlamping.tipoGlamping === 'cabana' ? 'Cabaña' : informacionGlamping.tipoGlamping
+                } en ${informacionGlamping.ciudad_departamento.split(" - ")[0]}`}
               />
             </div>
 
@@ -254,11 +255,13 @@ export default function ExplorarGlampingContenido() {
                   />
                 </div>
                 <div className="contenedor-calendario">
+
                   <Calendario
-                    nombreGlamping={`${informacionGlamping.tipoGlamping} en ${
-                      informacionGlamping.ciudad_departamento.split(" - ")[0]
-                    }`}
+                    nombreGlamping={`${
+                      informacionGlamping.tipoGlamping === 'cabana' ? 'Cabaña' : informacionGlamping.tipoGlamping
+                    } en ${informacionGlamping.ciudad_departamento.split(" - ")[0]}`}
                   />
+
                 </div>
               </div>
               {/* Derecha */}

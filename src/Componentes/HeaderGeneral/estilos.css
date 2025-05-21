@@ -172,6 +172,7 @@
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
   }
+
   .HeaderGeneral-modal-actions .HeaderGeneral-search-btn,
   .HeaderGeneral-modal-actions .clear-btn {
     font-size: 0.9rem;
@@ -237,6 +238,9 @@
   overflow-y: auto;
   border-radius: 0 0 8px 8px;
   z-index: 10;
+  list-style: none;   /* quita los bullets */
+  margin: 0;          /* elimina margen externo */
+  padding: 0;         /* elimina padding interno */
 }
 .HeaderGeneral-suggestions-list li {
   padding: 0.5rem 1rem;
@@ -270,3 +274,19 @@
 .HeaderGeneral-search-btn:hover {
   background: #d18b00;
 }
+
+.HeaderGeneral-clear-dest-btn {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 1.1rem;
+}
+
+.HeaderGeneral-input-wrapper {
+  position: relative;
+}
+
+

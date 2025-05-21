@@ -63,6 +63,10 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   const [page,       setPage]      = useState<number>(1);
   const [loading,    setLoading]   = useState<boolean>(false);
   const [hasMore,    setHasMore]   = useState<boolean>(true);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [geoError, setGeoError] = useState<string | null>(null);
+  const [hasFetched, setHasFetched] = useState(false);
+
 
   const observerRef = useRef<HTMLDivElement>(null);
   const scrollRef   = useRef<HTMLDivElement>(null);
@@ -74,6 +78,24 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   const canonicalBase    = [ciudadFilter, tipoFilter, ...amenidadesFilter]
     .filter(Boolean) as string[];
 
+useEffect(() => {
+   if (!ciudadFilter && "geolocation" in navigator) {
+     navigator.geolocation.getCurrentPosition(
+       pos => {
+         setUserLocation({
+           lat: pos.coords.latitude,
+           lng: pos.coords.longitude,
+         });
+       },
+       err => {
+          console.warn("Geolocalización denegada:", err.message);
+          setGeoError("No pudimos obtener tu ubicación. Verás resultados generales.");
+       },
+       { enableHighAccuracy: true, timeout: 10000 }
+     );
+   }
+ }, [ciudadFilter]);
+
   // Construye el query string para la API
   const construirQuery = (
     pageArg: number,
@@ -84,10 +106,15 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     const params = new URLSearchParams();
     params.set('page', String(pageArg));
     params.set('limit', String(PAGE_SIZE));
-    if (ciudadFilter && CITY_COORDS[ciudadFilter]) {
+     if (ciudadFilter && CITY_COORDS[ciudadFilter]) {
       const { lat, lng } = CITY_COORDS[ciudadFilter];
       params.set('lat', String(lat));
       params.set('lng', String(lng));
+    }
+    // 2) Si no, pero el usuario permitió geolocalización, úsala
+    else if (userLocation) {
+      params.set('lat', String(userLocation.lat));
+      params.set('lng', String(userLocation.lng));
     }
     if (tipoFilter) params.set('tipoGlamping', tipoFilter);
     amenidadesFilter.forEach(a => params.append('amenidades', a));
@@ -146,17 +173,26 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
         setPage(pageArg);
       }
     },
-    [ciudadFilter, tipoFilter, amenidadesFilter]
+    [userLocation, ciudadFilter, tipoFilter, amenidadesFilter]
   );
 
   // Carga inicial y cuando cambian filtros rápidos
   useEffect(() => {
+  if (!hasFetched && (ciudadFilter || userLocation)) {
     setGlampings([]);
     setHasMore(true);
     fetchGlampings(1, extrasFromURL);
-  }, [ciudadFilter, tipoFilter, amenidadesFilter.join(',')]);
+    setHasFetched(true);
+  } else if (!hasFetched && geoError) {
+    // Cargar resultados generales (sin coords) si negó permisos
+    setGlampings([]);
+    setHasMore(true);
+    fetchGlampings(1, extrasFromURL);
+    setHasFetched(true);
+  }
+}, [ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, hasFetched, geoError]);
 
-  // Scroll infinito
+// Scroll infinito
   useEffect(() => {
     const obs = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && !loading && hasMore) {
@@ -294,6 +330,7 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
         <p className="TarjetasEcommerce-descripcion">
           ✨ Descubre la magia del glamping: lujo y naturaleza en un solo destino. 🌿🏕️
         </p>
+        
       </div>
       
       {/* Botón fijo de WhatsApp */}

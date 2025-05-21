@@ -98,31 +98,34 @@ useEffect(() => {
 
   // Construye el query string para la API
   const construirQuery = (
-    pageArg: number,
-    fi?: string,
-    ff?: string,
-    th?: number
-  ) => {
-    const params = new URLSearchParams();
-    params.set('page', String(pageArg));
-    params.set('limit', String(PAGE_SIZE));
-     if (ciudadFilter && CITY_COORDS[ciudadFilter]) {
-      const { lat, lng } = CITY_COORDS[ciudadFilter];
-      params.set('lat', String(lat));
-      params.set('lng', String(lng));
-    }
-    // 2) Si no, pero el usuario permitió geolocalización, úsala
-    else if (userLocation) {
-      params.set('lat', String(userLocation.lat));
-      params.set('lng', String(userLocation.lng));
-    }
-    if (tipoFilter) params.set('tipoGlamping', tipoFilter);
-    amenidadesFilter.forEach(a => params.append('amenidades', a));
-    if (fi) params.set('fechaInicio', fi);
-    if (ff) params.set('fechaFin',    ff);
-    if (th && th > 1) params.set('totalHuespedes', String(th));
-    return params.toString();
-  };
+  pageArg: number,
+  fi?: string,
+  ff?: string,
+  th?: number
+) => {
+  const params = new URLSearchParams();
+  params.set('page', String(pageArg));
+  params.set('limit', String(PAGE_SIZE));
+
+  if (ciudadFilter && CITY_COORDS[ciudadFilter]) {
+    const { lat, lng } = CITY_COORDS[ciudadFilter];
+    params.set('lat', String(lat));
+    params.set('lng', String(lng));
+    // 👇 Coordenadas fijas de ciudad => dejar distancia default (150, no se envía)
+  } else if (userLocation) {
+    params.set('lat', String(userLocation.lat));
+    params.set('lng', String(userLocation.lng));
+    params.set('distanciaMax', '1500'); // 👈 Solo si es la ubicación del usuario
+  }
+
+  if (tipoFilter) params.set('tipoGlamping', tipoFilter);
+  amenidadesFilter.forEach(a => params.append('amenidades', a));
+  if (fi) params.set('fechaInicio', fi);
+  if (ff) params.set('fechaFin', ff);
+  if (th && th > 1) params.set('totalHuespedes', String(th));
+
+  return params.toString();
+};
 
   // Mapea datos para la tarjeta
   const mapProps = (g: any) => {

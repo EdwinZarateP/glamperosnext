@@ -1,3 +1,4 @@
+// HeaderGeneral.tsx
 "use client";
 
 import React, { useState, useContext, useEffect } from "react";
@@ -10,7 +11,18 @@ import Visitantes from "../Visitantes";
 import MenuUsuario from "../MenuUsuario";
 import { ContextoApp } from "../../context/AppContext";
 import Cookies from "js-cookie";
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
+import municipiosData from "../MunicipiosGeneral/municipiosGeneral.json";
 import "./estilos.css";
+
+type Municipio = {
+  CIUDAD_DEPARTAMENTO: string;
+  CIUDAD: string;
+  DEPARTAMENTO: string;
+  LATITUD: number;
+  LONGITUD: number;
+};
 
 interface HeaderGeneralProps {
   onBuscarAction: (data: {
@@ -28,7 +40,11 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
   const {
     fechaInicioConfirmado,
     fechaFinConfirmado,
+    // setFechaInicioConfirmado,
+    // setFechaFinConfirmado,
     totalHuespedes,
+    setCantidad_Huespedes,
+    setCantidad_Huespedes_Adicional,
     setMostrarMenuUsuarios,
     setIdUsuario,
     setSiono,
@@ -42,15 +58,13 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
     setDescripcionGlamping,
     setPrecioEstandar,
     setDiasCancelacion,
-    setCantidad_Huespedes,
-    setCantidad_Huespedes_Adicional,
     setDescuento,
     setPrecioEstandarAdicional,
     setAcepta_Mascotas,
     setCopiasGlamping,
   } = ctx;
 
-  // Estado usuario
+  // Usuario
   const [nombreUsuario, setNombreUsuario] = useState<string | null>(null);
   const [idUsuarioCookie, setIdUsuarioCookie] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
@@ -58,17 +72,43 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
     setIsClient(true);
     setNombreUsuario(Cookies.get("nombreUsuario") || null);
     setIdUsuarioCookie(Cookies.get("idUsuario") || null);
+
+    // Inicializa fechas en mañana/pasado mañana al cargar
+    // const hoy = new Date();
+    // const manana = new Date(hoy);
+    // manana.setDate(hoy.getDate() + 1);
+    // const pasado = new Date(hoy);
+    // pasado.setDate(hoy.getDate() + 2);
+    // setFechaInicioConfirmado(manana);
+    // setFechaFinConfirmado(pasado);
   }, []);
 
   // UI states
+  const [showSearchModal, setShowSearchModal] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showVisitantes, setShowVisitantes] = useState(false);
   const [error, setError] = useState("");
 
-  // Toggle menú usuario
-  const toggleMenu = () => setMostrarMenuUsuarios((p) => !p);
+  // Autocompletado destino
+  const [destination, setDestination] = useState("");
+  const [suggestions, setSuggestions] = useState<Municipio[]>([]);
+  useEffect(() => {
+    if (destination.trim()) {
+      const term = destination.toLowerCase();
+      setSuggestions(
+        municipiosData
+          .filter(m => m.CIUDAD_DEPARTAMENTO.toLowerCase().includes(term))
+          .slice(0, 10)
+      );
+    } else {
+      setSuggestions([]);
+    }
+  }, [destination]);
 
-  // Abrir cierres
+  // Toggle menú usuario
+  const toggleMenu = () => setMostrarMenuUsuarios(prev => !prev);
+
+  // Calendario & Visitantes
   const abrirCalendario = () => setShowCalendar(true);
   const cerrarCalendario = () => setShowCalendar(false);
   const abrirVisitantes = () => setShowVisitantes(true);
@@ -101,7 +141,7 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
     }
   };
 
-  // Ejecutar búsqueda
+  // Búsqueda
   const handleSearch = () => {
     if (!fechaInicioConfirmado || !fechaFinConfirmado) {
       setError("Seleccione ambas fechas.");
@@ -114,106 +154,88 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
       totalHuespedes,
     });
     cerrarCalendario();
+    setShowSearchModal(false);
   };
 
-  // Texto de fechas
-  const fechaText =
-    fechaInicioConfirmado && fechaFinConfirmado
-      ? `${fechaInicioConfirmado.toISOString().slice(0,10)} → ${fechaFinConfirmado
-          .toISOString()
-          .slice(0,10)}`
-      : "¿Cuándo?";
+  // Limpiar modal
+ const clearAll = () => {
+  console.log("limpiando")
+  setDestination("");
+  setSuggestions([]);
+  // Reinicia fechas y huéspedes (usa tus setters de contexto)
+  setShowCalendar(false);
+  setShowVisitantes(false);
+  setError("");
+};
 
-  // Inicial usuario
-  // const inicial = isClient && nombreUsuario
-  //   ? nombreUsuario[0].toUpperCase()
-  //   : "?";
+const fechaText =
+  fechaInicioConfirmado && fechaFinConfirmado
+    ? `${format(fechaInicioConfirmado, 'd MMM yyyy', { locale: es })} → ${format(fechaFinConfirmado, 'd MMM yyyy', { locale: es })}`
+    : "¿Cuándo y donde?";
 
   return (
     <div className="HeaderGeneral-container">
-      {/* Top bar */}
       <div className="HeaderGeneral-top">
-
-        {/* Logo */}
-        <div
-          className="HeaderGeneral-logo"
-          onClick={() => router.push("/")}
-        >
-          <Image
-            src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
-            alt="Glamperos logo"
-            width={32}
-            height={32}
-            priority
-          />
+        <div className="HeaderGeneral-logo" onClick={() => router.push("/")}>  
+          <Image src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg" alt="Glamperos logo" width={32} height={32} priority />
           <span className="HeaderGeneral-brand">Glamperos</span>
         </div>
 
-              {/* Pill de búsqueda central */}
-      <div className="HeaderGeneral-search-pill">
-        <div className="HeaderGeneral-pill-segment pill-dates" onClick={abrirCalendario}>
-          {fechaText}
+        <div className="HeaderGeneral-search-pill" onClick={() => setShowSearchModal(true)}>
+          <div className="HeaderGeneral-pill-segment">{fechaText}</div>
+          <div className="HeaderGeneral-pill-divider"/>
+          <div className="HeaderGeneral-pill-segment">{totalHuespedes} huésped{totalHuespedes>1&&"es"}</div>
+          <button className="HeaderGeneral-pill-search-btn"><FiSearch/></button>
         </div>
-        <div className="HeaderGeneral-pill-divider" />
-        <div className="HeaderGeneral-pill-segment pill-guests" onClick={abrirVisitantes}>
-          {totalHuespedes} huésped{totalHuespedes > 1 ? "es" : ""}
-        </div>
-        <div className="HeaderGeneral-pill-divider" />
-        <button
-          className="HeaderGeneral-pill-search-btn"
-          onClick={handleSearch}
-          aria-label="Buscar"
-        >
-          <FiSearch />
-        </button>
-      </div>
 
-      {error && (
-        <p className="HeaderGeneral-error">{error}</p>
-      )}
-
-      {showCalendar && (
-        <CalendarioGeneral cerrarCalendario={cerrarCalendario} />
-      )}
-      {showVisitantes && (
-        <Visitantes
-          onCerrar={cerrarVisitantes}
-          max_adultos={10}
-          max_Ninos={10}
-          max_bebes={5}
-          max_mascotas={2}
-          max_huespedes={10}
-        />
-      )}
-
-
-        {/* Publica tu Glamping */}
-        <button
-          className="HeaderGeneral-publish-btn"
-          onClick={publicarGlamping}
-        >
-          Publica tu Glamping
-        </button>
-
-                {/* Menú usuario */}
-        <button
-          className="HeaderGeneral-menu-btn"
-          onClick={toggleMenu}
-          aria-label="Abrir menú"
-        >
-          <FiMenu />
+        <button className="HeaderGeneral-publish-btn" onClick={publicarGlamping}>Publica tu Glamping</button>
+        <button className="HeaderGeneral-menu-btn" onClick={toggleMenu}>
+          <FiMenu/>
           <span className="HeaderGeneral-user-initial">
-            {isClient && nombreUsuario
-              ? nombreUsuario[0].toUpperCase()
-              : <BsIncognito />}
+            {isClient && nombreUsuario ? nombreUsuario[0].toUpperCase() : <BsIncognito/>}
           </span>
         </button>
-
       </div>
+      <MenuUsuario/>
 
-      {/* Dropdown de usuario */}
-      <MenuUsuario />
-
+      {showSearchModal && (
+        <div className="HeaderGeneral-SearchModal-overlay" onClick={() => setShowSearchModal(false)}>
+          <div className="HeaderGeneral-SearchModal-container" onClick={e => e.stopPropagation()}>
+            {/* Destino */}
+            <div className="HeaderGeneral-field">
+              <label>Destino</label>
+              <input type="text" placeholder="Explora destinos" value={destination} onChange={e => setDestination(e.target.value)} autoFocus />
+              {suggestions.length > 0 && (
+                <ul className="HeaderGeneral-suggestions-list">
+                  {suggestions.map((m,i) => (
+                    <li key={i} onClick={() => { setDestination(m.CIUDAD_DEPARTAMENTO); setCiudad_departamento(m.CIUDAD_DEPARTAMENTO); setSuggestions([]); }}>
+                      {m.CIUDAD_DEPARTAMENTO}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {/* Cuándo */}
+            <div className="HeaderGeneral-field" onClick={abrirCalendario}>
+              <label>Cuándo</label>
+              <div className="HeaderGeneral-fake-input">{fechaText}</div>
+            </div>
+            {showCalendar && <CalendarioGeneral cerrarCalendario={cerrarCalendario} />}
+            {/* Quién */}
+            <div className="HeaderGeneral-field" onClick={abrirVisitantes}>
+              <label>Quién</label>
+              <div className="HeaderGeneral-fake-input">{totalHuespedes} huésped{totalHuespedes>1&&"es"}</div>
+            </div>
+            {showVisitantes && <Visitantes onCerrar={cerrarVisitantes} max_adultos={10} max_Ninos={10} max_bebes={5} max_mascotas={2} max_huespedes={10}/>} 
+            {/* Botones */}
+            <div className="HeaderGeneral-modal-actions">
+              <button className="HeaderGeneral-clear-btn" onClick={clearAll}>Limpiar todo</button>
+              <button className="HeaderGeneral-search-btn" onClick={handleSearch}>Buscar</button>
+            </div>
+            {error && <p className="HeaderGeneral-HeaderGeneral-error">{error}</p>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

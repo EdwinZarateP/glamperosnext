@@ -7,34 +7,32 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative;
   z-index: 1000;
-  font-family: inherit;;
+  font-family: inherit;
 }
 
-/* Grid para la fila superior */
+/* Grid para la fila superior: logo | búsqueda | publicar | usuario */
 .HeaderGeneral-top {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   width: 100%;
   gap: 1rem;
 }
 
-/* LOGO - siempre en la primera columna */
+/* LOGO */
 .HeaderGeneral-logo {
-  grid-column: 1;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
 }
-
 .HeaderGeneral-brand {
   font-size: 1.5rem;
   font-weight: bold;
   color: #2F6B3E;
 }
 
-/* PILL DE BÚSQUEDA CENTRAL - ocupa toda la columna central */
+/* PILL DE BÚSQUEDA CENTRAL */
 .HeaderGeneral-search-pill {
   grid-column: 2;
   display: flex;
@@ -49,8 +47,6 @@
   overflow: hidden;
   position: relative;
 }
-
-/* Cada segmento clickabl e */
 .HeaderGeneral-pill-segment {
   padding: 0.6rem 1rem;
   font-size: 0.95rem;
@@ -59,24 +55,19 @@
   white-space: nowrap;
   font-weight: bold;
 }
-.HeaderGeneral-pill-dates:hover,
-.HeaderGeneral-pill-guests:hover {
+.HeaderGeneral-pill-segment:hover {
   background: #f5f5f5;
 }
-
-/* Divider vertical */
 .HeaderGeneral-pill-divider {
   width: 1px;
   height: 24px;
   background: #ddd;
 }
-
-/* Botón de búsqueda dentro de la pill */
 .HeaderGeneral-pill-search-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem 0.5rem;
+  padding: 0.5rem;
   background: #F2A900;
   border-radius: 50%;
   cursor: pointer;
@@ -98,7 +89,8 @@
   font-size: 0.85rem;
 }
 
-.HeaderGeneral-publish-btn {  
+/* Publica tu Glamping */
+.HeaderGeneral-publish-btn {
   grid-column: 3;
   justify-self: end;
   display: flex;
@@ -107,23 +99,7 @@
   background: none;
   border: none;
   cursor: pointer;
-}
-
-.HeaderGeneral-menu-btn {
-  grid-column: 4;
-  /* justify-self: end; */
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-
-/* Publica tu Glamping */
-.HeaderGeneral-publish-btn {
-  color: black;
+  color: #000;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   font-size: 0.9rem;
@@ -135,6 +111,13 @@
 
 /* Menú usuario */
 .HeaderGeneral-menu-btn {
+  grid-column: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
   font-size: 1.25rem;
   color: #333;
 }
@@ -150,49 +133,140 @@
   font-size: 0.9rem;
 }
 
-/* Dropdown usuario */
-.MenuUsuario-contenedor {
-  position: absolute;
-  top: 3.5rem;
-  right: 0.5rem;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 1001;
-  width: 200px;
-  padding: 0.5rem 0;
-}
-.MenuUsuario-lista {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.MenuUsuario-opcion {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.MenuUsuario-opcion:hover {
-  background: #f5f5f5;
-}
-
-/* Ocultar botones en pantallas menores a 900px y ajustar grid */
+/* Responsive (<900px) */
 @media (max-width: 900px) {
   .HeaderGeneral-top {
     grid-template-columns: auto 1fr;
   }
-  .HeaderGeneral-logo {
-  display: none;
-  }
-
-
+  .HeaderGeneral-logo,
   .HeaderGeneral-publish-btn,
   .HeaderGeneral-menu-btn {
     display: none;
   }
-  /* Opcional: reducir márgenes de la pill para móviles */
   .HeaderGeneral-search-pill {
     max-width: none;
   }
+}
+
+/* Responsive móvil (<600px) */
+@media (max-width: 600px) {
+  .HeaderGeneral-search-pill {
+    width: 100%;
+    font-size: 0.85rem;
+    padding: 0.3rem;
+  }
+  .HeaderGeneral-pill-segment {
+    padding: 0.4rem 0.6rem;
+  }
+  .HeaderGeneral-pill-search-btn {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+  .HeaderGeneral-searchModal-container {
+    width: calc(100% - 1rem);
+    margin: 0 0.5rem;
+    padding: 1rem;
+  }
+  .HeaderGeneral-field input,
+  .HeaderGeneral-field .HeaderGeneral-fake-input {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  .HeaderGeneral-modal-actions .HeaderGeneral-search-btn,
+  .HeaderGeneral-modal-actions .clear-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* ——— Modal de búsqueda (estilo Airbnb) ——— */
+.HeaderGeneral-SearchModal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding-top: 5rem;
+  z-index: 2000;
+}
+
+.HeaderGeneral-SearchModal-container {
+  background: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.HeaderGeneral-field {
+  margin-bottom: 1rem;
+  position: relative;
+}
+.HeaderGeneral-field label {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  color: #555;
+}
+.HeaderGeneral-field input,
+.HeaderGeneral-field .HeaderGeneral-fake-input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 9999px;
+  background: #fafafa;
+  cursor: pointer;
+}
+.HeaderGeneral-field input:focus {
+  outline: none;
+  border-color: #aaa;
+  background: #fff;
+}
+
+.HeaderGeneral-suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 0 0 8px 8px;
+  z-index: 10;
+}
+.HeaderGeneral-suggestions-list li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+.HeaderGeneral-suggestions-list li:hover {
+  background: #f5f5f5;
+}
+
+.HeaderGeneral-modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+.HeaderGeneral-clear-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-weight: bold;
+  cursor: pointer;
+}
+.HeaderGeneral-search-btn {
+  background: #F2A900;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 9999px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+.HeaderGeneral-search-btn:hover {
+  background: #d18b00;
 }

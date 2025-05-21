@@ -30,9 +30,18 @@ interface HeaderGeneralProps {
     fechaFin: string;
     totalHuespedes: number;
   }) => void;
+  ciudadSlug?: string;
+  tipoFilter?: string;
+  amenidadesFilter?: string[];
 }
 
-export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
+
+export default function HeaderGeneral({
+  ciudadSlug,
+  tipoFilter,
+  amenidadesFilter
+}: HeaderGeneralProps) {
+
   const router = useRouter();
   const ctx = useContext(ContextoApp);
   if (!ctx) throw new Error("ContextoApp no disponible.");
@@ -144,20 +153,35 @@ export default function HeaderGeneral({ onBuscarAction }: HeaderGeneralProps) {
   };
 
   // Búsqueda
-  const handleSearch = () => {
-    if (!fechaInicioConfirmado || !fechaFinConfirmado) {
-      setError("Seleccione ambas fechas.");
-      return;
-    }
-    const fmt = (d: Date) => d.toISOString().split("T")[0];
-    onBuscarAction({
-      fechaInicio: fmt(fechaInicioConfirmado),
-      fechaFin: fmt(fechaFinConfirmado),
-      totalHuespedes,
-    });
-    cerrarCalendario();
-    setShowSearchModal(false);
-  };
+ const handleSearch = () => {
+  if (!fechaInicioConfirmado || !fechaFinConfirmado) {
+    setError("Seleccione ambas fechas.");
+    return;
+  }
+
+  const fmt = (d: Date) => d.toISOString().split("T")[0];
+  const slugCiudadManual = destination.trim()
+    ? destination.trim().toLowerCase().replace(/\s+/g, '-')
+    : ciudadSlug;
+
+  const fechaIni = fmt(fechaInicioConfirmado);
+  const fechaFin = fmt(fechaFinConfirmado);
+
+  // 👉 reconstruye la URL respetando filtros existentes
+  const nuevaRuta = `/glampings/${[
+    ...(slugCiudadManual ? [slugCiudadManual] : []),
+    ...(tipoFilter ? [tipoFilter.toLowerCase()] : []),
+    ...(amenidadesFilter?.map(a => a.toLowerCase()) ?? []),
+    fechaIni,
+    fechaFin,
+    String(totalHuespedes)
+  ].join("/")}`;
+
+  cerrarCalendario();
+  setShowSearchModal(false);
+  router.push(nuevaRuta);
+};
+
 
   // Limpiar modal
  const clearAll = () => {

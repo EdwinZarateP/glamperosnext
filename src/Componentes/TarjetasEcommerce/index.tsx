@@ -431,7 +431,7 @@ useEffect(() => {
               <TarjetaGeneral key={g._id} {...mapProps(g)} />
             ))}
           </div>
-        ) : (
+         ) : (!loading && hasFetched) ? (
           // <-- NUEVO BLOQUE
           <div className="TarjetasEcommerce-no-results">
             <Image
@@ -442,8 +442,7 @@ useEffect(() => {
             />
             <p>Ups… no tenemos glampings con estas características pero sigue explorando y encontraras el ideal</p>
           </div>
-        )}
-
+        ) : null}
 
       {/* Si ya cargó al menos una página y sigues en loading… */}
       {loading && glampings.length > 0 && (

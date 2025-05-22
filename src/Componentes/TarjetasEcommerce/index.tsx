@@ -24,13 +24,15 @@ type Municipio = {
   LONGITUD: number;
 };
 
+type MunicipioConSlug = Municipio & { SLUG: string };
+
 
 interface TarjetasEcommerceProps {
   filtros?: string[];
 }
 
 // Normaliza los municipios a slugs con guiones
-const municipiosConSlug = municipiosData.map(m => ({
+const municipiosConSlug: MunicipioConSlug[] = municipiosData.map(m => ({
   ...m,
   SLUG: m.CIUDAD_DEPARTAMENTO.toLowerCase().replace(/\s+/g, '-')
 }));
@@ -47,7 +49,7 @@ const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
   cali:     { lat: 3.4516,  lng: -76.5320 },
 };
 
-const getCiudadFromSlug = (slug: string): Municipio | null => {
+const getCiudadFromSlug = (slug: string): MunicipioConSlug | null => {
   const match = municipiosConSlug.find(
     m => m.SLUG === slug.toLowerCase()
   );
@@ -61,6 +63,7 @@ const getCiudadFromSlug = (slug: string): Municipio | null => {
       DEPARTAMENTO: "",
       LATITUD: CITY_COORDS[key].lat,
       LONGITUD: CITY_COORDS[key].lng,
+      SLUG: key,
     };
   }
 
@@ -82,19 +85,29 @@ export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
   // Derivo segmentos extra (fechas y huéspedes) de la URL
   const applied = filtros ?? [];
 
-  const ciudadSegment = applied[0]; // Primer segmento en la URL
-  const ciudadData = ciudadSegment ? getCiudadFromSlug(ciudadSegment) : null;
+  // Detectamos si el primer segmento es una ciudad válida
+  const posibleCiudad = applied[0];
+  const ciudadData = posibleCiudad ? getCiudadFromSlug(posibleCiudad) : null;
   const ciudadFilter = ciudadData ? ciudadData.CIUDAD_DEPARTAMENTO : null;
 
-  const tipoFilter = applied.find(f => TIPOS.includes(f.toLowerCase())) || null;
-  const amenidadesFilter = applied.filter(f => AMENIDADES.includes(f));
+  // Si ciudad fue detectada, los siguientes filtros empiezan desde el índice 1
+  const startIndex = ciudadData ? 1 : 0;
+
+  const tipoFilter = applied.slice(startIndex).find(f => TIPOS.includes(f.toLowerCase())) || null;
+  const amenidadesFilter = applied
+    .slice(startIndex)
+    .filter(f => AMENIDADES.includes(f));
 
   // 👇 el resto de segmentos después del primero se asumen como extras
     // Filtros extraídos de la URL para ciudad/tipo/amenidades
-  const canonicalBase    = [ciudadFilter, tipoFilter, ...amenidadesFilter]
-    .filter(Boolean) as string[];
-  const filtrosActivos = canonicalBase.length;
-  const extrasFromURL = applied.slice(filtrosActivos);
+  const canonicalBase = [
+    ...(ciudadData ? [ciudadData.SLUG] : []),
+    ...(tipoFilter ? [tipoFilter.toLowerCase().replace(/\s+/g, '-')] : []),
+    ...amenidadesFilter.map(a => a.toLowerCase().replace(/\s+/g, '-'))
+  ];
+
+  const extrasFromURL = applied.slice(canonicalBase.length);
+
   const initialFechaInicio = extrasFromURL[0] ?? '';
   const initialFechaFin = extrasFromURL[1] ?? '';
   const initialTotalHuespedes = extrasFromURL[2] ? Number(extrasFromURL[2]) : 1;
@@ -261,17 +274,21 @@ useEffect(() => {
   const toggleFilter = (value: string) => {
     const val = value.toLowerCase();
 
-    const isCity = CIUDADES.includes(val);
+    const valSlug = val.replace(/\s+/g, '-');
+    const isCity = CIUDADES.includes(valSlug);
     const isType = TIPOS.includes(val);
     const isAmenity = AMENIDADES.includes(val);
 
     // Convertimos a minúsculas para comparar, pero mantenemos los originales para la URL
-    let newCity = ciudadFilter?.toLowerCase() ?? null;
+    let newCitySlug = ciudadFilter
+    ? ciudadFilter.toLowerCase().replace(/\s+/g, '-')
+    : null;
+
     let newType = tipoFilter?.toLowerCase() ?? null;
     let newAmenities = [...amenidadesFilter];
 
     if (isCity) {
-      newCity = newCity === val ? null : val;
+      newCitySlug = newCitySlug === valSlug ? null : valSlug;
     } else if (isType) {
       newType = newType === val ? null : val;
     } else if (isAmenity) {
@@ -286,7 +303,10 @@ useEffect(() => {
       }
     }
 
-    const ciudadSlug = municipiosConSlug.find(m => m.CIUDAD_DEPARTAMENTO.toLowerCase() === newCity)?.SLUG;
+    const ciudadSlug = municipiosConSlug.find(
+      m => m.SLUG === newCitySlug
+    )?.SLUG;
+
     const rutaFiltros: string[] = [
       ...(ciudadSlug ? [ciudadSlug] : []),
       ...(newType ? [newType.toLowerCase().replace(/\s+/g, '-')] : []),
@@ -343,7 +363,7 @@ useEffect(() => {
             const route = fullPath.length ? `/glampings/${fullPath.join("/")}` : "/glampings"; 
             router.push(route);
           }}
-          ciudadSlug={ciudadSegment}
+          ciudadSlug={ciudadData ? posibleCiudad : undefined}
           tipoFilter={tipoFilter ?? undefined}
           amenidadesFilter={amenidadesFilter}
         />

@@ -1,7 +1,7 @@
 // HeaderGeneral.tsx
 "use client";
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef  } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FiMenu, FiSearch, FiX} from "react-icons/fi";
@@ -83,15 +83,15 @@ export default function HeaderGeneral({
     setIsClient(true);
     setNombreUsuario(Cookies.get("nombreUsuario") || null);
     setIdUsuarioCookie(Cookies.get("idUsuario") || null);
-
-    // Inicializa fechas en mañana/pasado mañana al cargar
-    // const hoy = new Date();
-    // const manana = new Date(hoy);
-    // manana.setDate(hoy.getDate() + 1);
-    // const pasado = new Date(hoy);
-    // pasado.setDate(hoy.getDate() + 2);
-    // setFechaInicioConfirmado(manana);
-    // setFechaFinConfirmado(pasado);
+    if (ciudadSlug) {
+      const ciudadEncontrada = municipiosData.find(m =>
+        m.CIUDAD_DEPARTAMENTO.toLowerCase().replace(/\s+/g, "-") === ciudadSlug.toLowerCase()
+      );
+    if (ciudadEncontrada) {
+      setDestination(ciudadEncontrada.CIUDAD_DEPARTAMENTO);
+      setCiudad_departamento(ciudadEncontrada.CIUDAD_DEPARTAMENTO);
+      }
+    }
   }, []);
 
   // UI states
@@ -99,6 +99,7 @@ export default function HeaderGeneral({
   const [showCalendar, setShowCalendar] = useState(false);
   const [showVisitantes, setShowVisitantes] = useState(false);
   const [error, setError] = useState("");
+  const [showToast,setShowToast]  = useState(false);
 
   // Autocompletado destino
   const [destination, setDestination] = useState("");
@@ -118,12 +119,14 @@ export default function HeaderGeneral({
 
   // Toggle menú usuario
   const toggleMenu = () => setMostrarMenuUsuarios(prev => !prev);
+  const inputDestinoRef = useRef<HTMLInputElement>(null);
 
   // Calendario & Visitantes
   const abrirCalendario = () => setShowCalendar(true);
   const cerrarCalendario = () => setShowCalendar(false);
   const abrirVisitantes = () => setShowVisitantes(true);
   const cerrarVisitantes = () => setShowVisitantes(false);
+
 
   // Publicar glamping
   const publicarGlamping = () => {
@@ -153,29 +156,31 @@ export default function HeaderGeneral({
   };
 
   // Búsqueda
- const handleSearch = () => {
+const handleSearch = () => {
   if (!fechaInicioConfirmado || !fechaFinConfirmado) {
-    setError("Seleccione ambas fechas.");
+    // muestra el toast  y ocúltalo tras 3s
+    setError("Seleccione fechas.");
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
     return;
   }
 
   const fmt = (d: Date) => d.toISOString().split("T")[0];
+  const fechaIni = fmt(fechaInicioConfirmado);
+  const fechaFin = fmt(fechaFinConfirmado);
   const slugCiudadManual = destination.trim()
     ? destination.trim().toLowerCase().replace(/\s+/g, '-')
     : ciudadSlug;
 
-  const fechaIni = fmt(fechaInicioConfirmado);
-  const fechaFin = fmt(fechaFinConfirmado);
-
-  // 👉 reconstruye la URL respetando filtros existentes
-  const nuevaRuta = `/glampings/${[
+  const filtrosRuta = [
     ...(slugCiudadManual ? [slugCiudadManual] : []),
     ...(tipoFilter ? [tipoFilter.toLowerCase()] : []),
     ...(amenidadesFilter?.map(a => a.toLowerCase()) ?? []),
-    fechaIni,
-    fechaFin,
-    String(totalHuespedes)
-  ].join("/")}`;
+  ];
+
+  // const extras = [fechaIni, fechaFin, String(totalHuespedes)];
+
+  const nuevaRuta = `/glampings/${[...filtrosRuta, fechaIni, fechaFin, String(totalHuespedes)].join("/")}`;
 
   cerrarCalendario();
   setShowSearchModal(false);
@@ -192,6 +197,7 @@ export default function HeaderGeneral({
   setShowCalendar(false);
   setShowVisitantes(false);
   setError("");
+  setTimeout(() => inputDestinoRef.current?.focus(), 0);
 };
 
 const buscadorText =
@@ -229,23 +235,34 @@ const fechaText =
         </button>
       </div>
       <MenuUsuario/>
-
       {showSearchModal && (
         <div className="HeaderGeneral-SearchModal-overlay" onClick={() => setShowSearchModal(false)}>
           <div className="HeaderGeneral-SearchModal-container" onClick={e => e.stopPropagation()}>
+            {showToast && (
+              <div className="error-toast">
+                {error}
+              </div>
+            )}
             {/* Destino */}
             <div className="HeaderGeneral-field">
               <label>Destino</label>
               <div className="HeaderGeneral-input-wrapper">
                 <input
+                  ref={inputDestinoRef}
                   type="text"
                   placeholder="Explora destinos"
                   value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  onFocus={() => setShowSuggestions(true)}
+                  onChange={(e) => {
+                    setDestination(e.target.value);
+                    setShowSuggestions(true); // 🟡 Mostrar sugerencias al escribir
+                  }}
+                  onFocus={() => {
+                    // 🟡 Solo mostrar sugerencias si no hay valor precargado
+                    if (!destination.trim()) setShowSuggestions(true);
+                  }}
                   onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-                  autoFocus
                 />
+
                 {destination && (
                   <FiX
                     className="HeaderGeneral-clear-dest-btn"
@@ -253,9 +270,12 @@ const fechaText =
                       setDestination("");
                       setCiudad_departamento("");
                       setSuggestions([]);
+                      setShowSuggestions(true);
+                      setTimeout(() => inputDestinoRef.current?.focus(), 0);
                     }}
                   />
                 )}
+
               </div>
 
 
@@ -294,8 +314,7 @@ const fechaText =
             <div className="HeaderGeneral-modal-actions">
               <button className="HeaderGeneral-clear-btn" onClick={clearAll}>Limpiar todo</button>
               <button className="HeaderGeneral-search-btn" onClick={handleSearch}>Buscar</button>
-            </div>
-            {error && <p className="HeaderGeneral-HeaderGeneral-error">{error}</p>}
+            </div>          
           </div>
         </div>
       )}

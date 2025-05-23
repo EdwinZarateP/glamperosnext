@@ -17,6 +17,7 @@
   align-items: center;
   width: 100%;
   gap: 1rem;
+
 }
 
 /* LOGO */
@@ -36,16 +37,17 @@
 .HeaderGeneral-search-pill {
   grid-column: 2;
   display: flex;
-  align-items: left;
+  align-items: center;
   justify-content: center;
   justify-self: center;
   width: 90%;
   max-width: 500px;
   border: 1px solid #ddd;
-  border-radius: 9999px;
+  border-radius: 50px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   overflow: hidden;
   position: relative;
+
 }
 .HeaderGeneral-pill-segment {
   padding: 0.6rem 1rem;
@@ -63,20 +65,25 @@
   height: 24px;
   background: #ddd;
 }
+
 .HeaderGeneral-pill-search-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
   background: #F2A900;
-  border-radius: 50%;
+  border-radius: 500px;
   cursor: pointer;
   color: #fff;
   font-size: 1.1rem;
   transition: background 0.2s;
   position: absolute;
-  right: 0.2rem;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
 }
+
+
 .HeaderGeneral-pill-search-btn:hover {
   background: #d18b00;
 }
@@ -137,6 +144,7 @@
 @media (max-width: 900px) {
   .HeaderGeneral-top {
     grid-template-columns: auto 1fr;
+    grid-gap:0;
   }
   .HeaderGeneral-logo,
   .HeaderGeneral-publish-btn,

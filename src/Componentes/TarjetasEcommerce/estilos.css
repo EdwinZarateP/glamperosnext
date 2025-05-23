@@ -231,11 +231,10 @@ border-radius: 7px;
 @media (max-width: 600px) {
 .TarjetasEcommerce-lista {
     gap: 0.2rem;
+    width: 95%;
+    margin-bottom: 70px;
   }
 
-.TarjetasEcommerce-lista {
-  width: 95%;
-}
 }
 
 

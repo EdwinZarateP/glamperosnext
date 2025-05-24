@@ -133,9 +133,9 @@
     const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
     
-    useEffect(() => {
-      setHasFetched(false);
-    }, [filtros?.join(',')]);
+    // useEffect(() => {
+    //   setHasFetched(false);
+    // }, [filtros?.join(',')]);
 
     useEffect(() => {
       if (document.referrer.includes('/explorarglamping')) {

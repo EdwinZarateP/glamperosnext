@@ -112,7 +112,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     ? fechaFin.toISOString().split("T")[0]
     : fechaFinPorDefecto.toISOString().split("T")[0];
 
-  const totalDiasUrl = totalDias ?? 1;
+  const totalDiasUrl = Math.max(1, totalDias ?? 1);
   const totalAdultosUrl = Cantidad_Adultos ?? 1;
   const totalNinosUrl = Cantidad_Ninos ?? 0;
   const totalBebesUrl = Cantidad_Bebes ?? 0;
@@ -125,7 +125,9 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     fechaInicioConfirmado ?? fechaInicioPorDefecto,
     fechaFinConfirmado ?? fechaFinPorDefecto
   );
-  const precioFinalNoche = precioConTarifa / totalDiasUrl;
+  const precioFinalNoche = Number.isFinite(precioConTarifa / totalDiasUrl)
+  ? precioConTarifa / totalDiasUrl
+  : precio;
 
   const handleFavoritoChange = async (e: React.MouseEvent) => {
     e.stopPropagation();

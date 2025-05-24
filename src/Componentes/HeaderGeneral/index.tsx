@@ -182,12 +182,10 @@ const handleSearch = () => {
   const aceptaMascotas = ctx.Cantidad_Mascotas > 0 ? 'mascotas' : null;
   const nuevaRuta = `/${[...filtrosRuta, fechaIni, fechaFin, String(totalHuespedes), aceptaMascotas].filter(Boolean).join("/")}`;
 
-
   cerrarCalendario();
   setShowSearchModal(false);
   router.push(nuevaRuta);
 };
-
 
   // Limpiar modal
  const clearAll = () => {

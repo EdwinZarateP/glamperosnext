@@ -233,6 +233,14 @@
           const arr = Array.isArray(json) ? json : json.glampings ?? [];
           setGlampings(prev => pageArg === 1 ? arr : [...prev, ...arr]);
           if (arr.length < PAGE_SIZE) setHasMore(false);
+          if (pageArg === 1) {
+            sessionStorage.setItem("glampings-cache", JSON.stringify(arr));
+            sessionStorage.setItem("glampings-page", "1");
+          } else {
+            const anterior = JSON.parse(sessionStorage.getItem("glampings-cache") || "[]");
+            sessionStorage.setItem("glampings-cache", JSON.stringify([...anterior, ...arr]));
+            sessionStorage.setItem("glampings-page", String(pageArg));
+          }
         } catch {
           setHasMore(false);
         } finally {
@@ -245,6 +253,15 @@
 
     // Carga inicial y cuando cambian filtros rápidos
     useEffect(() => {
+    const cachedGlampings = sessionStorage.getItem("glampings-cache");
+    const cachedPage = sessionStorage.getItem("glampings-page");
+
+    if (!hasFetched && cachedGlampings && cachedPage && ciudadFilter) {
+      setGlampings(JSON.parse(cachedGlampings));
+      setPage(Number(cachedPage));
+      setHasFetched(true);
+      return;
+    }
     if (!hasFetched && (ciudadFilter || userLocation)) {
       setGlampings([]);
       setHasMore(true);
@@ -278,8 +295,9 @@
 
     // Toggle filtros rápidos
     const toggleFilter = (value: string) => {
+      sessionStorage.removeItem("glampings-cache");
+      sessionStorage.removeItem("glampings-page");
       const val = value.toLowerCase();
-
       const valSlug = val.replace(/\s+/g, '-');
       const isCity = CIUDADES.includes(valSlug);
       const isType = TIPOS.includes(val);

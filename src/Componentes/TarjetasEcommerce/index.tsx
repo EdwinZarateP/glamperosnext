@@ -130,10 +130,13 @@
     const [geoError, setGeoError] = useState<string | null>(null);
     const [hasFetched, setHasFetched] = useState(false);
 
-
     const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
-  
+    
+    useEffect(() => {
+      setHasFetched(false);
+    }, [filtros?.join(',')]);
+
     useEffect(() => {
       if (document.referrer.includes('/explorarglamping')) {
         const scrollY = sessionStorage.getItem("glampings-scroll");
@@ -263,28 +266,11 @@
 
     // Carga inicial y cuando cambian filtros rápidos
     useEffect(() => {
-    const cachedGlampings = sessionStorage.getItem("glampings-cache");
-    const cachedPage = sessionStorage.getItem("glampings-page");
-
-    if (!hasFetched && cachedGlampings && cachedPage && ciudadFilter) {
-      setGlampings(JSON.parse(cachedGlampings));
-      setPage(Number(cachedPage));
-      setHasFetched(true);
-      return;
-    }
-    if (!hasFetched && (ciudadFilter || userLocation)) {
-      setGlampings([]);
-      setHasMore(true);
-      fetchGlampings(1, extrasFromURL);
-      setHasFetched(true);
-    } else if (!hasFetched && geoError) {
-      // Cargar resultados generales (sin coords) si negó permisos
-      setGlampings([]);
-      setHasMore(true);
-      fetchGlampings(1, extrasFromURL);
-      setHasFetched(true);
-    }
-  }, [ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, hasFetched, geoError, aceptaMascotas]);
+    setGlampings([]);
+    setHasMore(true);
+    fetchGlampings(1, extrasFromURL);
+    setHasFetched(true);
+  }, [filtros?.join(','), ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, geoError, aceptaMascotas]);
 
   const handleCardClick = () => {
   sessionStorage.setItem("glampings-scroll", String(window.scrollY));

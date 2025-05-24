@@ -128,9 +128,7 @@
     const [hasMore,    setHasMore]   = useState<boolean>(true);
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [geoError, setGeoError] = useState<string | null>(null);
-    const [hasFetched, setHasFetched] = useState(false);
-
-
+    const [primeraCargaHecha, setPrimeraCargaHecha] = useState(false);
     const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
   
@@ -263,28 +261,12 @@
 
     // Carga inicial y cuando cambian filtros rápidos
     useEffect(() => {
-    const cachedGlampings = sessionStorage.getItem("glampings-cache");
-    const cachedPage = sessionStorage.getItem("glampings-page");
-
-    if (!hasFetched && cachedGlampings && cachedPage && ciudadFilter) {
-      setGlampings(JSON.parse(cachedGlampings));
-      setPage(Number(cachedPage));
-      setHasFetched(true);
-      return;
-    }
-    if (!hasFetched && (ciudadFilter || userLocation)) {
       setGlampings([]);
       setHasMore(true);
-      fetchGlampings(1, extrasFromURL);
-      setHasFetched(true);
-    } else if (!hasFetched && geoError) {
-      // Cargar resultados generales (sin coords) si negó permisos
-      setGlampings([]);
-      setHasMore(true);
-      fetchGlampings(1, extrasFromURL);
-      setHasFetched(true);
-    }
-  }, [ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, hasFetched, geoError, aceptaMascotas]);
+      fetchGlampings(1, extrasFromURL).then(() => {
+        setPrimeraCargaHecha(true); // 👈🏼 Marca que ya se hizo la primera carga
+      });
+    }, [ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, geoError, aceptaMascotas]);
 
   const handleCardClick = () => {
   sessionStorage.setItem("glampings-scroll", String(window.scrollY));
@@ -496,7 +478,7 @@
                  <TarjetaGeneral key={g._id} {...mapProps(g)} onClick={handleCardClick} />
               ))}
             </div>
-          ) : (!loading && hasFetched) ? (
+          ) :(primeraCargaHecha && !loading && glampings.length === 0) ? (
             // <-- NUEVO BLOQUE
             <div className="TarjetasEcommerce-no-results">
               <Image

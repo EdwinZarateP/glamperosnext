@@ -418,7 +418,7 @@
         </div>
         {/* Filtros rápidos */}
         <div className="TarjetasEcommerce-filtros-wrapper">
-          <button className="TarjetasEcommerce-scroll-btn izquierda" onClick={() => scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}>
+          <button className="TarjetasEcommerce-scroll-btn izquierda" aria-label="Mostrar más filtros" onClick={() => scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}>
             <MdOutlineKeyboardArrowLeft size={24} />
           </button>
           <div className="TarjetasEcommerce-filtros-scroll" ref={scrollRef}>

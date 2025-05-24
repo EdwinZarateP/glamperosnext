@@ -17,6 +17,7 @@ import axios from "axios";
 import { ContextoApp } from "../../context/AppContext";
 import { calcularTarifaServicio } from "../../Funciones/calcularTarifaServicio";
 import fds from "../BaseFinesSemana/fds.json";
+import Image from "next/image";
 import "./estilos.css";
 
 interface TarjetaProps {
@@ -272,13 +273,19 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
               style={{ transform: `translateX(-${imagenActual * 100}%)` }}
             >
               {imagenes.map((url, idx) => (
-                <img
+                <Image
                   key={idx}
                   src={url}
                   alt={`Glamping ${nombreGlamping}`}
                   className="TarjetaGeneral-imagen visible"
+                  width={600}
+                  height={400}
+                  priority={idx === 0} // solo la primera imagen se carga con prioridad
+                  loading={idx === 0 ? "eager" : "lazy"} // las otras se cargan de forma diferida
+                  style={{ objectFit: "cover", width: "100%", height: "auto" }}
                 />
               ))}
+
             </div>
             {Acepta_Mascotas && (
               <MdOutlinePets className="TarjetaGeneral-icono-mascota" />
@@ -317,13 +324,19 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
               style={{ transform: `translateX(-${imagenActual * 100}%)` }}
             >
               {imagenes.map((url, idx) => (
-                <img
+                <Image
                   key={idx}
                   src={url}
                   alt={`Glamping ${nombreGlamping}`}
                   className="TarjetaGeneral-imagen visible"
+                  width={600}
+                  height={400}
+                  priority={idx === 0} // solo la primera imagen se carga con prioridad
+                  loading={idx === 0 ? "eager" : "lazy"} // las otras se cargan de forma diferida
+                  style={{ objectFit: "cover", width: "100%", height: "auto" }}
                 />
               ))}
+
             </div>
             {Acepta_Mascotas && (
               <MdOutlinePets className="TarjetaGeneral-icono-mascota" />

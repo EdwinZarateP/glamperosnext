@@ -222,7 +222,7 @@ const fechaText =
           <div className="HeaderGeneral-pill-segment">{buscadorText}</div>
           <div className="HeaderGeneral-pill-divider"/>
           <div className="HeaderGeneral-pill-segment">{totalHuespedes} huésped{totalHuespedes>1&&"es"}</div>
-          <button className="HeaderGeneral-pill-search-btn"><FiSearch/></button>
+          <button className="HeaderGeneral-pill-search-btn" aria-label="Abrir busqueda"><FiSearch/></button>
         </div>
 
         <button className="HeaderGeneral-publish-btn" onClick={publicarGlamping}>Publica tu Glamping</button>

@@ -1,4 +1,4 @@
-// pages/glampings/[...filtros].tsx
+// pages/[...filtros].tsx
 
 import TarjetasEcommerce from '@/Componentes/TarjetasEcommerce'
 import MenuUsuariosInferior from '@/Componentes/MenuUsuariosInferior'

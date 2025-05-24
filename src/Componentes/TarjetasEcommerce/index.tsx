@@ -329,7 +329,7 @@
 
       const path = (rutaFiltros.length > 0 || extras.length > 0)
         ? `/${[...rutaFiltros, ...extras].join('/')}`
-        : '/glampings';
+        : '/';
 
       router.push(path);
     };
@@ -372,7 +372,7 @@
               fetchGlampings(1, extras);
 
               const fullPath = [...canonicalBase, ...extras];
-              const route = fullPath.length ? `/${fullPath.join("/")}` : "/glampings"; 
+              const route = fullPath.length ? `/${fullPath.join("/")}` : "/"; 
               router.push(route);
             }}
             ciudadSlug={ciudadData ? posibleCiudad : undefined}

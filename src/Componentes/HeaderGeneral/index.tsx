@@ -226,7 +226,7 @@ const fechaText =
         </div>
 
         <button className="HeaderGeneral-publish-btn" onClick={publicarGlamping}>Publica tu Glamping</button>
-        <button className="HeaderGeneral-menu-btn" onClick={toggleMenu}>
+        <button className="HeaderGeneral-menu-btn" onClick={toggleMenu} aria-label="Abrir menú de usuario">
           <FiMenu/>
           <span className="HeaderGeneral-user-initial">
             {isClient && nombreUsuario ? nombreUsuario[0].toUpperCase() : <BsIncognito/>}

@@ -117,7 +117,8 @@ border-radius: 7px;
 .TarjetasEcommerce-filtro-label {
   text-align: center;
   font-size: 0.85rem;
-  color: gray;
+  color: #222;
+  font-weight: 600;
 }
 
 /* Miga de navegación: ahora abajo de los filtros */

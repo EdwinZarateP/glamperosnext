@@ -133,10 +133,6 @@
     const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
     
-    // useEffect(() => {
-    //   setHasFetched(false);
-    // }, [filtros?.join(',')]);
-
     useEffect(() => {
       if (document.referrer.includes('/explorarglamping')) {
         const scrollY = sessionStorage.getItem("glampings-scroll");
@@ -404,7 +400,7 @@
         </div>
         {/* Filtros rápidos */}
         <div className="TarjetasEcommerce-filtros-wrapper">
-          <button className="TarjetasEcommerce-scroll-btn izquierda" onClick={() => scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}>
+          <button className="TarjetasEcommerce-scroll-btn izquierda" onClick={() => scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' })}  aria-label="Desplazar filtros a la izquierda">
             <MdOutlineKeyboardArrowLeft size={24} />
           </button>
           <div className="TarjetasEcommerce-filtros-scroll" ref={scrollRef}>
@@ -422,7 +418,7 @@
               );
             })}
           </div>
-          <button className="TarjetasEcommerce-scroll-btn derecha" onClick={() => scrollRef.current?.scrollBy({ left: 200, behavior: 'smooth' })}>
+          <button className="TarjetasEcommerce-scroll-btn derecha" onClick={() => scrollRef.current?.scrollBy({ left: 200, behavior: 'smooth' })} aria-label="Desplazar filtros a la derecha">
             <MdOutlineKeyboardArrowRight size={24} />
           </button>
         </div>

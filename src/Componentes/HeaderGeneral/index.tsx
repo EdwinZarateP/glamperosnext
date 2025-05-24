@@ -29,6 +29,7 @@ interface HeaderGeneralProps {
     fechaInicio: string;
     fechaFin: string;
     totalHuespedes: number;
+    aceptaMascotas?: boolean;
   }) => void;
   ciudadSlug?: string;
   tipoFilter?: string;
@@ -178,9 +179,9 @@ const handleSearch = () => {
     ...(amenidadesFilter?.map(a => a.toLowerCase()) ?? []),
   ];
 
-  // const extras = [fechaIni, fechaFin, String(totalHuespedes)];
+  const aceptaMascotas = ctx.Cantidad_Mascotas > 0 ? 'mascotas' : null;
+  const nuevaRuta = `/${[...filtrosRuta, fechaIni, fechaFin, String(totalHuespedes), aceptaMascotas].filter(Boolean).join("/")}`;
 
-  const nuevaRuta = `/glampings/${[...filtrosRuta, fechaIni, fechaFin, String(totalHuespedes)].join("/")}`;
 
   cerrarCalendario();
   setShowSearchModal(false);

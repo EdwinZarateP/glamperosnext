@@ -1,64 +1,22 @@
 "use client";
-import Header from "../Componentes/Header";
-import ContenedorTarjetas from "../Componentes/ContenedorTarjetas/index";
-import MenuIconos from "../Componentes/MenuIconos";
-import MenuUsuariosInferior from "../Componentes/MenuUsuariosInferior";
-import Image from "next/image";
-import "./page.css";
 
-export default function Home() {
+import React from "react";
+// import Image from "next/image";
+import TarjetasEcommerce from "@/Componentes/TarjetasEcommerce";
+import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import "./page.css"; 
 
-  const redirigirWhatsApp = () => {
-    const numeroWhatsApp = "+573218695196";
-    const mensaje = encodeURIComponent("Hola equipo Glamperos, ¡Quiero información!");
-    const esPantallaPequena =
-      typeof window !== "undefined" && window.innerWidth < 600;
-    const urlWhatsApp = esPantallaPequena
-      ? `https://wa.me/${numeroWhatsApp}?text=${mensaje}`
-      : `https://web.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensaje}`;
-    window.open(urlWhatsApp, "_blank");
-  };
-
+export default function GlampingsPage() {
   return (
     <>
-      <div className="Home-principal">
-        <div className="Home-Titulo">
-          <h1>
-            Descubre y reserva los Mejores Glampings en Colombia{" "}
-            <Image
-              src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Colombia.svg"
-              alt="Bandera de Colombia"
-              width={32}
-              height={24}
-            />
-          </h1>
-
-          <p className="Home-descripcion">
-            ✨ Descubre la magia del glamping: lujo y naturaleza en un solo destino. 🌿🏕️
-          </p>
+      <div className="GlampingsPage-container">
+        <div className="GlampingsPage-tarjetas">
+          <TarjetasEcommerce key="all" />
         </div>
-        <Header />
-        <MenuIconos />
-        <main>
-          <ContenedorTarjetas />
-        </main>
-        <MenuUsuariosInferior />
+        <div className="GlampingsPage-menu">
+          <MenuUsuariosInferior />
+        </div>
       </div>
-
-      {/* Botón fijo de WhatsApp que llama a redirigirWhatsApp */}
-      <button
-        type="button"
-        className="Home-whatsapp-button"
-        onClick={redirigirWhatsApp}
-        aria-label="Chatea por WhatsApp"
-      >
-        <Image
-          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-          alt="Icono WhatsApp"
-          width={32}
-          height={32}
-        />
-      </button>
     </>
   );
 }

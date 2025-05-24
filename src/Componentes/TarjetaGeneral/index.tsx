@@ -39,7 +39,9 @@ interface TarjetaProps {
   Cantidad_Huespedes: number;
   precioEstandarAdicional: number;
   Cantidad_Huespedes_Adicional: number;
+  onClick?: () => void; // 👈 AÑADE ESTA LÍNEA**
 }
+
 
 const TarjetaGeneral: React.FC<TarjetaProps> = ({
   glampingId,
@@ -56,6 +58,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   precioEstandarAdicional,
   Cantidad_Huespedes_Adicional,
   amenidadesGlobal,
+  onClick, // 👈 AGREGA ESTA LÍNEA**
 }) => {
 
   const [imagenActual, setImagenActual] = useState(0);
@@ -258,7 +261,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   return (
     <div className="TarjetaGeneral">
       {esPantallaPequena ? (
-        <Link href={urlDestino} className="TarjetaGeneral-link">
+        <Link href={urlDestino} className="TarjetaGeneral-link" onClick={onClick}>
           <div
             className="TarjetaGeneral-imagen-container"
             onTouchStart={handleTouchStart}
@@ -302,6 +305,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
           className="TarjetaGeneral-link"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={onClick} 
         >
           <div
             className="TarjetaGeneral-imagen-container"

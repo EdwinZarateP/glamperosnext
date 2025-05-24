@@ -189,6 +189,7 @@ export default function ExplorarGlampingContenido() {
 
             {/* Galería principal */}
             <div className="imagenes-exploradas-container">
+
               {informacionGlamping.imagenes.length > 0 ? (
                 <ImagenesExploradas
                   imagenes={informacionGlamping.imagenes}
@@ -213,6 +214,9 @@ export default function ExplorarGlampingContenido() {
 
             {/* Vista móvil de imágenes individuales */}
             <div className="img-exploradas-individual-container">
+              <button className="boton-volver-exploracion" onClick={() => window.history.back()}>
+                ←
+              </button>
               <ImgExploradasIndividual
                 imagenes={informacionGlamping.imagenes}
               />

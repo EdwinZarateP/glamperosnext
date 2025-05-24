@@ -133,6 +133,16 @@
 
     const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
+  
+    useEffect(() => {
+      if (document.referrer.includes('/explorarglamping')) {
+        const scrollY = sessionStorage.getItem("glampings-scroll");
+        if (scrollY) {
+          window.scrollTo({ top: parseInt(scrollY), behavior: "smooth" });
+          sessionStorage.removeItem("glampings-scroll");
+        }
+      }
+    }, []);
 
   useEffect(() => {
     if (!ciudadFilter && "geolocation" in navigator) {
@@ -276,6 +286,10 @@
     }
   }, [ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, hasFetched, geoError, aceptaMascotas]);
 
+  const handleCardClick = () => {
+  sessionStorage.setItem("glampings-scroll", String(window.scrollY));
+  };
+
   // Scroll infinito
     useEffect(() => {
       const obs = new IntersectionObserver(entries => {
@@ -297,6 +311,7 @@
     const toggleFilter = (value: string) => {
       sessionStorage.removeItem("glampings-cache");
       sessionStorage.removeItem("glampings-page");
+      sessionStorage.removeItem("glampings-scroll");
       const val = value.toLowerCase();
       const valSlug = val.replace(/\s+/g, '-');
       const isCity = CIUDADES.includes(valSlug);
@@ -478,7 +493,7 @@
           ) : glampings.length > 0 ? (
             <div className="TarjetasEcommerce-lista">
               {glampings.map(g => (
-                <TarjetaGeneral key={g._id} {...mapProps(g)} />
+                 <TarjetaGeneral key={g._id} {...mapProps(g)} onClick={handleCardClick} />
               ))}
             </div>
           ) : (!loading && hasFetched) ? (

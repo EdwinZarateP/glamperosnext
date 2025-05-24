@@ -96,7 +96,28 @@
   width: 36px;
   height: 36px;
   }
-    
+
+.boton-volver-exploracion {
+  position: absolute;
+  top: 14px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 7px;
+  border-radius: 8px;
+  z-index: 10;
+  font-size: 21px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: none; /* oculto por defecto */
+}
+
+@media (max-width: 600px) {
+  .boton-volver-exploracion {
+    display: block; /* solo se ve en móviles */
+  }
+}
 
   /* 🔹 Responsive - Pantallas pequeñas (móviles) */
 @media (max-width: 900px) {

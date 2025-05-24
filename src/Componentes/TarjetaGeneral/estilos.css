@@ -292,6 +292,8 @@
   transform: scale(1.2);          /* agranda el corazón */
 }
 
+
+
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 600px) {
   .TarjetaGeneral {

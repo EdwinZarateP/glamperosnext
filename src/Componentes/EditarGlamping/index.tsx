@@ -24,11 +24,12 @@ const EditarGlamping = () => {
     const consultarGlampings = async () => {
       try {
         const response = await fetch(
-          `https://glamperosapi.onrender.com/glampings/por_propietario/${propietarioId}`
+          // `https://glamperosapi.onrender.com/glampings/por_propietario/${propietarioId}`
+          `http://127.0.0.1:8000/usuarios/${propietarioId}/glampings`
         );
         const data = await response.json();
-        const glampingsData = data.map((glamping: { _id: string; nombreGlamping: string }) => ({
-          id: glamping._id,
+        const glampingsData = data.map((glamping: {id: string; nombreGlamping: string }) => ({
+          id: glamping.id,
           nombreGlamping: glamping.nombreGlamping,
         }));
         setGlampings(glampingsData);
@@ -36,7 +37,6 @@ const EditarGlamping = () => {
         console.error("Error al consultar glampings:", error);
       }
     };
-
     consultarGlampings();
   }, [propietarioId]);
 

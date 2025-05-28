@@ -132,6 +132,9 @@
 
     const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
+
+    const [ubicacionLista, setUbicacionLista] = useState<boolean>(false);
+
     
     useEffect(() => {
       if (document.referrer.includes('/explorarglamping')) {
@@ -151,13 +154,17 @@
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
           });
+          setUbicacionLista(true); // 👈 marcamos que ya terminó
         },
         err => {
-            console.warn("Geolocalización denegada:", err.message);
-            setGeoError("No pudimos obtener tu ubicación. Verás resultados generales.");
+          console.warn("Geolocalización denegada:", err.message);
+          setGeoError("No pudimos obtener tu ubicación. Verás resultados generales.");
+          setUbicacionLista(true); // 👈 también marcamos que ya terminó
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
+    } else {
+      setUbicacionLista(true); // 👈 si no hay geolocalización o ya hay ciudad
     }
   }, [ciudadFilter]);
 
@@ -262,11 +269,13 @@
 
     // Carga inicial y cuando cambian filtros rápidos
     useEffect(() => {
-    setGlampings([]);
-    setHasMore(true);
-    fetchGlampings(1, extrasFromURL);
-    setHasFetched(true);
-  }, [filtros?.join(','), ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, geoError, aceptaMascotas]);
+  if (!ubicacionLista) return; // 👈 espera hasta que termine la geolocalización
+
+  setGlampings([]);
+  setHasMore(true);
+  fetchGlampings(1, extrasFromURL);
+  setHasFetched(true);
+  }, [filtros?.join(','), ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, geoError, aceptaMascotas, ubicacionLista]);
 
   const handleCardClick = () => {
   sessionStorage.setItem("glampings-scroll", String(window.scrollY));

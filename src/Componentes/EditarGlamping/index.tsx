@@ -25,7 +25,7 @@ const EditarGlamping = () => {
       try {
         const response = await fetch(
           // `https://glamperosapi.onrender.com/glampings/por_propietario/${propietarioId}`
-          `https://glamperosapi.onrender.com/${propietarioId}/glampings`
+          `https://glamperosapi.onrender.com/usuarios/${propietarioId}/glampings`
         );
         const data = await response.json();
         const glampingsData = data.map((glamping: {id: string; nombreGlamping: string }) => ({

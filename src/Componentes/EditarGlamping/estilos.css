@@ -1,3 +1,12 @@
+/* ——————————————————————————————————————————————
+   Espacio para el header fijo de 70px en pantallas grandes
+   —————————————————————————————————————————————— */
+@media (min-width: 601px) {
+  .EditarGlamping {
+    margin-top: 70px; /* altura del header en desktop */
+  }
+}
+
 /* Contenedor principal */
 .EditarGlamping {
   display: flex;
@@ -14,69 +23,85 @@
   text-align: center;
 }
 
-/* Contenedor de la lista de glampings */
+/* Lista de glampings */
 .EditarGlamping-lista {
   width: 100%;
   max-width: 600px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
-/* Cada elemento individual de la lista */
+/* Cada tarjeta de glamping */
 .EditarGlamping-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
   background-color: #f5f5f5;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* Estilo para el nombre del glamping */
+/* Nombre del glamping */
 .EditarGlamping-nombre {
   font-size: 18px;
-  flex: 1;
-  margin-right: 15px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 500;
+  text-align: left;
+  word-break: break-word;
 }
 
-/* Botones para cada glamping */
+/* Contenedor de botones */
+.EditarGlamping-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Botones */
 .EditarGlamping-boton {
-  padding: 10px 10px;
-  margin-left: 10px;
-  font-size: 16px;
+  flex: 1;
+  min-width: 120px;
+  padding: 10px;
+  font-size: 14px;
   background-color: #2F6B3E;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-/* Efecto hover para los botones */
 .EditarGlamping-boton:hover {
   background-color: #24532d;
 }
 
-/* Botón deshabilitado */
 .EditarGlamping-boton:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
 
-
-@media (max-width: 601px) {
-  .EditarGlamping-nombre {
-    font-size: 14px;
+/* Responsive: móviles y tablets pequeñas */
+@media (max-width: 600px) {
+  .EditarGlamping {
+    margin-top: 0; /* Quita el offset en móvil */
   }
-  
+
+  .EditarGlamping-item {
+    padding: 14px;
+  }
+
+  .EditarGlamping-nombre {
+    font-size: 16px;
+  }
+
+  .EditarGlamping-botones {
+    flex-direction: column;
+  }
+
   .EditarGlamping-boton {
-    font-size: 12px;
+    font-size: 13px;
+    padding: 9px;
   }
 }
-

@@ -24,19 +24,19 @@ const EditarGlamping = () => {
     const consultarGlampings = async () => {
       try {
         const response = await fetch(
-          // `https://glamperosapi.onrender.com/glampings/por_propietario/${propietarioId}`
           `https://glamperosapi.onrender.com/usuarios/${propietarioId}/glampings`
         );
         const data = await response.json();
-        const glampingsData = data.map((glamping: {id: string; nombreGlamping: string }) => ({
-          id: glamping.id,
-          nombreGlamping: glamping.nombreGlamping,
+        const glampingsData = data.map((g: { id: string; nombreGlamping: string }) => ({
+          id: g.id,
+          nombreGlamping: g.nombreGlamping,
         }));
         setGlampings(glampingsData);
       } catch (error) {
         console.error("Error al consultar glampings:", error);
       }
     };
+
     consultarGlampings();
   }, [propietarioId]);
 
@@ -47,18 +47,20 @@ const EditarGlamping = () => {
         {glampings.map((glamping, index) => (
           <div key={index} className="EditarGlamping-item">
             <span className="EditarGlamping-nombre">{glamping.nombreGlamping}</span>
-            <button
-              className="EditarGlamping-boton"
-              onClick={() => router.push(`/Modificacion?glampingId=${glamping.id}`)}
-            >
-              Información
-            </button>
-            <button
-              className="EditarGlamping-boton"
-              onClick={() => router.push(`/calendario?glampingId=${glamping.id}`)}
-            >
-              Calendario 📅
-            </button>
+            <div className="EditarGlamping-botones">
+              <button
+                className="EditarGlamping-boton"
+                onClick={() => router.push(`/Modificacion?glampingId=${glamping.id}`)}
+              >
+                Información
+              </button>
+              <button
+                className="EditarGlamping-boton"
+                onClick={() => router.push(`/calendario?glampingId=${glamping.id}`)}
+              >
+                Calendario 📅
+              </button>
+            </div>
           </div>
         ))}
       </div>

@@ -175,21 +175,14 @@ border-radius: 7px;
 /* ≥ 900px → 4 columnas */
 @media (min-width: 900px) {
   .TarjetasEcommerce-lista {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* ≥ 1200px → 45 columnas */
-@media (min-width: 1200px) {
-  .TarjetasEcommerce-lista {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-/* ≥ 1200px → 6 columnas */
+/* ≥ 1200px → 4 columnas */
 @media (min-width: 1400px) {
   .TarjetasEcommerce-lista {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 

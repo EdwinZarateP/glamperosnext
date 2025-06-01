@@ -38,8 +38,8 @@
   }));
 
 
-  // const API_BASE  = 'http://127.0.0.1:8000/glampings/glampingfiltrados';
-  const API_BASE  = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados';
+  // const API_BASE  = 'http://127.0.0.1:8000/glampings/glampingfiltrados2';
+  const API_BASE  = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados2';
   const PAGE_SIZE = 30;
 
   // Coordenadas aproximadas para cada ciudad
@@ -124,18 +124,20 @@
     // Resultados y paginación
     const [glampings, setGlampings] = useState<any[]>([]);
     const [page,       setPage]      = useState<number>(1);
+    // Nuevo estado para saber cuántas páginas hay (asumiendo que la API devuelve 'total')
+    const [totalPages, setTotalPages] = useState<number>(1);
     const [loading,    setLoading]   = useState<boolean>(false);
-    const [hasMore,    setHasMore]   = useState<boolean>(true);
+    // const [hasMore,    setHasMore]   = useState<boolean>(true);
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [geoError, setGeoError] = useState<string | null>(null);
     const [hasFetched, setHasFetched] = useState(false);
 
-    const observerRef = useRef<HTMLDivElement>(null);
+    // const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
 
     const [ubicacionLista, setUbicacionLista] = useState<boolean>(false);
 
-    
+
     useEffect(() => {
       if (document.referrer.includes('/explorarglamping')) {
         const scrollY = sessionStorage.getItem("glampings-scroll");
@@ -180,7 +182,7 @@
     const params = new URLSearchParams();
     params.set('page', String(pageArg));
     params.set('limit', String(PAGE_SIZE));
-    
+
     const ciudadParaQuery = ciudadForzada ?? ciudadData;
 
     if (aceptaMascotas) {
@@ -236,6 +238,10 @@
     // Llamada a la API
     const fetchGlampings = useCallback(
       async (pageArg: number, extras: string[]) => {
+        // Si NO es la página 1, vacía el array para disparar el Skeleton
+        if (pageArg !== 1) {
+          setGlampings([]);
+        }
         setLoading(true);
         const [fi, ff, thStr] = extras;
         const th = thStr ? Number(thStr) : undefined;
@@ -244,11 +250,12 @@
         const url = `${API_BASE}?${qs}`;
         try {
           const res = await fetch(url);
-          if (res.status === 404) { setHasMore(false); return; }
           const json = await res.json();
-          const arr = Array.isArray(json) ? json : json.glampings ?? [];
-          setGlampings(prev => pageArg === 1 ? arr : [...prev, ...arr]);
-          if (arr.length < PAGE_SIZE) setHasMore(false);
+          const arr = Array.isArray(json) ? [] : json.glampings ?? [];
+          setGlampings(arr);
+          if (typeof json.total === "number") {
+            setTotalPages(Math.ceil(json.total / PAGE_SIZE));
+          }
           if (pageArg === 1) {
             sessionStorage.setItem("glampings-cache", JSON.stringify(arr));
             sessionStorage.setItem("glampings-page", "1");
@@ -258,21 +265,23 @@
             sessionStorage.setItem("glampings-page", String(pageArg));
           }
         } catch {
-          setHasMore(false);
+          // ...
         } finally {
           setLoading(false);
           setPage(pageArg);
+          // Si quieres, aquí también podrías hacer window.scrollTo(0, 0)
         }
       },
       [userLocation, ciudadFilter, tipoFilter, amenidadesFilter, aceptaMascotas]
     );
+
 
     // Carga inicial y cuando cambian filtros rápidos
     useEffect(() => {
   if (!ubicacionLista) return; // 👈 espera hasta que termine la geolocalización
 
   setGlampings([]);
-  setHasMore(true);
+  // setHasMore(true);
   fetchGlampings(1, extrasFromURL);
   setHasFetched(true);
   }, [filtros?.join(','), ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, geoError, aceptaMascotas, ubicacionLista]);
@@ -280,23 +289,6 @@
   const handleCardClick = () => {
   sessionStorage.setItem("glampings-scroll", String(window.scrollY));
   };
-
-  // Scroll infinito
-    useEffect(() => {
-      const obs = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && !loading && hasMore) {
-          const extras = [
-            ...(fechaInicio ? [fechaInicio] : []),
-            ...(fechaFin    ? [fechaFin]    : []),
-            ...(totalHuespedes > 1 ? [String(totalHuespedes)] : []),
-            ...(aceptaMascotas ? ["mascotas"] : [])
-          ];
-          fetchGlampings(page + 1, extras);
-        }
-      }, { rootMargin: '200px', threshold: 0.1 });
-      if (observerRef.current) obs.observe(observerRef.current);
-      return () => obs.disconnect();
-    }, [fetchGlampings, loading, hasMore, page, fechaInicio, fechaFin, totalHuespedes]);
 
     // Toggle filtros rápidos
     const toggleFilter = (value: string) => {
@@ -371,9 +363,7 @@
     };
 
     return (
-      <div className="TarjetasEcommerce-container">    
-        {/* Query */}
-        {/* <span className="TarjetasEcommerce-query">Consultando: {lastQuery}</span> */}
+      <div className="TarjetasEcommerce-container">
         {/* Controles */}
         <div className="TarjetasEcommerce-filters-top">
           <HeaderGeneral
@@ -392,11 +382,11 @@
 
               setLastQuery(qs);
               setGlampings([]);
-              setHasMore(true);
+              // setHasMore(true);
               fetchGlampings(1, extras);
 
               const fullPath = [...canonicalBase, ...extras];
-              const route = fullPath.length ? `/${fullPath.join("/")}` : "/"; 
+              const route = fullPath.length ? `/${fullPath.join("/")}` : "/";
               router.push(route);
             }}
             ciudadSlug={ciudadData ? posibleCiudad : undefined}
@@ -467,13 +457,13 @@
               height={24}
             />
           </h1>
-      
+
           <p className="TarjetasEcommerce-descripcion">
             ✨ Descubre la magia del glamping: lujo y naturaleza en un solo destino. 🌿🏕️
           </p>
-          
+
         </div>
-        
+
         {/* Botón fijo de WhatsApp */}
         <button
           type="button"
@@ -483,7 +473,7 @@
         >
         </button>
 
-      
+
         {/* Lista con Skeleton */}
           {loading && glampings.length === 0 ? (
             <div className="TarjetasEcommerce-lista">
@@ -510,13 +500,36 @@
             </div>
           ) : null}
 
-        {/* Si ya cargó al menos una página y sigues en loading… */}
-        {loading && glampings.length > 0 && (
-          <p className="TarjetasEcommerce-loading">Cargando más resultados…</p>
+        {/* ----------------------------------------
+            BLOQUE NUEVO: Botones de paginación
+            ---------------------------------------- */}
+        {totalPages > 1 && (
+          <div className="TarjetasEcommerce-paginacion">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(num => (
+              <button
+                key={num}
+                className={`TarjetasEcommerce-pagina-boton ${page === num ? 'activo' : ''}`}
+                onClick={() => {
+                   // 1) Borramos el array para que aparezca el Skeleton
+                  setGlampings([]);
+                  // 2) Scroll arriba
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  // 3) Recalculamos los extras y pedimos la página num
+                  const extras = [
+                    ...(fechaInicio ? [fechaInicio] : []),
+                    ...(fechaFin    ? [fechaFin]    : []),
+                    ...(totalHuespedes > 1 ? [String(totalHuespedes)] : []),
+                    ...(aceptaMascotas ? ["mascotas"] : [])
+                  ];
+                  fetchGlampings(num, extras);
+                }}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
         )}
 
-        {/* Sentinel para scroll infinito */}
-        {glampings.length > 0 && <div ref={observerRef} />}
       </div>
     );
   }

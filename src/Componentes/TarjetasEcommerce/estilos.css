@@ -17,7 +17,7 @@
 .TarjetasEcommerce-Titulo {
   display: flex;
   flex-direction: column;
-  justify-content: center;  
+  justify-content: center;
   margin-bottom: 10px;
   width: 85%;
   margin: auto;
@@ -26,7 +26,7 @@
 .TarjetasEcommerce-Titulo h1 {
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   gap: 10px;
   margin-top: 0;
   margin-bottom: 0;
@@ -186,11 +186,11 @@ border-radius: 7px;
   }
 }
 
-.TarjetasEcommerce-loading {
+/* .TarjetasEcommerce-loading {
   text-align: center;
   margin: 1.5rem 0;
   color: hsl(0, 0%, 33%);
-}
+} */
 
 /* Ajusta aquí el tamaño que quieras: 2rem, 24px, etc. */
 /* fuerza el tamaño de SVGs e imágenes dentro del icon-wrapper */
@@ -226,7 +226,7 @@ border-radius: 7px;
 .TarjetasEcommerce-lista {
     gap: 0.2rem;
     width: 95%;
-    margin-bottom: 70px;
+    margin-bottom: 10px;
   }
 
 }
@@ -260,7 +260,7 @@ border-radius: 7px;
     height: 50px;
   }
 }
-
+/* 
 .TarjetasEcommerce-error {
   color: #a94442;
   background: #f2dede;
@@ -268,7 +268,7 @@ border-radius: 7px;
   border-radius: 8px;
   margin-top: 0.5rem;
   font-size: 0.9rem;
-}
+} */
 
 /* Bloque “no results” centrado */
 .TarjetasEcommerce-no-results {
@@ -283,24 +283,24 @@ border-radius: 7px;
 }
 
 .TarjetasEcommerce-no-results img {
-  max-width: 150px; 
+  max-width: 150px;
   height: auto;
   border-radius: 8px; /* si quieres darle un toque */
 }
 
 
-.fade-in {
+/* .fade-in {
   opacity: 0;
   transform: translateY(10px);
   animation: fadeInUp 0.3s ease-out forwards;
-}
+} */
 
-@keyframes fadeInUp {
+/* @keyframes fadeInUp {
   to {
     opacity: 1;
     transform: translateY(0);
   }
-}
+} */
 
 /* ----------------------------------------
    Estilos para paginación
@@ -309,10 +309,11 @@ border-radius: 7px;
   display: flex;
   justify-content: center;
   margin: 16px 0;
+  margin-bottom: 0;
   gap: 6px;
 }
 
-.pagina-boton {
+.TarjetasEcommerce-pagina-boton {
   background: transparent;
   border: 1px solid #ccc;
   color: #333;
@@ -324,11 +325,11 @@ border-radius: 7px;
   transition: background-color 0.2s, color 0.2s;
 }
 
-.pagina-boton:hover {
+.TarjetasEcommerce-pagina-boton:hover {
   background-color: #f0f0f0;
 }
 
-.pagina-boton.activo {
+.TarjetasEcommerce-pagina-boton.activo {
   background-color: #222; /* círculo activo */
   color: #fff;
   border-color: #222;

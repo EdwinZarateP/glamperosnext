@@ -326,7 +326,12 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
               ))}
             </div>
             {Acepta_Mascotas && (
-              <MdOutlinePets className="TarjetaGeneral-icono-mascota" />
+              <MdOutlinePets className="TarjetaGeneral-icono-mascota" />            
+            )}
+            {amenidadesGlobal.includes("incluye-desayuno") && (
+              <div className="TarjetaGeneral-desayuno-badge">
+                Desayuno incluido
+              </div>
             )}
             <div className="TarjetaGeneral-puntos">
               {puntosVisibles.map((_, i) => (

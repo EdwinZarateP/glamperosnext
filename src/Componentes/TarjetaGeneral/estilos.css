@@ -162,26 +162,6 @@
   transform: scale(1.2); /* Similar al punto activo */
 }
 
-/* Responsividad */
-
-/* Pantallas pequeñas: oculta flechas y muestra puntos */
-@media (max-width: 600px) {
-  .TarjetaGeneral-flecha {
-    display: none;
-  }
-
-  .TarjetaGeneral-puntos {
-    visibility: visible;
-  }
-}
-
-/* Pantallas grandes: muestra flechas y oculta puntos */
-@media (min-width: 601px) {
-  .TarjetaGeneral-puntos {
-    visibility: hidden;
-  }
-}
-
 /* Información de la TarjetaGeneral */
 .TarjetaGeneral-info {
   padding-top: 0;
@@ -292,7 +272,40 @@
   transform: scale(1.2);          /* agranda el corazón */
 }
 
+.TarjetaGeneral-desayuno-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color:#2C3E50;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
 
+
+/* Responsividad */
+
+/* Pantallas pequeñas: oculta flechas y muestra puntos */
+@media (max-width: 600px) {
+  .TarjetaGeneral-flecha {
+    display: none;
+  }
+
+  .TarjetaGeneral-puntos {
+    visibility: visible;
+  }
+}
+
+/* Pantallas grandes: muestra flechas y oculta puntos */
+@media (min-width: 601px) {
+  .TarjetaGeneral-puntos {
+    visibility: hidden;
+  }
+}
 
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 600px) {

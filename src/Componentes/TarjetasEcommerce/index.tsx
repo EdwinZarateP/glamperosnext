@@ -142,7 +142,7 @@
       if (document.referrer.includes('/explorarglamping')) {
         const scrollY = sessionStorage.getItem("glampings-scroll");
         if (scrollY) {
-          window.scrollTo({ top: parseInt(scrollY), behavior: "smooth" });
+          window.scrollTo({ top: parseInt(scrollY), behavior: "auto" });
           sessionStorage.removeItem("glampings-scroll");
         }
       }
@@ -513,7 +513,7 @@
                    // 1) Borramos el array para que aparezca el Skeleton
                   setGlampings([]);
                   // 2) Scroll arriba
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  window.scrollTo({ top: 0, behavior: 'auto' });
                   // 3) Recalculamos los extras y pedimos la página num
                   const extras = [
                     ...(fechaInicio ? [fechaInicio] : []),

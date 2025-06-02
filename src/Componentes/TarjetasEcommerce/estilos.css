@@ -180,7 +180,7 @@ border-radius: 7px;
 }
 
 /* ≥ 1200px → 4 columnas */
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .TarjetasEcommerce-lista {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -309,7 +309,7 @@ border-radius: 7px;
   display: flex;
   justify-content: center;
   margin: 16px 0;
-  margin-bottom: 0;
+  margin-bottom: 30px;
   gap: 6px;
 }
 

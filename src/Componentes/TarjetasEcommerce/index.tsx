@@ -40,7 +40,7 @@
 
   // const API_BASE  = 'http://127.0.0.1:8000/glampings/glampingfiltrados2';
   const API_BASE  = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados2';
-  const PAGE_SIZE = 30;
+  const PAGE_SIZE = 24;
 
   // Coordenadas aproximadas para cada ciudad
   const CITY_COORDS: Record<string, { lat: number; lng: number }> = {

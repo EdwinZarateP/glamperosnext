@@ -1,4 +1,6 @@
-// src/components/TarjetaGeneral/index.tsx
+// ─────────────────────────────────────────────────────────────────
+// src/components/TarjetaGeneral/index.tsx  (versión “flechas afuera”)
+// ─────────────────────────────────────────────────────────────────
 "use client";
 
 import { useState, useContext, useEffect } from "react";
@@ -39,9 +41,8 @@ interface TarjetaProps {
   Cantidad_Huespedes: number;
   precioEstandarAdicional: number;
   Cantidad_Huespedes_Adicional: number;
-  onClick?: () => void; // 👈 AÑADE ESTA LÍNEA**
+  onClick?: () => void;
 }
-
 
 const TarjetaGeneral: React.FC<TarjetaProps> = ({
   glampingId,
@@ -58,27 +59,26 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   precioEstandarAdicional,
   Cantidad_Huespedes_Adicional,
   amenidadesGlobal,
-  onClick, // 👈 AGREGA ESTA LÍNEA**
+  onClick,
 }) => {
-
   const [imagenActual, setImagenActual] = useState(0);
   let touchStartX = 0;
   let touchEndX = 0;
-// Estado interno para el corazón
+
   const [esFavorito, setEsFavorito] = useState<boolean>(favorito);
   const router = useRouter();
   const idUsuarioCookie = Cookies.get("idUsuario");
-  
+
   useEffect(() => {
-  if (!idUsuarioCookie) return;
-  axios
-    .get("https://glamperosapi.onrender.com/favoritos/buscar", {
-      params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
-    })
-    .then(res => setEsFavorito(res.data.favorito_existe))
-    .catch(() => {
-      /* opcional: manejar error silencioso */
-    });
+    if (!idUsuarioCookie) return;
+    axios
+      .get("https://glamperosapi.onrender.com/favoritos/buscar", {
+        params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
+      })
+      .then((res) => setEsFavorito(res.data.favorito_existe))
+      .catch(() => {
+        /* silencio */
+      });
   }, [glampingId, idUsuarioCookie]);
 
   const almacenVariables = useContext(ContextoApp);
@@ -129,11 +129,11 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     fechaFinConfirmado ?? fechaFinPorDefecto
   );
   const precioFinalNoche = Number.isFinite(precioConTarifa / totalDiasUrl)
-  ? precioConTarifa / totalDiasUrl
-  : precio;
+    ? precioConTarifa / totalDiasUrl
+    : precio;
 
   const handleFavoritoChange = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Evita que el clic en el corazón navegue
     if (!idUsuarioCookie) {
       router.push("/registro");
       return;
@@ -149,19 +149,16 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
           glamping_id: glampingId,
         });
       } else {
-        // eliminado
         await axios.delete("https://glamperosapi.onrender.com/favoritos/", {
           params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
         });
       }
     } catch (error) {
       console.error("Error actualizando favorito:", error);
-      // revertir en caso de error
       setEsFavorito(!nuevoEstado);
       alert("No se pudo actualizar el favorito, inténtalo de nuevo.");
     }
   };
-
 
   const siguienteImagen = () => {
     setImagenActual((prev) =>
@@ -232,18 +229,6 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   };
 
   const isClient = typeof window !== "undefined";
-  
-  const formatearTipoGlamping = (valor: string): string => {
-  const mapa = {
-    cabana: "Cabaña",
-    tienda: "Tienda",
-    domo: "Domo",
-    tipi: "Tipi",
-    lulipod: "Lulipod",
-  };
-  return mapa[valor.toLowerCase() as keyof typeof mapa] || valor;
-};
-
   const esPantallaPequena = isClient ? window.innerWidth <= 600 : false;
 
   const queryParams = new URLSearchParams({
@@ -260,114 +245,119 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
 
   return (
     <div className="TarjetaGeneral">
-      {esPantallaPequena ? (
-        <Link href={urlDestino} className="TarjetaGeneral-link" onClick={onClick}>
-          <div
-            className="TarjetaGeneral-imagen-container"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <div
-              className="TarjetaGeneral-carrusel"
-              style={{ transform: `translateX(-${imagenActual * 100}%)` }}
-            >
-              {imagenes.map((url, idx) => (
-                <img
-                  key={idx}
-                  src={url}
-                  alt={`Glamping ${nombreGlamping}`}
-                  className="TarjetaGeneral-imagen visible"
-                />
-              ))}
-            </div>
-            {Acepta_Mascotas && (
-              <MdOutlinePets className="TarjetaGeneral-icono-mascota" />
-            )}
-            <div className="TarjetaGeneral-puntos">
-              {puntosVisibles.map((_, i) => (
-                <span
-                  key={start + i}
-                  className={`TarjetaGeneral-punto ${
-                    start + i === imagenActual ? "activo" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setImagenActual(start + i);
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </Link>
-      ) : (
-        <Link
-          href={urlDestino}
-          className="TarjetaGeneral-link"
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={onClick} 
+      {/* ─── Aquí sólo envuelvo la “parte clicable” en el Link ─── */}
+      <Link
+        href={urlDestino}
+        className="TarjetaGeneral-link"
+        target={esPantallaPequena ? undefined : "_blank"}
+        rel={esPantallaPequena ? undefined : "noopener noreferrer"}
+        onClick={onClick}
+      >
+        <div
+          className="TarjetaGeneral-imagen-container"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
           <div
-            className="TarjetaGeneral-imagen-container"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
+            className="TarjetaGeneral-carrusel"
+            style={{ transform: `translateX(-${imagenActual * 100}%)` }}
           >
-            <div
-              className="TarjetaGeneral-carrusel"
-              style={{ transform: `translateX(-${imagenActual * 100}%)` }}
-            >
-              {imagenes.map((url, idx) => (
-                <img
-                  key={idx}
-                  src={url}
-                  alt={`Glamping ${nombreGlamping}`}
-                  className="TarjetaGeneral-imagen visible"
-                />
-              ))}
+            {imagenes.map((url, idx) => (
+              <img
+                key={idx}
+                src={url}
+                alt={`Glamping ${nombreGlamping}`}
+                className="TarjetaGeneral-imagen visible"
+              />
+            ))}
+          </div>
+          {Acepta_Mascotas && (
+            <MdOutlinePets className="TarjetaGeneral-icono-mascota" />
+          )}
+          {amenidadesGlobal.includes("incluye-desayuno") && (
+            <div className="TarjetaGeneral-desayuno-badge">
+              Desayuno incluido
             </div>
-            {Acepta_Mascotas && (
-              <MdOutlinePets className="TarjetaGeneral-icono-mascota" />            
-            )}
-            {amenidadesGlobal.includes("incluye-desayuno") && (
-              <div className="TarjetaGeneral-desayuno-badge">
-                Desayuno incluido
-              </div>
-            )}
-            <div className="TarjetaGeneral-puntos">
-              {puntosVisibles.map((_, i) => (
-                <span
-                  key={start + i}
-                  className={`TarjetaGeneral-punto ${
-                    start + i === imagenActual ? "activo" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setImagenActual(start + i);
-                  }}
-                />
-              ))}
+          )}
+          <div className="TarjetaGeneral-puntos">
+            {puntosVisibles.map((_, i) => (
+              <span
+                key={start + i}
+                className={`TarjetaGeneral-punto ${
+                  start + i === imagenActual ? "activo" : ""
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setImagenActual(start + i);
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="TarjetaGeneral-info">
+          <div className="TarjetaGeneral-contenido">
+            <span className="TarjetaGeneral-nombre">
+              {(() => {
+                const tipoFormateado = (() => {
+                  const mapa = {
+                    cabana: "Cabaña",
+                    tienda: "Tienda",
+                    domo: "Domo",
+                    tipi: "Tipi",
+                    lulipod: "Lulipod",
+                  };
+                  return (
+                    mapa[tipoGlamping.toLowerCase() as keyof typeof mapa] ||
+                    tipoGlamping
+                  );
+                })();
+
+                const amenidadesSufijo = [
+                  { valor: "playa", prefijo: "cerca a la" },
+                  { valor: "malla catamaran", prefijo: "con" },
+                  { valor: "vista al lago", prefijo: "con" },
+                  { valor: "desierto", prefijo: "en el" },
+                  { valor: "jacuzzi", prefijo: "con" },
+                  { valor: "baño privado", prefijo: "con" },
+                  { valor: "piscina", prefijo: "con" },
+                  { valor: "tina", prefijo: "con" },
+                  { valor: "rio", prefijo: "cerca al" },
+                  { valor: "cascada", prefijo: "cerca a la" },
+                  { valor: "en la montaña", prefijo: "" },
+                  { valor: "zona fogata", prefijo: "con" },
+                ];
+                let amenidadEncontrada = null;
+                for (let item of amenidadesSufijo) {
+                  if (amenidadesGlobal.includes(item.valor)) {
+                    amenidadEncontrada = item;
+                    break;
+                  }
+                }
+                if (amenidadEncontrada) {
+                  return amenidadEncontrada.prefijo === ""
+                    ? `${tipoFormateado} ${amenidadEncontrada.valor}`
+                    : `${tipoFormateado} ${amenidadEncontrada.prefijo} ${amenidadEncontrada.valor}`;
+                }
+                return tipoFormateado;
+              })()}
+            </span>
+            <div className="TarjetaGeneral-calificacion">
+              <FaStar className="TarjetaGeneral-estrella" />
+              <span>{calificacion.toFixed(1)}</span>
             </div>
           </div>
-        </Link>
-      )}
+          <p className="TarjetaGeneral-ciudad">{ciudad}</p>
+          {renderPrecio()}
+        </div>
+      </Link>
 
-      <div
-        className="TarjetaGeneral-favorito"
-        onClick={handleFavoritoChange}
-      >
-        {esFavorito? (
-          <BsBalloonHeartFill className="TarjetaGeneral-corazon activo" />
-        ) : (
-          <AiTwotoneHeart className="TarjetaGeneral-corazon" />
-        )}
-      </div>
-
+      {/* ─── Aquí, fuera del Link, van las flechas para no disparar el <Link> ─── */}
       <div
         className={`TarjetaGeneral-flecha izquierda ${
           imagenActual === 0 ? "oculta" : ""
         }`}
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           anteriorImagen();
         }}
       >
@@ -377,57 +367,20 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
         className={`TarjetaGeneral-flecha derecha ${
           imagenActual === imagenes.length - 1 ? "oculta" : ""
         }`}
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           siguienteImagen();
         }}
       >
         <MdOutlineKeyboardArrowRight />
       </div>
 
-      <div className="TarjetaGeneral-info">
-        <div className="TarjetaGeneral-contenido">
-          <span className="TarjetaGeneral-nombre">
-            {(() => {
-              const tipoFormateado = formatearTipoGlamping(tipoGlamping);
-              const amenidadesSufijo = [              
-                { valor: "playa", prefijo: "cerca a la" },
-                { valor: "malla catamaran", prefijo: "con" },
-                { valor: "vista al lago", prefijo: "con" },
-                { valor: "desierto", prefijo: "en el" },
-                { valor: "jacuzzi", prefijo: "con" },
-                { valor: "baño privado", prefijo: "con" },
-                { valor: "piscina", prefijo: "con" },
-                { valor: "tina", prefijo: "con" },
-                { valor: "rio", prefijo: "cerca al" },
-                { valor: "cascada", prefijo: "cerca a la" },
-                { valor: "en la montaña", prefijo: "" },
-                { valor: "zona fogata", prefijo: "con" },
-              ];
-              let amenidadEncontrada = null;
-              for (let item of amenidadesSufijo) {
-                if (amenidadesGlobal.includes(item.valor)) {
-                  amenidadEncontrada = item;
-                  break;
-                }
-              }
-              if (amenidadEncontrada) {
-                return amenidadEncontrada.prefijo === ""
-                  ? `${tipoFormateado} ${amenidadEncontrada.valor}`
-                  : `${tipoFormateado} ${
-                      amenidadEncontrada.prefijo
-                    } ${amenidadEncontrada.valor}`;
-              }
-              return tipoFormateado;
-            })()}
-          </span>
-          <div className="TarjetaGeneral-calificacion">
-            <FaStar className="TarjetaGeneral-estrella" />
-            <span>{calificacion.toFixed(1)}</span>
-          </div>
-        </div>
-        <p className="TarjetaGeneral-ciudad">{ciudad}</p>
-        {renderPrecio()}
+      {/* ─── El botón de favorito también puede quedarse fuera del <Link> ─── */}
+      <div className="TarjetaGeneral-favorito" onClick={handleFavoritoChange}>
+        {esFavorito ? (
+          <BsBalloonHeartFill className="TarjetaGeneral-corazon activo" />
+        ) : (
+          <AiTwotoneHeart className="TarjetaGeneral-corazon" />
+        )}
       </div>
     </div>
   );

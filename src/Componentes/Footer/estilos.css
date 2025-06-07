@@ -1,0 +1,122 @@
+/* Footer.css */
+
+/* Contenedor principal del footer */
+.footer-container {
+  background-color: #f5f0e6; /* beige claro natural */
+  padding: 40px 20px 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #4a3f35;
+}
+
+/* Contenido central dividido en secciones */
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 20px;
+    row-gap: 0;
+    justify-content: space-between;
+  }
+}
+
+/* Títulos de sección */
+.footer-title {
+  font-size: 1.1rem;
+  /* margin-bottom: 8px; */
+  color: #2e4e3f;
+  margin: 0;
+}
+
+/* Secciones específicas */
+.footer-section {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d4cfc8;
+}
+
+@media (min-width: 768px) {
+  .footer-section {
+    border-bottom: none;
+    border-right: 1px solid #d4cfc8;
+    padding-right: 20px;
+    padding-bottom: 0;
+  }
+
+  .footer-section:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
+}
+
+/* Íconos sociales */
+.footer-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.footer-icon {
+  font-size: 1.4rem;
+  color: #2e4e3f;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.footer-icon:hover {
+  color: #699d78;
+  transform: scale(1.1);
+}
+
+/* Texto general */
+.footer-text {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+/* Enlaces útiles */
+.footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-link {
+  text-decoration: none;
+  color: #4a3f35;
+  transition: color 0.2s ease;
+  font-size: 0.92rem;
+}
+
+.footer-link:hover {
+  color: #699d78;
+}
+
+/* Pie de página inferior */
+.footer-bottom {
+  margin-top: 25px;
+  border-top: 1px solid #d4cfc8;
+  padding-top: 12px;
+  text-align: center;
+}
+
+.footer-copyright {
+  font-size: 0.8rem;
+  color: #6d6155;
+}
+
+@media (max-width: 900px) {
+  .footer-container {
+    margin-bottom: 45px;
+  }
+}
+

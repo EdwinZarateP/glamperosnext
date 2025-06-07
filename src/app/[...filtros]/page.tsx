@@ -2,6 +2,7 @@
 
 import TarjetasEcommerce from '@/Componentes/TarjetasEcommerce'
 import MenuUsuariosInferior from '@/Componentes/MenuUsuariosInferior'
+import Footer from "@/Componentes/Footer";
 
 interface Props {
   params: { filtros?: string[] }
@@ -15,6 +16,11 @@ export default function FiltradosPage({ params }: Props) {
       <div className="GlampingsPage-tarjetas">
         <TarjetasEcommerce filtros={filtros} />
       </div>
+      
+      <div className="GlampingsPage-Footer">
+        <Footer />
+      </div>
+
       <div className="GlampingsPage-menu">
         <MenuUsuariosInferior />
       </div>

@@ -78,12 +78,21 @@
   // Lista de amenidades válidas
   const AMENIDADES = FILTROS.map(f => f.value)
     .filter(v => !CIUDADES.includes(v) && !TIPOS.includes(v));
+  const limpiarSegmentosPagina = (segmentos: string[]) =>
+    segmentos.filter(seg => !/^pagina-\d+$/.test(seg));
 
   export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
     const router = useRouter();
 
     // Derivo segmentos extra (fechas y huéspedes) de la URL
     const applied = filtros ?? [];
+  
+    // para detectar la pagina
+    const lastSegment = applied[applied.length - 1];
+    const pageMatch = lastSegment?.match(/^pagina-(\d+)$/);
+    const pageFromUrl = pageMatch ? Number(pageMatch[1]) : 1;
+    const currentPageFromUrl = !isNaN(pageFromUrl) && pageFromUrl > 0 ? pageFromUrl : 1;
+
 
     // Detectamos si el primer segmento es una ciudad válida
     const posibleCiudad = applied[0];
@@ -107,7 +116,6 @@
     ];
 
     const extrasFromURL = applied.slice(canonicalBase.length);
-
     const initialFechaInicio = extrasFromURL[0] ?? '';
     const initialFechaFin = extrasFromURL[1] ?? '';
     const initialTotalHuespedes = extrasFromURL[2] ? Number(extrasFromURL[2]) : 1;
@@ -136,7 +144,7 @@
     const scrollRef   = useRef<HTMLDivElement>(null);
 
     const [ubicacionLista, setUbicacionLista] = useState<boolean>(false);
-
+    const [redirigiendoInternamente, setRedirigiendoInternamente] = useState(false);
 
     useEffect(() => {
       if (document.referrer.includes('/explorarglamping')) {
@@ -252,6 +260,23 @@
           const res = await fetch(url);
           const json = await res.json();
           const arr = Array.isArray(json) ? [] : json.glampings ?? [];
+          if (arr.length === 0 && pageArg > 1) {
+            // Intenta con la página 1 si no hay resultados
+            const retryQs = construirQuery(1, fi, ff, th, undefined, aceptaMascotas);
+            const retryRes = await fetch(`${API_BASE}?${retryQs}`);
+            const retryJson = await retryRes.json();
+            const retryArr = Array.isArray(retryJson) ? [] : retryJson.glampings ?? [];
+
+            if (retryArr.length > 0) {
+              const newExtras = limpiarSegmentosPagina(extras); // quita pagina-N si viene
+              const newPath = [...canonicalBase, ...newExtras].join('/');
+              setRedirigiendoInternamente(true);
+              window.scrollTo({ top: 0, behavior: 'auto' });
+              router.push(`/${newPath}`);
+              return;
+            }
+          }
+
           setGlampings(arr);
           if (typeof json.total === "number") {
             setTotalPages(Math.ceil(json.total / PAGE_SIZE));
@@ -282,7 +307,9 @@
 
   setGlampings([]);
   // setHasMore(true);
-  fetchGlampings(1, extrasFromURL);
+  const extrasSinPagina = extrasFromURL.filter(seg => !/^pagina-\d+$/.test(seg));
+  fetchGlampings(currentPageFromUrl, extrasSinPagina);
+
   setHasFetched(true);
   }, [filtros?.join(','), ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, geoError, aceptaMascotas, ubicacionLista]);
 
@@ -487,7 +514,7 @@
                  <TarjetaGeneral key={g._id} {...mapProps(g)} onClick={handleCardClick} />
               ))}
             </div>
-          ) : (!loading && hasFetched) ? (
+          ) : (!loading && hasFetched && !redirigiendoInternamente) ? (
             // <-- NUEVO BLOQUE
             <div className="TarjetasEcommerce-no-results">
               <Image
@@ -510,17 +537,24 @@
                 key={num}
                 className={`TarjetasEcommerce-pagina-boton ${page === num ? 'activo' : ''}`}
                 onClick={() => {
-                   // 1) Borramos el array para que aparezca el Skeleton
                   setGlampings([]);
-                  // 2) Scroll arriba
                   window.scrollTo({ top: 0, behavior: 'auto' });
-                  // 3) Recalculamos los extras y pedimos la página num
+
                   const extras = [
                     ...(fechaInicio ? [fechaInicio] : []),
-                    ...(fechaFin    ? [fechaFin]    : []),
+                    ...(fechaFin ? [fechaFin] : []),
                     ...(totalHuespedes > 1 ? [String(totalHuespedes)] : []),
                     ...(aceptaMascotas ? ["mascotas"] : [])
                   ];
+
+                  const extrasSinPagina = limpiarSegmentosPagina(extras);
+
+                  const fullPath = [...canonicalBase, ...extrasSinPagina];
+                    if (num > 1) {
+                      fullPath.push(`pagina-${num}`);
+                    }
+                  router.push(`/${fullPath.join("/")}`);
+
                   fetchGlampings(num, extras);
                 }}
               >

@@ -1,8 +1,7 @@
-// components/Regiones.tsx
-import React from "react";
-import { useRouter } from "next/navigation";
-import "./estilos.css";
+import React from 'react';
+import './estilos.css';
 
+// Definición de tipo para las regiones
 interface Region {
   nombre: string;
   ruta: string;
@@ -42,44 +41,42 @@ const regiones: Region[] = [
   },
 ];
 
-export default function Regiones() {
-  const router = useRouter();
-
+const Regiones: React.FC = () => {
   return (
     <div className="Regiones-container">
-      {/* Mensaje de “no results” */}
-      <div className="Regiones-error">
-        <img
-          src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/png-Tristeza-Intensamente.webp"
-          alt="No hay resultados"
-          className="Regiones-error-imagen"
-        />
-        <div className="Regiones-error-texto">
-          <h1>¡Ups! No encontramos glampings con esos filtros</h1>
-          <p>
-            No te preocupes… sigue explorando. Seguro en alguna de estas regiones
-            encuentras tu Glamping ideal:
-          </p>
+      {/* Mensaje de error con meme */}
+      <div className="Regiones-mensajeError">
+        <div className="Regiones-textoError">
+          <h3>¡Ups! No encontramos glampings con esos filtros</h3>
+          <p>No te preocupes… sigue explorando. Seguro en alguna de estas regiones encuentras tu Glamping ideal:</p>
         </div>
+        <img 
+          className="Regiones-imagenError" 
+          src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/png-Tristeza-Intensamente.webp" 
+          alt="Emoji triste" 
+        />
       </div>
-
-      {/* Grid de regiones */}
+      
+      <h2 className="Regiones-titulo">Explora glamping en</h2>
       <div className="Regiones-grid">
-        {regiones.map((region) => (
-          <div
-            key={region.nombre}
-            className="Regiones-card"
-            onClick={() => router.push(region.ruta)}
+        {regiones.map((region, index) => (
+          <a 
+            key={index} 
+            href={region.ruta} 
+            className="Regiones-tarjeta"
           >
-            <img
-              src={region.imagen}
-              alt={region.nombre}
+            <div 
               className="Regiones-imagen"
+              style={{ backgroundImage: `url(${region.imagen})` }}
             />
-            <div className="Regiones-nombre">{region.nombre}</div>
-          </div>
+            <div className="Regiones-capa">
+              <span className="Regiones-nombre">{region.nombre}</span>
+            </div>
+          </a>
         ))}
       </div>
     </div>
   );
-}
+};
+
+export default Regiones;

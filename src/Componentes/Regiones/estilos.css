@@ -1,145 +1,175 @@
-/* estilos.css - Estilos para el componente Regiones corregido */
-
+/* Contenedor principal */
 .Regiones-container {
-  padding: 1rem;
-  background-color: #f9f7f1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 14px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 0.5rem;
 }
 
-.Regiones-error {
+/* Mensaje de error con meme */
+.Regiones-mensajeError {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  max-width: 1000px;
+  gap: 1.5rem;
+  background-color: #f8f6f0;
+  border-radius: 12px;
+  padding: 1.5rem;
   margin-bottom: 2rem;
-  text-align: center;
-  padding: 0 1rem;
+  border-left: 4px solid #e74c3c;
 }
 
-.Regiones-error-imagen {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-.Regiones-error-texto h1 {
-  font-size: 1.8rem;
-  color: #3e3e3e;
+.Regiones-textoError h3 {
+  color: #e74c3c;
+  font-size: 1.4rem;
   margin-bottom: 0.5rem;
 }
 
-.Regiones-error-texto p {
+.Regiones-textoError p {
+  color: #2c4c3b;
   font-size: 1.1rem;
-  color: #5a5a5a;
-  max-width: 400px;
-  margin: 0 auto;
+  line-height: 1.5;
+  margin: 0;
 }
 
+.Regiones-imagenError {
+  width: 80px;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* Título */
+.Regiones-titulo {
+  text-align: center;
+  color: #2c4c3b;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+/* Grid de regiones - Responsive */
 .Regiones-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
-/* Cada tarjeta mantiene proporción 4:3 mediante padding-bottom */
-.Regiones-card {
+/* Tarjeta de región */
+.Regiones-tarjeta {
   position: relative;
-  width: 100%;
-  padding-bottom: 75%; /* 4 / 3 ratio */
-  cursor: pointer;
-  border-radius: 12px;
+  height: 200px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: block;
 }
 
-.Regiones-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+.Regiones-tarjeta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Overlay que contiene imagen y texto */
-.Regiones-imagen-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
+/* Imagen con efecto overlay */
 .Regiones-imagen {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.5s ease;
 }
 
-.Regiones-card:hover .Regiones-imagen {
+.Regiones-tarjeta:hover .Regiones-imagen {
   transform: scale(1.05);
 }
 
-.Regiones-nombre {
+/* Capa oscura para texto */
+.Regiones-capa {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
-  padding: 0.75rem;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 1rem 0.5rem 0.8rem;
   text-align: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #fff;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-  backdrop-filter: blur(2px);
 }
 
-/* Responsive tweaks */
+/* Nombre de la región */
+.Regiones-nombre {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  display: block;
+}
+
+/* Media Queries para ajustes específicos */
 @media (max-width: 768px) {
-  .Regiones-error-texto h1 {
-    font-size: 1.5rem;
+  .Regiones-container {
+    width: 95%;
+    padding: 1rem 0.25rem;
   }
-
-  .Regiones-error-texto p {
-    font-size: 1rem;
-  }
-
-  .Regiones-grid {
+  
+  .Regiones-mensajeError {
+    flex-direction: column;
+    text-align: center;
     gap: 1rem;
+    padding: 1.2rem;
+  }
+  
+  .Regiones-imagenError {
+    width: 60px;
+  }
+  
+  .Regiones-titulo {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .Regiones-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .Regiones-tarjeta {
+    height: 180px;
   }
 }
 
 @media (max-width: 480px) {
-  .Regiones-error {
-    flex-direction: column;
+  .Regiones-textoError h3 {
+    font-size: 1.2rem;
   }
-
-  .Regiones-error-imagen {
-    width: 120px;
+  
+  .Regiones-textoError p {
+    font-size: 1rem;
   }
-
-  .Regiones-error-texto h1 {
+  
+  .Regiones-titulo {
     font-size: 1.3rem;
   }
-
-  .Regiones-error-texto p {
-    font-size: 0.95rem;
-  }
-
+  
   .Regiones-grid {
     grid-template-columns: 1fr;
+    gap: 0.8rem;
   }
-
+  
   .Regiones-nombre {
-    font-size: 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .Regiones-capa {
+    padding: 0.8rem 0.5rem 0.6rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .Regiones-tarjeta {
+    height: 250px;
+  }
+  
+  .Regiones-nombre {
+    font-size: 1.4rem;
   }
 }

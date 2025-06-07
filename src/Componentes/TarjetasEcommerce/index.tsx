@@ -390,6 +390,9 @@
       window.open(urlWhatsApp, "_blank");
     };
 
+    // justo después de tus useState y useEffect, antes del return:
+    const noResults = !loading && hasFetched && !redirigiendoInternamente && glampings.length === 0;
+
     return (
       <div className="TarjetasEcommerce-container">
         {/* Controles */}
@@ -463,35 +466,33 @@
             </span>
           ))}
         </div>
+        
+        {!noResults && (
+          <div className='TarjetasEcommerce-Titulo'>
+            <h1>
+              {ciudadFilter
+                ? `Descubre y reserva los Mejores Glampings cerca a ${
+                    ciudadFilter
+                      .replace(/-/g, ' ')                       // quitar guiones
+                      .split(' ')                               // dividir en palabras
+                      .slice(0, 2)                               // tomar las dos primeras
+                      .join(' ')                                // unir de nuevo
+                  }`
+                : "Descubre y reserva los Mejores Glampings en Colombia"}{" "}
+              <Image
+                src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Colombia.svg"
+                alt="Bandera de Colombia"
+                width={32}
+                height={24}
+              />
+            </h1>
 
-        {/* Resultados */}
-        {/* <div className="TarjetasEcommerce-results">{glampings.length} resultados</div> */}
+            <p className="TarjetasEcommerce-descripcion">
+              ✨ Descubre la magia del glamping: lujo y naturaleza en un solo destino. 🌿🏕️
+            </p>
 
-        <div className='TarjetasEcommerce-Titulo'>
-          <h1>
-            {ciudadFilter
-              ? `Descubre y reserva los Mejores Glampings cerca a ${
-                  ciudadFilter
-                    .replace(/-/g, ' ')                       // quitar guiones
-                    .split(' ')                               // dividir en palabras
-                    .slice(0, 2)                               // tomar las dos primeras
-                    .join(' ')                                // unir de nuevo
-                }`
-              : "Descubre y reserva los Mejores Glampings en Colombia"}{" "}
-            <Image
-              src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Colombia.svg"
-              alt="Bandera de Colombia"
-              width={32}
-              height={24}
-            />
-          </h1>
-
-          <p className="TarjetasEcommerce-descripcion">
-            ✨ Descubre la magia del glamping: lujo y naturaleza en un solo destino. 🌿🏕️
-          </p>
-
-        </div>
-
+          </div>
+        )}
         {/* Botón fijo de WhatsApp */}
         <button
           type="button"

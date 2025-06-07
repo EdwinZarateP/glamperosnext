@@ -277,8 +277,8 @@ border-radius: 7px;
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin: 2rem auto;
-  width: 50%;       /* opcional: igual que tu grid/lista */
+  margin: auto;
+  width: 95%;       /* opcional: igual que tu grid/lista */
   gap: 1rem;
 }
 

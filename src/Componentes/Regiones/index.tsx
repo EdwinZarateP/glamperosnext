@@ -39,6 +39,11 @@ const regiones: Region[] = [
     ruta: "/valle-del-cauca",
     imagen: "https://storage.googleapis.com/glamperos-imagenes/Imagenes/valle%20del%20cauca.jpeg",
   },
+  {
+    nombre: "Todo Colombia",
+    ruta: "/",
+    imagen: "https://storage.googleapis.com/glamperos-imagenes/Imagenes/colombia.jpg",
+  },
 ];
 
 const Regiones: React.FC = () => {

@@ -1,0 +1,145 @@
+/* estilos.css - Estilos para el componente Regiones corregido */
+
+.Regiones-container {
+  padding: 1rem;
+  background-color: #f9f7f1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 14px;
+}
+
+.Regiones-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin-bottom: 2rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.Regiones-error-imagen {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.Regiones-error-texto h1 {
+  font-size: 1.8rem;
+  color: #3e3e3e;
+  margin-bottom: 0.5rem;
+}
+
+.Regiones-error-texto p {
+  font-size: 1.1rem;
+  color: #5a5a5a;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.Regiones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 1rem;
+}
+
+/* Cada tarjeta mantiene proporción 4:3 mediante padding-bottom */
+.Regiones-card {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%; /* 4 / 3 ratio */
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.Regiones-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Overlay que contiene imagen y texto */
+.Regiones-imagen-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.Regiones-imagen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.Regiones-card:hover .Regiones-imagen {
+  transform: scale(1.05);
+}
+
+.Regiones-nombre {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  backdrop-filter: blur(2px);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .Regiones-error-texto h1 {
+    font-size: 1.5rem;
+  }
+
+  .Regiones-error-texto p {
+    font-size: 1rem;
+  }
+
+  .Regiones-grid {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .Regiones-error {
+    flex-direction: column;
+  }
+
+  .Regiones-error-imagen {
+    width: 120px;
+  }
+
+  .Regiones-error-texto h1 {
+    font-size: 1.3rem;
+  }
+
+  .Regiones-error-texto p {
+    font-size: 0.95rem;
+  }
+
+  .Regiones-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .Regiones-nombre {
+    font-size: 1rem;
+  }
+}

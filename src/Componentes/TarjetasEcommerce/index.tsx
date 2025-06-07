@@ -14,6 +14,7 @@
     MdOutlineKeyboardArrowLeft,
     MdOutlineKeyboardArrowRight
   } from "react-icons/md";
+  import Regiones from "../Regiones/index";
   import municipiosData from "../MunicipiosGeneral/municipiosGeneral.json";
 
   type Municipio = {
@@ -515,18 +516,10 @@
               ))}
             </div>
           ) : (!loading && hasFetched && !redirigiendoInternamente) ? (
-            // <-- NUEVO BLOQUE
             <div className="TarjetasEcommerce-no-results">
-              <Image
-                src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/meme.jpg"         // coloca aquí tu meme en /public
-                alt="No hay glampings"
-                width={400}
-                height={300}
-              />
-              <p>Ups… no tenemos glampings con estas características pero sigue explorando y encontraras el ideal</p>
+              <Regiones />
             </div>
           ) : null}
-
         {/* ----------------------------------------
             BLOQUE NUEVO: Botones de paginación
             ---------------------------------------- */}

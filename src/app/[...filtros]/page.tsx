@@ -1,15 +1,14 @@
-// pages/[...filtros].tsx
+// src/app/[...filtros]/page.tsx
 
-import TarjetasEcommerce from '@/Componentes/TarjetasEcommerce'
-import MenuUsuariosInferior from '@/Componentes/MenuUsuariosInferior'
+import TarjetasEcommerce from '@/Componentes/TarjetasEcommerce';
+import MenuUsuariosInferior from '@/Componentes/MenuUsuariosInferior';
 import Footer from "@/Componentes/Footer";
 
 interface Props {
-  params: { filtros?: string[] }
+  params: { filtros?: string[] };
 }
 
-export default function FiltradosPage({ params }: Props) {
-  const filtros = params.filtros ?? []
+export default async function FiltradosPage({ params: { filtros = [] } }: Props) {
 
   return (
     <div className="GlampingsPage-container">
@@ -25,5 +24,5 @@ export default function FiltradosPage({ params }: Props) {
         <MenuUsuariosInferior />
       </div>
     </div>
-  )
+  );
 }

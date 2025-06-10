@@ -1,133 +1,124 @@
-/* estilos.css */
+/* src/app/blog/estilos.css */
 
-.blog-contenedor {
+/* ------------------------
+   Contenedor principal
+   ------------------------ */
+.Blog-contenedor {
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
-  margin-top: 70px;
+  margin-top: 90px; /* deja espacio para el header fijo */
+  box-sizing: border-box;
 }
 
-.blog-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+/* ===========================
+   1) Estilos Artículo Destacado
+   =========================== */
+.Blog-destacado {
+  margin-bottom: 3rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.blog-subtitle {
-  font-size: 1.125rem;
-  text-align: center;
-  color: #6b7280;
-  margin-bottom: 2rem;
+/* Layout: imagen izq / texto der en escritorio */
+.Blog-destacado-link {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 2rem;
+  text-decoration: none;
+  color: inherit;
 }
 
-.blog-contenedor-listas {
-  margin-top: 20px;
-}
-
-.blog-post-list {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-}
-
-@media (min-width: 900px) {
-  .blog-post-list {
-    grid-template-columns: 1fr 1fr;
+/* En móviles, apilar vertical */
+@media (max-width: 768px) {
+  .Blog-destacado-link {
+    flex-direction: column;
   }
 }
 
-.blog-post-item {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.6s ease forwards;
+/* Imagen ocupa mitad y se ajusta */
+.Blog-destacado-img {
+  flex: 1;
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
 }
 
-.blog-post-card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
+/* Texto ocupa mitad, centrado vertical */
+.Blog-destacado-info {
+  flex: 1;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-  color: inherit;
-  text-decoration: none;
+  justify-content: center;
 }
 
-.blog-post-card:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  transform: translateY(-3px);
+.Blog-destacado-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #2F6B3E;
 }
 
-.blog-post-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.blog-post-content {
-  padding: 1.5rem;
-}
-
-.blog-post-categorias {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.blog-categoria {
-  background-color: #f3f4f6;
-  color: #1f2937;
-  font-size: 0.75rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 9999px;
-}
-
-.blog-post-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  line-height: 1.4;
-  color: #111827;
-}
-
-.blog-post-excerpt {
+.Blog-destacado-excerpt {
   font-size: 1rem;
-  color: #4b5563;
-  line-height: 1.6;
+  color: #444;
+  margin-bottom: 0.8rem;
 }
 
-.blog-post-excerpt a {
+.Blog-destacado-mas {
+  font-weight: bold;
+  color: #F2A900;
+}
+
+/* ===========================
+   2) Estilos Grid de Artículos
+   =========================== */
+.Blog-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Card individual */
+.Blog-card {
+  display: block;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
   text-decoration: none;
   color: inherit;
 }
 
-.blog-post-excerpt a:hover {
-  color: #2563eb;
+.Blog-card:hover {
+  transform: translateY(-4px);
 }
 
-.blog-post-footer {
-  margin-top: 1rem;
-  text-align: right;
+/* Imagen de la card con altura fija */
+.Blog-card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
 }
 
-.leer-mas {
-  font-weight: 500;
-  color: #2563eb;
+/* Contenido interno */
+.Blog-card-content {
+  padding: 1rem;
+}
+
+.Blog-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2F6B3E;
+}
+
+.Blog-card-excerpt {
   font-size: 0.95rem;
-  cursor: pointer;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  color: #555;
+  line-height: 1.4;
 }

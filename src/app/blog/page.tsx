@@ -1,6 +1,6 @@
-// src/app/blog/page.tsx
 import Link from "next/link";
-import HeaderIcono from "../../Componentes/HeaderIcono";
+import HeaderBlog from "../../Componentes/HeaderBlog";
+import Footer from "@/Componentes/Footer";
 import "./estilos.css";
 
 export const revalidate = 60;
@@ -10,6 +10,7 @@ interface Post {
   slug: string;
   title: { rendered: string };
   excerpt: { rendered: string };
+  date: string;
   _embedded?: {
     "wp:featuredmedia"?: { source_url: string }[];
     "wp:term"?: any[][];
@@ -18,78 +19,96 @@ interface Post {
 
 export default async function BlogIndex() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?_embed`
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?_embed&per_page=7&page=1`
   );
   const posts: Post[] = await res.json();
 
+  if (!posts.length) return <p>No hay artículos disponibles.</p>;
+
+  // Separa la última entrada
+  const [destacado, ...otros] = posts;
+  const imagenDestacada =
+    destacado._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
+
   return (
-    <main className="blog-contenedor">
-      <HeaderIcono descripcion="Blog Glamperos" />
+    <>
+      <HeaderBlog descripcion="Blog Glamperos" />
 
-      <h1 className="blog-title">Experiencias</h1>
-      <p className="blog-subtitle">
-        Historias, consejos y destinos únicos para glamping en Colombia
-      </p>
+      <main className="Blog-contenedor">
+        {/* =====================
+            1) Artículo destacado
+           ===================== */}
+        <section className="Blog-destacado">
+          <Link
+            href={`/blog/${destacado.slug}`}
+            className="Blog-destacado-link"
+          >
+            {imagenDestacada && (
+              <img
+                src={imagenDestacada}
+                alt="Destacado"
+                className="Blog-destacado-img"
+              />
+            )}
+            <div className="Blog-destacado-info">
+              <h2
+                className="Blog-destacado-title"
+                dangerouslySetInnerHTML={{
+                  __html: destacado.title.rendered,
+                }}
+              />
+              <p
+                className="Blog-destacado-excerpt"
+                dangerouslySetInnerHTML={{
+                  __html: destacado.excerpt.rendered,
+                }}
+              />
+              <span className="Blog-destacado-mas">Leer más →</span>
+            </div>
+          </Link>
+        </section>
 
-      <div className="blog-contenedor-listas">
-        <ul className="blog-post-list">
-          {posts.map((post, index) => {
-            const featuredMedia =
-              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
-            const categories =
-              post._embedded?.["wp:term"]?.[0]?.map((cat: any) => cat) || [];
-
+        {/* ======================
+            2) Grid de artículos
+           ====================== */}
+        <section className="Blog-grid">
+          {otros.map((post) => {
+            const img = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
             return (
-              <li
+              <Link
                 key={post.id}
-                className="blog-post-item"
-                style={{ animationDelay: `${index * 100}ms` }}
+                href={`/blog/${post.slug}`}
+                className="Blog-card"
+                prefetch={false}
               >
-                <Link href={`/blog/${post.slug}`} prefetch={false}>
-                  <article className="blog-post-card">
-                    {featuredMedia && (
-                      <img
-                        src={featuredMedia}
-                        alt="Imagen destacada"
-                        className="blog-post-image"
-                      />
-                    )}
-                    <div className="blog-post-content">
-                      {categories.length > 0 && (
-                        <div className="blog-post-categorias">
-                          {categories.map((cat: any) => (
-                            <span key={cat.id} className="blog-categoria">
-                              {cat.name}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      <h2
-                        className="blog-post-title"
-                        dangerouslySetInnerHTML={{
-                          __html: post.title.rendered,
-                        }}
-                      />
-
-                      <div
-                        className="blog-post-excerpt"
-                        dangerouslySetInnerHTML={{
-                          __html: post.excerpt.rendered,
-                        }}
-                      />
-
-                      <div className="blog-post-footer">
-                        <span className="leer-mas">Leer más →</span>
-                      </div>
-                    </div>
-                  </article>
-                </Link>
-              </li>
+                {img && (
+                  <img
+                    src={img}
+                    alt={post.title.rendered}
+                    className="Blog-card-img"
+                  />
+                )}
+                <div className="Blog-card-content">
+                  <h3
+                    className="Blog-card-title"
+                    dangerouslySetInnerHTML={{
+                      __html: post.title.rendered,
+                    }}
+                  />
+                  <div
+                    className="Blog-card-excerpt"
+                    dangerouslySetInnerHTML={{
+                      __html: post.excerpt.rendered,
+                    }}
+                  />
+                </div>
+              </Link>
             );
           })}
-        </ul>
-      </div>
-    </main>
+        </section>
+      </main>
+
+      <Footer />
+    </>
   );
 }

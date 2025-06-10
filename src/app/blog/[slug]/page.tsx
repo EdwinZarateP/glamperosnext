@@ -15,20 +15,32 @@ export async function generateStaticParams() {
 
 // Página individual del post
 export default async function BlogPost({
-  params,
+  params: { slug },
 }: {
   params: { slug: string };
 }) {
-  if (!params?.slug) {
+  if (!slug) {
     return (
       <main className="blog-container">
         <p>Error: slug no proporcionado.</p>
-        <Link href="/blog" prefetch={false}>← Volver al blog</Link>
+        <Link href="/blog">← Volver al blog</Link>
       </main>
     );
   }
 
-  const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${params.slug}`);
+  const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${slug}`, {
+    next: { revalidate: 60 },
+  });
+
+  if (!res.ok) {
+    return (
+      <main className="blog-container">
+        <p>Error al cargar el post.</p>
+        <Link href="/blog">← Volver al blog</Link>
+      </main>
+    );
+  }
+
   const posts: any[] = await res.json();
   const post = posts[0];
 
@@ -36,7 +48,7 @@ export default async function BlogPost({
     return (
       <main className="blog-container">
         <p>No se encontró el post.</p>
-        <Link href="/blog" prefetch={false}>← Volver al blog</Link>
+        <Link href="/blog">← Volver al blog</Link>
       </main>
     );
   }
@@ -51,7 +63,7 @@ export default async function BlogPost({
         className="blog-post-content"
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
       />
-      <Link href="/blog" prefetch={false}>← Volver al blog</Link>
+      <Link href="/blog">← Volver al blog</Link>
     </main>
   );
 }

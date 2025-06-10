@@ -1,0 +1,155 @@
+/* Contenedor fijo superior */
+.HeaderBlog-contenedor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px solid #e6e3df;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Contenido principal del header */
+.HeaderBlog-Header {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
+  height: 70px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Lado izquierdo */
+.HeaderBlog-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.HeaderBlog-logoLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.HeaderBlog-logo {
+  width: 40px;
+  height: auto;
+}
+
+.HeaderBlog-descripcion {
+  margin-left: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2F6B3E;
+}
+
+/* Botones desktop */
+.HeaderBlog-derecha {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Botones base */
+.HeaderBlog-btn {
+  display: inline-block;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  border: 2px solid transparent;
+}
+
+/* Botón primario: verde marca */
+.HeaderBlog-btn-primario {
+  background-color: #2F6B3E;
+  color: #ffffff;
+  border-color: #2F6B3E;
+}
+.HeaderBlog-btn-primario:hover {
+  background-color: #24572f;
+  border-color: #24572f;
+}
+
+/* Botón secundario: amarillo con borde verde */
+.HeaderBlog-btn-secundario {
+  background-color: #ffffff;
+  color: #2F6B3E;
+  border: 2px solid #2F6B3E;
+}
+.HeaderBlog-btn-secundario:hover {
+  background-color: #F2A900;
+  color: #000000;
+  border-color: #F2A900;
+}
+
+/* Botón hamburguesa (oculto por defecto) */
+.HeaderBlog-hamburguesa {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #2F6B3E;
+}
+
+/* Menú móvil */
+.HeaderBlog-menuMovil {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.HeaderBlog-menuLink {
+  padding: 0.75rem 14px;
+  font-size: 1rem;
+  text-decoration: none;
+  color: #2F6B3E;
+  font-weight: 500;
+  border-bottom: 1px solid #f3f4f6;
+}
+.HeaderBlog-menuLink:hover {
+  color: #F2A900;
+}
+.HeaderBlog-menuLink:last-child {
+  border-bottom: none;
+}
+
+/* Responsivo: ocultar botones y mostrar hamburguesa */
+@media (max-width: 900px) {
+  .HeaderBlog-derecha {
+    display: none;
+  }
+
+  .HeaderBlog-hamburguesa {
+    display: block;
+  }
+
+  .HeaderBlog-descripcion {
+    font-size: 0.95rem;
+    margin-left: 0.5rem;
+  }
+}
+
+/* Animación para el menú */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

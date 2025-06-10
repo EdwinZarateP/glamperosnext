@@ -71,7 +71,7 @@ export default function HeaderBlog({ descripcion }: { descripcion: string }) {
       {menuAbierto && (
         <div className="HeaderBlog-menuMovil">
           <Link href="/" className="HeaderBlog-menuLink">
-            Descubre tu glamping
+            Inicio
           </Link>
           <Link href="/CrearGlamping" className="HeaderBlog-menuLink">
             Publica tu glamping

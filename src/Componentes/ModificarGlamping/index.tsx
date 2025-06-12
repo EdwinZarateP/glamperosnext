@@ -25,8 +25,8 @@ const ModificarGlamping: React.FC = () => {
   const [descuento, setDescuento] = useState<number>(0);
   const [descripcionGlamping, setDescripcionGlamping] = useState("");
   const [video_youtube, setVideo_youtube] = useState("");
-  const [urlIcal, setUrlIcal] = useState("");
-  const [urlIcalBooking, setUrlIcalBooking] = useState("");
+  // const [urlIcal, setUrlIcal] = useState("");
+  // const [urlIcalBooking, setUrlIcalBooking] = useState("");
   const [amenidadesGlobal, setAmenidadesGlobal] = useState<string[]>([]);
 
   // Carga inicial
@@ -47,8 +47,8 @@ const ModificarGlamping: React.FC = () => {
           setDescuento(data.descuento ?? 0);
           setDescripcionGlamping(data.descripcionGlamping || "");
           setVideo_youtube(data.video_youtube || "");
-          setUrlIcal(data.urlIcal || "");
-          setUrlIcalBooking(data.urlIcalBooking || "");
+          // setUrlIcal(data.urlIcal || "");
+          // setUrlIcalBooking(data.urlIcalBooking || "");
           setAmenidadesGlobal(data.amenidadesGlobal || []);
         })
         .catch((err) => console.error("Error al cargar glamping:", err));
@@ -84,8 +84,8 @@ const ModificarGlamping: React.FC = () => {
     formData.append("diasCancelacion", diasCancelacion.toString());
     formData.append("descuento", descuento.toString());
     formData.append("descripcionGlamping", descripcionGlamping);
-    formData.append("urlIcal", urlIcal || "Sin url");
-    formData.append("urlIcalBooking", urlIcalBooking || "Sin url");
+    // formData.append("urlIcal", urlIcal || "Sin url");
+    // formData.append("urlIcalBooking", urlIcalBooking || "Sin url");
     formData.append("video_youtube", video_youtube || "sin video");
     formData.append("amenidadesGlobal", amenidadesGlobal.join(","));
 
@@ -269,7 +269,7 @@ const ModificarGlamping: React.FC = () => {
               onChange={(e) => setVideo_youtube(e.target.value)}
             />
           </div>
-
+{/* 
           <div className="ModificarGlamping-campo">
             <label htmlFor="urlIcal">URL iCal Airbnb:</label>
             <input
@@ -279,9 +279,9 @@ const ModificarGlamping: React.FC = () => {
               value={urlIcal}
               onChange={(e) => setUrlIcal(e.target.value)}
             />
-          </div>
+          </div> */}
 
-          <div className="ModificarGlamping-campo">
+          {/* <div className="ModificarGlamping-campo">
             <label htmlFor="urlIcalBooking">URL iCal Booking:</label>
             <input
               id="urlIcalBooking"
@@ -290,7 +290,7 @@ const ModificarGlamping: React.FC = () => {
               value={urlIcalBooking}
               onChange={(e) => setUrlIcalBooking(e.target.value)}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Estos dos ocupan todo el ancho */}

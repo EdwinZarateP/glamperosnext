@@ -148,24 +148,34 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   // =============================================================================
   const actualizarCalendarios = async () => {
     if (!glampingId || !informacionGlamping) return;
-     // Validar URLs antes de continuar
-    if (urlAirbnb && !urlAirbnb.toLowerCase().includes("airbnb")) {
-      Swal.fire({
-        icon: "warning",
-        title: "URL incorrecta",
-        text: "Parece que pegaste mal el link de Airbnb. Asegúrate de copiarlo desde la sección correcta."
-      });
-      return;
-    }
 
-    if (urlBooking && !urlBooking.toLowerCase().includes("booking")) {
-      Swal.fire({
-        icon: "warning",
-        title: "URL incorrecta",
-        text: "Parece que pegaste mal el link de Booking. Verifica que sea la URL de calendario."
-      });
-      return;
-    }
+    // Validar que si hay un valor, debe contener 'airbnb'
+  if (
+    urlAirbnb.trim().toLowerCase() !== "" &&
+    urlAirbnb.trim().toLowerCase() !== "sin url" &&
+    !urlAirbnb.toLowerCase().includes("airbnb")
+  ) {
+    Swal.fire({
+      icon: "warning",
+      title: "URL incorrecta",
+      text: "Parece que pegaste mal el link de Airbnb. Asegúrate de copiarlo desde la sección correcta."
+    });
+    return;
+  }
+
+  // Validar que si hay un valor, debe contener 'booking'
+  if (
+    urlBooking.trim().toLowerCase() !== "" &&
+    urlBooking.trim().toLowerCase() !== "sin url" &&
+    !urlBooking.toLowerCase().includes("booking")
+  ) {
+    Swal.fire({
+      icon: "warning",
+      title: "URL incorrecta",
+      text: "Parece que pegaste mal el link de Booking. Verifica que sea la URL de calendario."
+    });
+    return;
+  }
 
     try {
       // Creamos un FormData con todos los campos que el backend requiere

@@ -53,25 +53,9 @@ export default function HeaderGeneral({
     // setFechaInicioConfirmado,
     // setFechaFinConfirmado,
     totalHuespedes,
-    setCantidad_Huespedes,
-    setCantidad_Huespedes_Adicional,
     setMostrarMenuUsuarios,
     setIdUsuario,
-    setSiono,
-    setLatitud,
-    setLongitud,
     setCiudad_departamento,
-    setTipoGlamping,
-    setAmenidadesGlobal,
-    setImagenesCargadas,
-    setNombreGlamping,
-    setDescripcionGlamping,
-    setPrecioEstandar,
-    setDiasCancelacion,
-    setDescuento,
-    setPrecioEstandarAdicional,
-    setAcepta_Mascotas,
-    setCopiasGlamping,
   } = ctx;
 
   // Usuario
@@ -128,34 +112,6 @@ export default function HeaderGeneral({
   const abrirVisitantes = () => setShowVisitantes(true);
   const cerrarVisitantes = () => setShowVisitantes(false);
 
-
-  // Publicar glamping
-  const publicarGlamping = () => {
-    setSiono(true);
-    setLatitud(4.123456);
-    setLongitud(-74.123456);
-    setCiudad_departamento("");
-    setTipoGlamping("");
-    setAmenidadesGlobal([]);
-    setImagenesCargadas([]);
-    setNombreGlamping("");
-    setDescripcionGlamping("");
-    setPrecioEstandar(0);
-    setDiasCancelacion(1);
-    setCantidad_Huespedes(1);
-    setCantidad_Huespedes_Adicional(0);
-    setDescuento(0);
-    setPrecioEstandarAdicional(0);
-    setAcepta_Mascotas(false);
-    setCopiasGlamping(1);
-    if (idUsuarioCookie) {
-      setIdUsuario(idUsuarioCookie);
-      router.push("/CrearGlamping");
-    } else {
-      router.push("/registro");
-    }
-  };
-
   // Búsqueda
 const handleSearch = () => {
   if (!fechaInicioConfirmado || !fechaFinConfirmado) {
@@ -210,6 +166,8 @@ const fechaText =
     ? `${format(fechaInicioConfirmado, 'd MMM yyyy', { locale: es })} → ${format(fechaFinConfirmado, 'd MMM yyyy', { locale: es })}`
     : "¿Cuándo?";
 
+const existeId = () => !!idUsuarioCookie && idUsuarioCookie !== "undefined";
+
   return (
     <div className="HeaderGeneral-container">
       <div className="HeaderGeneral-top">
@@ -225,7 +183,20 @@ const fechaText =
           <button className="HeaderGeneral-pill-search-btn" aria-label="Abrir busqueda"><FiSearch/></button>
         </div>
 
-        <button className="HeaderGeneral-publish-btn" onClick={publicarGlamping}>Publica tu Glamping</button>
+        <button
+          className="HeaderGeneral-publish-btn"
+          onClick={() => {
+            if (existeId()) {
+              setIdUsuario(idUsuarioCookie || "");
+              router.push("/CrearGlamping");
+            } else {
+              router.push("/registro");
+            }
+          }}
+        >
+          Publica tu Glamping
+        </button>
+
         <button className="HeaderGeneral-menu-btn" onClick={toggleMenu} aria-label="Abrir menú de usuario">
           <FiMenu/>
           <span className="HeaderGeneral-user-initial">

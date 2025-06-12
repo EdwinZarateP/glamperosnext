@@ -108,6 +108,18 @@
   color: #666;
 }
 
+/* Agrupa cada label+campo en columna dentro del grid */
+.ModificarGlamping-campo {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Para los campos que deben ocupar TODO el ancho */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+
 @media (max-width: 768px) {
   .ModificarGlamping-contenedor {
     padding: 10px;

@@ -1,16 +1,16 @@
 /* estilos.css */
 
 .blog-container {
-    max-width: 800px;
+    width:80%;
     margin: 0 auto;
     padding: 2rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #fff;
+    background-color: #ffffff;
     color: #222;
+    margin-top: 30px;
   }
   
   .blog-title {
-    font-size: 2.2rem;
+    font-size: 2rem;
     margin-bottom: 1.5rem;
     font-weight: 700;
     color: #2e2e2e;
@@ -19,15 +19,16 @@
   }
   
   .blog-post-content {
-    font-size: 1.05rem;
+    font-size: 1rem;
     line-height: 1.8;
     color: #333;
   }
   
   .blog-post-content img {
-    max-width: 100%;
+    display: block;     /* convierte la imagen en un bloque, necesario para centrar con margin auto */
+    width: 80%;
     height: auto;
-    margin: 1rem 0;
+    margin: 1rem auto;  /* el segundo valor auto centra horizontalmente */
     border-radius: 8px;
   }
   

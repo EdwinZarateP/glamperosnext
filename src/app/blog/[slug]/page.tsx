@@ -1,5 +1,7 @@
 // src/app/blog/[slug]/page.tsx
 import Link from "next/link";
+import HeaderBlog from "../../../Componentes/HeaderBlog";
+import Footer from "@/Componentes/Footer";
 import "./estilos.css";
 
 // Habilitar revalidación ISR para esta página
@@ -54,6 +56,8 @@ export default async function BlogPost({
   }
 
   return (
+    <>
+    <HeaderBlog descripcion="Blog Glamperos" />
     <main className="blog-container">
       <h1
         className="blog-title"
@@ -63,7 +67,10 @@ export default async function BlogPost({
         className="blog-post-content"
         dangerouslySetInnerHTML={{ __html: post.content.rendered }}
       />
-      <Link href="/blog">← Volver al blog</Link>
+      <Link href="/blog">← Volver al blog</Link>      
     </main>
+    <Footer />
+    </>
+    
   );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import HeaderBlog from "../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
+import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
 import "./estilos.css";
 
 export const revalidate = 60;
@@ -109,6 +110,7 @@ export default async function BlogIndex() {
       </main>
 
       <Footer />
+      <BotonWhatsApp />
     </>
   );
 }

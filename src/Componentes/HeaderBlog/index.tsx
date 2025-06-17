@@ -3,11 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import "./estilos.css";
 
 export default function HeaderBlog({ descripcion }: { descripcion: string }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
 
   // Cierra el menú si se hace clic fuera
   useEffect(() => {
@@ -28,6 +31,17 @@ export default function HeaderBlog({ descripcion }: { descripcion: string }) {
     };
   }, [menuAbierto]);
 
+  // Función para validar login antes de publicar
+  const handlePublicaClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const idUsuario = Cookies.get("idUsuario");
+    if (idUsuario) {
+      router.push("/CrearGlamping");
+    } else {
+      router.push("/registro");
+    }
+  };
+
   return (
     <header className="HeaderBlog-contenedor" ref={menuRef}>
       <div className="HeaderBlog-Header">
@@ -40,22 +54,23 @@ export default function HeaderBlog({ descripcion }: { descripcion: string }) {
               height={40}
               className="HeaderBlog-logo"
             />
-          </Link>
+          
           {descripcion && (
             <span className="HeaderBlog-descripcion">{descripcion}</span>
           )}
+          </Link>
         </div>
 
         <div className="HeaderBlog-derecha">
           <Link href="/" className="HeaderBlog-btn HeaderBlog-btn-primario">
             Descubre tu glamping
           </Link>
-          <Link
-            href="/CrearGlamping"
+          <button
             className="HeaderBlog-btn HeaderBlog-btn-secundario"
+            onClick={handlePublicaClick}
           >
             Publica tu glamping
-          </Link>
+          </button>
         </div>
 
         {/* Botón hamburguesa */}
@@ -73,9 +88,12 @@ export default function HeaderBlog({ descripcion }: { descripcion: string }) {
           <Link href="/" className="HeaderBlog-menuLink">
             Inicio
           </Link>
-          <Link href="/CrearGlamping" className="HeaderBlog-menuLink">
+          <button
+            className="HeaderBlog-menuLink"
+            onClick={handlePublicaClick}
+          >
             Publica tu glamping
-          </Link>
+          </button>
         </div>
       )}
     </header>

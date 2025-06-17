@@ -2,6 +2,7 @@
 import Link from "next/link";
 import HeaderBlog from "../../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
+import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
 import "./estilos.css";
 
 // Habilitar revalidación ISR para esta página
@@ -9,7 +10,7 @@ export const revalidate = 60;
 
 // Generar rutas estáticas para los posts
 export async function generateStaticParams() {
-  const res = await fetch(`${process.env.WORDPRESS_API}/posts`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts`);
   const posts: any[] = await res.json();
 
   return posts.map((post) => ({ slug: post.slug }));
@@ -30,7 +31,7 @@ export default async function BlogPost({
     );
   }
 
-  const res = await fetch(`${process.env.WORDPRESS_API}/posts?slug=${slug}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?slug=${slug}`, {
     next: { revalidate: 60 },
   });
 
@@ -70,6 +71,7 @@ export default async function BlogPost({
       <Link href="/blog">← Volver al blog</Link>      
     </main>
     <Footer />
+    <BotonWhatsApp />
     </>
     
   );

@@ -56,3 +56,30 @@
     border-color: #0070f3;
   }
   
+  /* ================================
+   Botón flotante de WhatsApp
+   ================================ */
+
+.contenedor-principal-whatsapp-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: #25d366; /* color oficial de WhatsApp */
+  border: none;
+  border-radius: 50%;
+  padding: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.contenedor-principal-whatsapp-button:hover {
+  transform: scale(1.05);
+}
+
+.contenedor-principal-whatsapp-button img {
+  display: block;
+  width: 32px;
+  height: 32px;
+}

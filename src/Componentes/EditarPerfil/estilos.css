@@ -1,231 +1,278 @@
-/* Estilos generales */
-body {
-  font-family: 'Arial', sans-serif;
+/* --------------------------------------------- */
+/* Global resets & box-sizing                   */
+/* --------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-bg);
+  font-family: var(--font-base);
+  color: var(--color-text);
 }
 
-.editar-perfil-container {
+/* --------------------------------------------- */
+/* CSS Variables                                */
+/* --------------------------------------------- */
+:root {
+  --color-bg: #f8f9fa;
+  --color-card: #ffffff;
+  --color-primary: #2F6B3E;
+  --color-primary-dark: #419054;
+  --color-text: #333333;
+  --color-text-light: #555555;
+  --color-border: #e0e0e0;
+  --radius: 8px;
+  --transition: 0.3s ease;
+  --font-base: 'Roboto', sans-serif;
+}
+
+/* --------------------------------------------- */
+/* Parent wrapper (EdicionPerfil)                */
+/* --------------------------------------------- */
+.EdicionPerfil-contenedor {
+  width: 100%;
+  min-height: 100vh;
+  padding: 0;                   /* no extra gutters */
+  margin: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg);
+  overflow-x: hidden;           /* prevent horizontal scroll */
+}
+
+/* --------------------------------------------- */
+/* Main card/container                          */
+/* --------------------------------------------- */
+.editar-perfil-container {
   width: 100%;
   max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 1rem;               /* small side padding on mobile */
+  padding: 2rem;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-gap: 2rem;
+  overflow: hidden;             /* clip any internal overflow */
 }
 
-h2.editar-perfil-titulo {
+/* Title spans full width */
+.editar-perfil-titulo {
+  grid-column: 1 / -1;
   text-align: center;
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-primary);
 }
 
-/* Imagen de perfil */
+/* --------------------------------------------- */
+/* Profile image section                        */
+/* --------------------------------------------- */
 .editar-perfil-imagen {
   display: flex;
   flex-direction: column;
-  justify-content: center;  
-  margin-bottom: 20px;
+  align-items: center;
 }
 
 .editar-perfil-imagen-contenedor {
   position: relative;
-  display: inline-block;
-  width: 120px;
-  height: 120px;
-  background-color: #dcdcdc;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: var(--color-border);
+  transition: transform var(--transition);
 }
 
-.editar-perfil-imagen-foto {
+.editar-perfil-imagen-contenedor:hover {
+  transform: scale(1.05);
+}
+
+.editar-perfil-imagen-foto,
+.editar-perfil-inicial {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .editar-perfil-inicial {
-  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
   color: #fff;
+  font-size: 3rem;
   font-weight: bold;
 }
 
 .editar-perfil-boton-editar {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
+  bottom: 8px;
+  right: 8px;
+  background: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 50%;
-  padding: 5px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 16px;
+  transition: background var(--transition);
 }
 
 .editar-perfil-boton-editar:hover {
-  background-color: #333;
+  background: var(--color-primary-dark);
 }
 
-.editar-perfil-boton-guardar {
-  display: block;
-  margin: 0;
-  height: auto;
-  padding: 5px;
-  background-color: #666;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;  
-
-}
-
-.editar-perfil-boton-guardar:hover {
-  background-color: #444;
-}
-
-/* Información de perfil */
+/* --------------------------------------------- */
+/* Info & form section                          */
+/* --------------------------------------------- */
 .editar-perfil-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  overflow: hidden;             /* ensure children shrink properly */
 }
 
-.editar-perfil-info-item {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 10px;
+.editar-perfil-info p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: var(--color-text-light);
 }
 
-.editar-perfil-info-item p {
-  color: #555;
-  font-size: 16px;
-}
-
+/* Telephone inputs container */
 .editar-perfil-telefono-contenedor {
-  width: 100%;
   display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
 }
 
-.editar-perfil-telefono-contenedor p {
-  margin: 0;
-  color: #555;
-  font-size: 16px;
-}
-
+/* Allow flex items to shrink below their content size */
 .editar-perfil-select,
 .editar-perfil-input {
-  width: 150px;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  flex: 1;
+  min-width: 0;                /* crucial to prevent overflow */
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  transition: border var(--transition);
 }
 
-.editar-perfil-select {
-  background-color: #fff;
+.editar-perfil-select:focus,
+.editar-perfil-input:focus {
+  border-color: var(--color-primary);
+  outline: none;
 }
 
-.editar-perfil-input {
-  background-color: #f9f9f9;
-}
-
-.editar-perfil-boton-editar-tel {
-  background-color: #ccc;
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.editar-perfil-boton-editar-tel:hover {
-  background-color: #999;
-}
-
-/* Botón de continuar */
+/* --------------------------------------------- */
+/* Single action button                         */
+/* --------------------------------------------- */
 .editar-perfil-boton-regresar {
-  width: 100%;
-  max-width: 300px;
-  padding: 12px;
-  background-color: #666;
+  grid-column: 1 / -1;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: var(--color-primary);
   color: #fff;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: var(--radius);
+  font-size: 1rem;
   cursor: pointer;
-  margin-top: 20px;
+  transition: background var(--transition), transform var(--transition);
 }
 
 .editar-perfil-boton-regresar:hover {
-  background-color: #444;
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
 }
 
-/* Responsividad */
-@media screen and (max-width: 600px) {
+.editar-perfil-boton-regresar:disabled {
+  background: var(--color-border);
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------- */
+/* Cropper modal                                 */
+/* --------------------------------------------- */
+.cropper-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.cropper-controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.cropper-controls button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background var(--transition);
+}
+
+.cropper-controls button:first-child {
+  background: #ccc;
+}
+
+.cropper-controls button:first-child:hover {
+  background: #bbb;
+}
+
+.cropper-controls button:last-child {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.cropper-controls button:last-child:hover {
+  background: var(--color-primary-dark);
+}
+
+/* --------------------------------------------- */
+/* Responsive tweaks                             */
+/* --------------------------------------------- */
+@media (max-width: 700px) {
   .editar-perfil-container {
-    padding: 15px;
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    margin: 1rem;
+    width: calc(100% - 2rem);  /* full width minus container margin */
+    border-radius: calc(var(--radius) / 2);
+    grid-gap: 1rem;
   }
 
   .editar-perfil-imagen-contenedor {
-    width: 100px;
-    height: 100px;
-  }
-
-  .editar-perfil-imagen-foto {
-    width: 100%;
-    height: 100%;
-  }
-
-  .editar-perfil-info-item p {
-    font-size: 14px;
-  }
-
-  .editar-perfil-boton-editar {
-    font-size: 14px;
-  }
-
-  .editar-perfil-boton-guardar {
-    font-size: 14px;
-    max-width: 180px;
-  }
-
-  .editar-perfil-telefono-contenedor {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .editar-perfil-select {
-    width: 150px;
-  }
-
-  .editar-perfil-input {
-    width: 150px;
-  }
-
-  .editar-perfil-boton-editar-tel {
-    font-size: 14px;
+    width: 120px;
+    height: 120px;
   }
 
   .editar-perfil-boton-regresar {
-    font-size: 14px;
+    font-size: 0.9rem;
+    padding: 0.75rem;
   }
 }

@@ -6,7 +6,7 @@ const PoliticasPrivacidad = () => {
   return (
     <div className="contenedor-politicas">
     <HeaderIcono descripcion="Glamperos" />
-      <h1>Política de Privacidad</h1>
+      <h1>Política de Privacidad y tratamiento de datos</h1>
       <p>Última actualización: 26 de febrero de 2025</p>
       <p>
         Esta Política de Privacidad describe nuestras políticas y procedimientos

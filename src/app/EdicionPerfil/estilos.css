@@ -1,7 +1,8 @@
-.EdicionPerfil-contenedor{
-    display: flex;
-    flex-direction:column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+.EdicionPerfil-contenedor {
+  /* background-color: aqua; */
+  background-color: var(--color-bg); /* o blanco, o el color de tu layout */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

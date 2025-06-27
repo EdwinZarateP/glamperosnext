@@ -73,6 +73,9 @@ const Cuenta: React.FC = () => {
     setCopiasGlamping(1);
   };
 
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const API_URL = `${API_BASE}/usuarios`;
+
   const [usuario, setUsuario] = useState<{
     nombre: string;
     email: string;
@@ -89,8 +92,7 @@ const Cuenta: React.FC = () => {
 
       if (correoUsuario) {
         try {
-          const response = await fetch(
-            `https://glamperosapi.onrender.com/usuarios?email=${correoUsuario}`,
+          const response = await fetch(`${API_URL}?email=${correoUsuario}`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

@@ -3,25 +3,26 @@
 import { useState, useContext, useEffect } from "react";
 import axios, { AxiosError } from "axios";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-// import FacebookLogin from "react-facebook-login";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import { ContextoApp } from "../../context/AppContext";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
 import "./estilos.css";
 
+interface UsuarioAPI {
+  id: string;
+  nombre: string;
+  email: string;
+  telefono?: string;
+}
+
 const RegistroComp: React.FC = () => {
-  const contexto = useContext(ContextoApp);
+  const contexto = useContext(ContextoApp)!;
   const router = useRouter();
   const [mensaje, setMensaje] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false); // ✅ Verifica si está en el cliente
-
-  if (!contexto) {
-    throw new Error(
-      "ContextoApp no está disponible. Asegúrate de envolver tu aplicación con <ProveedorVariables>"
-    );
-  }
+  const [isClient, setIsClient] = useState(false);
+  const [aceptaTratamientoDatos, setAceptaTratamientoDatos] = useState(false);
 
   const {
     setIdUsuario,
@@ -37,37 +38,80 @@ const RegistroComp: React.FC = () => {
     setRedirigirExplorado,
   } = contexto;
 
-  const API_URL = "https://glamperosapi.onrender.com/usuarios";
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const API_URL = `${API_BASE}/usuarios`;
 
-  // ✅ Se ejecuta solo en el cliente para evitar errores de SSR
   useEffect(() => {
-    setIsClient(true); // Marca que el componente ya se montó en el cliente
-
-    const id = Cookies.get("idUsuario");
-    if (id) {
-      setIdUsuario(id);
+    setIsClient(true);
+    const idGuardado = Cookies.get("idUsuario");
+    if (idGuardado) {
+      setIdUsuario(idGuardado);
     }
   }, [setIdUsuario]);
 
-  // ✅ Manejo de errores con tipado correcto
   const manejarError = (error: unknown) => {
     console.error("Error:", error);
-
     if (error instanceof AxiosError) {
-      const errorMensaje =
-        error.response?.data?.detail || "Hubo un error inesperado.";
-      setMensaje(errorMensaje);
+      setMensaje(error.response?.data?.detail || "Hubo un error inesperado.");
     } else {
       setMensaje("Ocurrió un error desconocido.");
     }
   };
 
-  // ✅ Manejo del login con Google
+  const redireccionSegunEstado = () => {
+    if (siono) return "/CrearGlamping";
+    if (activarChat) {
+      setActivarChat(false);
+      return idUrlConversacion;
+    }
+    if (redirigirExplorado) {
+      setRedirigirExplorado(false);
+      return UrlActual;
+    }
+    return "/";
+  };
+
+  const guardarYRedirigir = (apiUsuario: UsuarioAPI) => {
+    // 1) Validar id
+    if (!apiUsuario.id || apiUsuario.id === "undefined") {
+      console.error("ID inválido recibido:", apiUsuario);
+      setMensaje("Error interno: no se obtuvo el identificador de usuario");
+      return;
+    }
+
+    // 2) Guardar cookies
+    Cookies.set("idUsuario", apiUsuario.id, { expires: 7 });
+    Cookies.set("nombreUsuario", apiUsuario.nombre, { expires: 7 });
+    Cookies.set("correoUsuario", apiUsuario.email, { expires: 7 });
+    const tel = apiUsuario.telefono?.trim() || "";
+    Cookies.set("telefonoUsuario", tel || "sintelefono", { expires: 7 });
+
+    console.log("✅ Cookies guardadas:");
+    console.log("idUsuario:", Cookies.get("idUsuario"));
+    console.log("nombreUsuario:", Cookies.get("nombreUsuario"));
+    console.log("correoUsuario:", Cookies.get("correoUsuario"));
+    console.log("telefonoUsuario:", Cookies.get("telefonoUsuario"));
+
+    // 3) Actualizar contexto
+    setIdUsuario(apiUsuario.id);
+    setNombreUsuario(apiUsuario.nombre);
+    setCorreoUsuario(apiUsuario.email);
+    setLogueado(true);
+
+    // 4) Redirigir según tenga teléfono o no
+    const tieneTel = Boolean(apiUsuario.telefono && apiUsuario.telefono.trim());
+    router.push(tieneTel ? redireccionSegunEstado() : "/EdicionPerfil");
+  };
+
   const handleGoogleSuccess = async (
     credentialResponse: CredentialResponse | undefined
   ) => {
     if (!credentialResponse?.credential) {
       setMensaje("No se recibió el credencial de Google");
+      return;
+    }
+    if (!aceptaTratamientoDatos) {
+      setMensaje("Debes aceptar el tratamiento de datos personales para continuar.");
       return;
     }
 
@@ -77,138 +121,57 @@ const RegistroComp: React.FC = () => {
       );
       const nombreUsuario = decoded.name;
       const emailUsuario = decoded.email;
+      if (!nombreUsuario || !emailUsuario) {
+        setMensaje("No se pudo obtener tu nombre o correo desde Google.");
+        return;
+      }
 
-      const response = await axios.post(API_URL, {
+      const payload = {
         nombre: nombreUsuario,
         email: emailUsuario,
-        telefono: "",
-        clave: "autenticacionGoogle",
+        aceptaTratamientoDatos,
+      };
+
+      const response = await axios.post(`${API_URL}/google`, payload, {
+        headers: { "Content-Type": "application/json" },
       });
 
-      if (response.status === 200 && response.data) {
-        const usuario: {
-          _id: string;
-          nombre: string;
-          email: string;
-          telefono?: string;
-        } = response.data.usuario;
-        Cookies.set("idUsuario", usuario._id, { expires: 7 });
-        Cookies.set("nombreUsuario", usuario.nombre, { expires: 7 });
-        Cookies.set("correoUsuario", usuario.email, { expires: 7 });
-
-        const telefono: string = usuario.telefono?.trim() || "sintelefono";
-        Cookies.set("telefonoUsuario", telefono, { expires: 7 });
-
-        setIdUsuario(usuario._id);
-        setNombreUsuario(usuario.nombre);
-        setCorreoUsuario(usuario.email);
-        setLogueado(true);
-
-        router.push(
-          !!usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil"
-        );
+      if (response.status === 200) {
+        const { usuario: apiUsuario } = response.data as {
+          usuario: UsuarioAPI;
+        };
+        guardarYRedirigir(apiUsuario);
       }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response?.status === 400) {
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 400) {
         setMensaje("El correo ya está registrado. Intentando redirigir...");
-        redirigirUsuarioExistente(error.response?.data?.usuario);
+        const data = err.response!.data as { usuario: UsuarioAPI };
+        guardarYRedirigir(data.usuario);
       } else {
-        manejarError(error);
+        manejarError(err);
       }
     }
   };
 
-  // ✅ Manejo del login con Facebook
-  // const handleFacebookResponse = async (response: any) => {
-  //   if (!response.accessToken) {
-  //     setMensaje("No se recibió el token de Facebook");
-  //     return;
-  //   }
-
-  //   try {
-  //     const res = await axios.post(`${API_URL}/facebook`, {
-  //       accessToken: response.accessToken,
-  //     });
-
-  //     if (res.status === 200 && res.data) {
-  //       const usuario: {
-  //         _id: string;
-  //         nombre: string;
-  //         email: string;
-  //         telefono?: string;
-  //       } = res.data.usuario;
-  //       Cookies.set("idUsuario", usuario._id, { expires: 7 });
-  //       Cookies.set("nombreUsuario", usuario.nombre, { expires: 7 });
-  //       Cookies.set("correoUsuario", usuario.email, { expires: 7 });
-
-  //       const telefono: string = usuario.telefono?.trim() || "sintelefono";
-  //       Cookies.set("telefonoUsuario", telefono, { expires: 7 });
-
-  //       setIdUsuario(usuario._id);
-  //       setNombreUsuario(usuario.nombre);
-  //       setCorreoUsuario(usuario.email);
-  //       setLogueado(true);
-
-  //       router.push(
-  //         !!usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil"
-  //       );
-  //     }
-  //   } catch (error: unknown) {
-  //     if (axios.isAxiosError(error) && error.response?.status === 400) {
-  //       setMensaje("El correo ya está registrado. Intentando redirigir...");
-  //       redirigirUsuarioExistente(error.response?.data?.usuario);
-  //     } else {
-  //       manejarError(error);
-  //     }
-  //   }
-  // };
-
-  // ✅ Función para redirigir usuarios existentes
-  const redirigirUsuarioExistente = async (usuario: {
-    _id: string;
-    nombre: string;
-    email: string;
-    telefono?: string;
-  }) => {
-    if (!usuario) return;
-
-    Cookies.set("idUsuario", usuario._id, { expires: 7 });
-    Cookies.set("nombreUsuario", usuario.nombre, { expires: 7 });
-    Cookies.set("correoUsuario", usuario.email, { expires: 7 });
-
-    const telefono: string = usuario.telefono?.trim() || "sintelefono";
-    Cookies.set("telefonoUsuario", telefono, { expires: 7 });
-
-    setIdUsuario(usuario._id);
-    setNombreUsuario(usuario.nombre);
-    setCorreoUsuario(usuario.email);
-    setLogueado(true);
-
-    router.push(!!usuario.telefono ? redireccionSegunEstado() : "/EdicionPerfil");
-  };
-
-  // ✅ Función para determinar la redirección
-  const redireccionSegunEstado = () => {
-    if (siono) return "/CrearGlamping";
-    if (activarChat) {
-      setActivarChat(false);
-      return `${idUrlConversacion}`;
-    }
-    if (redirigirExplorado) {
-      setRedirigirExplorado(false);
-      return UrlActual;
-    }
-    return "/";
-  };
-
-  // ✅ Evita mostrar el componente en el servidor hasta que esté en el cliente
-  if (!isClient) {
-    return null;
-  }
+  if (!isClient) return null;
 
   return (
     <div className="RegistroComp-contenedor">
       <h1 className="RegistroComp-titulo">Ingreso y/o Registro</h1>
+
+      <div className="RegistroComp-check">
+        <label>
+          <input
+            type="checkbox"
+            checked={aceptaTratamientoDatos}
+            onChange={(e) => setAceptaTratamientoDatos(e.target.checked)}
+          />{" "}
+          Acepto el{" "}
+          <a href="/politicas-privacidad" target="_blank" rel="noopener noreferrer">
+            tratamiento de datos personales
+          </a>
+        </label>
+      </div>
 
       {mensaje && <p className="Mensaje-error">{mensaje}</p>}
 
@@ -222,18 +185,6 @@ const RegistroComp: React.FC = () => {
           }
         />
       </div>
-
-      {/* <div className="RegistroComp-facebook">
-        <FacebookLogin
-          appId="1183129216655327" 
-          autoLoad={false}
-          fields="name,email,picture"
-          callback={handleFacebookResponse}
-          icon="fa-facebook"
-          textButton=" Iniciar sesión con Facebook"
-          cssClass="RegistroComp-facebook-boton"
-        />
-      </div> */}
     </div>
   );
 };

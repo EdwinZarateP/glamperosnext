@@ -159,6 +159,17 @@ const RegistroComp: React.FC = () => {
     <div className="RegistroComp-contenedor">
       <h1 className="RegistroComp-titulo">Ingreso y/o Registro</h1>
 
+      <div className="RegistroComp-google">
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() =>
+            setMensaje(
+              "Hubo un error al iniciar sesión con Google. Intenta nuevamente."
+            )
+          }
+        />
+      </div>
+
       <div className="RegistroComp-check">
         <label>
           <input
@@ -172,19 +183,9 @@ const RegistroComp: React.FC = () => {
           </a>
         </label>
       </div>
-
+        
       {mensaje && <p className="Mensaje-error">{mensaje}</p>}
-
-      <div className="RegistroComp-google">
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() =>
-            setMensaje(
-              "Hubo un error al iniciar sesión con Google. Intenta nuevamente."
-            )
-          }
-        />
-      </div>
+      
     </div>
   );
 };

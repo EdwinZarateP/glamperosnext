@@ -98,12 +98,17 @@ export default function RootLayout({
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-NXB4CM5T4H"
         />
-        <Script id="google-analytics" strategy="lazyOnload">
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17234612701"
+        />
+        <Script id="google-tags" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-NXB4CM5T4H');
+            gtag('config', 'AW-17234612701');
           `}
         </Script>
 

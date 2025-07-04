@@ -30,6 +30,7 @@
 
   interface TarjetasEcommerceProps {
     filtros?: string[];
+    initialData?: any[]; // ✅ agregado para recibir datos precargados del server
   }
 
   // Normaliza los municipios a slugs con guiones
@@ -39,8 +40,9 @@
   }));
 
 
-  // const API_BASE  = 'http://127.0.0.1:8000/glampings/glampingfiltrados2';
-  const API_BASE  = 'https://glamperosapi.onrender.com/glampings/glampingfiltrados2';
+    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+    const API_URL = `${API_BASE}/glampings/glampingfiltrados2`;
+
   const PAGE_SIZE = 24;
 
   // Coordenadas aproximadas para cada ciudad
@@ -82,7 +84,7 @@
   const limpiarSegmentosPagina = (segmentos: string[]) =>
     segmentos.filter(seg => !/^pagina-\d+$/.test(seg));
 
-  export default function TarjetasEcommerce({ filtros }: TarjetasEcommerceProps) {
+  export default function TarjetasEcommerce({ filtros, initialData }: TarjetasEcommerceProps) {
     const router = useRouter();
 
     // Derivo segmentos extra (fechas y huéspedes) de la URL
@@ -131,7 +133,7 @@
     const [ , setLastQuery] = useState<string>('');
 
     // Resultados y paginación
-    const [glampings, setGlampings] = useState<any[]>([]);
+    const [glampings, setGlampings] = useState<any[]>(initialData || []);
     const [page,       setPage]      = useState<number>(1);
     // Nuevo estado para saber cuántas páginas hay (asumiendo que la API devuelve 'total')
     const [totalPages, setTotalPages] = useState<number>(1);
@@ -256,7 +258,7 @@
         const th = thStr ? Number(thStr) : undefined;
         const qs = construirQuery(pageArg, fi, ff, th, undefined, aceptaMascotas);
         setLastQuery(qs);
-        const url = `${API_BASE}?${qs}`;
+        const url = `${API_URL}?${qs}`;
         try {
           const res = await fetch(url);
           const json = await res.json();
@@ -264,7 +266,7 @@
           if (arr.length === 0 && pageArg > 1) {
             // Intenta con la página 1 si no hay resultados
             const retryQs = construirQuery(1, fi, ff, th, undefined, aceptaMascotas);
-            const retryRes = await fetch(`${API_BASE}?${retryQs}`);
+            const retryRes = await fetch(`${API_URL}?${retryQs}`);
             const retryJson = await retryRes.json();
             const retryArr = Array.isArray(retryJson) ? [] : retryJson.glampings ?? [];
 

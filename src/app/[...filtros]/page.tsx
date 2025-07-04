@@ -1,6 +1,7 @@
 // src/app/[...filtros]/page.tsx
 
-import TarjetasEcommerce from "@/Componentes/TarjetasEcommerce";
+// import TarjetasEcommerce from "@/Componentes/TarjetasEcommerce";
+import TarjetasEcommerceServer from "@/Componentes/TarjetasEcommerce/TarjetasEcommerceServer";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import Footer from "@/Componentes/Footer";
 import { Metadata } from "next";
@@ -56,7 +57,7 @@ export default async function FiltradosPage({ params }: Props) {
   return (
     <div className="GlampingsPage-container">
       <div className="GlampingsPage-tarjetas">
-        <TarjetasEcommerce filtros={filtros} />
+        <TarjetasEcommerceServer filtros={filtros} />
       </div>
 
       <div className="GlampingsPage-Footer">

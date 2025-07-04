@@ -73,6 +73,8 @@ const WOMPI_API_URL_BASE = {
   pruebas: "https://sandbox.wompi.co/v1/transactions",
 }[modo];
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
   const contexto = useContext(ContextoApp);
   const searchParams = useSearchParams();
@@ -286,15 +288,14 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       const montoCentavos = Math.round(montoPesos * 100);
 
       const respFirma = await fetch(
-        `https://glamperosapi.onrender.com/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`
+        `${API_BASE}/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`
         // `http://127.0.0.1:8000/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`        
       );
       const dataFirma = await respFirma.json();
 
-      console.log("Referencia:", reservationReference);
-      console.log("Monto Centavos:", montoCentavos);
-      console.log("Firma:", dataFirma.firma_integridad);
-
+      // console.log("Referencia:", reservationReference);
+      // console.log("Monto Centavos:", montoCentavos);
+      // console.log("Firma:", dataFirma.firma_integridad);
 
       if (!dataFirma.firma_integridad) {
         console.error("No se pudo obtener la firma de integridad");

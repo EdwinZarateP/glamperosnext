@@ -12,6 +12,9 @@ export default function sitemap() {
     "registro",
     "propietarios",
     "blog",
+    "guatavita-cundinamarca",
+    "san-francisco-cundinamarca",
+    "guatape-antioquia",
   ].map(path => ({
     url: `${baseUrl}/${path}`,
     lastModified: new Date().toISOString(),

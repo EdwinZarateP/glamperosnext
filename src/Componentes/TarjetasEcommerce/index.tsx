@@ -1,4 +1,4 @@
-  // components/TarjetasEcommerce.tsx
+// components/TarjetasEcommerce.tsx
 
 "use client"
 

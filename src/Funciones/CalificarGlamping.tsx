@@ -1,3 +1,4 @@
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 export const CalificarGlamping = async (glamping_id: string, calificacion: number): Promise<boolean> => {
     try {
         // Validar que la calificación esté entre 0 y 5
@@ -6,7 +7,7 @@ export const CalificarGlamping = async (glamping_id: string, calificacion: numbe
         }
 
         // URL del endpoint de actualización
-        const url = `https://glamperosapi.onrender.com/glampings/${glamping_id}/calificacion`;
+        const url = `${API_BASE}/glampings/${glamping_id}/calificacion`;
 
         // Configuración de la petición
         const respuesta = await fetch(url, {

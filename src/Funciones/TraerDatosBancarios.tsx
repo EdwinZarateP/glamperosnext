@@ -9,10 +9,11 @@ export interface DatosBancariosProps {
   numeroDocumento: string | null;
   nombreTitular: string | null;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 const TraerDatosBancarios = async (usuarioId: string): Promise<DatosBancariosProps | null> => {
   try {
-    const respuesta = await axios.get(`https://glamperosapi.onrender.com/usuarios/${usuarioId}`);
+    const respuesta = await axios.get(`${API_BASE}/usuarios/${usuarioId}`);
     if (!respuesta.data) return null;
 
     return {

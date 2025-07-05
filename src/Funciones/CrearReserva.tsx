@@ -44,6 +44,8 @@ interface ReservaResponse {
   error?: string; // ⚠️ Agregar una propiedad opcional para capturar errores
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 // ✅ Ahora retorna un **objeto de reserva**, no solo una URL
 export const CrearReserva = async ({
   idCliente,
@@ -86,7 +88,7 @@ export const CrearReserva = async ({
 
     console.log("📩 Enviando reserva a backend:", nuevaReserva);
 
-    const response = await fetch("https://glamperosapi.onrender.com/reservas", {
+    const response = await fetch(`${API_BASE}/reservas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

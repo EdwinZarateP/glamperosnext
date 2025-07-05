@@ -4,16 +4,15 @@ import { useEffect, useState, useContext } from "react";
 import { useRouter, useSearchParams } from "next/navigation"; // Reemplazo de useNavigate y useParams
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
-
 import { ContextoApp } from "../../context/AppContext";
 import "./estilos.css"; // Importado en _app.tsx
-
-// IMPORTAMOS LA FUNCIÓN DE WHATSAPP
 import { enviarWhatsAppNotificarMensaje } from "../../Funciones/enviarWhatsAppNotificarMensaje";
 
 interface PerfilUsuarioProps {
   propietario_id: string;
 }
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
   const [usuario, setUsuario] = useState({
@@ -43,7 +42,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
     const fetchUsuario = async () => {
       try {
         const response = await fetch(
-          `https://glamperosapi.onrender.com/usuarios/${propietario_id}`
+          `${API_BASE}/usuarios/${propietario_id}`
         );
         const data = await response.json();
         setUsuario({
@@ -60,7 +59,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
       try {
         if (!glampingId) return;
         const response = await fetch(
-          `https://glamperosapi.onrender.com/glampings/${glampingId}`
+          `${API_BASE}/glampings/${glampingId}`
         );
         const data = await response.json();
         setNombreGlamping(data.nombreGlamping);
@@ -101,7 +100,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
 
       try {
         // 1) Guardar en BD
-        await fetch("https://glamperosapi.onrender.com/mensajes/enviar_mensaje", {
+        await fetch(`${API_BASE}/mensajes/enviar_mensaje`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nuevoMensaje),

@@ -9,6 +9,8 @@ import { useSearchParams } from "next/navigation";
 import { opcionesAmenidades } from "../../Componentes/Amenidades/index";
 import Swal from "sweetalert2";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const ModificarGlamping: React.FC = () => {
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId");
@@ -33,7 +35,7 @@ const ModificarGlamping: React.FC = () => {
   useEffect(() => {
     if (glampingId?.trim()) {
       axios
-        .get(`https://glamperosapi.onrender.com/glampings/${glampingId}`)
+        .get(`${API_BASE}/glampings/${glampingId}`)
         .then(({ data }) => {
           setNombreGlamping(data.nombreGlamping || "");
           setTipoGlamping(data.tipoGlamping || "");
@@ -92,7 +94,7 @@ const ModificarGlamping: React.FC = () => {
     try {
       if (!glampingId) throw new Error("ID de Glamping no encontrado");
       const res = await fetch(
-        `https://glamperosapi.onrender.com/glampings/Datos/${glampingId}`,
+        `${API_BASE}/glampings/Datos/${glampingId}`,
         { method: "PUT", body: formData }
       );
       if (!res.ok) throw new Error("Error al actualizar glamping");

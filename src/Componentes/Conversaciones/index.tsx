@@ -16,6 +16,8 @@ interface Message {
   timestamp: string;
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const Conversaciones: React.FC = () => {
   const isMobile = useMediaQuery("(max-width: 900px)");
   const searchParams = useSearchParams();
@@ -49,7 +51,7 @@ const Conversaciones: React.FC = () => {
       const obtenerMensajes = async () => {
         try {
           const response = await fetch(
-            `https://glamperosapi.onrender.com/mensajes/obtener_mensajes/${idEmisor}/${idReceptorURL}`
+            `${API_BASE}/mensajes/obtener_mensajes/${idEmisor}/${idReceptorURL}`
           );
           const data = await response.json();
 
@@ -115,7 +117,7 @@ const Conversaciones: React.FC = () => {
       };
 
       try {
-        await fetch("https://glamperosapi.onrender.com/mensajes/enviar_mensaje", {
+        await fetch(`${API_BASE}/mensajes/enviar_mensaje`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nuevoMensaje),

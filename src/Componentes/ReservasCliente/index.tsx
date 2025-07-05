@@ -62,6 +62,8 @@ interface EvaluacionResponse {
   tiene_calificacion: boolean;
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const ReservasCliente: React.FC = () => {
   const idCliente = Cookies.get('idUsuario');
   const nombreUsuario = Cookies.get('nombreUsuario');
@@ -91,7 +93,7 @@ const ReservasCliente: React.FC = () => {
 
     const obtenerReservas = async () => {
       try {
-        const response = await fetch(`https://glamperosapi.onrender.com/reservas/documentos_cliente/${idCliente}`);
+        const response = await fetch(`${API_BASE}/reservas/documentos_cliente/${idCliente}`);
         const data = await response.json();
         if (response.ok) {
           setReservas(data);
@@ -115,7 +117,7 @@ const ReservasCliente: React.FC = () => {
 
     for (const reserva of reservas) {
       try {
-        const response = await fetch(`https://glamperosapi.onrender.com/evaluaciones/codigoReserva/${reserva.codigoReserva}/tieneCalificacion`);
+        const response = await fetch(`${API_BASE}/evaluaciones/codigoReserva/${reserva.codigoReserva}/tieneCalificacion`);
         const data: EvaluacionResponse = await response.json();
         evaluacionesTemp[reserva.codigoReserva] = data.tiene_calificacion;
       } catch (error) {
@@ -140,7 +142,7 @@ const ReservasCliente: React.FC = () => {
     if (reservas.length > 0) {
       const obtenerGlamping = async (glampingId: string) => {
         try {
-          const response = await fetch(`https://glamperosapi.onrender.com/glampings/${glampingId}`);
+          const response = await fetch(`${API_BASE}/glampings/${glampingId}`);
           const data = await response.json();
           if (response.ok) {
             setGlampingData(prevData => [...prevData, data]);

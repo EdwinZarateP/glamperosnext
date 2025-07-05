@@ -7,6 +7,8 @@ import axios from "axios";
  * @returns {Promise<boolean>} - Retorna `true` si la eliminación fue exitosa, `false` en caso contrario.
  */
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 export const EliminarFechas = async (glampingId: string, fechasAEliminar: string[]): Promise<boolean> => {
   try {
     if (!glampingId || fechasAEliminar.length === 0) {
@@ -14,7 +16,7 @@ export const EliminarFechas = async (glampingId: string, fechasAEliminar: string
       return false;
     }
 
-    const url = `https://glamperosapi.onrender.com/glampings/${glampingId}/eliminar_fechas_manual`;
+    const url = `${API_BASE}/glampings/${glampingId}/eliminar_fechas_manual`;
 
     const response = await axios.patch(url, { fechas_a_eliminar: fechasAEliminar });
 

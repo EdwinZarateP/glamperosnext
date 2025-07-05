@@ -3,7 +3,7 @@
 // ─────────────────────────────────────────────────────────────────
 "use client";
 
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AiTwotoneHeart } from "react-icons/ai";
@@ -44,6 +44,9 @@ interface TarjetaProps {
   onClick?: () => void;
 }
 
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const TarjetaGeneral: React.FC<TarjetaProps> = ({
   glampingId,
   imagenes,
@@ -69,10 +72,11 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   const router = useRouter();
   const idUsuarioCookie = Cookies.get("idUsuario");
 
+
   useEffect(() => {
     if (!idUsuarioCookie) return;
     axios
-      .get("https://glamperosapi.onrender.com/favoritos/buscar", {
+      .get(`${API_BASE}/favoritos/buscar`, {
         params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
       })
       .then((res) => setEsFavorito(res.data.favorito_existe))
@@ -101,7 +105,14 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     return <div>No hay imágenes para mostrar.</div>;
   }
 
-  const audio = new Audio("/Sonidos/Favorito.mp3");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      audioRef.current = new Audio("/Sonidos/Favorito.mp3");
+    }
+  }, []);
+
   const hoy = new Date();
   const fechaInicioPorDefecto = new Date();
   fechaInicioPorDefecto.setDate(hoy.getDate() + 1);
@@ -140,16 +151,16 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     }
     const nuevoEstado = !esFavorito;
     setEsFavorito(nuevoEstado);
-    audio.play();
+    audioRef.current?.play();
 
     try {
       if (nuevoEstado) {
-        await axios.post("https://glamperosapi.onrender.com/favoritos/", {
+        await axios.post(`${API_BASE}/favoritos/`, {
           usuario_id: idUsuarioCookie,
           glamping_id: glampingId,
         });
       } else {
-        await axios.delete("https://glamperosapi.onrender.com/favoritos/", {
+        await axios.delete(`${API_BASE}/favoritos/`, {
           params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
         });
       }
@@ -248,11 +259,13 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
       {/* ─── Aquí sólo envuelvo la “parte clicable” en el Link ─── */}
       <Link
         href={urlDestino}
+        prefetch={false}      // ← le indicas a Next.js que NO prefetchée
         className="TarjetaGeneral-link"
         target={esPantallaPequena ? undefined : "_blank"}
         rel={esPantallaPequena ? undefined : "noopener noreferrer"}
         onClick={onClick}
       >
+
         <div
           className="TarjetaGeneral-imagen-container"
           onTouchStart={handleTouchStart}

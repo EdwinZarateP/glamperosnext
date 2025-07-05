@@ -20,7 +20,7 @@ interface SolicitudPago {
   Banco?: string; // Nombre del banco si lo manejas así
 }
 
-const API_URL = "https://glamperosapi.onrender.com";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export default function PagosContables() {
   // Estado para la validación de clave
@@ -43,7 +43,7 @@ export default function PagosContables() {
   // ----------------------------------------------------------------------------
   const obtenerSolicitudesPago = async () => {
     try {
-      const resp = await fetch(`${API_URL}/reservas/solicitudes_pago_pendientes`);
+      const resp = await fetch(`${API_BASE}/reservas/solicitudes_pago_pendientes`);
       if (!resp.ok) {
         Swal.fire("Error", "No se pudieron obtener las solicitudes de pago", "error");
         return;
@@ -93,7 +93,7 @@ export default function PagosContables() {
     try {
       // 1. Para cada código de reserva, hacemos PUT a /pago_por_codigo
       for (const codigo of sol.codigosReserva) {
-        const respReserva = await fetch(`${API_URL}/reservas/pago_por_codigo/${encodeURIComponent(codigo)}`, {
+        const respReserva = await fetch(`${API_BASE}/reservas/pago_por_codigo/${encodeURIComponent(codigo)}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -117,7 +117,7 @@ export default function PagosContables() {
       }
 
       // 2. Actualizar la solicitud de pago (una sola vez)
-      const respSolicitud = await fetch(`${API_URL}/reservas/actualizar_solicitud_pago/${sol._id}`, {
+      const respSolicitud = await fetch(`${API_BASE}/reservas/actualizar_solicitud_pago/${sol._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -169,7 +169,7 @@ export default function PagosContables() {
   // ----------------------------------------------------------------------------
   const obtenerEmailPropietario = async (idPropietario: string): Promise<string | null> => {
     try {
-      const resp = await fetch(`${API_URL}/usuarios/${idPropietario}`);
+      const resp = await fetch(`${API_BASE}/usuarios/${idPropietario}`);
       if (!resp.ok) return null;
       const data: { email: string } = await resp.json();
       return data.email;

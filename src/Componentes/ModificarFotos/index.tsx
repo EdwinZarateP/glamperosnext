@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import "./estilos.css";
 
 const MAX_IMAGENES = 30;
-
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 const ModificarFotos: React.FC = () => {
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId");
@@ -27,7 +27,7 @@ const ModificarFotos: React.FC = () => {
         return;
       }
       try {
-        const response = await fetch(`https://glamperosapi.onrender.com/glampings/${glampingId}`);
+        const response = await fetch(`${API_BASE}/glampings/${glampingId}`);
         if (!response.ok) throw new Error("Error al obtener las imágenes del glamping");
 
         const data = await response.json();
@@ -62,7 +62,7 @@ const ModificarFotos: React.FC = () => {
         return;
       }
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/reorganizar_imagenes`,
+        `${API_BASE}/glampings/${glampingId}/reorganizar_imagenes`,
         {
           method: "PATCH",
           headers: {
@@ -117,7 +117,7 @@ const ModificarFotos: React.FC = () => {
     }
     try {
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/imagenes?imagen_url=${encodeURIComponent(
+        `${API_BASE}/glampings/${glampingId}/imagenes?imagen_url=${encodeURIComponent(
           imagenUrl
         )}`,
         {
@@ -145,7 +145,7 @@ const ModificarFotos: React.FC = () => {
     try {
       // Llamamos a nuestro endpoint de rotación en el backend
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/rotate_image`,
+        `${API_BASE}/glampings/${glampingId}/rotate_image`,
         {
           method: "PUT",
           headers: {
@@ -223,7 +223,7 @@ const ModificarFotos: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/imagenes`,
+        `${API_BASE}/glampings/${glampingId}/imagenes`,
         {
           method: "POST",
           body: formData,

@@ -15,6 +15,7 @@ interface ComentarioData {
 interface ComentariosProps {
   glampingId: string; // Se recibe el ID del glamping para obtener sus comentarios
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export default function Comentarios({ glampingId }: ComentariosProps) {
   const [comentarios, setComentarios] = useState<ComentarioData[]>([]);
@@ -23,7 +24,7 @@ export default function Comentarios({ glampingId }: ComentariosProps) {
     const obtenerComentarios = async () => {
       try {
         const response = await axios.get(
-          `https://glamperosapi.onrender.com/evaluaciones/glamping/${glampingId}`
+          `${API_BASE}/evaluaciones/glamping/${glampingId}`
         );
         if (response.data && response.data.length > 0) {
           const comentariosMapeados = response.data.map((comentario: any) => ({

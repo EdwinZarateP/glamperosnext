@@ -39,6 +39,8 @@ interface ContenedorTarjetasDinamicoProps {
   radio?: number; // Radio de búsqueda (km), opcional
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
   lat,
   lng,
@@ -135,7 +137,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
       if (idUsuarioCookie) {
         try {
           const response = await fetch(
-            `https://glamperosapi.onrender.com/favoritos/${idUsuarioCookie}`
+            `${API_BASE}/favoritos/${idUsuarioCookie}`
           );
           const data = await response.json();
           // ➡️ transformamos en array de strings limpios
@@ -158,7 +160,7 @@ const ContenedorTarjetasDinamico: React.FC<ContenedorTarjetasDinamicoProps> = ({
   const fetchDataFromAPI = useCallback(async (page = 1, limit = 18) => {
     try {
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings?page=${page}&limit=${limit}`
+        `${API_BASE}/glampings?page=${page}&limit=${limit}`
       );
       if (!response.ok) {
         throw new Error("Error al obtener los datos de la API");

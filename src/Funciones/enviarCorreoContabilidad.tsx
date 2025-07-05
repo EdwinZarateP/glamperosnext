@@ -13,6 +13,8 @@ interface EnviarCorreoContabilidadProps {
   numeroCuenta?: string;
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 export const enviarCorreoContabilidad = async ({
   idSolicitud,
   idPropietario,
@@ -48,7 +50,7 @@ export const enviarCorreoContabilidad = async ({
       </div>
     `;
 
-    const response = await fetch("https://glamperosapi.onrender.com/correos/send-email", {
+    const response = await fetch(`${API_BASE}/correos/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

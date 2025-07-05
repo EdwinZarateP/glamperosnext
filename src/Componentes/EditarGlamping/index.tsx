@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
-
 import "./estilos.css";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 const EditarGlamping = () => {
   const [glampings, setGlampings] = useState<{ id: string; nombreGlamping: string }[]>([]);
@@ -24,7 +25,7 @@ const EditarGlamping = () => {
     const consultarGlampings = async () => {
       try {
         const response = await fetch(
-          `https://glamperosapi.onrender.com/usuarios/${propietarioId}/glampings`
+         `${API_BASE}/usuarios/${propietarioId}/glampings`
         );
         const data = await response.json();
         const glampingsData = data.map((g: { id: string; nombreGlamping: string }) => ({

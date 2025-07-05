@@ -31,13 +31,13 @@ interface Glamping {
   urlIcal?: string;
   urlIcalBooking?: string;
   amenidadesGlobal?: string[];
-
-  // Campos de fechas
   fechasReservadas?: string[];
   fechasManual?: string[];
   fechasAirbnb?: string[];
   fechasBooking?: string[];
 }
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export interface PropiedadesCalendarioGeneral2 {
   fechasManual?: string[];
@@ -140,7 +140,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
 
   // URL de calendario Glamperos
   const urlGlamperos = glampingId
-    ? `https://glamperosapi.onrender.com/ical/exportar/${glampingId}`
+    ? `${API_BASE}/ical/exportar/${glampingId}`
     : "";
 
   // =============================================================================
@@ -235,7 +235,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
 
       // Hacemos el PUT como en ModificarGlamping
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/Datos/${glampingId}`,
+        `${API_BASE}/glampings/Datos/${glampingId}`,
         {
           method: "PUT",
           body: formData
@@ -282,7 +282,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
   
           for (const url of urls) {
             const response = await fetch(
-              `https://glamperosapi.onrender.com/ical/importar?glamping_id=${glampingId}&url_ical=${encodeURIComponent(url)}&source=${source}`,
+              `${API_BASE}/ical/importar?glamping_id=${glampingId}&url_ical=${encodeURIComponent(url)}&source=${source}`,
               { method: "POST" }
             );
             const data = await response.json();
@@ -345,7 +345,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     if (!fechasSeleccionadas.length) return;
     try {
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/fechasReservadasManual`,
+        `${API_BASE}/glampings/${glampingId}/fechasReservadasManual`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -382,7 +382,7 @@ const CalendarioGeneral2: React.FC<PropiedadesCalendarioGeneral2> = ({
     }
     try {
       const response = await fetch(
-        `https://glamperosapi.onrender.com/glampings/${glampingId}/eliminar_fechas_manual`,
+        `${API_BASE}/glampings/${glampingId}/eliminar_fechas_manual`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },

@@ -1,7 +1,8 @@
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 export const CalificacionPromedio = async (glamping_id: string): Promise<{ calificacion_promedio: number; calificacionEvaluaciones: number } | null> => {
     try {
         // URL del endpoint de calificación promedio
-        const url = `https://glamperosapi.onrender.com/evaluaciones/glamping/${glamping_id}/promedio`;
+        const url = `${API_BASE}/evaluaciones/glamping/${glamping_id}/promedio`;
 
         // Petición GET a la API
         const respuesta = await fetch(url);

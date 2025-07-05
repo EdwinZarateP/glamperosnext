@@ -15,6 +15,8 @@ interface EvaluarGlampingProps {
   glamping_id: string;
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const EvaluarGlamping: React.FC<EvaluarGlampingProps> = ({
   usuario_id,
   codigoReserva,
@@ -43,7 +45,7 @@ const EvaluarGlamping: React.FC<EvaluarGlampingProps> = ({
     }
 
     try {
-      await axios.post("https://glamperosapi.onrender.com/evaluaciones", {
+      await axios.post(`${API_BASE}/evaluaciones`, {
         usuario_id,
         codigoReserva,
         nombre_usuario,

@@ -17,6 +17,7 @@ interface MyLottieProps {
   autoplay?: boolean;
   style?: React.CSSProperties;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 // Transformamos la importación de `lottie-react` a un componente que acepte MyLottieProps
 const Lottie = dynamic<MyLottieProps>(
@@ -114,7 +115,7 @@ const DatosBancarios = () => {
     setGuardando(true);
     try {
       const respuesta = await axios.put(
-        `https://glamperosapi.onrender.com/usuarios/${idUsuario}/banco`,
+       `${API_BASE}/usuarios/${idUsuario}/banco`,
         {
           banco: datos.banco,
           numeroCuenta: datos.numeroCuenta,

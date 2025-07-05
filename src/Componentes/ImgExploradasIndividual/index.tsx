@@ -14,6 +14,8 @@ import "./estilos.css";
 interface ImgExploradasIndividualProps {
   imagenes: string[];
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 
 export default function ImgExploradasIndividual({
   imagenes,
@@ -45,7 +47,7 @@ export default function ImgExploradasIndividual({
       if (idUsuarioCookie) {
         try {
           const response = await fetch(
-            `https://glamperosapi.onrender.com/favoritos/${idUsuarioCookie}`
+            `${API_BASE}/favoritos/${idUsuarioCookie}`
           );
           const data = await response.json();
           setEsFavorito(data.includes(glampingId || ""));
@@ -106,14 +108,14 @@ export default function ImgExploradasIndividual({
 
       if (nuevoEstado) {
         // Añadir a favoritos
-        await axios.post("https://glamperosapi.onrender.com/favoritos/", {
+        await axios.post(`${API_BASE}/favoritos/`, {
           usuario_id: idUsuarioCookie,
           glamping_id: glampingId,
         });
       } else {
         // Eliminar de favoritos
         await axios.delete(
-          `https://glamperosapi.onrender.com/favoritos/?usuario_id=${idUsuarioCookie}&glamping_id=${glampingId}`
+          `${API_BASE}/favoritos/?usuario_id=${idUsuarioCookie}&glamping_id=${glampingId}`
         );
       }
     } catch (error) {

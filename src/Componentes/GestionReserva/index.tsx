@@ -47,6 +47,8 @@ interface MyLottieProps {
   autoplay?: boolean;
   style?: React.CSSProperties;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const Lottie = dynamic<MyLottieProps>(
   () =>
     import("lottie-react").then((mod) => mod.default as React.ComponentType<MyLottieProps>),
@@ -88,7 +90,7 @@ const GestionReserva: React.FC = () => {
     const obtenertelefonoAnfitrion = async () => {
       if (reserva?.idPropietario) {
         try {
-          const respuesta = await fetch(`https://glamperosapi.onrender.com/usuarios/${reserva.idPropietario}`);
+          const respuesta = await fetch(`${API_BASE}/usuarios/${reserva.idPropietario}`);
           if (!respuesta.ok) throw new Error('Error al obtener datos del usuario');
           const usuario = await respuesta.json();
           setTelefonoAnfitrion(usuario.telefono || "573125443396");
@@ -152,7 +154,7 @@ const GestionReserva: React.FC = () => {
     }
 
     try {
-      const respuesta = await fetch(`https://glamperosapi.onrender.com/reservas/${reserva.id}`, {
+      const respuesta = await fetch(`${API_BASE}/reservas/${reserva.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -212,7 +214,7 @@ const GestionReserva: React.FC = () => {
 
       try {
         const respuestaReserva = await fetch(
-          `https://glamperosapi.onrender.com/reservas/codigo/${codigoReserva}`
+          `${API_BASE}/reservas/codigo/${codigoReserva}`
         );
         if (!respuestaReserva.ok) {
           throw new Error(
@@ -225,7 +227,7 @@ const GestionReserva: React.FC = () => {
         setReserva(datosReserva.reserva);
 
         const respuestaGlamping = await fetch(
-          `https://glamperosapi.onrender.com/glampings/${datosReserva.reserva.idGlamping}`
+          `${API_BASE}/glampings/${datosReserva.reserva.idGlamping}`
         );
         if (!respuestaGlamping.ok) throw new Error('Error al obtener detalles del alojamiento');
 
@@ -308,7 +310,7 @@ const GestionReserva: React.FC = () => {
     const obtenertelefonoAnfitrion = async () => {
       if (reserva?.idPropietario) {
         try {
-          const respuesta = await fetch(`https://glamperosapi.onrender.com/usuarios/${reserva.idPropietario}`);
+          const respuesta = await fetch(`${API_BASE}/usuarios/${reserva.idPropietario}`);
           if (!respuesta.ok) throw new Error('Error al obtener datos del usuario');
           const usuario = await respuesta.json();
           setTelefonoAnfitrion(usuario.telefono || "573125443396");

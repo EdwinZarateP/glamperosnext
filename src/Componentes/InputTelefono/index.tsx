@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import codigosPaises from "../../Componentes/IndicativosPaises/index"; // Uso de alias "@"
 import "./estilos.css";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 const InputTelefono = () => {
   // Recuperamos el email del usuario desde las cookies
   const emailUsuario = Cookies.get("correoUsuario");
@@ -41,7 +42,7 @@ const InputTelefono = () => {
     try {
       // Actualizamos el teléfono del usuario en la API
       await axios.put(
-        `https://glamperosapi.onrender.com/usuarios/${emailUsuario}/telefono`,
+        `${API_BASE}/usuarios/${emailUsuario}/telefono`,
         { telefono: telefonoConPrefijo }
       );
 

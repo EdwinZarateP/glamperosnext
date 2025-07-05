@@ -1,8 +1,8 @@
   // components/TarjetasEcommerce.tsx
 
-  "use client"
+"use client"
 
-  import React, { useState, useEffect, useRef, useCallback } from 'react';
+  import React, { useState, useEffect, useRef } from 'react';
   import { useRouter } from 'next/navigation';
   import TarjetaGeneral from '../TarjetaGeneral';
   import HeaderGeneral from '../HeaderGeneral';
@@ -30,7 +30,8 @@
 
   interface TarjetasEcommerceProps {
     filtros?: string[];
-    initialData?: any[]; // ✅ agregado para recibir datos precargados del server
+    initialData?: any[]; 
+    initialTotal?: number; 
   }
 
   // Normaliza los municipios a slugs con guiones
@@ -40,8 +41,8 @@
   }));
 
 
-    const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
-    const API_URL = `${API_BASE}/glampings/glampingfiltrados2`;
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const API_URL = `${API_BASE}/glampings/glampingfiltrados2`;
 
   const PAGE_SIZE = 24;
 
@@ -51,6 +52,7 @@
     medellin: { lat: 6.2442,  lng: -75.5812 },
     cali:     { lat: 3.4516,  lng: -76.5320 },
   };
+  const defaultLocation = CITY_COORDS.bogota;
 
   const getCiudadFromSlug = (slug: string): MunicipioConSlug | null => {
     const match = municipiosConSlug.find(
@@ -84,7 +86,10 @@
   const limpiarSegmentosPagina = (segmentos: string[]) =>
     segmentos.filter(seg => !/^pagina-\d+$/.test(seg));
 
-  export default function TarjetasEcommerce({ filtros, initialData }: TarjetasEcommerceProps) {
+
+  // CONSTRUCCION DEL COMPONENTE
+
+  export default function TarjetasEcommerce({ filtros, initialData = [], initialTotal = 0 }: TarjetasEcommerceProps) {
     const router = useRouter();
 
     // Derivo segmentos extra (fechas y huéspedes) de la URL
@@ -134,19 +139,100 @@
 
     // Resultados y paginación
     const [glampings, setGlampings] = useState<any[]>(initialData || []);
-    const [page,       setPage]      = useState<number>(1);
-    // Nuevo estado para saber cuántas páginas hay (asumiendo que la API devuelve 'total')
-    const [totalPages, setTotalPages] = useState<number>(1);
-    const [loading,    setLoading]   = useState<boolean>(false);
-    // const [hasMore,    setHasMore]   = useState<boolean>(true);
-    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-    const [geoError, setGeoError] = useState<string | null>(null);
-    const [hasFetched, setHasFetched] = useState(false);
+    // Usa la constante que ya tienes: currentPageFromUrl
+    const [page, setPage] = useState<number>(currentPageFromUrl);
+    // Ya no necesitas hasFetched, elimínalo:
 
+    // Nuevo estado para saber cuántas páginas hay (asumiendo que la API devuelve 'total')
+    const [totalPages, setTotalPages] = useState<number>(
+      Math.max(1, Math.ceil((initialTotal ?? 0) / PAGE_SIZE))
+    );
+    const [loading,    setLoading]   = useState<boolean>(false);
+   
     // const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
+    const [hydrated, setHydrated] = useState(false);   
+  
+    // estados para geolocalización
+    const [userLocation, setUserLocation] = useState<{lat: number; lng: number} | null>(null);
+    const [, setGeoError]                  = useState<string | null>(null);
+        
+    useEffect(() => {
+      // nada de SSR: en cuanto hidrata y no hay filtro de ciudad, pasa a skeleton
+      if (hydrated && !ciudadFilter) {
+        setLoading(true);
+      }
+    }, [hydrated, ciudadFilter]);
 
-    const [ubicacionLista, setUbicacionLista] = useState<boolean>(false);
+    useEffect(() => {
+      setHydrated(true);
+    }, []);
+
+    // Obtiene permiso y dispara getCurrentPosition de inmediato
+    // 🔄 Hook de geolocalización con fallback a Bogotá
+    useEffect(() => {
+      if (ciudadFilter) return; // si ya filtró por ciudad en la URL, no pedimos geo
+      if (!navigator.geolocation) {
+        // sin API de geoloc → fallback inmediato
+        setUserLocation(defaultLocation);
+        setLoading(false);
+        return;
+      }
+
+      // función para aplicar el fallback
+      const aplicarFallback = () => {
+        setGeoError("Usando ubicación por defecto (Bogotá)");
+        setUserLocation(defaultLocation);
+        setLoading(false);
+      };
+
+      if (typeof navigator.permissions !== 'undefined') {
+        navigator.permissions
+          .query({ name: 'geolocation' as PermissionName })
+          .then(perm => {
+            if (perm.state === 'denied') {
+              aplicarFallback();
+            } else {
+              navigator.geolocation.getCurrentPosition(
+                pos => {
+                  setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                },
+                () => {
+                  aplicarFallback();
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+              );
+            }
+          })
+          .catch(() => {
+            // si falla Permissions API → intentamos geoloc directo
+            navigator.geolocation.getCurrentPosition(
+              pos => {
+                setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+              },
+              () => {
+                aplicarFallback();
+              },
+              { enableHighAccuracy: true, timeout: 10000 }
+            );
+          });
+      } else {
+        // navegadores sin Permissions API
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          },
+          () => {
+            aplicarFallback();
+          },
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      }
+    }, [ciudadFilter]);
+
+
+
+    
     const [redirigiendoInternamente, setRedirigiendoInternamente] = useState(false);
 
     useEffect(() => {
@@ -159,27 +245,6 @@
       }
     }, []);
 
-  useEffect(() => {
-    if (!ciudadFilter && "geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          setUserLocation({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude,
-          });
-          setUbicacionLista(true); // 👈 marcamos que ya terminó
-        },
-        err => {
-          console.warn("Geolocalización denegada:", err.message);
-          setGeoError("No pudimos obtener tu ubicación. Verás resultados generales.");
-          setUbicacionLista(true); // 👈 también marcamos que ya terminó
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    } else {
-      setUbicacionLista(true); // 👈 si no hay geolocalización o ya hay ciudad
-    }
-  }, [ciudadFilter]);
 
     // Construye el query string para la API
     const construirQuery = (
@@ -247,78 +312,76 @@
     };
 
     // Llamada a la API
-    const fetchGlampings = useCallback(
-      async (pageArg: number, extras: string[]) => {
-        // Si NO es la página 1, vacía el array para disparar el Skeleton
-        if (pageArg !== 1) {
-          setGlampings([]);
+   const fetchGlampings = async (pageArg: number, extras: string[] = []) => {
+    if (pageArg !== 1) {
+      setGlampings([]);
+    }
+    setLoading(true);
+    const [fi, ff, thStr] = extras;
+    const th = thStr ? Number(thStr) : undefined;
+    const qs = construirQuery(pageArg, fi, ff, th, undefined, aceptaMascotas);
+    setLastQuery(qs);
+    const url = `${API_URL}?${qs}`;
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      const arr = Array.isArray(json) ? [] : json.glampings ?? [];
+      const total = typeof json.total === 'number' ? json.total : 0;
+      if (arr.length === 0 && pageArg > 1) {
+        const retryQs = construirQuery(1, fi, ff, th, undefined, aceptaMascotas);
+        const retryRes = await fetch(`${API_URL}?${retryQs}`);
+        const retryJson = await retryRes.json();
+        const retryArr = Array.isArray(retryJson) ? [] : retryJson.glampings ?? [];
+
+        if (retryArr.length > 0) {
+          const newExtras = limpiarSegmentosPagina(extras);
+          const newPath = [...canonicalBase, ...newExtras].join('/');
+          setRedirigiendoInternamente(true);
+          window.scrollTo({ top: 0, behavior: 'auto' });
+          router.push(`/${newPath}`);
+          return;
         }
-        setLoading(true);
-        const [fi, ff, thStr] = extras;
-        const th = thStr ? Number(thStr) : undefined;
-        const qs = construirQuery(pageArg, fi, ff, th, undefined, aceptaMascotas);
-        setLastQuery(qs);
-        const url = `${API_URL}?${qs}`;
-        try {
-          const res = await fetch(url);
-          const json = await res.json();
-          const arr = Array.isArray(json) ? [] : json.glampings ?? [];
-          if (arr.length === 0 && pageArg > 1) {
-            // Intenta con la página 1 si no hay resultados
-            const retryQs = construirQuery(1, fi, ff, th, undefined, aceptaMascotas);
-            const retryRes = await fetch(`${API_URL}?${retryQs}`);
-            const retryJson = await retryRes.json();
-            const retryArr = Array.isArray(retryJson) ? [] : retryJson.glampings ?? [];
+      }
 
-            if (retryArr.length > 0) {
-              const newExtras = limpiarSegmentosPagina(extras); // quita pagina-N si viene
-              const newPath = [...canonicalBase, ...newExtras].join('/');
-              setRedirigiendoInternamente(true);
-              window.scrollTo({ top: 0, behavior: 'auto' });
-              router.push(`/${newPath}`);
-              return;
-            }
-          }
-
-          setGlampings(arr);
-          if (typeof json.total === "number") {
-            setTotalPages(Math.ceil(json.total / PAGE_SIZE));
-          }
-          if (pageArg === 1) {
-            sessionStorage.setItem("glampings-cache", JSON.stringify(arr));
-            sessionStorage.setItem("glampings-page", "1");
-          } else {
-            const anterior = JSON.parse(sessionStorage.getItem("glampings-cache") || "[]");
-            sessionStorage.setItem("glampings-cache", JSON.stringify([...anterior, ...arr]));
-            sessionStorage.setItem("glampings-page", String(pageArg));
-          }
-        } catch {
-          // ...
-        } finally {
-          setLoading(false);
-          setPage(pageArg);
-          // Si quieres, aquí también podrías hacer window.scrollTo(0, 0)
-        }
-      },
-      [userLocation, ciudadFilter, tipoFilter, amenidadesFilter, aceptaMascotas]
-    );
-
-
-    // Carga inicial y cuando cambian filtros rápidos
-    useEffect(() => {
-  if (!ubicacionLista) return; // 👈 espera hasta que termine la geolocalización
-
-  setGlampings([]);
-  // setHasMore(true);
-  const extrasSinPagina = extrasFromURL.filter(seg => !/^pagina-\d+$/.test(seg));
-  fetchGlampings(currentPageFromUrl, extrasSinPagina);
-
-  setHasFetched(true);
-  }, [filtros?.join(','), ciudadFilter, tipoFilter, amenidadesFilter.join(','), userLocation, geoError, aceptaMascotas, ubicacionLista]);
-
-  const handleCardClick = () => {
-  sessionStorage.setItem("glampings-scroll", String(window.scrollY));
+      setGlampings(arr);
+      if (typeof json.total === "number") {
+        setTotalPages(Math.max(1, Math.ceil(total / PAGE_SIZE)));
+      }
+      if (pageArg === 1) {
+        sessionStorage.setItem("glampings-cache", JSON.stringify(arr));
+        sessionStorage.setItem("glampings-page", "1");
+      } else {
+        const anterior = JSON.parse(sessionStorage.getItem("glampings-cache") || "[]");
+        sessionStorage.setItem("glampings-cache", JSON.stringify([...anterior, ...arr]));
+        sessionStorage.setItem("glampings-page", String(pageArg));
+      }
+    } catch {
+      // ...
+    } finally {
+      setLoading(false);
+      setPage(pageArg);
+    }
   };
+
+
+  useEffect(() => {
+    // Espera a que React hidrate el componente
+    if (!hydrated) return;
+
+    // Si viene de un slug de ciudad (SSR), no dispares nada en cliente
+    if (ciudadFilter) return;
+
+    // Sólo dispara cuando ya tengas la localización real
+    if (userLocation) {
+      const extras0 = limpiarSegmentosPagina(extrasFromURL)
+      fetchGlampings(pageFromUrl, extras0)
+    }
+  }, [hydrated, userLocation, pageFromUrl, extrasFromURL.join(',')])
+
+
+    const handleCardClick = () => {
+    sessionStorage.setItem("glampings-scroll", String(window.scrollY));
+    };
 
     // Toggle filtros rápidos
     const toggleFilter = (value: string) => {
@@ -393,7 +456,18 @@
     };
 
     // justo después de tus useState y useEffect, antes del return:
-    const noResults = !loading && hasFetched && !redirigiendoInternamente && glampings.length === 0;
+    const noResults = !loading && !redirigiendoInternamente && glampings.length === 0;
+
+    const handlePageClick = (n: number) => {
+      // limpia viejos segmentos "pagina-N"
+      const extras = limpiarSegmentosPagina(extrasFromURL);
+      const ruta = [
+        ...canonicalBase,
+        ...(n > 1 ? [`pagina-${n}`] : []),
+        ...extras
+      ].join('/');
+      router.push(`/${ruta}`);
+    }
 
     return (
       <div className="TarjetasEcommerce-container">
@@ -503,26 +577,26 @@
           aria-label="Chatea por WhatsApp"
         >
         </button>
-
-
         {/* Lista con Skeleton */}
-          {loading && glampings.length === 0 ? (
+          {(!hydrated || loading) ? (
             <div className="TarjetasEcommerce-lista">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <SkeletonCard key={i} />
-              ))}
+              {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>
-          ) : glampings.length > 0 ? (
-            <div className="TarjetasEcommerce-lista">
-              {glampings.map(g => (
-                 <TarjetaGeneral key={g._id} {...mapProps(g)} onClick={handleCardClick} />
-              ))}
-            </div>
-          ) : (!loading && hasFetched && !redirigiendoInternamente) ? (
-            <div className="TarjetasEcommerce-no-results">
-              <Regiones />
-            </div>
-          ) : null}
+          ) : (
+            glampings.length > 0
+              ? <div className="TarjetasEcommerce-lista">
+                  {glampings.map(g => (
+                    <TarjetaGeneral
+                      key={g._id}
+                      {...mapProps(g)}
+                      onClick={handleCardClick}
+                    />
+                  ))}
+                </div>
+              : <div className="TarjetasEcommerce-no-results">
+                  <Regiones />
+                </div>
+          )}
         {/* ----------------------------------------
             BLOQUE NUEVO: Botones de paginación
             ---------------------------------------- */}
@@ -532,33 +606,14 @@
               <button
                 key={num}
                 className={`TarjetasEcommerce-pagina-boton ${page === num ? 'activo' : ''}`}
-                onClick={() => {
-                  setGlampings([]);
-                  window.scrollTo({ top: 0, behavior: 'auto' });
-
-                  const extras = [
-                    ...(fechaInicio ? [fechaInicio] : []),
-                    ...(fechaFin ? [fechaFin] : []),
-                    ...(totalHuespedes > 1 ? [String(totalHuespedes)] : []),
-                    ...(aceptaMascotas ? ["mascotas"] : [])
-                  ];
-
-                  const extrasSinPagina = limpiarSegmentosPagina(extras);
-
-                  const fullPath = [...canonicalBase, ...extrasSinPagina];
-                    if (num > 1) {
-                      fullPath.push(`pagina-${num}`);
-                    }
-                  router.push(`/${fullPath.join("/")}`);
-
-                  fetchGlampings(num, extras);
-                }}
+                onClick={() => handlePageClick(num)}
               >
                 {num}
               </button>
             ))}
           </div>
         )}
+
 
       </div>
     );

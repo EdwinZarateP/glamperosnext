@@ -39,6 +39,7 @@ const Lottie = dynamic<MyLottieProps>(
     ),
   { ssr: false }
 );
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 interface Glamping {
   nombreGlamping: string;
@@ -125,7 +126,7 @@ export default function ExplorarGlampingContenido() {
     (async () => {
       try {
         const resp = await fetch(
-          `https://glamperosapi.onrender.com/evaluaciones/glamping/${glampingId}/promedio`
+          `${API_BASE}/evaluaciones/glamping/${glampingId}/promedio`
         );
         const js = await resp.json();
         setCalProm(js.calificacion_promedio || 5);

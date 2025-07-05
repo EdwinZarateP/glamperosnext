@@ -14,6 +14,7 @@ interface EnviarCorreoPropietarioProps {
   glampingNombre: string;
   fromEmail?: string;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export const enviarCorreoPropietario = async ({
   correo,
@@ -61,7 +62,7 @@ export const enviarCorreoPropietario = async ({
       </div>
     `;
 
-    const response = await fetch("https://glamperosapi.onrender.com/correos/send-email", {
+    const response = await fetch(`${API_BASE}/correos/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -26,11 +26,12 @@ export interface GlampingData {
   Cantidad_Huespedes_Adicional: number;
   favorito?: boolean;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 // Exporta la función getGlampings para poder utilizarla desde otros componentes
 export async function getGlampings(page = 1, limit = 18): Promise<GlampingData[]> {
   const res = await fetch(
-    `https://glamperosapi.onrender.com/glampings?page=${page}&limit=${limit}`,
+    `${API_BASE}/glampings?page=${page}&limit=${limit}`,
     { cache: "no-store" }
   );
   if (!res.ok) {

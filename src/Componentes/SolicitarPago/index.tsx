@@ -33,7 +33,7 @@ interface Banco {
 //   Componente Principal
 // -------------------------
 const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
-  const API_URL = "https://glamperosapi.onrender.com"; // Ajusta si tu endpoint es distinto
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
   const router = useRouter();
 
   // Estados
@@ -49,7 +49,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   useEffect(() => {
     const fetchSaldo = async () => {
       try {
-        const resp = await fetch(`${API_URL}/reservas/pendientes_pago/${idPropietario}`);
+        const resp = await fetch(`${API_BASE}/reservas/pendientes_pago/${idPropietario}`);
         if (!resp.ok) {
           if (resp.status === 404) {
             setSaldo(0);
@@ -68,7 +68,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
 
     const fetchMetodoPago = async () => {
       try {
-        const resp = await fetch(`${API_URL}/usuarios/${idPropietario}/banco`);
+        const resp = await fetch(`${API_BASE}/usuarios/${idPropietario}/banco`);
         if (!resp.ok) {
           setMetodoPago("No registrado");
           return;
@@ -85,7 +85,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
 
     const fetchSolicitudes = async () => {
       try {
-        const resp = await fetch(`${API_URL}/reservas/solicitudes_pago/${idPropietario}`);
+        const resp = await fetch(`${API_BASE}/reservas/solicitudes_pago/${idPropietario}`);
         if (!resp.ok) {
           if (resp.status === 404) {
             setSolicitudes([]);
@@ -104,7 +104,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
     fetchSaldo();
     fetchMetodoPago();
     fetchSolicitudes();
-  }, [idPropietario, API_URL]);
+  }, [idPropietario, API_BASE]);
 
   // -------------------------
   //   Recargar datos
@@ -112,7 +112,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
   const recargarDatos = async () => {
     try {
       // Recargar solicitudes
-      const respSol = await fetch(`${API_URL}/reservas/solicitudes_pago/${idPropietario}`);
+      const respSol = await fetch(`${API_BASE}/reservas/solicitudes_pago/${idPropietario}`);
       if (respSol.ok) {
         const dataSol = await respSol.json();
         setSolicitudes(dataSol);
@@ -121,7 +121,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
       }
 
       // Recargar saldo
-      const respSaldo = await fetch(`${API_URL}/reservas/pendientes_pago/${idPropietario}`);
+      const respSaldo = await fetch(`${API_BASE}/reservas/pendientes_pago/${idPropietario}`);
       if (respSaldo.ok) {
         const dataSaldo = await respSaldo.json();
         const saldoPropietario = dataSaldo.reduce((acc: number, reserva: any) => acc + reserva.CostoGlamping, 0);
@@ -176,7 +176,7 @@ const SolicitarPago = ({ idPropietario }: { idPropietario: string }) => {
     }
 
     try {
-      const resp = await fetch(`${API_URL}/reservas/solicitar_pago`, {
+      const resp = await fetch(`${API_BASE}/reservas/solicitar_pago`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idPropietario, metodoPago, numeroCuenta }),

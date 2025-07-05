@@ -1,8 +1,6 @@
 
 // src/app/page.tsx
 
-"use client";
-
 import React from "react";
 // import TarjetasEcommerce from "@/Componentes/TarjetasEcommerce";
 import TarjetasEcommerceServer from "@/Componentes/TarjetasEcommerce/TarjetasEcommerceServer";

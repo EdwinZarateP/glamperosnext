@@ -43,6 +43,9 @@ interface TarjetaProps {
   onImagenCargada?: () => void;
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
+
 const Tarjeta: React.FC<TarjetaProps> = ({
   glampingId,
   imagenes,
@@ -122,7 +125,7 @@ const Tarjeta: React.FC<TarjetaProps> = ({
   const verificarFavorito = async (): Promise<boolean> => {
     try {
       const respuesta = await axios.get(
-        "https://glamperosapi.onrender.com/favoritos/buscar",
+        `${API_BASE}/favoritos/buscar`,
         {
           params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
         }
@@ -147,14 +150,14 @@ const Tarjeta: React.FC<TarjetaProps> = ({
 
     try {
       if (nuevoEstado) {
-        await axios.post("https://glamperosapi.onrender.com/favoritos/", {
+        await axios.post(`${API_BASE}/favoritos/`, {
           usuario_id: idUsuarioCookie,
           glamping_id: glampingId,
         });
       } else {
         const existe = await verificarFavorito();
         if (!existe) return;
-        await axios.delete("https://glamperosapi.onrender.com/favoritos/", {
+        await axios.delete(`${API_BASE}/favoritos/`, {
           params: { usuario_id: idUsuarioCookie, glamping_id: glampingId },
         });
       }

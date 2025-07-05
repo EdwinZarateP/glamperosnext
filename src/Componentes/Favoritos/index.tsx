@@ -31,6 +31,8 @@ interface Glamping {
   amenidadesGlobal: string[];
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const Favoritos: React.FC = () => {
   const [glampings, setGlampings] = useState<Glamping[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +53,7 @@ const Favoritos: React.FC = () => {
         }
 
         const resIds = await axios.get<string[]>(
-          `https://glamperosapi.onrender.com/favoritos/${idUsuario}`
+          `${API_BASE}favoritos/${idUsuario}`
         );
 
         const favoritosIds = resIds.data;
@@ -61,7 +63,7 @@ const Favoritos: React.FC = () => {
         }
 
         const resGlampings = await axios.post<Glamping[]>(
-          "https://glamperosapi.onrender.com/glampings/por_ids",
+          `${API_BASE}/glampings/por_ids`,
           favoritosIds
         );
 

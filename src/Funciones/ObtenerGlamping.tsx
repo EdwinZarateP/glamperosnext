@@ -1,6 +1,8 @@
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 export async function ObtenerGlampingPorId(glampingId: string): Promise<any> {
     try {
-      const respuesta = await fetch(`https://glamperosapi.onrender.com/glampings/${glampingId}`, {
+      const respuesta = await fetch(`${API_BASE}/glampings/${glampingId}`, {
         // Si quieres deshabilitar el caché:
         cache: "no-store",
       });

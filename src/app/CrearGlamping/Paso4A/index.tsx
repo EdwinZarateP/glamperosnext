@@ -28,6 +28,8 @@ const Lottie = dynamic<MyLottieProps>(
   }
 );
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 const GuardarGlampingP: React.FC = () => {
   const router = useRouter();
   const nombreUsuarioCookie = Cookies.get('nombreUsuario'); 
@@ -309,7 +311,7 @@ const GuardarGlampingP: React.FC = () => {
         </div>
       `;
   
-      await axios.post("https://glamperosapi.onrender.com/correos/send-email", {
+      await axios.post(`${API_BASE}/correos/send-email`, {
         from_email: fromEmail,
         email: correo,
         name: nombre,
@@ -349,7 +351,7 @@ const GuardarGlampingP: React.FC = () => {
 
         // Guardamos en la base de datos
         const respuesta = await axios.post(
-          "https://glamperosapi.onrender.com/glampings/",
+          `${API_BASE}/glampings/`,
           formData,
           {
             headers: {

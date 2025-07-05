@@ -15,6 +15,7 @@ interface MyLottieProps {
   autoplay?: boolean;
   style?: React.CSSProperties;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 const Lottie = dynamic<MyLottieProps>(
   () => import("lottie-react").then(mod => mod.default as React.ComponentType<MyLottieProps>),
@@ -89,7 +90,7 @@ const ReservasPropietario: React.FC = () => {
     }
     const obtenerReservas = async () => {
       try {
-        const r = await fetch(`https://glamperosapi.onrender.com/reservas/documentos/${idPropietario}`);
+        const r = await fetch(`${API_BASE}/reservas/documentos/${idPropietario}`);
         const data = await r.json();
         if (r.ok) {
           const ordenadas = data.sort((a: Reserva, b: Reserva) =>
@@ -109,7 +110,7 @@ const ReservasPropietario: React.FC = () => {
     if (reservas.length > 0) {
       const obtenerGlamping = async (id: string) => {
         try {
-          const r = await fetch(`https://glamperosapi.onrender.com/glampings/${id}`);
+          const r = await fetch(`${API_BASE}/glampings/${id}`);
           const data = await r.json();
           if (r.ok) {
             setGlampingData(prev => [...prev, data]);
@@ -133,7 +134,7 @@ const ReservasPropietario: React.FC = () => {
       const nuevos: Record<string, string> = {};
       for (const cId of idsUnicos) {
         try {
-          const resp = await fetch(`https://glamperosapi.onrender.com/usuarios/${cId}`);
+          const resp = await fetch(`${API_BASE}/usuarios/${cId}`);
           const data = await resp.json();
           if (resp.ok && data.telefono) {
             nuevos[cId] = data.telefono.startsWith("57") ? data.telefono.substring(2) : data.telefono;
@@ -154,7 +155,7 @@ const ReservasPropietario: React.FC = () => {
     if (!idPropietario) return;
     const obtenerReagendamientos = async () => {
       try {
-        const r = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos/todos`);
+        const r = await fetch(`${API_BASE}/reservas/reagendamientos/todos`);
         const data = await r.json();
         if (r.ok && data.length > 0) {
           setReagendamientos(data);
@@ -172,7 +173,7 @@ const ReservasPropietario: React.FC = () => {
     e.stopPropagation(); // Evita que el click se propague a la fila
     try {
       const bodyReq = { estado: accion };
-      const resp = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos/${reag.codigoReserva}`, {
+      const resp = await fetch(`${API_BASE}/reservas/reagendamientos/${reag.codigoReserva}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bodyReq)
@@ -198,13 +199,13 @@ const ReservasPropietario: React.FC = () => {
         );
         
         // Eliminar las fechas antiguas
-        await fetch(`https://glamperosapi.onrender.com/glampings/${reservaOriginal.idGlamping}/eliminar_fechas_manual`, {
+        await fetch(`${API_BASE}/glampings/${reservaOriginal.idGlamping}/eliminar_fechas_manual`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ fechas_a_eliminar: fechasAnt })
         });
         // Añadir las fechas nuevas
-        await fetch(`https://glamperosapi.onrender.com/glampings/${reservaOriginal.idGlamping}/fechasReservadasManual`, {
+        await fetch(`${API_BASE}/glampings/${reservaOriginal.idGlamping}/fechasReservadasManual`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ fechas: fechasNuevas })

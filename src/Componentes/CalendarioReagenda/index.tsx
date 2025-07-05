@@ -14,6 +14,7 @@ interface CalendarioReagendaProps {
   whatsapp: string;
   nombreProp: string;
 }
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
   cerrarCalendario,
@@ -244,7 +245,7 @@ const CalendarioReagenda: React.FC<CalendarioReagendaProps> = ({
       if (!confirmacion.isConfirmed) return;
 
       // Llamada a la API
-      const response = await fetch(`https://glamperosapi.onrender.com/reservas/reagendamientos`, {
+      const response = await fetch(`${API_BASE}/reservas/reagendamientos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

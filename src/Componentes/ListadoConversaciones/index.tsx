@@ -32,6 +32,8 @@ interface MyLottieProps {
   style?: React.CSSProperties;
 }
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
 // Componente Lottie para animaciones
 const Lottie = dynamic<MyLottieProps>(
   () => import("lottie-react").then((mod) => mod.default as React.ComponentType<MyLottieProps>),
@@ -68,14 +70,14 @@ const ListadoConversaciones: React.FC = () => {
 
     const obtenerConversaciones = async () => {
       try {
-        const respuesta = await fetch(`https://glamperosapi.onrender.com/mensajes/conversaciones/${idEmisor}`);
+        const respuesta = await fetch(`${API_BASE}/mensajes/conversaciones/${idEmisor}`);
         if (!respuesta.ok) throw new Error("No tienes conversaciones.");
         const data: RespuestaConversaciones = await respuesta.json();
 
         const conversacionesConDetalles = await Promise.all(
           data.conversaciones.map(async (conversacion) => {
             try {
-              const usuarioRespuesta = await fetch(`https://glamperosapi.onrender.com/usuarios/${conversacion.contacto}`);
+              const usuarioRespuesta = await fetch(`${API_BASE}/usuarios/${conversacion.contacto}`);
               console.log(conversacion.contacto);
           
               if (!usuarioRespuesta.ok) {

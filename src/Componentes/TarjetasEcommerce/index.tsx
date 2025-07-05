@@ -151,22 +151,25 @@
    
     // const observerRef = useRef<HTMLDivElement>(null);
     const scrollRef   = useRef<HTMLDivElement>(null);
-    const [hydrated, setHydrated] = useState(false);   
+    const didFetchOnClient = useRef(false);
+    const [hasFetched, setHasFetched] = useState(false);
+    // const [hydrated, setHydrated] = useState(false);   
   
     // estados para geolocalización
     const [userLocation, setUserLocation] = useState<{lat: number; lng: number} | null>(null);
     const [, setGeoError]                  = useState<string | null>(null);
+  
         
-    useEffect(() => {
-      // nada de SSR: en cuanto hidrata y no hay filtro de ciudad, pasa a skeleton
-      if (hydrated && !ciudadFilter) {
-        setLoading(true);
-      }
-    }, [hydrated, ciudadFilter]);
+    // useEffect(() => {
+    //   // nada de SSR: en cuanto hidrata y no hay filtro de ciudad, pasa a skeleton
+    //   if (hydrated && !ciudadFilter) {
+    //     setLoading(true);
+    //   }
+    // }, [hydrated, ciudadFilter]);
 
-    useEffect(() => {
-      setHydrated(true);
-    }, []);
+    // useEffect(() => {
+    //   setHydrated(true);
+    // }, []);
 
     // Obtiene permiso y dispara getCurrentPosition de inmediato
     // 🔄 Hook de geolocalización con fallback a Bogotá
@@ -365,18 +368,19 @@
 
 
   useEffect(() => {
-    // Espera a que React hidrate el componente
-    if (!hydrated) return;
-
-    // Si viene de un slug de ciudad (SSR), no dispares nada en cliente
+    // Si ya tengo un filtro de ciudad por slug, no fetch
     if (ciudadFilter) return;
+    if (!userLocation) return;
+    if (didFetchOnClient.current) return;
+    didFetchOnClient.current = true;
+    
+    const extras0 = limpiarSegmentosPagina(extrasFromURL);
+    +   fetchGlampings(pageFromUrl, extras0)
+     .finally(() => {
+       setHasFetched(true);
+     })
+  }, [userLocation, ciudadFilter, pageFromUrl, extrasFromURL.join(',')]);
 
-    // Sólo dispara cuando ya tengas la localización real
-    if (userLocation) {
-      const extras0 = limpiarSegmentosPagina(extrasFromURL)
-      fetchGlampings(pageFromUrl, extras0)
-    }
-  }, [hydrated, userLocation, pageFromUrl, extrasFromURL.join(',')])
 
 
     const handleCardClick = () => {
@@ -456,7 +460,7 @@
     };
 
     // justo después de tus useState y useEffect, antes del return:
-    const noResults = !loading && !redirigiendoInternamente && glampings.length === 0;
+    const noResults = hasFetched && !loading && !redirigiendoInternamente && glampings.length === 0;
 
     const handlePageClick = (n: number) => {
       // limpia viejos segmentos "pagina-N"
@@ -578,7 +582,7 @@
         >
         </button>
         {/* Lista con Skeleton */}
-          {(!hydrated || loading) ? (
+          {(loading) ? (
             <div className="TarjetasEcommerce-lista">
               {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
             </div>

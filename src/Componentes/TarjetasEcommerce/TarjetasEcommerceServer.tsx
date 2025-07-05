@@ -1,3 +1,5 @@
+// src/Componentes/TarjetasEcommerce/TarjetasEcommerceServer.tsx
+
 import React from 'react'
 import TarjetasEcommerce from './index'
 import municipiosData from '../MunicipiosGeneral/municipiosGeneral.json'

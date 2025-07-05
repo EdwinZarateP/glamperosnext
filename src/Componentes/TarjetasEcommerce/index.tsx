@@ -392,56 +392,57 @@
       sessionStorage.removeItem("glampings-cache");
       sessionStorage.removeItem("glampings-page");
       sessionStorage.removeItem("glampings-scroll");
+
       const val = value.toLowerCase();
       const valSlug = val.replace(/\s+/g, '-');
       const isCity = CIUDADES.includes(valSlug);
       const isType = TIPOS.includes(val);
       const isAmenity = AMENIDADES.includes(val);
 
-      // Convertimos a minúsculas para comparar, pero mantenemos los originales para la URL
       let newCitySlug = ciudadFilter
-      ? ciudadFilter.toLowerCase().replace(/\s+/g, '-')
-      : null;
+        ? ciudadFilter.toLowerCase().replace(/\s+/g, '-')
+        : null;
 
       let newType = tipoFilter?.toLowerCase() ?? null;
       let newAmenities = [...amenidadesFilter];
-
-      if (isCity) {
-        newCitySlug = newCitySlug === valSlug ? null : valSlug;
-      } else if (isType) {
-        newType = newType === val ? null : val;
-      } else if (isAmenity) {
-        const lowerAmenities = newAmenities.map(a => a.toLowerCase());
-        if (lowerAmenities.includes(val)) {
-          // Quitamos la amenidad original si ya está (independientemente de su casing)
-          newAmenities = newAmenities.filter(a => a.toLowerCase() !== val);
-        } else {
-          // Agregamos la amenidad original desde FILTROS
-          const originalAmenity = FILTROS.find(f => f.value.toLowerCase() === val)?.value;
-          if (originalAmenity) newAmenities.push(originalAmenity);
-        }
-      }
-
-      const ciudadSlug = municipiosConSlug.find(
-        m => m.SLUG === newCitySlug
-      )?.SLUG;
-
-      const rutaFiltros: string[] = [
-        ...(ciudadSlug ? [ciudadSlug] : []),
-        ...(newType ? [newType.toLowerCase().replace(/\s+/g, '-')] : []),
-        ...newAmenities.map(a => a.toLowerCase().replace(/\s+/g, '-'))
-      ];
-
 
       const extras = [
         ...(fechaInicio ? [fechaInicio] : []),
         ...(fechaFin ? [fechaFin] : []),
         ...(totalHuespedes > 1 ? [String(totalHuespedes)] : []),
-        ...(aceptaMascotas ? ['mascotas'] : []) // 👈🏽 esto faltaba
+        ...(aceptaMascotas ? ['mascotas'] : [])
       ];
 
-      const path = (rutaFiltros.length > 0 || extras.length > 0)
-        ? `/${[...rutaFiltros, ...extras].join('/')}`
+      const extrasSinPagina = limpiarSegmentosPagina(extras);
+
+      if (isCity) {
+        if (newCitySlug === valSlug) {
+          // ✅ Si la ciudad clickeada es la misma, la quitamos
+          newCitySlug = null;
+        } else {
+          // ✅ Si es diferente, la seleccionamos como nueva
+          newCitySlug = valSlug;
+        }
+      } else if (isType) {
+        newType = newType === val ? null : val;
+      } else if (isAmenity) {
+        const lowerAmenities = newAmenities.map(a => a.toLowerCase());
+        if (lowerAmenities.includes(val)) {
+          newAmenities = newAmenities.filter(a => a.toLowerCase() !== val);
+        } else {
+          const originalAmenity = FILTROS.find(f => f.value.toLowerCase() === val)?.value;
+          if (originalAmenity) newAmenities.push(originalAmenity);
+        }
+      }
+
+      const rutaFiltros: string[] = [
+        ...(newCitySlug ? [newCitySlug] : []),
+        ...(newType ? [newType.toLowerCase().replace(/\s+/g, '-')] : []),
+        ...newAmenities.map(a => a.toLowerCase().replace(/\s+/g, '-'))
+      ];
+
+      const path = (rutaFiltros.length > 0 || extrasSinPagina.length > 0)
+        ? `/${[...rutaFiltros, ...extrasSinPagina].join('/')}`
         : '/';
 
       router.push(path);

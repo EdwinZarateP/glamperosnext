@@ -136,7 +136,7 @@ border-radius: 7px;
 .TarjetasEcommerce-breadcrumb-item {
   display: inline-flex;
   align-items: center;
-  background: #f0f0f0;
+  background:#80eb9e;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.9rem;
@@ -144,12 +144,12 @@ border-radius: 7px;
 
 .TarjetasEcommerce-breadcrumb-remove {
   border: none;
-  background: transparent;
   margin-left: 0.5rem;
   cursor: pointer;
   font-weight: bold;
-  color: #999;
+  color: #000000;
   transition: color 0.2s;
+  background:#80eb9e;
 }
 .TarjetasEcommerce-breadcrumb-remove:hover {
   color: #333;

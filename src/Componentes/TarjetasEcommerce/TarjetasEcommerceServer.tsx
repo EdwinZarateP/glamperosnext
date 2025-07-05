@@ -12,7 +12,6 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000'
 const API_URL  = `${API_BASE}/glampings/glampingfiltrados2`
 const PAGE_SIZE = 24
 
-// slug de ciudad por defecto
 const DEFAULT_CITY_SLUG = 'bogota'
 
 type Municipio = {
@@ -31,7 +30,8 @@ const municipiosConSlug: MunicipioConSlug[] = municipiosData.map(m => ({
 
 const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod']
 
-function getCiudadFromSlug(slug: string): MunicipioConSlug | null {
+function getCiudadFromSlug(slug: string | undefined): MunicipioConSlug | null {
+  if (!slug) return null
   return municipiosConSlug.find(m => m.SLUG === slug.toLowerCase()) || null
 }
 
@@ -46,17 +46,24 @@ function construirQuery(
   params.set('page', String(pageArg))
   params.set('limit', String(PAGE_SIZE))
 
-  // primera posición siempre slug válido aquí
-  const ciudad = getCiudadFromSlug(filtrosSinPagina[0])!
-  params.set('lat', String(ciudad.LATITUD))
-  params.set('lng', String(ciudad.LONGITUD))
+  const ciudad = getCiudadFromSlug(filtrosSinPagina[0])
+
+  // ✅ Si no hay ciudad, usar Bogotá solo como fallback lat/lng
+  if (ciudad) {
+    params.set('lat', String(ciudad.LATITUD))
+    params.set('lng', String(ciudad.LONGITUD))
+  } else {
+    const bogota = getCiudadFromSlug(DEFAULT_CITY_SLUG)!
+    params.set('lat', String(bogota.LATITUD))
+    params.set('lng', String(bogota.LONGITUD))
+  }
 
   // tipo
   const tipo = filtrosSinPagina.find(f => TIPOS.includes(f.toLowerCase()))
   if (tipo) params.set('tipoGlamping', tipo.toLowerCase())
 
   // amenidades
-  const extras = filtrosSinPagina.slice(1)
+  const extras = ciudad ? filtrosSinPagina.slice(1) : filtrosSinPagina
   const sinTipo = tipo
     ? extras.filter(f => f.toLowerCase() !== tipo.toLowerCase())
     : extras
@@ -66,24 +73,16 @@ function construirQuery(
 }
 
 export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
-  // 1) página
+  // 1) detecta página
   const last = filtros[filtros.length - 1] || ''
   const match = last.match(/^pagina-(\d+)$/)
   const pageArg = match ? parseInt(match[1], 10) : 1
 
-  // 2) limpia el segmento página
+  // 2) limpia segmento de página
   const filtrosSinPagina = match ? filtros.slice(0, -1) : filtros
 
-  // --- fallback para SSR: si no hay filtros o slug inválido, usamos DEFAULT_CITY_SLUG ---
-  let slugCiudad = filtrosSinPagina[0] ?? DEFAULT_CITY_SLUG
-  let ciudad = getCiudadFromSlug(slugCiudad)
-  if (!ciudad) {
-    slugCiudad = DEFAULT_CITY_SLUG
-    ciudad = getCiudadFromSlug(DEFAULT_CITY_SLUG)!
-  }
-
-  // nos aseguramos de incluir slugCiudad al principio
-  const filtrosParaSSR = [slugCiudad, ...filtrosSinPagina.slice(1)]
+  // ✅ Construye filtrosParaSSR sin forzar ciudad en la URL
+  const filtrosParaSSR = filtrosSinPagina
 
   // 3) construye y ejecuta la petición SSR
   const qs = construirQuery(pageArg, filtrosParaSSR)

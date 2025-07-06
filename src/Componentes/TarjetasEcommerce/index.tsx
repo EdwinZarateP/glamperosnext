@@ -234,7 +234,7 @@
               navigator.geolocation.getCurrentPosition(
                 successCallback,
                 errorCallback,
-                { enableHighAccuracy: true, timeout: 10000 }
+                { enableHighAccuracy: true, timeout: 6000 }
               );
             }
           })
@@ -242,14 +242,14 @@
             navigator.geolocation.getCurrentPosition(
               successCallback,
               errorCallback,
-              { enableHighAccuracy: true, timeout: 10000 }
+              { enableHighAccuracy: true, timeout: 6000 }
             );
           });
       } else {
         navigator.geolocation.getCurrentPosition(
           successCallback,
           errorCallback,
-          { enableHighAccuracy: true, timeout: 10000 }
+          { enableHighAccuracy: true, timeout: 6000 }
         );
       }
     }, [ciudadFilter]);

@@ -174,19 +174,54 @@
     // Obtiene permiso y dispara getCurrentPosition de inmediato
     // 🔄 Hook de geolocalización con fallback a Bogotá
     useEffect(() => {
-      if (ciudadFilter) return; // si ya filtró por ciudad en la URL, no pedimos geo
+      if (ciudadFilter) return; // si ya filtró por ciudad, no pedimos geo
       if (!navigator.geolocation) {
-        // sin API de geoloc → fallback inmediato
         setUserLocation(defaultLocation);
         setLoading(false);
         return;
       }
 
-      // función para aplicar el fallback
       const aplicarFallback = () => {
         setGeoError("Usando ubicación por defecto (Bogotá)");
         setUserLocation(defaultLocation);
         setLoading(false);
+
+        // 🔴 Aquí también podrías guardar la ubicación por defecto si quieres
+      };
+
+      const guardarLocalizacionAPI = (lat: number, lng: number) => {
+        try {
+          const cookies = document.cookie.split("; ").reduce((acc, current) => {
+            const [key, value] = current.split("=");
+            acc[key] = value;
+            return acc;
+          }, {} as Record<string, string>);
+
+          const user_id = cookies['idUsuario'] || 'no_identificado';
+
+          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/localizaciones`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lat, lng, user_id })
+          })
+          .then(res => res.json())
+          .then(json => console.log("✅ Localización guardada:", json))
+          .catch(err => console.error("❌ Error guardando localización:", err));
+        } catch (error) {
+          console.error("❌ Error en guardarLocalizacionAPI:", error);
+        }
+      };
+
+      const successCallback = (pos: GeolocationPosition) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setUserLocation({ lat, lng });
+        guardarLocalizacionAPI(lat, lng);
+      };
+
+      const errorCallback = () => {
+        aplicarFallback();
+        guardarLocalizacionAPI(defaultLocation.lat, defaultLocation.lng);
       };
 
       if (typeof navigator.permissions !== 'undefined') {
@@ -194,40 +229,26 @@
           .query({ name: 'geolocation' as PermissionName })
           .then(perm => {
             if (perm.state === 'denied') {
-              aplicarFallback();
+              errorCallback();
             } else {
               navigator.geolocation.getCurrentPosition(
-                pos => {
-                  setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-                },
-                () => {
-                  aplicarFallback();
-                },
+                successCallback,
+                errorCallback,
                 { enableHighAccuracy: true, timeout: 10000 }
               );
             }
           })
           .catch(() => {
-            // si falla Permissions API → intentamos geoloc directo
             navigator.geolocation.getCurrentPosition(
-              pos => {
-                setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-              },
-              () => {
-                aplicarFallback();
-              },
+              successCallback,
+              errorCallback,
               { enableHighAccuracy: true, timeout: 10000 }
             );
           });
       } else {
-        // navegadores sin Permissions API
         navigator.geolocation.getCurrentPosition(
-          pos => {
-            setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          },
-          () => {
-            aplicarFallback();
-          },
+          successCallback,
+          errorCallback,
           { enableHighAccuracy: true, timeout: 10000 }
         );
       }
@@ -235,7 +256,6 @@
 
 
 
-    
     const [redirigiendoInternamente, setRedirigiendoInternamente] = useState(false);
 
     useEffect(() => {
@@ -375,7 +395,7 @@
     didFetchOnClient.current = true;
     
     const extras0 = limpiarSegmentosPagina(extrasFromURL);
-    +   fetchGlampings(pageFromUrl, extras0)
+      fetchGlampings(pageFromUrl, extras0)
      .finally(() => {
        setHasFetched(true);
      })

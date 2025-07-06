@@ -72,7 +72,17 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   const router = useRouter();
   const idUsuarioCookie = Cookies.get("idUsuario");
 
-
+  const registrarVisita = async () => {
+  try {
+    await axios.post(`${API_BASE}/visitas/`, {
+      glamping_id: glampingId,
+      user_id: idUsuarioCookie || "no_identificado",
+      fecha: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error("Error registrando visita:", error);
+  }
+};
   useEffect(() => {
     if (!idUsuarioCookie) return;
     axios
@@ -259,11 +269,14 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
       {/* ─── Aquí sólo envuelvo la “parte clicable” en el Link ─── */}
       <Link
         href={urlDestino}
-        prefetch={false}      // ← le indicas a Next.js que NO prefetchée
+        prefetch={false}
         className="TarjetaGeneral-link"
         target={esPantallaPequena ? undefined : "_blank"}
         rel={esPantallaPequena ? undefined : "noopener noreferrer"}
-        onClick={onClick}
+        onClick={() => {
+          registrarVisita();  // 👈 registra la visita
+          if (onClick) onClick(); // mantiene tu lógica existente
+        }}
       >
 
         <div

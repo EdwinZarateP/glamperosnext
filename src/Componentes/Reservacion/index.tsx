@@ -59,8 +59,8 @@ declare global {
 
 // ------------ cambiar entre "produccion" o "pruebas"-------------
 type Modo = "produccion" | "pruebas";
-// const modo: Modo = "produccion"; // ✅ Cambia aquí entre "produccion" o "pruebas"
-const modo: Modo = "pruebas"; // ✅ Cambia aquí entre "produccion" o "pruebas"
+const modo: Modo = "produccion"; // ✅ Cambia aquí entre "produccion" o "pruebas"
+// const modo: Modo = "pruebas"; // ✅ Cambia aquí entre "produccion" o "pruebas"
 // -------------------------------------
 
 const PUBLIC_KEY = {

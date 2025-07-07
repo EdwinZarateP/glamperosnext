@@ -42,7 +42,7 @@
 
 
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
-  const API_URL = `${API_BASE}/glampings/glampingfiltrados2`;
+  const API_URL = `${API_BASE}/glampings/glampingfiltrados`;
 
   const PAGE_SIZE = 24;
 
@@ -388,20 +388,22 @@
 
 
   useEffect(() => {
-    // Si ya tengo un filtro de ciudad por slug, no fetch
-    if (ciudadFilter) return;
-    if (!userLocation) return;
-    if (didFetchOnClient.current) return;
-    didFetchOnClient.current = true;
-    
     const extras0 = limpiarSegmentosPagina(extrasFromURL);
-      fetchGlampings(pageFromUrl, extras0)
-     .finally(() => {
-       setHasFetched(true);
-     })
+
+    if (ciudadFilter) {
+      // Cuando hay ciudad, hacemos fetch con esa ciudad
+      fetchGlampings(pageFromUrl, extras0);
+      setHasFetched(true);
+      return;
+    }
+
+    // Si no hay ciudad, esperamos a que GPS esté listo (solo una vez)
+    if (!userLocation || didFetchOnClient.current) return;
+    didFetchOnClient.current = true;
+
+    fetchGlampings(pageFromUrl, extras0)
+      .finally(() => setHasFetched(true));
   }, [userLocation, ciudadFilter, pageFromUrl, extrasFromURL.join(',')]);
-
-
 
     const handleCardClick = () => {
     sessionStorage.setItem("glampings-scroll", String(window.scrollY));
@@ -525,9 +527,6 @@
             tipoFilter={tipoFilter ?? undefined}
             amenidadesFilter={amenidadesFilter}
           />
-
-
-
         </div>
         {/* Filtros rápidos */}
         <div className="TarjetasEcommerce-filtros-wrapper">

@@ -10,7 +10,7 @@ interface Props {
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
-const API_URL = `${API_BASE}/glampings/glampingfiltrados2`;
+const API_URL = `${API_BASE}/glampings/glampingfiltrados`;
 const PAGE_SIZE = 24;
 
 const DEFAULT_CITY_SLUG = 'bogota';

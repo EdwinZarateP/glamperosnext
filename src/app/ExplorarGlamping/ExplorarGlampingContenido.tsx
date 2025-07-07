@@ -2,10 +2,10 @@
 "use client";
 
 import { useEffect, useContext, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
-import Header from "../../Componentes/Header";
 import ImagenesExploradas from "../../Componentes/ImgExploradas/index";
 import EncabezadoExplorado from "../../Componentes/EncabezadoExplorado";
 import ImgExploradasIndividual from "../../Componentes/ImgExploradasIndividual/index";
@@ -24,6 +24,7 @@ import { ObtenerGlampingPorId } from "../../Funciones/ObtenerGlamping";
 import VerVideo from "../../Componentes/VerVideo";
 import { MdOndemandVideo } from "react-icons/md";
 import "./estilos.css";
+import HeaderGeneral from "../../Componentes/HeaderGeneral";
 
 interface MyLottieProps {
   animationData: unknown;
@@ -63,6 +64,7 @@ interface Glamping {
 }
 
 export default function ExplorarGlampingContenido() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId") || "";
   const { setTarifaServicio, setFechasSeparadas, setVerVideo } =
@@ -175,7 +177,19 @@ export default function ExplorarGlampingContenido() {
         <>
           {/* Header fijo */}
           <div className="header-container">
-            <Header />
+            <HeaderGeneral
+              onBuscarAction={({ fechaInicio, fechaFin, totalHuespedes, aceptaMascotas }) => {
+                // Si deseas filtrar glampings aquí o redirigir a un listado filtrado
+                const query = new URLSearchParams();
+                query.set('fechaInicio', fechaInicio);
+                query.set('fechaFin', fechaFin);
+                query.set('totalHuespedes', String(totalHuespedes));
+                if (aceptaMascotas) query.set('aceptaMascotas', 'true');
+
+                router.push(`/explorar?${query.toString()}`);
+              }}
+            />
+
           </div>
 
           <main>

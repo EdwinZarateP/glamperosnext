@@ -45,10 +45,6 @@
     align-items: center;
     height: 100vh; /* Centrado total en la pantalla */
   }
-  .header-container{
-    background-color: rgb(193, 201, 87);
-    /* height: 50px; */
-  }
   
   .ImgExploradas-iconoVideo-peque {
     position: absolute;

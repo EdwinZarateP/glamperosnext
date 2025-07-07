@@ -1,4 +1,7 @@
 /* estilos.css */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 /* Contenedor principal */
 .HeaderGeneral-container {
@@ -154,6 +157,8 @@
 
 .HeaderGeneral-SearchModal-container {
   background: #fff;
+  position: relative;
+  overflow: hidden;
   border-radius: 12px;
   width: 90%;
   max-width: 400px;
@@ -164,6 +169,7 @@
 .HeaderGeneral-field {
   margin-bottom: 1rem;
   position: relative;
+  overflow: hidden;
 }
 .HeaderGeneral-field label {
   display: block;
@@ -245,9 +251,12 @@
   font-size: 1.1rem;
 }
 
+
 .HeaderGeneral-input-wrapper {
   position: relative;
+  width: 100%;
 }
+
 
 /* toast de error */
 .error-toast {

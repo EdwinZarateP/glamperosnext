@@ -305,7 +305,7 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     fi?: string,
     ff?: string,
     th?: number,
-    ciudadForzada?: Municipio,
+    ciudadForzada?: Municipio | { LATITUD: number; LONGITUD: number; CIUDAD_DEPARTAMENTO?: string } | null,
     aceptaMascotas?: boolean,
     ordenPrecioParam?: string
   ) => {
@@ -320,14 +320,14 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
       params.set('ordenPrecio', ordenPrecio);
     }
 
-    const loc = ciudadForzada ?? ciudadData;
-    if (loc) {
-      params.set('lat', String(loc.LATITUD));
-      params.set('lng', String(loc.LONGITUD));
-    } else if (userLocation) {
-      params.set('lat', String(userLocation.lat));
-      params.set('lng', String(userLocation.lng));
-      params.set('distanciaMax', '1500');
+    // Manejar tanto ciudad como ubicación del usuario
+    if (ciudadForzada) {
+      params.set('lat', String(ciudadForzada.LATITUD));
+      params.set('lng', String(ciudadForzada.LONGITUD));
+      // Solo agregar distanciaMax si es ubicación del usuario (no ciudad filtrada)
+      if (!('CIUDAD_DEPARTAMENTO' in ciudadForzada) || !ciudadForzada.CIUDAD_DEPARTAMENTO) {
+        params.set('distanciaMax', '1500');
+      }
     }
 
     if (tipoFilter) params.set('tipoGlamping', tipoFilter);
@@ -374,25 +374,37 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
 
   // Llamada a la API
   const fetchGlampings = async (pageArg: number, extras: string[] = [], orden?: string) => {
-    if (loading) return; // Evitar múltiples llamadas simultáneas
+    if (loading) return;
     
     setLoading(true);
-    // extraemos solo el valor detrás del '='
-    const rawFi  = extras.find(s => s.startsWith('fechainicio=')); 
-    const rawFf  = extras.find(s => s.startsWith('fechafin=')); 
-    const rawTh  = extras.find(s => s.startsWith('huespedes=')); 
+    
+    // Extraer parámetros
+    const rawFi = extras.find(s => s.startsWith('fechainicio=')); 
+    const rawFf = extras.find(s => s.startsWith('fechafin=')); 
+    const rawTh = extras.find(s => s.startsWith('huespedes=')); 
     const fi = rawFi ? rawFi.split('=')[1] : undefined;
     const ff = rawFf ? rawFf.split('=')[1] : undefined;
     const th = rawTh ? Number(rawTh.split('=')[1]) : undefined;
+
+    // Priorizar ubicación del usuario sobre ciudad filtrada si no hay ciudad
+    const loc = ciudadData ? ciudadData : userLocation ? {
+      CIUDAD_DEPARTAMENTO: 'Tu ubicación',
+      CIUDAD: 'Cercanos a ti',
+      DEPARTAMENTO: '',
+      LATITUD: userLocation.lat,
+      LONGITUD: userLocation.lng,
+      SLUG: 'ubicacion-actual'
+    } : null;
+
     const qs = construirQuery(
-     pageArg,
-     fi,
-     ff,
-     th,
-     undefined,
-     aceptaMascotas,
-     orden
-   );
+      pageArg,
+      fi,
+      ff,
+      th,
+      loc, // Pasar la ubicación priorizada
+      aceptaMascotas,
+      orden
+    );
     setLastQuery(qs);
     const url = `${API_URL}?${qs}`;
 
@@ -447,19 +459,23 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
   useEffect(() => {
     // Si no hay datos iniciales (CSR puro)
     if (!initialData || initialData.length === 0) {
-      if (!userLocation || didFetchOnClient.current) return;
-
-      didFetchOnClient.current = true;
-      setLoading(true);
-      fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
-        .finally(() => setHasFetched(true));
+      // Si ya tenemos ubicación o el usuario no ha concedido permisos
+      if (userLocation !== null || (ciudadFilter && !didFetchOnClient.current)) {
+        didFetchOnClient.current = true;
+        setLoading(true);
+        fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
+          .finally(() => setHasFetched(true));
+      }
       return;
     }
 
     // Si hay un cambio de orden, filtros o página (router.push)
-    setLoading(true);
-    fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
-      .finally(() => setHasFetched(true));
+    // Solo hacer fetch si no estamos esperando la ubicación
+    if (userLocation !== null || ciudadFilter) {
+      setLoading(true);
+      fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
+        .finally(() => setHasFetched(true));
+    }
   }, [userLocation, ciudadFilter, pageFromUrl, extrasFromURL.join(','), ordenPrecio]);
 
   const handleCardClick = () => {

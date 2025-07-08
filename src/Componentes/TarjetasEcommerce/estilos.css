@@ -1,3 +1,8 @@
+/* estilos.css */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 .TarjetasEcommerce-container {
   padding: 0;
   width: 100%;
@@ -34,6 +39,11 @@
 
 .TarjetasEcommerce-Titulo img {
 border-radius: 7px;
+}
+
+.TarjetasEcommerce-descripcion{
+  font-family: inherit;
+  font-size: large;
 }
 
 
@@ -186,13 +196,6 @@ border-radius: 7px;
   }
 }
 
-/* .TarjetasEcommerce-loading {
-  text-align: center;
-  margin: 1.5rem 0;
-  color: hsl(0, 0%, 33%);
-} */
-
-/* Ajusta aquí el tamaño que quieras: 2rem, 24px, etc. */
 /* fuerza el tamaño de SVGs e imágenes dentro del icon-wrapper */
 .TarjetasEcommerce-filtro-icono svg,
 .TarjetasEcommerce-filtro-icono img {
@@ -201,8 +204,6 @@ border-radius: 7px;
   /* opcional: para que el color del svg herede el texto activo */
   fill: gray;
 }
-
-
 
 /* Ajustes para pantallas pequeñas */
 @media (max-width: 900px) {
@@ -261,14 +262,6 @@ border-radius: 7px;
   }
 }
 /* 
-.TarjetasEcommerce-error {
-  color: #a94442;
-  background: #f2dede;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-} */
 
 /* Bloque “no results” centrado */
 .TarjetasEcommerce-no-results {
@@ -287,20 +280,6 @@ border-radius: 7px;
   height: auto;
   border-radius: 8px; /* si quieres darle un toque */
 }
-
-
-/* .fade-in {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeInUp 0.3s ease-out forwards;
-} */
-
-/* @keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-} */
 
 /* ----------------------------------------
    Estilos para paginación
@@ -333,4 +312,27 @@ border-radius: 7px;
   background-color: #222; /* círculo activo */
   color: #fff;
   border-color: #222;
+}
+
+.TarjetasEcommerce-ordenamiento {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  width: 100%;
+  margin: auto;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.TarjetasEcommerce-ordenamiento label {
+  font-weight: 500;
+  font-size:medium;
+}
+
+.TarjetasEcommerce-ordenamiento select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size:medium;
 }

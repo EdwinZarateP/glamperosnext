@@ -14,6 +14,7 @@
   import { format } from 'date-fns';
   import { es } from 'date-fns/locale';
   import municipiosData from "../MunicipiosGeneral/municipiosGeneral.json";
+  import { useSearchParams } from "next/navigation";
   import "./estilos.css";
 
   type Municipio = {
@@ -30,7 +31,10 @@
       fechaFin: string;
       totalHuespedes: number;
       aceptaMascotas?: boolean;
-      destino?: string; // <-- Añadir esto
+      destino?: string; 
+      utmSource?: string;   // <-- añade
+      utmMedium?: string;   // <-- añade
+      utmCampaign?: string; // <-- añade
     }) => void;
     ciudadSlug?: string;
     tipoFilter?: string;
@@ -42,6 +46,11 @@
     onBuscarAction,
   }: HeaderGeneralProps) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const utmSource = searchParams.get('utm_source') || undefined;
+    const utmMedium = searchParams.get('utm_medium') || undefined;
+    const utmCampaign = searchParams.get('utm_campaign') || undefined;
+
     const ctx = useContext(ContextoApp);
     if (!ctx) throw new Error("ContextoApp no disponible.");
 
@@ -137,6 +146,10 @@
       searchParams.set('fechaFin', fechaFin);
       if (totalHuespedes > 1) searchParams.set('totalHuespedes', String(totalHuespedes));
       if (Cantidad_Mascotas > 0) searchParams.set('aceptaMascotas', 'true');
+      if (utmSource) searchParams.append("utm_source", utmSource);
+      if (utmMedium) searchParams.append("utm_medium", utmMedium);
+      if (utmCampaign) searchParams.append("utm_campaign", utmCampaign);
+
 
       // Llamar a la función de búsqueda con los parámetros formateados
       onBuscarAction({
@@ -144,7 +157,10 @@
         fechaFin: fechaFin,
         totalHuespedes: totalHuespedes,
         aceptaMascotas: Cantidad_Mascotas > 0,
-        destino: destination
+        destino: destination,
+        utmSource,   // <-- añade aquí
+        utmMedium,   // <-- añade aquí
+        utmCampaign, // <-- añade aquí
       });
 
       cerrarCalendario();

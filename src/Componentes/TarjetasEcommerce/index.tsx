@@ -150,6 +150,10 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
   });
 
   const searchParams = useSearchParams();
+  const utmSource = searchParams.get('utm_source');
+  const utmMedium = searchParams.get('utm_medium');
+  const utmCampaign = searchParams.get('utm_campaign');
+
 
   const initialFechaInicio =
     searchParams.get('fechaInicio') ||
@@ -527,6 +531,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     if (fechaFin) params.append("fechaFin", fechaFin);
     if (totalHuespedes > 1) params.append("totalHuespedes", String(totalHuespedes));
     if (aceptaMascotas) params.append("aceptaMascotas", "true");
+    if (utmSource) params.append("utm_source", utmSource);
+    if (utmMedium) params.append("utm_medium", utmMedium);
+    if (utmCampaign) params.append("utm_campaign", utmCampaign);
 
     const path = rutaFiltros.length > 0
       ? `/${rutaFiltros.join('/')}${params.toString() ? '?' + params.toString() : ''}`
@@ -558,6 +565,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     if (fechaFin) query.set('fechaFin', fechaFin);
     if (totalHuespedes > 1) query.set('totalHuespedes', String(totalHuespedes));
     if (aceptaMascotas) query.set('aceptaMascotas', 'true');
+    if (utmSource) query.set('utm_source', utmSource);
+    if (utmMedium) query.set('utm_medium', utmMedium);
+    if (utmCampaign) query.set('utm_campaign', utmCampaign);
     
     // Parámetros de path (filtros y orden)
     const pathSegments = [
@@ -597,6 +607,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
             if (fechaFin) params.append("fechaFin", fechaFin);
             if (totalHuespedes) params.append("totalHuespedes", String(totalHuespedes));
             if (aceptaMascotas) params.append("aceptaMascotas", "true");
+            if (utmSource) params.append("utm_source", utmSource);
+            if (utmMedium) params.append("utm_medium", utmMedium);
+            if (utmCampaign) params.append("utm_campaign", utmCampaign);
 
             router.push(`/${segments.join('/')}?${params.toString()}`);
 
@@ -685,7 +698,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
                   if (fechaFin) query.set('fechaFin', fechaFin);
                   if (totalHuespedes > 1) query.set('totalHuespedes', String(totalHuespedes));
                   if (aceptaMascotas) query.set('aceptaMascotas', 'true');
-                  
+                  if (utmSource) query.set('utm_source', utmSource);
+                  if (utmMedium) query.set('utm_medium', utmMedium);
+                  if (utmCampaign) query.set('utm_campaign', utmCampaign);
                   // Path con nuevo orden
                   const pathSegments = [
                     ...canonicalBase,

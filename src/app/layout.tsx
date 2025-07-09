@@ -65,15 +65,31 @@ export default function RootLayout({
           name="google-site-verification"
           content="TU-CODIGO-DE-VERIFICACION"
         />
-        {/* Carga el web component de Lottie antes de renderizar */}
+
+        {/* Google Tag Manager (head) */}
+        <Script id="gtm-script" strategy="afterInteractive">
+          {`
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-N62D2LDT');
+          `}
+        </Script>
+
+        {/* Lottie Web Component */}
         <Script
           src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
           strategy="beforeInteractive"
         />
+
+        {/* Google Maps Places */}
         <Script
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP8Es7GVLkm_qdCItKb60pGH7ov_tEif0&libraries=places"
           strategy="beforeInteractive"
         />
+
+        {/* JSON-LD Schema */}
         <Script type="application/ld+json" strategy="afterInteractive">
           {`
             {
@@ -91,9 +107,21 @@ export default function RootLayout({
           `}
         </Script>
       </head>
+
       <body className={openSans.className}>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-N62D2LDT"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
+
         <ClientProviders>{children}</ClientProviders>
 
+        {/* Google Analytics & Ads (gtag.js) */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-NXB4CM5T4H"
@@ -112,6 +140,7 @@ export default function RootLayout({
           `}
         </Script>
 
+        {/* Facebook Pixel */}
         <Script
           id="facebook-pixel"
           strategy="afterInteractive"

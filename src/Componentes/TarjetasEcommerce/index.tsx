@@ -44,7 +44,7 @@ const PAGE_SIZE = 24;
 
 // Coordenadas aproximadas para cada ciudad
 const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
-  bogota:   { lat: 4.316107698,   lng: -74.181072702 },
+  bogota:   { lat: 4.65899737181350,   lng: -74.10152220780381 },
   medellin: { lat: 6.2442,  lng: -75.5812 },
   cali:     { lat: 3.4516,  lng: -76.5320 },
 };

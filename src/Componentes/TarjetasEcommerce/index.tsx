@@ -329,7 +329,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
       params.set('lat', String(ciudadForzada.LATITUD));
       params.set('lng', String(ciudadForzada.LONGITUD));
       // Solo agregar distanciaMax si es ubicación del usuario (no ciudad filtrada)
-      if (!('CIUDAD_DEPARTAMENTO' in ciudadForzada) || !ciudadForzada.CIUDAD_DEPARTAMENTO) {
+      if (!('CIUDAD_DEPARTAMENTO' in ciudadForzada) || 
+        !ciudadForzada.CIUDAD_DEPARTAMENTO || 
+        ciudadForzada.CIUDAD_DEPARTAMENTO === 'Tu ubicación') {
         params.set('distanciaMax', '1500');
       }
     }

@@ -212,7 +212,7 @@ const CalendarioSecundario: React.FC<PropiedadesCalendarioSecundario> = ({
   };
 
   const esFechaDeshabilitada = (fecha: Date): boolean => {
-    return fecha <= fechaHoy;
+    return fecha < fechaHoy;
   };
 
   const verificarRango = (inicio: Date, fin: Date): boolean => {

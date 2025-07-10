@@ -148,7 +148,7 @@ const CalendarioGeneral: React.FC<PropiedadesCalendarioGeneral> = ({ cerrarCalen
 
   // Determina si la fecha está deshabilitada (por ser anterior o igual al día de hoy)
   const esFechaDeshabilitada = (fecha: Date): boolean => {
-    return fecha <= fechaHoy;
+    return fecha < fechaHoy;
   };
 
   // Verifica que en todo el rango (inicio - fin) no haya fechas reservadas

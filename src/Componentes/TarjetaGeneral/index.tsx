@@ -19,6 +19,8 @@ import axios from "axios";
 import { ContextoApp } from "../../context/AppContext";
 import { calcularTarifaServicio } from "../../Funciones/calcularTarifaServicio";
 import fds from "../BaseFinesSemana/fds.json";
+import { calcularPrecioConDescuento } from "../../Funciones/calcularPrecioConDescuento";
+import { precioConRecargo } from "../../Funciones/precioConRecargo";
 import "./estilos.css";
 
 interface TarjetaProps {
@@ -123,6 +125,8 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     }
   }, []);
 
+  const precioSinDescuento = precioConRecargo(precio);
+  const precioConDescuentoAplicado = calcularPrecioConDescuento(precio, descuento);
   const hoy = new Date();
   const fechaInicioPorDefecto = new Date();
   fechaInicioPorDefecto.setDate(hoy.getDate() + 1);
@@ -216,16 +220,16 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
       return (
         <div className="TarjetaGeneral-precio">
           <span>
-            {precioConFormato(precioFinalNoche)} noche para {Cantidad_Huespedes}
+            {precioConFormato(precioSinDescuento)} noche para {Cantidad_Huespedes}
           </span>
-          {Cantidad_Huespedes_Adicional > 0 && (
+        
             <>
               <br />
               <span>
-                {precioConFormato(precioEstandarAdicional)} por persona adicional
+                {precioConFormato(precioConDescuentoAplicado)} de lunes a jueves no festivos
               </span>
             </>
-          )}
+
         </div>
       );
     }

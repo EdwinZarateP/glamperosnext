@@ -293,7 +293,8 @@
 .TarjetaGeneral-link,
 .TarjetaGeneral-info a {
   text-decoration: none;    /* quita la línea inferior */
-  color: inherit;           /* hereda color del elemento padre */
+  color: inherit;
+  margin-bottom: 7px;
 }
 
 /* Opcionalmente, puedes añadir hover si quieres cambiar color al pasar el ratón */

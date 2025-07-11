@@ -45,24 +45,34 @@ const GraciasContenido: React.FC = () => {
   }
 
   return (
-    <div className="GraciasContenedor">
-      <HeaderIcono descripcion="Glamperos" />
-      <h1 className="GraciasTitulo">¡Gracias por tu reserva!</h1>
+  <div className="GraciasContenedor">
+    <HeaderIcono descripcion="Glamperos" />
+    <h1 className="GraciasTitulo">¡Gracias por tu reserva!</h1>
+
+    {(datos.telefonoUsuario !== "No disponible" || datos.correoUsuario !== "No disponible") && (
       <p className="GraciasMensaje">
-        A tu WhatsApp <strong>{datos.telefonoUsuario}</strong> y correo{" "}
-        <strong>{datos.correoUsuario}</strong> enviamos el código de reserva,
-        ubicación del glamping y el contacto del anfitrión. ¡Gracias por
-        elegirnos!
+        A tu WhatsApp{" "}
+        {datos.telefonoUsuario !== "No disponible" && (
+          <strong>{datos.telefonoUsuario}</strong>
+        )}
+        {datos.telefonoUsuario !== "No disponible" && datos.correoUsuario !== "No disponible" && " y correo "}
+        {datos.correoUsuario !== "No disponible" && (
+          <strong>{datos.correoUsuario}</strong>
+        )}{" "}
+        enviamos el código de reserva, ubicación del glamping y el contacto del
+        anfitrión. ¡Gracias por elegirnos!
       </p>
-      <img
-        src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/oso.webp"
-        alt="Glamperos logo"
-        className="Gracias-logo"
-        onClick={() => router.push("/")}
-      />
-      <MenuUsuariosInferior />
-    </div>
-  );
+    )}
+
+    <img
+      src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/oso.webp"
+      alt="Glamperos logo"
+      className="Gracias-logo"
+      onClick={() => router.push("/")}
+    />
+    <MenuUsuariosInferior />
+  </div>
+);
 };
 
 export default GraciasContenido;

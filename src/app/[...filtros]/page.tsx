@@ -1,6 +1,5 @@
 // src/app/[...filtros]/page.tsx
 
-// import TarjetasEcommerce from "@/Componentes/TarjetasEcommerce";
 import TarjetasEcommerceServer from "@/Componentes/TarjetasEcommerce/TarjetasEcommerceServer";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import Footer from "@/Componentes/Footer";
@@ -12,17 +11,30 @@ interface Props {
 
 // ✅ Metadata dinámico con await params
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // await params para acceder a filtros sin warning
   const { filtros = [] } = await params;
-  const path = filtros.join("/");
-  const url = `https://glamperos.com/${path}`;
 
-  // Capitaliza cada filtro
+  // 🔍 Lista de ciudades (ajústala según tu base de datos)
+  const ciudades = ["bogota", "medellin", "cali"];
+
+  // Determina segmento canónico: ciudad o primer filtro
+  let canonicalSegment = "";
+  if (filtros.length > 0) {
+    const primerFiltro = filtros[0].toLowerCase();
+    canonicalSegment = primerFiltro;
+    // Si es ciudad, úsala; si no, también usamos el primer filtro
+    if (!ciudades.includes(primerFiltro)) {
+      canonicalSegment = primerFiltro;
+    }
+  }
+
+  // Construye URL canónica (homepage si está vacío)
+  const url = `https://glamperos.com${canonicalSegment ? `/${canonicalSegment}` : ""}`;
+
+  // Prepara title y description usando todos los filtros
   const filtrosCapitalizados = filtros.map(f =>
     f.charAt(0).toUpperCase() + f.slice(1)
   );
 
-  // Genera texto natural: filtro1, filtro2 y filtro3
   let filtrosTexto = "";
   if (filtrosCapitalizados.length === 1) {
     filtrosTexto = filtrosCapitalizados[0];
@@ -51,7 +63,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // ✅ Server Component con await params
 export default async function FiltradosPage({ params }: Props) {
-  // await params para no romper la nueva regla de Next.js 15
   const { filtros = [] } = await params;
 
   return (

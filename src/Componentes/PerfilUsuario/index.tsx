@@ -151,7 +151,7 @@ const PerfilUsuario: React.FC<PerfilUsuarioProps> = ({ propietario_id }) => {
           className="PerfilUsuarioBotonWhatsApp"
           onClick={redirigirWhatsAppAnfitrion}
         >
-          Contactar por WhatsApp
+          WhatsApp Anfitrion
         </button>
       )}
     </div>

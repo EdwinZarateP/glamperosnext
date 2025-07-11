@@ -92,6 +92,30 @@
   transform: translateY(0);
 }
 
+/* src/Componentes/estilos.css (o donde centralices tu CSS) */
+
+/* ...tus estilos existentes... */
+
+/* src/Componentes/estilos.css */
+
+.PerfilUsuarioBotonWhatsApp {
+  display: block;
+  width: 100%;
+  background-color: #25d366;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.PerfilUsuarioBotonWhatsApp:hover {
+  background-color: #1ebe5b;
+}
+
+
 /* Estilos para pantallas mayores a 600px */
 @media screen and (min-width: 601px) {
   .PerfilUsuarioContenedor {

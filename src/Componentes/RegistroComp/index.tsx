@@ -1,3 +1,4 @@
+// src/Componentes/RegistroComp.tsx
 "use client";
 
 import { useState, useContext, useEffect } from "react";
@@ -15,6 +16,7 @@ interface UsuarioAPI {
   nombre: string;
   email: string;
   telefono?: string;
+  rol?: string;           // 🆕 Aquí agregamos el rol
 }
 
 const RegistroComp: React.FC = () => {
@@ -72,34 +74,36 @@ const RegistroComp: React.FC = () => {
   };
 
   const guardarYRedirigir = (apiUsuario: UsuarioAPI) => {
-    // 1) Validar id
-    if (!apiUsuario.id || apiUsuario.id === "undefined") {
+    const { id, nombre, email, telefono, rol } = apiUsuario;
+    if (!id || id === "undefined") {
       console.error("ID inválido recibido:", apiUsuario);
       setMensaje("Error interno: no se obtuvo el identificador de usuario");
       return;
     }
 
-    // 2) Guardar cookies
-    Cookies.set("idUsuario", apiUsuario.id, { expires: 7 });
-    Cookies.set("nombreUsuario", apiUsuario.nombre, { expires: 7 });
-    Cookies.set("correoUsuario", apiUsuario.email, { expires: 7 });
-    const tel = apiUsuario.telefono?.trim() || "";
-    Cookies.set("telefonoUsuario", tel || "sintelefono", { expires: 7 });
+    // 1) Guardar cookies
+    Cookies.set("idUsuario", id, { expires: 7 });
+    Cookies.set("nombreUsuario", nombre, { expires: 7 });
+    Cookies.set("correoUsuario", email, { expires: 7 });
+    Cookies.set("telefonoUsuario", telefono?.trim() || "sintelefono", { expires: 7 });
+    Cookies.set("rolUsuario", rol || "usuario", { expires: 7 });
 
-    console.log("✅ Cookies guardadas:");
-    console.log("idUsuario:", Cookies.get("idUsuario"));
-    console.log("nombreUsuario:", Cookies.get("nombreUsuario"));
-    console.log("correoUsuario:", Cookies.get("correoUsuario"));
-    console.log("telefonoUsuario:", Cookies.get("telefonoUsuario"));
+    console.log("✅ Cookies guardadas:", {
+      idUsuario: Cookies.get("idUsuario"),
+      nombreUsuario: Cookies.get("nombreUsuario"),
+      correoUsuario: Cookies.get("correoUsuario"),
+      telefonoUsuario: Cookies.get("telefonoUsuario"),
+      rolUsuario: Cookies.get("rolUsuario"),
+    });
 
-    // 3) Actualizar contexto
-    setIdUsuario(apiUsuario.id);
-    setNombreUsuario(apiUsuario.nombre);
-    setCorreoUsuario(apiUsuario.email);
+    // 2) Actualizar contexto
+    setIdUsuario(id);
+    setNombreUsuario(nombre);
+    setCorreoUsuario(email);
     setLogueado(true);
 
-    // 4) Redirigir según tenga teléfono o no
-    const tieneTel = Boolean(apiUsuario.telefono && apiUsuario.telefono.trim());
+    // 3) Redirigir según tenga teléfono o no
+    const tieneTel = Boolean(telefono && telefono.trim());
     router.push(tieneTel ? redireccionSegunEstado() : "/EdicionPerfil");
   };
 
@@ -185,7 +189,6 @@ const RegistroComp: React.FC = () => {
       </div>
         
       {mensaje && <p className="Mensaje-error">{mensaje}</p>}
-      
     </div>
   );
 };

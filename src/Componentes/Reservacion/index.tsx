@@ -453,7 +453,7 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
                 })}
               </p>
               <p>
-                Tarifa de Glamperos:{" "}{formatoPesos(Math.round(Number(tarifaDesencriptada)))}
+                Tarifa de Servicio:{" "}{formatoPesos(Math.round(Number(tarifaDesencriptada)))}
               </p>
               {/* Aquí mostramos la cantidad de huéspedes formateada */}
               <p>

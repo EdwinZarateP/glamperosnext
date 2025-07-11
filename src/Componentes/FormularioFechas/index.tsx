@@ -551,7 +551,7 @@ const FormularioFechas: React.FC<FormularioFechasProps> = ({
           )}
 
           <div className="FormularioFechas-item">
-            <span>Tarifa por servicio Glamperos</span>
+            <span>Tarifa por servicio</span>
             <span>{tarifaFinalGlamperos.toLocaleString()} COP</span>
           </div>
 

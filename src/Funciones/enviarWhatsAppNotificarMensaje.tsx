@@ -24,41 +24,56 @@ export const enviarWhatsAppNotificarMensaje = async ({
 
     const url = "https://graph.facebook.com/v21.0/531912696676146/messages";
 
-    const body = {
+    // Preparamos el payload base
+    const payloadBase = {
       messaging_product: "whatsapp",
       recipient_type: "individual",
-      to: numero, // 🔹 Asegúrate de que tenga formato internacional, ej: "+573001234567"
-      type: "template",
+      type: "template" as const,
       template: {
-        name: "notificacionmensaje", // 🔹 Asegúrate de que este nombre es EXACTO al de Meta Business
+        name: "notificacionmensaje",
         language: { code: "es_CO" },
         components: [
           {
-            type: "body",
+            type: "body" as const,
             parameters: [
-              { type: "text", text: nombrePropietario },
-              { type: "text", text: nombreHuesped },    
-              { type: "text", text: mensaje },           
+              { type: "text" as const, text: nombrePropietario },
+              { type: "text" as const, text: nombreHuesped },
+              { type: "text" as const, text: mensaje },
             ],
           },
         ],
       },
     };
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${whatsappApiToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    // Lista de destinatarios: primero el dinámico y luego el fijo
+    const destinatarios = [
+      numero,                // el que recibías antes
+      "+573125443396"        // número adicional fijo
+    ];
 
-    const result = await response.json();
+    for (const to of destinatarios) {
+      const body = {
+        ...payloadBase,
+        to,
+      };
 
-    if (!response.ok) {
-      console.error("❌ Error al enviar mensaje de WhatsApp:", result);
-      throw new Error(`Error al enviar mensaje: ${result.error?.message || "Error desconocido"}`);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${whatsappApiToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        console.error(`❌ Error al enviar a ${to}:`, result);
+        // Si quieres que al primer fallo salga del bucle, descomenta la siguiente línea:
+        // throw new Error(`Error al enviar mensaje a ${to}: ${result.error?.message || "desconocido"}`);
+      } else {
+        console.log(`✅ Mensaje enviado a ${to}`, result);
+      }
     }
 
   } catch (error) {

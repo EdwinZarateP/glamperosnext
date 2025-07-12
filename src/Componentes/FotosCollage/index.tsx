@@ -84,7 +84,8 @@ function FotosCollage() {
       <div className="fotosCollage-grid">
         {imagenes.map((imagen, index) => {
           let itemClass = "fotosCollage-item";
-          if (index % 3 === 0) {
+          if (index === 0) { 
+            // o cualquier otro índice que quieras destacar 
             itemClass += " fotosCollage-item-span-2";
           }
 

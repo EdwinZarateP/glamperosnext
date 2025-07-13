@@ -345,17 +345,17 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
 
                 const amenidadesSufijo = [
                   { valor: "playa", prefijo: "cerca a la" },
-                  { valor: "malla catamaran", prefijo: "con" },
-                  { valor: "vista al lago", prefijo: "con" },
+                  { valor: "malla-catamaran", prefijo: "con" },
+                  { valor: "vista-al-lago", prefijo: "con" },
                   { valor: "desierto", prefijo: "en el" },
                   { valor: "jacuzzi", prefijo: "con" },
-                  { valor: "baño privado", prefijo: "con" },
+                  { valor: "baño-privado", prefijo: "con" },
                   { valor: "piscina", prefijo: "con" },
                   { valor: "tina", prefijo: "con" },
                   { valor: "rio", prefijo: "cerca al" },
                   { valor: "cascada", prefijo: "cerca a la" },
-                  { valor: "en la montaña", prefijo: "" },
-                  { valor: "zona fogata", prefijo: "con" },
+                  { valor: "en-la-montaña", prefijo: "" },
+                  { valor: "zona-fogata", prefijo: "con" },
                 ];
                 let amenidadEncontrada = null;
                 for (let item of amenidadesSufijo) {
@@ -366,8 +366,8 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
                 }
                 if (amenidadEncontrada) {
                   return amenidadEncontrada.prefijo === ""
-                    ? `${tipoFormateado} ${amenidadEncontrada.valor}`
-                    : `${tipoFormateado} ${amenidadEncontrada.prefijo} ${amenidadEncontrada.valor}`;
+                    ? `${tipoFormateado} ${amenidadEncontrada.valor.replace(/-/g, " ").toLowerCase()}`
+                    : `${tipoFormateado} ${amenidadEncontrada.prefijo} ${amenidadEncontrada.valor.replace(/-/g, " ").toLowerCase()}`;
                 }
                 return tipoFormateado;
               })()}

@@ -336,6 +336,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
                     domo: "Domo",
                     tipi: "Tipi",
                     lulipod: "Lulipod",
+                    chalet: "Chalet",
                   };
                   return (
                     mapa[tipoGlamping.toLowerCase() as keyof typeof mapa] ||

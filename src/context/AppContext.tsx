@@ -52,7 +52,6 @@ interface ContextProps {
   setRedirigirExplorado: Dispatch<SetStateAction<boolean>>;
 
 
-
   // Variables de tipo string
   nombreGlamping: string;
   setNombreGlamping: Dispatch<SetStateAction<string>>;
@@ -203,46 +202,7 @@ interface ContextProps {
   cordenadasElegidas: { LATITUD: number; LONGITUD: number }[];
   setCordenadasElegidas: Dispatch<SetStateAction<{ LATITUD: number; LONGITUD: number }[]>>;
 
-  // Filtros del menuIcons
-  iconoSeleccionado: number;
-  setIconoSeleccionado: React.Dispatch<React.SetStateAction<number>>;
-  activarFiltrosdomo: boolean;
-  setActivarFiltrosdomo: Dispatch<SetStateAction<boolean>>;
-  activarFiltrostienda: boolean;
-  setActivarFiltrostienda: Dispatch<SetStateAction<boolean>>;  
-  activarFiltroscabana: boolean;
-  setActivarFiltroscabana: Dispatch<SetStateAction<boolean>>;  
-  activarFiltrosCasaArbol: boolean;
-  setActivarFiltrosCasaArbol: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosremolques: boolean;
-  setActivarFiltrosremolques: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosTipi: boolean;
-  setActivarFiltrosTipi: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosLumipod: boolean;
-  setActivarFiltrosLumipod: Dispatch<SetStateAction<boolean>>; 
-  activarFiltrosMascotas: boolean;
-  setActivarFiltrosMascotas: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosClimaCalido: boolean;
-  setActivarFiltrosClimaCalido: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosClimaFrio: boolean;
-  setActivarFiltrosClimaFrio: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosPlaya: boolean;
-  setActivarFiltrosPlaya: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosNaturaleza: boolean;
-  setActivarFiltrosNaturaleza: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosRio: boolean;
-  setActivarFiltrosRio: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosCascada: boolean;
-  setActivarFiltrosCascada: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosMontana: boolean;
-  setActivarFiltrosMontana: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosDesierto: boolean;
-  setActivarFiltrosDesierto: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosCaminata: boolean;
-  setActivarFiltrosCaminata: Dispatch<SetStateAction<boolean>>;
-  activarFiltrosJacuzzi: boolean;
-  setActivarFiltrosJacuzzi: Dispatch<SetStateAction<boolean>>;
-
+  
 }
 
 // Crea el contexto
@@ -353,27 +313,6 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
     const [tipoGlampingFiltrado, setTipoGlampingFiltrado] = useState<string | undefined>(undefined);
     const [cordenadasElegidas, setCordenadasElegidas] = useState<{ LATITUD: number; LONGITUD: number }[]>([]);
   
-    // Estado para filtros MenuIcons
-    const [iconoSeleccionado, setIconoSeleccionado] = useState<number>(100);
-    const [activarFiltrosdomo, setActivarFiltrosdomo] = useState<boolean>(false);
-    const [activarFiltrostienda, setActivarFiltrostienda] = useState<boolean>(false);
-    const [activarFiltroscabana, setActivarFiltroscabana] = useState<boolean>(false);
-    const [activarFiltrosCasaArbol, setActivarFiltrosCasaArbol] = useState<boolean>(false);
-    const [activarFiltrosremolques, setActivarFiltrosremolques] = useState<boolean>(false);
-    const [activarFiltrosTipi, setActivarFiltrosTipi] = useState<boolean>(false);
-    const [activarFiltrosLumipod, setActivarFiltrosLumipod] = useState<boolean>(false);
-    const [activarFiltrosMascotas, setActivarFiltrosMascotas] = useState<boolean>(false);
-    const [activarFiltrosClimaCalido, setActivarFiltrosClimaCalido] = useState<boolean>(false);  
-    const [activarFiltrosClimaFrio, setActivarFiltrosClimaFrio] = useState<boolean>(false);  
-    const [activarFiltrosPlaya, setActivarFiltrosPlaya] = useState<boolean>(false);  
-    const [activarFiltrosNaturaleza, setActivarFiltrosNaturaleza] = useState<boolean>(false);  
-    const [activarFiltrosRio, setActivarFiltrosRio] = useState<boolean>(false);  
-    const [activarFiltrosCascada, setActivarFiltrosCascada] = useState<boolean>(false);  
-    const [activarFiltrosMontana, setActivarFiltrosMontana] = useState<boolean>(false);  
-    const [activarFiltrosCaminata, setActivarFiltrosCaminata] = useState<boolean>(false);  
-    const [activarFiltrosDesierto, setActivarFiltrosDesierto] = useState<boolean>(false);
-    const [activarFiltrosJacuzzi, setActivarFiltrosJacuzzi] = useState<boolean>(false);  
-  
 
  
   return (
@@ -451,26 +390,6 @@ export const ProveedorVariables = ({ children }: { children: ReactNode }) => {
         precioFiltrado, setPrecioFiltrado,
         tipoGlampingFiltrado,setTipoGlampingFiltrado,
         cordenadasElegidas, setCordenadasElegidas,
-        // filtros menuIcons
-        activarFiltrosdomo, setActivarFiltrosdomo,
-        iconoSeleccionado, setIconoSeleccionado,
-        activarFiltrostienda, setActivarFiltrostienda,
-        activarFiltroscabana, setActivarFiltroscabana,
-        activarFiltrosCasaArbol, setActivarFiltrosCasaArbol,
-        activarFiltrosremolques, setActivarFiltrosremolques,
-        activarFiltrosTipi, setActivarFiltrosTipi,
-        activarFiltrosLumipod, setActivarFiltrosLumipod,        
-        activarFiltrosMascotas, setActivarFiltrosMascotas,
-        activarFiltrosClimaCalido, setActivarFiltrosClimaCalido,
-        activarFiltrosClimaFrio, setActivarFiltrosClimaFrio,
-        activarFiltrosPlaya, setActivarFiltrosPlaya,
-        activarFiltrosNaturaleza, setActivarFiltrosNaturaleza,
-        activarFiltrosRio, setActivarFiltrosRio,
-        activarFiltrosCascada, setActivarFiltrosCascada,
-        activarFiltrosMontana, setActivarFiltrosMontana,
-        activarFiltrosCaminata, setActivarFiltrosDesierto,
-        activarFiltrosDesierto, setActivarFiltrosCaminata,
-        activarFiltrosJacuzzi, setActivarFiltrosJacuzzi
       }}
     >
       {children}

@@ -22,7 +22,7 @@ export default function sitemap() {
 
   // 2. Listado de ciudades, tipos y amenidades clave
   const ciudades   = ["medellin", "bogota", "cali"];
-  const tipos      = ["domo", "tipi", "tienda", "cabana", "lumipod"];
+  const tipos      = ["domo", "tipi", "tienda", "cabana", "lumipod",  "chalet"];
   const amenidades = ["jacuzzi", "piscina", "mascotas"];
 
   // 3. Generar combinaciones ciudad + tipo

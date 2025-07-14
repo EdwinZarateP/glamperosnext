@@ -19,7 +19,8 @@ import {
   GiHiking,
   GiRiver,
   GiWaterfall,
-  GiEagleEmblem
+  GiEagleEmblem,
+  GiWoodCabin
 } from "react-icons/gi";
 import { PiCoffeeBeanFill, PiMountainsBold } from 'react-icons/pi';
 import { BsTreeFill } from "react-icons/bs";
@@ -33,6 +34,7 @@ export const FILTROS = [
   { value: 'tienda',   label: 'Tienda',             icon: <GiCampingTent /> },
   { value: 'cabana',   label: 'Cabaña',             icon: <MdOutlineCabin /> },
   { value: 'lumipod',  label: 'Lumipod',            icon: <img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="TarjetasEcommerce-svg-icon" /> },
+  { value: 'chalet',   label: 'Chalet',             icon: <GiWoodCabin /> },
   { value: 'jacuzzi',          label: 'Jacuzzi',    icon: <FaHotTubPerson /> },
   { value: 'piscina',          label: 'Piscina',    icon: <MdPool /> },
   { value: 'malla-catamaran',  label: 'Malla Catamarán', icon: <GiFishingNet /> },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useContext, useEffect } from "react";
-import { GiCampingTent, GiHabitatDome, GiTreehouse, GiHut } from "react-icons/gi";
+import { GiCampingTent, GiHabitatDome, GiTreehouse, GiHut, GiWoodCabin} from "react-icons/gi";
 import { MdOutlineCabin } from "react-icons/md";
 import { FaCaravan } from "react-icons/fa";
 import { ContextoApp } from "../../../context/AppContext";
@@ -19,6 +19,7 @@ const Paso1B: React.FC = () => {
     { id: "cabana", label: "Cabaña", icono: <MdOutlineCabin /> },
     { id: "tipi", label: "Tipi", icono: <GiHut /> },
     { id: "lumipod", label: "Lumipod", icono: (<img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="Paso1B-svg-icono" />),},
+    { id: "chalet", label: "Chalet", icono: <GiWoodCabin /> },
   ];
 
   const manejarSeleccion = (opcionId: string) => {

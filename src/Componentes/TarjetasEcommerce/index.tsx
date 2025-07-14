@@ -74,7 +74,7 @@ const getCiudadFromSlug = (slug: string): MunicipioConSlug | null => {
 const CIUDADES = municipiosConSlug.map(m => m.SLUG.toLowerCase());
 
 const TIPOS = FILTROS
-  .filter(f => ['domo','tipi','tienda','cabana','lumipod'].includes(f.value.toLowerCase()))
+  .filter(f => ['domo','tipi','tienda','cabana','lumipod','chalet'].includes(f.value.toLowerCase()))
   .map(f => f.value.toLowerCase());
 // Lista de amenidades válidas
 const AMENIDADES = FILTROS.map(f => f.value)

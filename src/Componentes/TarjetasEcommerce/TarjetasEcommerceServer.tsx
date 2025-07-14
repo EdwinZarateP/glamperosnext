@@ -29,7 +29,7 @@ const municipiosConSlug: MunicipioConSlug[] = municipiosData.map(m => ({
   SLUG: m.CIUDAD_DEPARTAMENTO.toLowerCase().replace(/\s+/g, '-'),
 }));
 
-const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod'];
+const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod','chalet'];
 
 /**
  * Elimina cualquier segmento "pagina-N" y "orden-asc|desc" en la ruta

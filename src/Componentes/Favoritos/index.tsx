@@ -53,7 +53,7 @@ const Favoritos: React.FC = () => {
         }
 
         const resIds = await axios.get<string[]>(
-          `${API_BASE}favoritos/${idUsuario}`
+          `${API_BASE}/favoritos/${idUsuario}`
         );
 
         const favoritosIds = resIds.data;
@@ -69,6 +69,7 @@ const Favoritos: React.FC = () => {
 
         setGlampings(resGlampings.data);
       } catch (err: any) {
+        console.error("Error al cargar favoritos:", err);
         const msg =
           err.response?.status === 404
             ? "Ups, es hora de elegir favoritos"

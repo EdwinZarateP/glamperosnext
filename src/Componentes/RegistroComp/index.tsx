@@ -2,12 +2,14 @@
 "use client";
 
 import { useState, useContext, useEffect } from "react";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import {jwtDecode} from "jwt-decode";
 import { ContextoApp } from "../../context/AppContext";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import "./estilos.css";
 
@@ -16,13 +18,13 @@ interface UsuarioAPI {
   nombre: string;
   email: string;
   telefono?: string;
-  rol?: string;           // 🆕 Aquí agregamos el rol
+  rol?: string;
+  aceptaTratamientoDatos?: boolean;
 }
 
 const RegistroComp: React.FC = () => {
   const contexto = useContext(ContextoApp)!;
   const router = useRouter();
-  const [mensaje, setMensaje] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [aceptaTratamientoDatos, setAceptaTratamientoDatos] = useState(false);
 
@@ -51,15 +53,6 @@ const RegistroComp: React.FC = () => {
     }
   }, [setIdUsuario]);
 
-  const manejarError = (error: unknown) => {
-    console.error("Error:", error);
-    if (error instanceof AxiosError) {
-      setMensaje(error.response?.data?.detail || "Hubo un error inesperado.");
-    } else {
-      setMensaje("Ocurrió un error desconocido.");
-    }
-  };
-
   const redireccionSegunEstado = () => {
     if (siono) return "/CrearGlamping";
     if (activarChat) {
@@ -76,33 +69,21 @@ const RegistroComp: React.FC = () => {
   const guardarYRedirigir = (apiUsuario: UsuarioAPI) => {
     const { id, nombre, email, telefono, rol } = apiUsuario;
     if (!id || id === "undefined") {
-      console.error("ID inválido recibido:", apiUsuario);
-      setMensaje("Error interno: no se obtuvo el identificador de usuario");
+      toast.error("Error interno: no se obtuvo el identificador de usuario");
       return;
     }
 
-    // 1) Guardar cookies
     Cookies.set("idUsuario", id, { expires: 7 });
     Cookies.set("nombreUsuario", nombre, { expires: 7 });
     Cookies.set("correoUsuario", email, { expires: 7 });
     Cookies.set("telefonoUsuario", telefono?.trim() || "sintelefono", { expires: 7 });
     Cookies.set("rolUsuario", rol || "usuario", { expires: 7 });
 
-    console.log("✅ Cookies guardadas:", {
-      idUsuario: Cookies.get("idUsuario"),
-      nombreUsuario: Cookies.get("nombreUsuario"),
-      correoUsuario: Cookies.get("correoUsuario"),
-      telefonoUsuario: Cookies.get("telefonoUsuario"),
-      rolUsuario: Cookies.get("rolUsuario"),
-    });
-
-    // 2) Actualizar contexto
     setIdUsuario(id);
     setNombreUsuario(nombre);
     setCorreoUsuario(email);
     setLogueado(true);
 
-    // 3) Redirigir según tenga teléfono o no
     const tieneTel = Boolean(telefono && telefono.trim());
     router.push(tieneTel ? redireccionSegunEstado() : "/EdicionPerfil");
   };
@@ -111,11 +92,7 @@ const RegistroComp: React.FC = () => {
     credentialResponse: CredentialResponse | undefined
   ) => {
     if (!credentialResponse?.credential) {
-      setMensaje("No se recibió el credencial de Google");
-      return;
-    }
-    if (!aceptaTratamientoDatos) {
-      setMensaje("Debes aceptar el tratamiento de datos personales para continuar.");
+      toast.error("No se recibió el credencial de Google");
       return;
     }
 
@@ -125,8 +102,9 @@ const RegistroComp: React.FC = () => {
       );
       const nombreUsuario = decoded.name;
       const emailUsuario = decoded.email;
+
       if (!nombreUsuario || !emailUsuario) {
-        setMensaje("No se pudo obtener tu nombre o correo desde Google.");
+        toast.error("No se pudo obtener tu nombre o correo desde Google.");
         return;
       }
 
@@ -141,19 +119,30 @@ const RegistroComp: React.FC = () => {
       });
 
       if (response.status === 200) {
-        const { usuario: apiUsuario } = response.data as {
-          usuario: UsuarioAPI;
-        };
+        const { usuario: apiUsuario } = response.data as { usuario: UsuarioAPI };
         guardarYRedirigir(apiUsuario);
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response?.status === 400) {
-        setMensaje("El correo ya está registrado. Intentando redirigir...");
         const data = err.response!.data as { usuario: UsuarioAPI };
-        guardarYRedirigir(data.usuario);
-      } else {
-        manejarError(err);
+
+        if (data.usuario.aceptaTratamientoDatos) {
+          setAceptaTratamientoDatos(true);
+          guardarYRedirigir(data.usuario);
+          return;
+        }
+
+        toast.error(
+          "Debes aceptar el tratamiento de datos personales para continuar."
+        );
+        return;
       }
+
+      toast.error(
+        axios.isAxiosError(err)
+          ? err.response?.data?.detail || "Hubo un error inesperado."
+          : "Ocurrió un error desconocido."
+      );
     }
   };
 
@@ -167,7 +156,7 @@ const RegistroComp: React.FC = () => {
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
           onError={() =>
-            setMensaje(
+            toast.error(
               "Hubo un error al iniciar sesión con Google. Intenta nuevamente."
             )
           }
@@ -179,16 +168,28 @@ const RegistroComp: React.FC = () => {
           <input
             type="checkbox"
             checked={aceptaTratamientoDatos}
-            onChange={(e) => setAceptaTratamientoDatos(e.target.checked)}
-          />{" "}
-          Acepto el{" "}
-          <a href="/politicas-privacidad" target="_blank" rel="noopener noreferrer">
+            onChange={(e) => {
+              setAceptaTratamientoDatos(e.target.checked);
+            }}
+          />{' '}
+          Acepto el{' '}
+          <a
+            href="/politicas-privacidad"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             tratamiento de datos personales
           </a>
         </label>
       </div>
-        
-      {mensaje && <p className="Mensaje-error">{mensaje}</p>}
+
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        closeOnClick
+        pauseOnHover
+      />
     </div>
   );
 };

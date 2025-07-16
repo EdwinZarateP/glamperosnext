@@ -142,7 +142,7 @@ const formularioFechasMoviles: React.FC<formularioFechasMovilesProps> = ({
       totalMascotasUrl: Cantidad_Mascotas.toString(),
     });
 
-    router.replace(`/ExplorarGlamping?${queryParams.toString()}`, { scroll: false });
+    router.replace(`/glamping?${queryParams.toString()}`, { scroll: false });
   }, [
     fechaInicio,
     fechaFin,

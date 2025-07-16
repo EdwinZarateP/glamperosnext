@@ -294,7 +294,7 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
   const [redirigiendoInternamente, setRedirigiendoInternamente] = useState(false);
 
   useEffect(() => {
-    if (document.referrer.includes('/explorarglamping')) {
+    if (document.referrer.includes('/glamping')) {
       const scrollY = sessionStorage.getItem("glampings-scroll");
       if (scrollY) {
         window.scrollTo({ top: parseInt(scrollY), behavior: "auto" });

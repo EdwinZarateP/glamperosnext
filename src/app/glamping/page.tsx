@@ -1,9 +1,9 @@
-// app/ExplorarGlamping/page.tsx
+// app/glamping/page.tsx
 "use client";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
-import ExplorarGlampingContenido from "./ExplorarGlampingContenido";
+import GlampingContenido from "./glampingcontenido";
 // import "./estilos.css";
 
 interface MyLottieProps {
@@ -32,7 +32,7 @@ export default function Page() {
         </div>
       }
     >
-      <ExplorarGlampingContenido />
+      <GlampingContenido/>
     </Suspense>
   );
 }

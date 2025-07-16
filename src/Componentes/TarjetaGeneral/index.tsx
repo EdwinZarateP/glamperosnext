@@ -266,7 +266,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     totalBebesUrl: totalBebesUrl.toString(),
     totalMascotasUrl: totalMascotasUrl.toString(),
   });
-  const urlDestino = `/ExplorarGlamping?${queryParams.toString()}`;
+  const urlDestino = `/glamping?${queryParams.toString()}`;
 
   return (
     <div className="TarjetaGeneral">

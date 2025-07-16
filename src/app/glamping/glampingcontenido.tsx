@@ -1,4 +1,4 @@
-// src/app/ExplorarGlamping/ExplorarGlampingContenido.tsx
+// src/app/glamping/GlampingContenido.tsx
 "use client";
 
 import { useEffect, useContext, useState } from "react";
@@ -63,7 +63,7 @@ interface Glamping {
   minimoNoches: number;
 }
 
-export default function ExplorarGlampingContenido() {
+export default function GlampingContenido() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId") || "";

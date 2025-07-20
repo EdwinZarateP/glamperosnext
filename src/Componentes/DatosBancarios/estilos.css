@@ -1,3 +1,4 @@
+
 /* Contenedor principal */
 .DatosBancarios-contenedor {
   display: flex;
@@ -122,6 +123,10 @@
   color: #2F6B3E;
   font-weight: bold;
   margin-top: 10px;
+}
+
+.DatosBancarios-advertencia{
+  color: red;
 }
 
 /* Responsividad para dispositivos móviles */

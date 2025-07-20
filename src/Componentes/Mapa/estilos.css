@@ -14,6 +14,7 @@
   color: #333; /* Color del título */
   margin-bottom: 10px; /* Espacio entre el título y el mapa */
   text-align: left; /* Alineación del título */
+  width: 100%;
 }
 
 .MapaGlampings-mapa-container {

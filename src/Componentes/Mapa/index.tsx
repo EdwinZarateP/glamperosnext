@@ -13,7 +13,7 @@ interface Props {
 
 const MapaGlampings: React.FC<Props> = ({ lat, lng }) => {
   return (
-    <div className="MapaGlampings-contenedor">
+    <div className="MapaGlampings-contenedor ">
       <h1 className="MapaGlampings-titulo">Tu lugar en el mapa</h1>
 
       <div className="MapaGlampings-mapa-container">

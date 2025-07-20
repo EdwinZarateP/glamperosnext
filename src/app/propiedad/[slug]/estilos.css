@@ -1,0 +1,171 @@
+/* app/propiedad/[slug]/estilos.css */
+
+.propiedad-container {
+    margin: 0 auto;
+    padding: 0;
+    width: 90%;
+    box-sizing: border-box;
+}
+
+.propiedad-encabezado{
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box; 
+}
+
+.propiedad-encabezado h1{
+  margin: 0;
+}
+
+.propiedad-imagenes{
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box; 
+}
+
+.propiedad-imagen-individual{
+  display: none;
+}
+
+.propiedad-boton-volver-exploracion svg{
+  width: 40px;
+  height: 35px;
+  font-weight: 700;
+  font-size: large;
+  position: absolute;
+  top: 16px;
+  left: 10px;
+  z-index: 10;
+  color: wheat;
+
+}
+
+.propiedad-tipo-ubicacion{
+  display:none;
+}
+
+.propiedad-contenedor-descripcion{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: rgb(255, 255, 255);
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box; 
+}
+
+.propiedad-contenedor-descripcion-izq{
+  width: 60%;
+}
+
+.propiedad-contenedor-descripcion-der{
+  width: 40%;
+}
+
+.propiedad-contenedor-descripcion {
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.propiedad-descripcion,
+.propiedad-amenidades {
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+.propiedad-mapa{
+  width: 100%;
+  height: 100%; 
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box; 
+}
+
+.propiedad-propietario,
+.propiedad-comentarios{
+  width: 100%;
+  height: 100%; 
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  box-sizing: border-box; 
+}
+
+.contenedor-principal-whatsapp-button {
+  position: fixed;
+  bottom: 20px;       /* separación inferior */
+  right: 20px;        /* separación lateral */
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1000;
+  text-decoration: none;
+  }
+  
+.contenedor-principal-whatsapp-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+.contenedor-principal-whatsapp-button img,
+.contenedor-principal-whatsapp-button svg {
+  display: block;
+  width: 36px;
+  height: 36px;
+  }
+
+
+.propiedad-formulario {
+  display: grid;
+  gap: 1rem;
+}
+
+.propiedad-label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+
+.propiedad-input,
+.propiedad-select {
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.propiedad-error {
+  color: red;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+@media (max-width: 600px) {
+  .propiedad-imagenes,
+  .propiedad-encabezado, 
+  .propiedad-contenedor-descripcion-der {
+    display: none;
+  }
+
+  .propiedad-imagen-individual {
+    position: relative;
+    display: block;
+  }
+
+  .propiedad-tipo-ubicacion {
+    display: block;
+  }
+
+  .propiedad-contenedor-descripcion-izq {
+    width: 100%;
+  }
+}

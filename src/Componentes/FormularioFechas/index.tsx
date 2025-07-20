@@ -3,7 +3,6 @@
 import { useContext, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
-
 import Swal from "sweetalert2";
 import { GiCampingTent } from "react-icons/gi";
 import { ContextoApp } from "../../context/AppContext";

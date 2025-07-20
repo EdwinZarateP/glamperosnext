@@ -7,6 +7,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
+    "typeRoots": ["src/@types", "node_modules/@types"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
@@ -26,8 +27,8 @@
       ]
     },
     "types": [
-      "@types/react",
-      "@types/react-dom"
+        "react",
+        "react-dom"
     ],
     "target": "ES2017",
     "plugins": [

@@ -176,7 +176,8 @@ const DatosBancarios = () => {
       ) : (
         <>
           <h2 className="DatosBancarios-titulo">Registrar Datos Bancarios</h2>
-
+          <span className="DatosBancarios-advertencia">Para bancos diferentes a Bancolombia y nequi se descuenta la tarifa que cobra el banco por transaccion $7.300 + IVA
+          </span>
           <label className="DatosBancarios-etiqueta">Nombre Titular</label>
           <input
             className="DatosBancarios-input-Cuenta"
@@ -228,6 +229,7 @@ const DatosBancarios = () => {
             }
           >
             <option value="">Selecciona un banco</option>
+            <option value="Nequi">Nequi</option>
             <option value="Bancolombia">Bancolombia</option>
             <option value="Davivienda">Davivienda</option>
             <option value="Banco de Bogotá">Banco de Bogotá</option>

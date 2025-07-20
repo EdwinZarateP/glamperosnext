@@ -1,0 +1,359 @@
+/* Estilos para FormularioReserva */
+
+/* Contenedor principal */
+.formularioReserva-container {
+  font-family: 'Inter', sans-serif;
+  max-width: 400px;
+  margin: 0 auto;
+  color: #333;
+  padding: 0 16px;
+  background-color: #f5f5f5;
+}
+
+/* ------------------------------
+   Tarjeta resumen profesional
+   ------------------------------ */
+.resumen-general {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.resumen-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2f6b3e;
+  margin-bottom: 8px;
+}
+
+.precio-noche {
+  font-size: 32px;
+}
+
+.resumen-datos {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.dato-fecha {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  color: #666;
+}
+
+.dato-fecha label {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dato-fecha.huespedes label {
+  display: block;
+}
+
+.reserva-principal {
+  width: 100%;
+  background-color: #2f6b3e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.reserva-principal:hover:not(:disabled) {
+  background-color: #255a34;
+}
+
+.resumen-nota {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.resumen-detalle {
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.resumen-detalle .linea {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.resumen-detalle .descuento span {
+  color: #e63946;
+}
+
+.resumen-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 12px;
+}
+
+/* ------------------------------
+   Botones resumen de selección
+   ------------------------------ */
+.formularioReserva-summary {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #2f6b3e;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #2f6b3e;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.formularioReserva-summary:hover {
+  background-color: #f4f9f4;
+  border-color: #255a34;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.labelResumen {
+  font-size: 11px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* ------------------------------
+   Overlay y modales
+   ------------------------------ */
+.formularioReserva-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.formularioReserva-modal {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Calendar */
+.formularioReserva-modal .rdrCalendarWrapper,
+.rdrDateRangeWrapper {
+  width: 100% !important;
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.rdrMonthAndYearPickers select {
+  color: #2f6b3e;
+}
+
+.rdrDaySelected,
+.rdrDayInRange {
+  background-color: #2f6b3e !important;
+  color: #ffffff !important;
+}
+
+.rdrDayDisabled .rdrDayNumber,
+.rdrDayDisabled:hover .rdrDayNumber {
+  color: #cccccc !important;
+  background-color: transparent !important;
+}
+
+/* ------------------------------
+   Modal de huéspedes
+   ------------------------------ */
+.formularioReserva-modal-huespedes {
+  width: 100%;
+  max-width: 320px;
+  align-items: flex-start;
+}
+
+.formularioReserva-modal-huespedes .formularioReserva-submit {
+  align-self: flex-end;
+  margin-bottom: 16px;
+}
+
+.labelNoMascotas {
+  color: #e63946;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.formularioReserva-huesped-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.formularioReserva-huesped-label {
+  font-size: 15px;
+  flex: 1;
+  color: #444;
+}
+
+.formularioReserva-huesped-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formularioReserva-huesped-controls button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #2f6b3e;
+  background-color: #ffffff;
+  border-radius: 50%;
+  font-size: 16px;
+  color: #2f6b3e;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.formularioReserva-huesped-controls button:hover:not(:disabled) {
+  background-color: #edf7ed;
+  border-color: #255a34;
+}
+
+.formularioReserva-huesped-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #cccccc;
+}
+
+.formularioReserva-huesped-controls span {
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+  font-size: 15px;
+  color: #333;
+}
+
+/* ------------------------------
+   Acciones final
+   ------------------------------ */
+.formularioReserva-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 12px;
+  width: 100%;
+}
+
+.formularioReserva-clear {
+  flex: 1;
+  background-color: transparent;
+  border: 1px solid #999;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.formularioReserva-clear:hover {
+  background-color: #f5f5f5;
+}
+
+.formularioReserva-submit {
+  flex: 1;
+  background-color: #2f6b3e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.formularioReserva-submit:hover:not(:disabled) {
+  background-color: #255a34;
+}
+
+.formularioReserva-submit:disabled {
+  background-color: #9bb89f;
+  cursor: not-allowed;
+}
+
+/* ------------------------------
+   Forzando ancho completo en Calendar
+   ------------------------------ */
+.formularioReserva-modal .rdrMonths,
+.formularioReserva-modal .rdrMonthsVertical {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.formularioReserva-modal .rdrMonth {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: none !important;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .formularioReserva-container {
+    padding: 0 12px;
+  }
+  .formularioReserva-summary {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  .formularioReserva-modal {
+    padding: 16px;
+    max-height: 70vh;
+  }
+  .formularioReserva-modal-huespedes {
+    max-width: 260px;
+  }
+  .formularioReserva-huesped-row {
+    margin-bottom: 12px;
+  }
+  .formularioReserva-actions {
+    flex-direction: column;
+  }
+  .formularioReserva-clear,
+  .formularioReserva-submit {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 13px;
+  }
+}

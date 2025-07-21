@@ -1,20 +1,21 @@
-// Funciones/calcularTarifaReserva.ts
 import { isBefore, addDays, format, parse } from 'date-fns';
 
 export interface ResultadoTarifa {
+  costoSinIncremento: number;
+  costoAdicionalesSinIncremento: number;
+  costoConIncremento: number;
+  costoTotalSinIncremento: number;
+  costoAdicionalesConIncremento: number;
+  costoTotalConIncremento: number;
   totalDiasFacturados: number;
-  precioTotal: number;                     // Precio final, con incrementos y redondeo a múltiplo de 50
-  precioPorDia: number;                    // Promedio diario tras incrementos, redondeado a múltiplo de 50
-  precioEstandarIncrementado: number;      // Precio estándar con el incremento aplicado
+  precioPorDia: number;
   huespedesAdicionales: number;
-  descuentoAplicado: boolean;
-  totalAhorro: number;
-  comisionGlamperos: number;               // Monto que corresponde al incremento/comisión de Glamperos
-  pagoGlamping: number;                    // Monto que se le paga al anfitrión (precioTotal - comisión)
-  costoAdicionalIncrementado: number;      // Costo total de los huéspedes extra con incremento
+  tarifaServicio: number;
+  descuentoAplicado: number;
+  costoSinIncrementoBase: number;
+   pagoGlamping: number;
 }
 
-/** Aplica el incremento final según el tope de precio */
 function aplicarIncremento(precio: number): number {
   if (precio <= 300_000)      return precio * 1.18;
   if (precio < 400_000)       return precio * 1.15;
@@ -25,7 +26,6 @@ function aplicarIncremento(precio: number): number {
   return precio;
 }
 
-/** Redondea hacia arriba al siguiente múltiplo de 50 */
 function redondear50(valor: number): number {
   return Math.ceil(valor / 50) * 50;
 }
@@ -43,86 +43,77 @@ export function calcularTarifaReserva({
   fechaFin: string;
   cantidadHuespedes: number;
 }): ResultadoTarifa {
-  const precioEstandar           = parseFloat(initialData.precioEstandar || '0');
-  const precioEstandarAdicional = parseFloat(initialData.precioEstandarAdicional || '0');
-  const capacidadBase            = parseInt(initialData.Cantidad_Huespedes || '0', 10);
-  const descuentoPct             = parseFloat(initialData.descuento || '0') / 100;
+  const precioEstandar           = parseFloat(initialData.precioEstandar            || '0');
+  const precioEstandarAdicional = parseFloat(initialData.precioEstandarAdicional  || '0');
+  const capacidadBase            = parseInt(initialData.Cantidad_Huespedes         || '0', 10);
+  const descuentoPct             = parseFloat(initialData.descuento               || '0') / 100;
 
   const inicio = parse(fechaInicio, 'yyyy-MM-dd', new Date());
   const fin    = parse(fechaFin,    'yyyy-MM-dd', new Date());
 
-  let precioBruto    = 0;
-  let totalAhorro    = 0;
-  let diasFacturados = 0;
-  let cursor         = new Date(inicio);
+  // 1) Cálculo de costoSinIncremento, totalDiasFacturados y descuentoAplicado
+  let costoSinIncremento   = 0;
+  let diasFacturados       = 0;
+  let descuentoAplicado    = 0;
+  let cursor = new Date(inicio);
 
-  // Recorrido día a día (excluyendo checkout)
   while (isBefore(cursor, fin)) {
     const diaStr = format(cursor, 'yyyy-MM-dd');
     diasFacturados++;
 
     if (viernesysabadosyfestivos.includes(diaStr)) {
-      precioBruto += precioEstandar;
+      // fin de semana o festivo: precio pleno
+      costoSinIncremento += precioEstandar;
     } else {
-      const ahorroDia = precioEstandar * descuentoPct;
-      precioBruto   += precioEstandar - ahorroDia;
-      totalAhorro   += ahorroDia;
+      // día con descuento
+      const ahorro = precioEstandar * descuentoPct;
+      costoSinIncremento   += precioEstandar - ahorro;
+      descuentoAplicado    += ahorro;
     }
+
     cursor = addDays(cursor, 1);
   }
+  const costoSinIncrementoBase = diasFacturados * precioEstandar;
 
-  const descuentoAplicado = totalAhorro > 0;
-  const factorIncremento  = aplicarIncremento(precioEstandar) / precioEstandar;
+  // 2) Cálculo de huéspedes adicionales sin incremento
+  const huespedesAdicionales = Math.max(0, cantidadHuespedes - capacidadBase);
+  const costoAdicionalesSinIncremento =
+    huespedesAdicionales * precioEstandarAdicional * diasFacturados;
 
-  // Precio estándar con incremento
-  const precioEstandarIncrementado = parseFloat(
-    (precioEstandar * factorIncremento).toFixed(2)
-  );
+  // 3) Aplicación del factor de incremento
+  const factorIncremento = precioEstandar > 0
+    ? aplicarIncremento(precioEstandar) / precioEstandar
+    : 1;
 
-  // Base incrementado
-  const precioBaseIncrementado = precioBruto * factorIncremento;
+  const costoConIncremento             = costoSinIncremento * factorIncremento;
+  const costoAdicionalesConIncremento = costoAdicionalesSinIncremento * factorIncremento;
 
-  // Extra huéspedes sin incremento
-  const huespedesExtra = Math.max(0, cantidadHuespedes - capacidadBase);
-  const precioExtras   = huespedesExtra * precioEstandarAdicional * diasFacturados;
+  // 4) Totales con y sin incremento
+  const costoTotalSinIncremento = redondear50(costoSinIncremento + costoAdicionalesSinIncremento);
+  const costoTotalConIncremento = redondear50(costoConIncremento + costoAdicionalesConIncremento);
 
-  // Extra huéspedes con incremento
-  const precioExtrasIncrementado = precioExtras * factorIncremento;
+  // 5) Tarifa de servicio (comisión)
+  const tarifaServicio = redondear50(costoTotalConIncremento - costoTotalSinIncremento);
+  const pagoGlamping = costoSinIncremento + costoAdicionalesSinIncremento;
 
-  // Costo adicional incrementado
-  const costoAdicionalIncrementado = parseFloat(
-    precioExtrasIncrementado.toFixed(2)
-  );
-
-  // Suma total antes de redondeo
-  const precioConIncrementoRAW = precioBaseIncrementado + precioExtrasIncrementado;
-  const precioFinalRounded      = redondear50(precioConIncrementoRAW);
-
-  // Precio por día
-  const precioPorDia = diasFacturados
-    ? redondear50(precioFinalRounded / diasFacturados)
+  // 6) Precio promedio por día, redondeado al siguiente múltiplo de 50
+  const precioPorDia = diasFacturados > 0
+    ? redondear50(costoTotalConIncremento / diasFacturados)
     : 0;
 
-  // Comisión Glamperos
-  const totalSinIncremento = precioBruto + precioExtras;
-  const comisionRaw        = precioConIncrementoRAW - totalSinIncremento;
-  const comisionGlamperos  = parseFloat(comisionRaw.toFixed(2));
-
-  // Pago al anfitrión
-  const pagoGlamping = parseFloat(
-    (precioFinalRounded - comisionGlamperos).toFixed(2)
-  );
-
   return {
-    totalDiasFacturados        : diasFacturados,
-    precioTotal                : precioFinalRounded,
-    precioPorDia               : precioPorDia,
-    precioEstandarIncrementado : precioEstandarIncrementado,
-    huespedesAdicionales       : huespedesExtra,
-    descuentoAplicado          : descuentoAplicado,
-    totalAhorro                : parseFloat(totalAhorro.toFixed(2)),
-    comisionGlamperos          : comisionGlamperos,
-    pagoGlamping               : pagoGlamping,
-    costoAdicionalIncrementado : costoAdicionalIncrementado,
+    costoSinIncremento,
+    costoAdicionalesSinIncremento,
+    costoConIncremento,
+    costoTotalSinIncremento,
+    costoAdicionalesConIncremento,
+    costoTotalConIncremento,
+    totalDiasFacturados: diasFacturados,
+    precioPorDia,
+    huespedesAdicionales,
+    tarifaServicio,
+    descuentoAplicado,
+    costoSinIncrementoBase,
+    pagoGlamping 
   };
 }

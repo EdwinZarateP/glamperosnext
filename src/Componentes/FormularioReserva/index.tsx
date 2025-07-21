@@ -9,6 +9,7 @@ import { calcularTarifaReserva, ResultadoTarifa } from '@/Funciones/calcularTari
 import finesSemanaData from '@/Componentes/BaseFinesSemana/fds.json';
 import './estilos.css';
 
+/** Formatea 'YYYY-MM-DD' a fecha corta */
 const formatearFechaCorta = (fechaStr: string) => {
   const date = parseYMD(fechaStr);
   return date.toLocaleDateString('es-ES', {
@@ -18,7 +19,7 @@ const formatearFechaCorta = (fechaStr: string) => {
   });
 };
 
-/** Parsea 'YYYY-MM-DD' como Date local (sin corrimiento de zona) */
+/** Parsea 'YYYY-MM-DD' como Date local */
 function parseYMD(fecha: string): Date {
   const [y, m, d] = fecha.split('-').map(Number);
   return new Date(y, m - 1, d);
@@ -46,7 +47,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // initialData
+  // Datos iniciales
   const fechasReservadas: string[] = initialData.fechasReservadas || [];
   const aceptaMascotas = !!initialData.Acepta_Mascotas;
   const capacidadBase = Number(initialData.Cantidad_Huespedes || 0);
@@ -56,7 +57,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const getParam = (key: string, fallback: string) =>
     searchParams.get(key) ?? fallback;
 
-  // reservedDates
+  // Fechas reservadas
   const reservedDates: Date[] = fechasReservadas.map(d => {
     const dt = parseYMD(d);
     dt.setHours(0, 0, 0, 0);
@@ -67,7 +68,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const hasInteriorReserved = (start: Date, end: Date) =>
     reservedDates.some(d => d > start && d < end);
 
-  /** Próximo sábado/domingo desde fromDate */
+  /** Próximo sábado/domingo */
   const getNextWeekend = (from = new Date()): [Date, Date] => {
     const day = from.getDay();
     const diffSat = (6 - day + 7) % 7 || 7;
@@ -101,15 +102,15 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     mascotas: Number(getParam('totalMascotasUrl', '0')),
   });
 
-  // Resultado de tarifa
+  // Tarifa calculada
   const [tarifa, setTarifa] = useState<ResultadoTarifa | null>(null);
 
-  // Modales
+  // Control de modales
   const [modalFechas, setModalFechas] = useState(false);
   const [modalHuespedes, setModalHuespedes] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  // 1) Inicializar con el próximo fin de semana si no hay params
+  // 1) Inicializar fin de semana si no hay params
   useEffect(() => {
     if (!getParam('fechaInicioUrl', '') && !getParam('fechaFinUrl', '')) {
       let [sat, sun] = getNextWeekend();
@@ -132,7 +133,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     }
   }, []);
 
-  // 2) Sincronizar URL del navegador
+  // 2) Sincronizar URL
   useEffect(() => {
     const p = new URLSearchParams();
     if (fechaInicio) p.set('fechaInicioUrl', fechaInicio);
@@ -144,7 +145,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     window.history.replaceState({}, '', `${pathname}?${p}`);
   }, [fechaInicio, fechaFin, huespedes, pathname]);
 
-  // 3) Validar para habilitar botón Reservar
+  // 3) Validación
   const validarCampos = () => {
     if (!fechaInicio || !fechaFin) return false;
     if (parseYMD(fechaFin) < parseYMD(fechaInicio)) return false;
@@ -157,7 +158,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     return true;
   };
 
-  // 4) Al cambiar rango de fechas
+  // 4) Cambio de rango
   const onRangeChange = ({ selection }: any) => {
     const s = selection.startDate;
     const e = selection.endDate;
@@ -177,24 +178,20 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     onFechaFinActualizada(fStr);
   };
 
-  // 5) Actualizar número de huéspedes
+  // 5) Ajuste de huéspedes
   const actualizarHuesped = (key: keyof Huespedes, delta: number) => {
     if (key === 'mascotas' && !aceptaMascotas) return;
     setHuespedes(prev => {
       let n = prev[key] + delta;
       n = key === 'adultos' ? Math.max(1, n) : Math.max(0, n);
-      if (key === 'adultos' || key === 'ninos') {
-        const totalAN =
-          (key === 'adultos' ? n : prev.adultos) +
-          (key === 'ninos' ? n : prev.ninos);
-        if (totalAN > maxHuespedes) return prev;
-      }
+      if ((key === 'adultos' || key === 'ninos') &&
+          (prev.adultos + prev.ninos + delta > maxHuespedes)) return prev;
       return { ...prev, [key]: n };
     });
     onHuespedesActualizados(huespedes);
   };
 
-  // 6) Recalcular tarifa cuando cambian fechas o huéspedes
+  // 6) Recalcular tarifa
   useEffect(() => {
     if (!fechaInicio || !fechaFin) {
       setTarifa(null);
@@ -202,7 +199,6 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     }
     let start = parseYMD(fechaInicio);
     let end = parseYMD(fechaFin);
-    // si invirtió, corregir
     if (start > end) {
       [start, end] = [end, start];
       const i = start.toISOString().slice(0, 10);
@@ -222,7 +218,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     setTarifa(res);
   }, [fechaInicio, fechaFin, huespedes.adultos, huespedes.ninos]);
 
-  // 7) Cerrar modales al hacer clic fuera
+  // 7) Cierre de modales externo
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (overlayRef.current && e.target === overlayRef.current) {
@@ -241,17 +237,9 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     };
     window.addEventListener('click', handler);
     return () => window.removeEventListener('click', handler);
-  }, [
-    modalFechas,
-    fechaInicio,
-    fechaFin,
-    onFechaFinActualizada,
-    getNextWeekend,
-    parseYMD
-  ]);
+  }, [modalFechas, fechaInicio, fechaFin]);
 
-
-  // 9) Reservar → cookies + redirect
+  // 8) Reservar
   const reservar = () => {
     Cookies.set('CookiefechaInicial', fechaInicio);
     Cookies.set('CookiefechaFin', fechaFin);
@@ -273,7 +261,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       </div>
       )}
       
-      {/* -- Botones resumen de selección -- */}
+      {/* Botones de selección */}
       <button
         className="formularioReserva-summary"
         onClick={() => setModalFechas(true)}
@@ -298,7 +286,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         </span>
       </button>
 
-      {/* -- Modales -- */}
+      {/* Modales */}
       {(modalFechas || modalHuespedes) && (
         <div className="formularioReserva-overlay" ref={overlayRef}>
           {modalFechas && (
@@ -335,7 +323,6 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           )}
           {modalHuespedes && (
             <div className="formularioReserva-modal formularioReserva-modal-huespedes">
-              {/* Botón cierre */}
               <button
                 className="formularioReserva-submit" 
                 style={{ alignSelf: 'flex-end', marginBottom: 16 }}
@@ -378,7 +365,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         </div>
       )}
 
-      {/* -- Vista Principal similar a tarjeta profesional -- */}
+      {/* Resumen y detalle */}
       {tarifa && (
         <div className="resumen-general">
           <button
@@ -393,40 +380,44 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
             {/* Base sin incremento */}
             <div className="linea">
               <span>
-                {Math.round((tarifa.precioEstandarIncrementado - (huespedes.adultos + huespedes.ninos > capacidadBase ? capacidadExtra * tarifa.totalDiasFacturados * Number(initialData.precioEstandarAdicional) : 0)) / tarifa.totalDiasFacturados).toLocaleString('es-CO')} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                ${Math.round(
+                  initialData.precioEstandar
+                ).toLocaleString('es-CO')} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
               </span>
               <span>
-                {(Math.round((tarifa.precioEstandarIncrementado - (huespedes.adultos + huespedes.ninos > capacidadBase ? capacidadExtra * tarifa.totalDiasFacturados * Number(initialData.precioEstandarAdicional) : 0)))).toLocaleString('es-CO')} COP
+                ${tarifa.costoSinIncrementoBase.toLocaleString('es-CO')}
               </span>
             </div>
             {/* Huéspedes adicionales */}
             {tarifa.huespedesAdicionales > 0 && (
               <div className="linea">
                 <span>
-                  {Number(tarifa.costoAdicionalIncrementado).toLocaleString('es-CO')} x {tarifa.huespedesAdicionales} adicional{tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                  ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x {tarifa.huespedesAdicionales} adicional{tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
                 </span>
                 <span>
-                  {(Number(tarifa.costoAdicionalIncrementado) * tarifa.huespedesAdicionales * tarifa.totalDiasFacturados).toLocaleString('es-CO')} COP
+                  ${(
+                    tarifa.costoAdicionalesSinIncremento
+                  ).toLocaleString('es-CO')}
                 </span>
               </div>
             )}
             {/* Tarifa por servicio */}
             <div className="linea">
               <span>Tarifa por servicio</span>
-              <span>{tarifa.comisionGlamperos.toLocaleString('es-CO')} COP</span>
+              <span>${tarifa.tarifaServicio.toLocaleString('es-CO')}</span>
             </div>
             {/* Descuento */}
-            {tarifa.descuentoAplicado && (
+            {tarifa.descuentoAplicado>0 && (
               <div className="linea descuento">
                 <span>Descuento</span>
-                <span>-{tarifa.totalAhorro.toLocaleString('es-CO')} COP</span>
+                <span>-${tarifa.descuentoAplicado.toLocaleString('es-CO')}</span>
               </div>
             )}
           </div>
           <hr />
           <div className="resumen-total">
             <strong>Total</strong>
-            <span>{tarifa.precioTotal.toLocaleString('es-CO')} COP</span>
+            <span>${tarifa.costoTotalConIncremento.toLocaleString('es-CO')} COP</span>
           </div>
         </div>
       )}

@@ -6,7 +6,6 @@ import { ObtenerGlampingPorId } from '@/Funciones/ObtenerGlamping';
 import GlampingCliente from './GlampingCliente';
 import EncabezadoExplorado from '@/Componentes/EncabezadoExplorado';
 import ImagenesExploradas from '@/Componentes/ImgExploradas';
-import NombreGlamping from "@/Componentes/NombreGlamping";
 import HeaderIcono from "@/Componentes/HeaderIcono";
 import Footer from "@/Componentes/Footer";
 import type { Metadata } from 'next';
@@ -73,14 +72,9 @@ export default async function Page({ params, searchParams }: PageProps) {
         {/* Cliente con lógica JS */}
         <GlampingCliente initialData={glamping} initialParams={searchParams} />
 
-        {/* Título */}
-        <section className="propiedad-tipo-ubicacion">
-          <NombreGlamping nombreGlamping={nombreGlamping} />
-        </section>
-
       </main>
 
-      <footer>
+      <footer className='propiedad-footer'>
         <Footer />
       </footer>
     </div>

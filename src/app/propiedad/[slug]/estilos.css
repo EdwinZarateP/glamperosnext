@@ -195,17 +195,12 @@
   height: 36px;
 }
 
-/* 🔹 Responsive - Pantallas pequeñas (móviles) */
-@media (max-width: 900px) {
-  .contenedor-principal-whatsapp-button {
-    width: 2.5rem;
-    height: 2.5rem;
-    bottom: 150px; /* se eleva para no chocar con FormularioReservaMobile */
-    right: 20px;
-  }
+.propiedad-nombre-glamping{
+  margin-bottom: 10px;
+  display: none;
 }
 
-
+/* 🔹 Responsive - Pantallas pequeñas (móviles) */
 
 @media (max-width: 900px) {
   .propiedad-imagenes,
@@ -232,4 +227,18 @@
     width: 100%;
 }
 
+  .contenedor-principal-whatsapp-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    bottom: 150px; /* se eleva para no chocar con FormularioReservaMobile */
+    right: 20px;
+  }
+  .propiedad-nombre-glamping{
+    display: block;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+  .propiedad-footer{
+    margin-bottom: 120px;
+  }
 }

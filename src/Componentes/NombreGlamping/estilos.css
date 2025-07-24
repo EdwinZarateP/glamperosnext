@@ -12,8 +12,8 @@
   }
   
 /* Aplica margin-left de 10px en pantallas pequeñas */
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
   .titulo-glamping {
     display: none;
   }
-}
+} */

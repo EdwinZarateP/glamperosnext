@@ -15,6 +15,7 @@ import MapaGlampings from "@/Componentes/Mapa/index";
 import PerfilUsuario from "@/Componentes/PerfilUsuario";
 import { IoChevronBackCircleSharp } from "react-icons/io5"
 import FormularioReserva from '@/Componentes/FormularioReserva';
+import NombreGlamping from "@/Componentes/NombreGlamping";
 import FormularioReservaMobile from '@/Componentes/FormularioReservaMobile';
 import './estilos.css';
 
@@ -95,9 +96,19 @@ export default function GlampingCliente({ initialData }: Props) {
         <VerVideo urlVideo={initialData.video_youtube} />
       </section>
 
-      {/* Galería móvil */}
+   {/* Titulo para moviles */}
+      <section className="propiedad-nombre-glamping">
+        <NombreGlamping
+          nombreGlamping={`${
+            initialData.tipoGlamping === 'cabana' ? 'Cabaña' : initialData.tipoGlamping
+          } en ${initialData.ciudad_departamento.split(" - ")[0]}`}
+        />
+      </section>
+
       <section className="propiedad-contenedor-descripcion">
+
         <div className="propiedad-contenedor-descripcion-izq">
+
           <div className="propiedad-descripcion">
             <DescripcionGlamping
               calificacionNumero={calProm}
@@ -114,8 +125,8 @@ export default function GlampingCliente({ initialData }: Props) {
             />
           </div>
         </div>
-        
-        <div className="propiedad-contenedor-descripcion-der"> 
+
+        <div className="propiedad-contenedor-descripcion-der">
           <FormularioReserva initialData={initialData} />
         </div>
       </section>

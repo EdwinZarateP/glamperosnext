@@ -14,6 +14,6 @@
 /* Aplica margin-left de 10px en pantallas pequeñas */
 @media (max-width: 600px) {
   .titulo-glamping {
-    margin: 10px;
+    display: none;
   }
 }

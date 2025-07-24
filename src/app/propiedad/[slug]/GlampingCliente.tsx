@@ -14,7 +14,8 @@ import Comentarios from "@/Componentes/Comentarios";
 import MapaGlampings from "@/Componentes/Mapa/index";
 import PerfilUsuario from "@/Componentes/PerfilUsuario";
 import { IoChevronBackCircleSharp } from "react-icons/io5"
-import FormularioReserva from '@/Componentes/FormularioReserva'; // ajusta la ruta si es diferente
+import FormularioReserva from '@/Componentes/FormularioReserva';
+import FormularioReservaMobile from '@/Componentes/FormularioReservaMobile';
 import './estilos.css';
 
 type Props = {
@@ -153,7 +154,7 @@ export default function GlampingCliente({ initialData }: Props) {
           height={32}
         />
       </button>
-
+      <FormularioReservaMobile initialData={initialData} />
     </>
   );
 }

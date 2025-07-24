@@ -1,16 +1,14 @@
 "use client";
-import { useEffect, useState, useContext, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Cookies from "js-cookie";
-import { ContextoApp } from "../../context/AppContext";
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Cropper from 'react-easy-crop';
 import Lottie from 'lottie-react';
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
-import getCroppedImg from './getCroppedImg'
+import getCroppedImg from './getCroppedImg';
 import codigosPaises from '../../Componentes/IndicativosPaises/index';
 import './estilos.css';
-
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
@@ -23,22 +21,20 @@ interface Usuario {
 
 const EditarPerfil: React.FC = () => {
   const router = useRouter();
-  const { redirigirExplorado, setRedirigirExplorado, UrlActual } = useContext(ContextoApp)!;
-
-  const [usuario, setUsuario] = useState<Usuario|null>(null);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [telefono, setTelefono] = useState('');
   const [indicativo, setIndicativo] = useState('+57');
 
   // estados de recorte
-  const [fotoSrc, setFotoSrc] = useState<string|null>(null);
+  const [fotoSrc, setFotoSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const [showCropper, setShowCropper] = useState(false);
-  const [croppedBlob, setCroppedBlob] = useState<Blob|null>(null);
+  const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
 
   const [cargando, setCargando] = useState(false);
-  const [emailUsuario, setEmailUsuario] = useState<string|null>(null);
+  const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
 
   // 1) cargar emailUsuario desde cookie
   useEffect(() => {
@@ -52,12 +48,12 @@ const EditarPerfil: React.FC = () => {
     axios.get(`${API_BASE}/usuarios?email=${emailUsuario}`)
       .then(r => {
         setUsuario(r.data);
-        // separar indicativo y número
+        // separar indicativo y número SOLO si viene algo en la BD
         const full = r.data.telefono || '';
-        const num = full.slice(-10);
-        const code = full.slice(0, full.length - 10);
-        setTelefono(num);
-        setIndicativo('+' + code);
+        if (full.length > 10) {
+          setTelefono(full.slice(-10));
+          setIndicativo('+' + full.slice(0, full.length - 10));
+        }
       })
       .catch(console.error);
   }, [emailUsuario]);
@@ -73,7 +69,7 @@ const EditarPerfil: React.FC = () => {
   };
 
   // recorte completo
-  const onCropComplete = useCallback((_:any, pixels:any) => {
+  const onCropComplete = useCallback((_: any, pixels: any) => {
     setCroppedAreaPixels(pixels);
   }, []);
 
@@ -103,32 +99,40 @@ const EditarPerfil: React.FC = () => {
         await axios.put(
           `${API_BASE}/usuarios/${usuario.email}/foto`,
           fd,
-          { headers:{ 'Content-Type':'multipart/form-data' } }
+          { headers: { 'Content-Type': 'multipart/form-data' } }
         );
       }
-      // 2) actualizar teléfono
-      const fullTel = `${indicativo.replace('+','')}${telefono}`;
-      if (fullTel !== usuario.telefono) {
-        await axios.put(
-          `${API_BASE}/usuarios/${usuario.email}/telefono`,
-          { telefono: fullTel }
-        );
-        Cookies.set('telefonoUsuario', fullTel, { expires:7 });
+
+      // 2) actualizar teléfono SOLO si hay número (más allá del prefijo)
+      const cleanNumber = telefono.trim();
+      if (cleanNumber !== '') {
+        const fullTel = `${indicativo.replace('+', '')}${cleanNumber}`;
+        // sólo si cambió realmente
+        if (fullTel !== usuario.telefono) {
+          await axios.put(
+            `${API_BASE}/usuarios/${usuario.email}/telefono`,
+            { telefono: fullTel }
+          );
+          Cookies.set('telefonoUsuario', fullTel, { expires: 7 });
+        }
       }
-      // 3) refrescar datos
+
+      // 3) refrescar datos (opcional)
       const resp = await axios.get(`${API_BASE}/usuarios?email=${usuario.email}`);
       setUsuario(resp.data);
-      // 4) navegar
-      if (redirigirExplorado) {
-        setRedirigirExplorado(false);
-        router.push(UrlActual);
-      } else {
-        router.push('/');
-      }
+
     } catch (err) {
       console.error(err);
     } finally {
       setCargando(false);
+      // redirigir y limpiar cookie URLActual
+      const urlDesdeCookie = Cookies.get("UrlActual");
+      if (urlDesdeCookie) {
+        Cookies.remove("UrlActual");
+        router.push(urlDesdeCookie);
+      } else {
+        router.push('/');
+      }
     }
   };
 
@@ -137,8 +141,9 @@ const EditarPerfil: React.FC = () => {
       <div className="editar-perfil-cargando">
         <Lottie
           animationData={animationData}
-          loop autoplay
-          style={{ height:200, width:200, margin:'auto' }}
+          loop
+          autoplay
+          style={{ height: 200, width: 200, margin: 'auto' }}
         />
       </div>
     );
@@ -161,7 +166,7 @@ const EditarPerfil: React.FC = () => {
             onCropComplete={onCropComplete}
           />
           <div className="cropper-controls">
-            <button onClick={()=>setShowCropper(false)}>Cancelar</button>
+            <button onClick={() => setShowCropper(false)}>Cancelar</button>
             <button onClick={aplicarRecorte}>Aplicar recorte</button>
           </div>
         </div>
@@ -181,11 +186,11 @@ const EditarPerfil: React.FC = () => {
                   className="editar-perfil-imagen-foto"
                 />
               : <div className="editar-perfil-inicial">
-                  { usuario.nombre.charAt(0).toUpperCase() }
-               </div>
+                  {usuario.nombre.charAt(0).toUpperCase()}
+                </div>
           }
           <button
-            onClick={()=>document.getElementById('fotoInput')?.click()}
+            onClick={() => document.getElementById('fotoInput')?.click()}
             className="editar-perfil-boton-editar"
           >
             ✏️
@@ -195,7 +200,7 @@ const EditarPerfil: React.FC = () => {
             id="fotoInput"
             accept="image/*"
             onChange={onSelectFile}
-            style={{ display:'none' }}
+            style={{ display: 'none' }}
           />
         </div>
       </div>
@@ -207,10 +212,10 @@ const EditarPerfil: React.FC = () => {
         <div className="editar-perfil-telefono-contenedor">
           <select
             value={indicativo}
-            onChange={e=>setIndicativo(e.target.value)}
+            onChange={e => setIndicativo(e.target.value)}
             className="editar-perfil-select"
           >
-            {codigosPaises.map(p=>(
+            {codigosPaises.map(p => (
               <option key={p.codigo} value={p.indicativo}>
                 {p.nombre} ({p.indicativo})
               </option>
@@ -221,7 +226,7 @@ const EditarPerfil: React.FC = () => {
             value={telefono}
             placeholder="WhatsApp"
             maxLength={10}
-            onChange={e=>/^\d*$/.test(e.target.value)&&setTelefono(e.target.value)}
+            onChange={e => /^\d*$/.test(e.target.value) && setTelefono(e.target.value)}
             className="editar-perfil-input"
           />
         </div>

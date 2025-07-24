@@ -37,9 +37,6 @@ const RegistroComp: React.FC = () => {
     activarChat,
     setActivarChat,
     idUrlConversacion,
-    UrlActual,
-    redirigirExplorado,
-    setRedirigirExplorado,
   } = contexto;
 
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
@@ -53,16 +50,22 @@ const RegistroComp: React.FC = () => {
     }
   }, [setIdUsuario]);
 
+  // me lleva segun url
   const redireccionSegunEstado = () => {
+    const urlDesdeCookie = Cookies.get("UrlActual");
+
     if (siono) return "/CrearGlamping";
+
     if (activarChat) {
       setActivarChat(false);
       return idUrlConversacion;
     }
-    if (redirigirExplorado) {
-      setRedirigirExplorado(false);
-      return UrlActual;
+
+    if (urlDesdeCookie) {
+      Cookies.remove("UrlActual"); // Elimina la cookie inmediatamente
+      return urlDesdeCookie;
     }
+
     return "/";
   };
 

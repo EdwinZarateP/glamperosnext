@@ -1,0 +1,282 @@
+/* Estilos específicos para el formulario móvil */
+.formularioReservaMobile-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.formularioReservaMobile-summary-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formularioReservaMobile-price {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+.formularioReservaMobile-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.formularioReservaMobile-date-button,
+.formularioReservaMobile-guests-button {
+  flex: 1;
+  padding: 10px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.7rem;
+}
+
+.formularioReservaMobile-date-button:hover,
+.formularioReservaMobile-guests-button:hover {
+  background: #f5f5f5;
+}
+
+.formularioReservaMobile-date-content,
+.formularioReservaMobile-guests-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.labelResumen {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* Botón de reserva con efecto espejo infinito */
+.formularioReservaMobile-reserve-button {
+  flex: 1;
+  padding: 12px;
+  background: linear-gradient(135deg, #2f6b3e 0%, #3a7d4a 50%, #2f6b3e 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(47, 107, 62, 0.3);
+  height: 40px;
+}
+
+.formularioReservaMobile-reserve-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(47, 107, 62, 0.4);
+}
+
+/* Efecto espejo infinito */
+.formularioReservaMobile-reserve-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: none;
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  20% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Efecto al hacer clic */
+.formularioReservaMobile-reserve-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 5px rgba(47, 107, 62, 0.4);
+}
+
+/* Modales */
+.formularioReservaMobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.formularioReservaMobile-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.formularioReservaMobile-modal-huespedes {
+  padding: 15px;
+}
+
+.formularioReservaMobile-submit {
+  width: 100%;
+  padding: 12px;
+  background: #2f6b3e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-top: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.formularioReservaMobile-submit:hover {
+  background: #245530;
+}
+
+.formularioReservaMobile-huespedes-header {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.formularioReservaMobile-pareja-icono {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.formularioReservaMobile-huesped-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.formularioReservaMobile-huesped-label {
+  flex: 1;
+  font-size: 14px;
+}
+
+.formularioReservaMobile-huesped-sub {
+  font-size: 12px;
+  color: #666;
+}
+
+.formularioReservaMobile-huesped-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.formularioReservaMobile-huesped-controls button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.formularioReservaMobile-huesped-controls button:hover:not(:disabled) {
+  background: #f5f5f5;
+}
+
+.formularioReservaMobile-huesped-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.formularioReservaMobile-huesped-controls span {
+  min-width: 20px;
+  text-align: center;
+}
+
+.formularioReservaMobile-elegidos {
+  width: 100%;
+  padding: 12px;
+  background: #2f6b3e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.formularioReservaMobile-elegidos:hover {
+  background: #245530;
+}
+
+.formularioReservaMobile-citaBiblica {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-top: 15px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.labelNoMascotas {
+  display: block;
+  font-size: 12px;
+  color: #ff4d4f;
+  margin-top: 4px;
+}
+
+/* Media query para asegurar que solo se muestre en móviles */
+@media (min-width: 601px) {
+  .formularioReservaMobile-container {
+    display: none !important;
+  }
+}

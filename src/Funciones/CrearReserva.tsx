@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 interface ReservaProps {
   idCliente: string;
   idPropietario: string;
@@ -13,10 +15,9 @@ interface ReservaProps {
   bebesDesencriptados: string;
   mascotasDesencriptadas: string;
   codigoReserva: string;
-  EstadoPago: string; // ✅ Se ha agregado EstadoPago a la interfaz
+  EstadoPago: string;
 }
 
-// 🔹 Definir correctamente el tipo de respuesta esperada de la API
 interface ReservaResponse {
   mensaje: string;
   reserva?: {
@@ -36,17 +37,16 @@ interface ReservaResponse {
     bebes: number;
     mascotas: number;
     EstadoReserva: string;
-    EstadoPago: string; // ✅ Se ha agregado EstadoPago a la respuesta de la API
+    EstadoPago: string;
     fechaCreacion: string;
     codigoReserva: string;
     ComentariosCancelacion?: string;
   };
-  error?: string; // ⚠️ Agregar una propiedad opcional para capturar errores
+  error?: string;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
-// ✅ Ahora retorna un **objeto de reserva**, no solo una URL
 export const CrearReserva = async ({
   idCliente,
   idPropietario,
@@ -55,16 +55,19 @@ export const CrearReserva = async ({
   fechaInicio,
   fechaFin,
   totalDiasNum,
-  precioConTarifaNum,
-  TarifaGlamperosNum,
   adultosDesencriptados,
   ninosDesencriptados,
   bebesDesencriptados,
   mascotasDesencriptadas,
   codigoReserva,
-  EstadoPago, 
+  EstadoPago,
 }: ReservaProps): Promise<ReservaResponse | null> => {
   try {
+    // 🚩 Leer las cookies nuevas:
+    const costoGlampingCookie = Number(Cookies.get("CookiePagoGlamping") || 0);
+    const comisionGlamperosCookie = Number(Cookies.get("CookieTarifaServicio") || 0);
+    const pagoTotalCookie = Number(Cookies.get("CookiePagoTotal") || 0);
+
     const nuevaReserva = {
       idCliente: idCliente ?? "No tiene Id",
       idPropietario: idPropietario ?? "Propietario no registrado",
@@ -73,9 +76,10 @@ export const CrearReserva = async ({
       FechaIngreso: fechaInicio.toISOString(),
       FechaSalida: fechaFin.toISOString(),
       Noches: totalDiasNum,
-      ValorReserva: precioConTarifaNum,
-      CostoGlamping: precioConTarifaNum - TarifaGlamperosNum,
-      ComisionGlamperos: TarifaGlamperosNum,
+      ValorReserva: pagoTotalCookie,
+      // ✏️ Usamos las cookies en vez de calcular:
+      CostoGlamping: costoGlampingCookie,
+      ComisionGlamperos: comisionGlamperosCookie,
       adultos: Number(adultosDesencriptados) || 1,
       ninos: Number(ninosDesencriptados) || 0,
       bebes: Number(bebesDesencriptados) || 0,
@@ -90,21 +94,17 @@ export const CrearReserva = async ({
 
     const response = await fetch(`${API_BASE}/reservas`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(nuevaReserva),
     });
 
     if (response.status === 400) {
       console.error("❌ Error: La reserva ya existe.");
-      return null;  // No volver a crear una reserva duplicada
+      return null;
     }
-
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`❌ Error en la respuesta del servidor: ${response.status} - ${errorText}`);
-      throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
+      throw new Error(`Error ${response.status}: ${errorText}`);
     }
 
     const data: ReservaResponse = await response.json();

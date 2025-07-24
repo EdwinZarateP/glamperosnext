@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, TouchEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams  } from "next/navigation";
 import Cookies from "js-cookie";
 
 import axios from "axios";
@@ -31,8 +31,8 @@ export default function ImgExploradasIndividual({
 
   // Hooks de Next
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const glampingId = searchParams.get("glampingId") || ""; // Obtiene glampingId de la URL
+  const params = useParams();               
+  const glampingId = params.slug || "";
 
   // Obtenemos la URL actual del navegador
   const currentUrl =

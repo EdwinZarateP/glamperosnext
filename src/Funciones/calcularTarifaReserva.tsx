@@ -13,10 +13,10 @@ export interface ResultadoTarifa {
   tarifaServicio: number;
   descuentoAplicado: number;
   costoSinIncrementoBase: number;
-   pagoGlamping: number;
+  pagoGlamping: number;
 }
 
-function aplicarIncremento(precio: number): number {
+export function aplicarIncremento(precio: number): number {
   if (precio <= 300_000)      return precio * 1.18;
   if (precio < 400_000)       return precio * 1.15;
   if (precio < 500_000)       return precio * 1.14;
@@ -26,7 +26,7 @@ function aplicarIncremento(precio: number): number {
   return precio;
 }
 
-function redondear50(valor: number): number {
+export function redondear50(valor: number): number {
   return Math.ceil(valor / 50) * 50;
 }
 

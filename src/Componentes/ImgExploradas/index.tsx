@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
 import { useContext } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { FiGrid } from "react-icons/fi";
 import { MdOutlinePets, MdOndemandVideo } from "react-icons/md";
 import VerVideo from "../../Componentes/VerVideo/index";
@@ -20,8 +20,8 @@ const ImgExploradas: React.FC<ImgExploradasProps> = ({
   video_youtube,
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const glampingId = searchParams.get("glampingId") || ""; // Obtiene glampingId desde la URL
+  const params = useParams();
+  const glampingId = params.slug || "";  // obtenemos el ID desde el segmento de ruta
 
   const { setVerVideo } = useContext(ContextoApp)!;
 
@@ -66,7 +66,10 @@ const ImgExploradas: React.FC<ImgExploradasProps> = ({
         {video_youtube &&
           video_youtube.trim().toLowerCase() !== "sin video" &&
           video_youtube.trim().toLowerCase() !== "no disponible" && (
-            <button className="ImgExploradas-iconoVideo" onClick={handleVideoClick}>
+            <button
+              className="ImgExploradas-iconoVideo"
+              onClick={handleVideoClick}
+            >
               <MdOndemandVideo title="Mostrar Video" />
               Video
             </button>

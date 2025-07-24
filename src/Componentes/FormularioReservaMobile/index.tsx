@@ -40,13 +40,13 @@ interface Huespedes {
   mascotas: number;
 }
 
-interface FormularioReservaProps {
+interface FormularioReservaMobileProps {
   initialData: any;
   onFechaFinActualizada?: (fechaFin: string) => void;
   onHuespedesActualizados?: (huespedes: Huespedes) => void;
 }
 
-const FormularioReserva: React.FC<FormularioReservaProps> = ({
+const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
   initialData,
   onFechaFinActualizada = () => {},
   onHuespedesActualizados = () => {},
@@ -320,9 +320,9 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   // Construye el modal en un portal fuera del stacking context actual
   const modalPortal = (modalFechas || modalHuespedes) &&
     createPortal(
-      <div className="formularioReserva-overlay" ref={overlayRef}>
+      <div className="formularioReservaMobile-overlay" ref={overlayRef}>
         {modalFechas && (
-          <div className="formularioReserva-modal">
+          <div className="formularioReservaMobile-modal">
             <DateRange
               locale={es}
               ranges={range}
@@ -334,7 +334,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
               monthDisplayFormat="MMMM yyyy"
             />
             <button
-              className="formularioReserva-submit"
+              className="formularioReservaMobile-submit"
               onClick={() => {
                 if (!fechaFin || fechaFin === fechaInicio) {
                   const [sat, sun] = getNextWeekend(parseYMD(fechaInicio));
@@ -353,24 +353,24 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           </div>
         )}
         {modalHuespedes && (
-          <div className="formularioReserva-modal formularioReserva-modal-huespedes">
-            <div className="formularioReserva-huespedes-header">
+          <div className="formularioReservaMobile-modal formularioReservaMobile-modal-huespedes">
+            <div className="formularioReservaMobile-huespedes-header">
               <img
                 src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/pareja.png"
                 alt="Pareja"
-                className="formularioReserva-pareja-icono"
+                className="formularioReservaMobile-pareja-icono"
               />
             </div>
             {(['adultos','ninos','bebes','mascotas'] as (keyof Huespedes)[]).map(k => (
-              <div key={k} className="formularioReserva-huesped-row">
-                <span className="formularioReserva-huesped-label">
-                  {k === 'adultos' && <>Adultos<div className="formularioReserva-huesped-sub">Edad: 13 años o más</div></>}
-                  {k === 'ninos'   && <>Niños <div className="formularioReserva-huesped-sub">Edades 2 – 12</div></>}
-                  {k === 'bebes'   && <>Bebés <div className="formularioReserva-huesped-sub">Menos de 2 años</div></>}
-                  {k === 'mascotas'&& <>Mascotas<div className="formularioReserva-huesped-sub">Tu fiel amigo también lo merece</div></>}
+              <div key={k} className="formularioReservaMobile-huesped-row">
+                <span className="formularioReservaMobile-huesped-label">
+                  {k === 'adultos' && <>Adultos<div className="formularioReservaMobile-huesped-sub">Edad: 13 años o más</div></>}
+                  {k === 'ninos'   && <>Niños <div className="formularioReservaMobile-huesped-sub">Edades 2 – 12</div></>}
+                  {k === 'bebes'   && <>Bebés <div className="formularioReservaMobile-huesped-sub">Menos de 2 años</div></>}
+                  {k === 'mascotas'&& <>Mascotas<div className="formularioReservaMobile-huesped-sub">Tu fiel amigo también lo merece</div></>}
                   {k === 'mascotas' && !aceptaMascotas && <span className="labelNoMascotas">No se aceptan mascotas</span>}
                 </span>
-                <div className="formularioReserva-huesped-controls">
+                <div className="formularioReservaMobile-huesped-controls">
                   <button onClick={() => actualizarHuesped(k, -1)}
                     disabled={
                       (k === 'adultos' && huespedes.adultos <= 1) ||
@@ -389,10 +389,10 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                 </div>
               </div>
             ))}
-            <button className="formularioReserva-elegidos" onClick={() => setModalHuespedes(false)}>
+            <button className="formularioReservaMobile-elegidos" onClick={() => setModalHuespedes(false)}>
               Ellos son los elegidos
             </button>
-            <p className="formularioReserva-citaBiblica">
+            <p className="formularioReservaMobile-citaBiblica">
               <span role="img" aria-label="pareja"></span> Ámense unos a otros con un afecto genuino y deléitense al honrarse mutuamente. Romanos 12:10
             </p>
           </div>
@@ -409,91 +409,48 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         onLoad={() => console.log("✅ Wompi widget cargado")}
       />
 
-      <div className="formularioReserva-container">
-        {tarifa && (
-          <div className="formularioReserva-header">
-            <span className="precio-noche">
-              ${tarifa.precioPorDia.toLocaleString('es-CO')}
-            </span>
-            <span>COP / noche</span>
+      <div className="formularioReservaMobile-container">
+        <div className="formularioReservaMobile-summary-container">
+          <div className="formularioReservaMobile-price">
+            {tarifa && (
+              <span className="precio-noche">
+                ${tarifa.costoTotalConIncremento.toLocaleString('es-CO')}
+              </span>
+            )}
           </div>
-        )}
 
-        {/* Botones de selección */}
-        <button
-          className="formularioReserva-summary"
-          onClick={() => setModalFechas(true)}
-        >
-          <div>
-            <div className="labelResumen">LLEGADA</div>
-            <div>{fechaInicio ? formatearFechaCorta(fechaInicio) : '--'}</div>
-          </div>
-          <div>
-            <div className="labelResumen">SALIDA</div>
-            <div>{fechaFin ? formatearFechaCorta(fechaFin) : '--'}</div>
-          </div>
-        </button>
-
-        <button
-          className="formularioReserva-summary"
-          onClick={() => setModalHuespedes(true)}
-        >
-          <span>Huéspedes</span>
-          <span>
-            {huespedes.adultos + huespedes.ninos} huésped
-            {huespedes.adultos + huespedes.ninos !== 1 ? 'es' : ''}
-          </span>
-        </button>
-
-        {/* Resumen y detalle */}
-        {tarifa && (
-          <div className="formularioReserva-general">
+          <div className="formularioReservaMobile-buttons">
             <button
-              className="formularioReserva-submit reserva-principal"
+              className="formularioReservaMobile-date-button"
+              onClick={() => setModalFechas(true)}
+            >
+              <div className="formularioReservaMobile-date-content">
+                <div className="labelResumen">FECHAS</div>
+                <div>{fechaInicio ? formatearFechaCorta(fechaInicio) : '--'} - {fechaFin ? formatearFechaCorta(fechaFin) : '--'}</div>
+              </div>
+            </button>
+
+            <button
+              className="formularioReservaMobile-guests-button"
+              onClick={() => setModalHuespedes(true)}
+            >
+              <div className="formularioReservaMobile-guests-content">
+                <div className="labelResumen">HUÉSPEDES</div>
+                <div>
+                  {huespedes.adultos + huespedes.ninos} huésped
+                  {huespedes.adultos + huespedes.ninos !== 1 ? 'es' : ''}
+                </div>
+              </div>
+            </button>
+
+            <button
+              className="formularioReservaMobile-reserve-button"
               onClick={handleReservarClick}
             >
               Reservar
             </button>
-            <div className="formularioReserva-nota">No se hará ningún cargo por ahora</div>
-            <div className="formularioReserva-detalle">
-              <div className="linea">
-                <span>
-                  ${Math.round(initialData.precioEstandar).toLocaleString('es-CO')} x {tarifa.totalDiasFacturados} noche
-                  {tarifa.totalDiasFacturados !== 1 ? 's' : ''}
-                </span>
-                <span>${tarifa.costoSinIncrementoBase.toLocaleString('es-CO')}</span>
-              </div>
-              {tarifa.huespedesAdicionales > 0 && (
-                <div className="linea">
-                  <span>
-                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x {tarifa.huespedesAdicionales} adicional
-                    {tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x {tarifa.totalDiasFacturados} noche
-                    {tarifa.totalDiasFacturados !== 1 ? 's' : ''}
-                  </span>
-                  <span>${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')}</span>
-                </div>
-              )}
-              <div className="linea">
-                <span>Tarifa por servicio</span>
-                <span>${tarifa.tarifaServicio.toLocaleString('es-CO')}</span>
-              </div>
-              {tarifa.descuentoAplicado > 0 && (
-                <div className="linea descuento">
-                  <span>Descuento</span>
-                  <span>-${tarifa.descuentoAplicado.toLocaleString('es-CO')}</span>
-                </div>
-              )}
-            </div>
-            <hr />
-            <div className="formularioReserva-total">
-              <strong>Total</strong>
-              <span>${tarifa.costoTotalConIncremento.toLocaleString('es-CO')} COP</span>
-            </div>
-            <div className="formularioReserva-cancelacion">
-              <span>Este glamping permite cancelaciones hasta {initialData.diasCancelacion} días antes del check-in, con un reembolso del 95% del valor total</span>
-            </div>
           </div>
-        )}
+        </div>
       </div>
 
       {modalPortal}
@@ -508,8 +465,16 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           }}
         />
       )}
+
+      <style jsx>{`
+        @media (min-width: 601px) {
+          .formularioReservaMobile-container {
+            display: none !important;
+          }
+        }
+      `}</style>
     </>
   );
 };
 
-export default FormularioReserva;
+export default FormularioReservaMobile;

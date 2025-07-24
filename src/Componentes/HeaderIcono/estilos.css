@@ -1,54 +1,86 @@
 /* Contenedor general del Header */
 .HeaderIcono-contenedor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e6e3df;
+  background-color: #ffffff;
+  height: 70px;
+}
+
+/* Estilos para el Header */
+.HeaderIcono-Header {
+  display: flex;
+  width: 90%;
+  position: relative;
+  align-items: center;
+  justify-content: space-between; /* distribuido a ambos extremos */
+}
+
+/* Logo y nombre de la marca */
+.HeaderIcono-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.HeaderIcono-logo {
+  width: 40px;
+  height: auto;
+}
+
+.HeaderIcono-nombreMarca {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2F6B3E;
+}
+
+/* Botón de menú y badge de usuario */
+.HeaderIcono-menuBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.HeaderIcono-userInitial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #2F6B3E;
+  border-radius: 50%;
+}
+
+/* Responsividad */
+
+/* Pantallas pequeñas (máximo ancho: 900px) */
+@media (max-width: 900px) {
+  .HeaderIcono-contenedor {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid #e6e3df;
-    background-color: #ffffff;
-    height: 70px;
+    justify-content: flex-end; /* solo muestra el botón a la derecha */
   }
-  
-  /* Estilos para el Header */
-  .HeaderIcono-Header {
-    display: flex;
-    width: 90%;
-    position: relative;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  
-  /* Logo y nombre de la marca */
   .HeaderIcono-izquierda {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
+    display: none; /* oculta logo + texto en móvil */
   }
-  
-  .HeaderIcono-logo {
-    width: 40px;
-    height: auto;
+}
+
+@media (max-width: 900px) {
+  .HeaderIcono-contenedor {
+    display: none;
   }
-  
-  .HeaderIcono-nombreMarca {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2F6B3E;
-  }
-  
-  /* Responsividad */
-  
-  /* Pantallas pequeñas (máximo ancho: 900px) */
-  @media (max-width: 900px) {
-    .HeaderIcono-contenedor {
-      display: none; /* Asegura que ocupe todo el ancho */
-    }
-  
-  }
-  
-  
+
+}
+

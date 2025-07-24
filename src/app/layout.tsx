@@ -106,6 +106,13 @@ export default function RootLayout({
             }
           `}
         </Script>
+
+        {/* Wompi Checkout Widget */}
+        <Script
+          src="https://checkout.wompi.co/widget.js"
+          strategy="beforeInteractive"
+        />
+
       </head>
 
       <body className={openSans.className}>

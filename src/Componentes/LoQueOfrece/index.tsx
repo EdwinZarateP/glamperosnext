@@ -56,7 +56,7 @@ export default function LoQueOfrece({ amenidades }: Props) {
 
       <div className="LoQueOfrece-lista-contenida">
         <div className="LoQueOfrece-lista">
-          {amenidadesUnicas.slice(0, 8).map(renderAmenidad)}
+          {amenidadesUnicas.slice(0, 12).map(renderAmenidad)}
         </div>
       </div>
 

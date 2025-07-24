@@ -25,7 +25,7 @@ const MapaGlampings: React.FC<Props> = ({ lat, lng }) => {
             zoom: 10,
             pitch: 30,
           }}
-          style={{ width: "100%", height: "100%" }}
+          style={{ width: "100%", height: "100%", zIndex: 0 }}
           mapStyle="mapbox://styles/mapbox/streets-v11"
           minZoom={6}
           maxZoom={13}

@@ -11,7 +11,6 @@ import InputTelefono from "../../Componentes/InputTelefono/index";
 import { ContextoApp } from "../../context/AppContext";
 import Politicas from "../../Componentes/Politica/index";
 import Cookies from "js-cookie";
-
 import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
@@ -59,8 +58,8 @@ declare global {
 
 // ------------ cambiar entre "produccion" o "pruebas"-------------
 type Modo = "produccion" | "pruebas";
-const modo: Modo = "produccion"; // ✅ Cambia aquí entre "produccion" o "pruebas"
-// const modo: Modo = "pruebas"; // ✅ Cambia aquí entre "produccion" o "pruebas"
+// const modo: Modo = "produccion"; // ✅ Cambia aquí entre "produccion" o "pruebas"
+const modo: Modo = "pruebas"; // ✅ Cambia aquí entre "produccion" o "pruebas"
 // -------------------------------------
 
 const PUBLIC_KEY = {
@@ -288,14 +287,9 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
       const montoCentavos = Math.round(montoPesos * 100);
 
       const respFirma = await fetch(
-        `${API_BASE}/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`
-        // `http://127.0.0.1:8000/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`        
+        `${API_BASE}/wompi/generar-firma?referencia=${reservationReference}&monto=${montoCentavos}&moneda=COP&modo=${modo}`    
       );
       const dataFirma = await respFirma.json();
-
-      // console.log("Referencia:", reservationReference);
-      // console.log("Monto Centavos:", montoCentavos);
-      // console.log("Firma:", dataFirma.firma_integridad);
 
       if (!dataFirma.firma_integridad) {
         console.error("No se pudo obtener la firma de integridad");
@@ -318,12 +312,6 @@ const Reservacion: React.FC<ReservacionProps> = ({ onLoaded }) => {
         });
         return;
       }
-
-    console.log("🧪 Validación previa al checkout:");
-    console.log("Public Key:", PUBLIC_KEY);
-    console.log("Reference:", reservationReference);
-    console.log("Monto:", montoCentavos);
-    console.log("Firma:", dataFirma.firma_integridad);
 
     const checkout = new window.WidgetCheckout({
       currency: "COP",

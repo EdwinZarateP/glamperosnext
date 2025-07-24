@@ -154,6 +154,20 @@ export default function GlampingCliente({ initialData }: Props) {
           height={32}
         />
       </button>
+      <button
+        type="button"
+        className="contenedor-principal-whatsapp-button"
+        onClick={redirigirWhatsApp}
+        aria-label="Chatea por WhatsApp"
+      >
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+          alt="WhatsApp"
+          width={32}
+          height={32}
+        />
+      </button>
+
       <FormularioReservaMobile initialData={initialData} />
     </>
   );

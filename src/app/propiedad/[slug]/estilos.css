@@ -164,6 +164,49 @@
   margin-top: 2rem;
 }
 
+/* Estilos para el botón sticky de WhatsApp */
+.contenedor-principal-whatsapp-button {
+  position: fixed;
+  bottom: 20px;       /* separación inferior */
+  right: 20px;        /* separación lateral */
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1000;
+  text-decoration: none;
+}
+
+.contenedor-principal-whatsapp-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.contenedor-principal-whatsapp-button img,
+.contenedor-principal-whatsapp-button svg {
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+
+/* 🔹 Responsive - Pantallas pequeñas (móviles) */
+@media (max-width: 900px) {
+  .contenedor-principal-whatsapp-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    bottom: 150px; /* se eleva para no chocar con FormularioReservaMobile */
+    right: 20px;
+  }
+}
+
+
+
 @media (max-width: 900px) {
   .propiedad-imagenes,
   .propiedad-encabezado, 

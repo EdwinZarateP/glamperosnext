@@ -27,13 +27,21 @@ type Props = {
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export default function GlampingCliente({ initialData }: Props) {
+  // Estado para controlar si estamos en el cliente
+  const [isClient, setIsClient] = useState(false);
   const { setVerVideo } = useContext(ContextoApp)!;
+
+  useEffect(() => {
+    // Esto solo se ejecuta en el cliente
+    setIsClient(true);
+  }, []);
 
   // Calificaciones
   const [calProm, setCalProm] = useState(5);
   const [calCount, setCalCount] = useState(0);
   useEffect(() => {
-    if (!initialData?._id) return;
+    if (!initialData?._id || !isClient) return;
+    
     (async () => {
       try {
         const resp = await fetch(
@@ -44,17 +52,20 @@ export default function GlampingCliente({ initialData }: Props) {
         setCalCount(js.calificacionEvaluaciones || 0);
       } catch {}
     })();
-  }, [initialData._id]);
+  }, [initialData._id, isClient]);
 
-    const search = new URLSearchParams(window.location.search);
+  // Si no estamos en el cliente, no renderizar nada
+  if (!isClient) {
+    return null;
+  }
 
-    // Guardamos las UTM si existen
-    const utmParams: Record<string, string> = {};
-    ['utm_source', 'utm_medium', 'utm_campaign'].forEach((key) => {
-      const valor = search.get(key);
-      if (valor) utmParams[key] = valor;
-    });
-
+  // Obtener parámetros de la URL (solo en cliente)
+  const search = new URLSearchParams(window.location.search);
+  const utmParams: Record<string, string> = {};
+  ['utm_source', 'utm_medium', 'utm_campaign'].forEach((key) => {
+    const valor = search.get(key);
+    if (valor) utmParams[key] = valor;
+  });
 
   // Video
   const tieneVideo =
@@ -65,12 +76,11 @@ export default function GlampingCliente({ initialData }: Props) {
 
   const redirigirWhatsApp = () => {
     const numeroWhatsApp = "+573218695196";
-    const urlActual = typeof window !== "undefined" ? window.location.href : "";
+    const urlActual = window.location.href;
     const mensaje = encodeURIComponent(
       `Hola equipo Glamperos, ¡Quiero información sobre este glamping!\n \n${urlActual}`
     );
-    const esPantallaPequena =
-      typeof window !== "undefined" && window.innerWidth < 600;
+    const esPantallaPequena = window.innerWidth < 600;
     const urlWhatsApp = esPantallaPequena
       ? `https://wa.me/${numeroWhatsApp}?text=${mensaje}`
       : `https://web.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensaje}`;
@@ -96,7 +106,7 @@ export default function GlampingCliente({ initialData }: Props) {
         <VerVideo urlVideo={initialData.video_youtube} />
       </section>
 
-   {/* Titulo para moviles */}
+      {/* Titulo para moviles */}
       <section className="propiedad-nombre-glamping">
         <NombreGlamping
           nombreGlamping={`${

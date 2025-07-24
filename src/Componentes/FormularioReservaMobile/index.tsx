@@ -467,7 +467,7 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
       )}
 
       <style jsx>{`
-        @media (min-width: 601px) {
+        @media (min-width: 900px) {
           .formularioReservaMobile-container {
             display: none !important;
           }

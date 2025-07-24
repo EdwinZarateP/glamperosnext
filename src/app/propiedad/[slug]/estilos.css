@@ -230,7 +230,7 @@
   .contenedor-principal-whatsapp-button {
     width: 2.5rem;
     height: 2.5rem;
-    bottom: 150px; /* se eleva para no chocar con FormularioReservaMobile */
+    bottom: 150px; 
     right: 20px;
   }
   .propiedad-nombre-glamping{

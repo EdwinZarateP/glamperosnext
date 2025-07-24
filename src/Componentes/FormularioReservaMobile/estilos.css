@@ -275,8 +275,8 @@
 }
 
 /* Media query para asegurar que solo se muestre en móviles */
-@media (min-width: 601px) {
+/* @media (min-width: 900px) {
   .formularioReservaMobile-container {
     display: none !important;
   }
-}
+} */

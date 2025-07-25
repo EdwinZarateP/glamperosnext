@@ -16,7 +16,11 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const glamping = await ObtenerGlampingPorId(params.slug);
-  const titulo = glamping?.nombreGlamping || 'Reserva tu experiencia | Glamperos';
+
+  const tipo = glamping?.tipoGlamping === 'cabana' ? 'Cabaña' : glamping?.tipoGlamping || 'Glamping';
+  const ciudad = glamping?.ciudad_departamento?.split(' - ')[0] || 'Colombia';
+
+  const titulo = `${tipo} en ${ciudad}`;
   const descripcion = glamping?.descripcionGlamping?.slice(0, 150) || 'Explora una experiencia única de glamping en Colombia.';
   const imagenOG = glamping?.imagenes?.[0] || 'https://glamperos.com/og-default.jpg';
   const url = `https://glamperos.com/propiedad/${params.slug}`;

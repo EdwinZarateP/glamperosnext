@@ -1,5 +1,3 @@
-// Archivo: /propiedad/[slug]/page.tsx
-
 export const dynamic = 'force-dynamic';
 
 import { ObtenerGlampingPorId } from '@/Funciones/ObtenerGlamping';
@@ -16,22 +14,42 @@ type PageProps = {
   searchParams: Record<string, string | undefined>;
 };
 
-// ✅ CORREGIDO: Desestructuración directa en el argumento
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const glamping = await ObtenerGlampingPorId(params.slug);
+  const titulo = glamping?.nombreGlamping || 'Reserva tu experiencia | Glamperos';
+  const descripcion = glamping?.descripcionGlamping?.slice(0, 150) || 'Explora una experiencia única de glamping en Colombia.';
+  const imagenOG = glamping?.imagenes?.[0] || 'https://glamperos.com/og-default.jpg';
+  const url = `https://glamperos.com/propiedad/${params.slug}`;
 
   return {
-    title: `Reserva tu experiencia | Glamperos`,
-    description:
-      glamping?.descripcionGlamping?.slice(0, 150) ??
-      'Explora una experiencia única de glamping en Colombia.',
+    title: titulo,
+    description: descripcion,
     alternates: {
-      canonical: `https://glamperos.com/propiedad/${params.slug}`,
+      canonical: url,
+    },
+    openGraph: {
+      title: titulo,
+      description: descripcion,
+      type: 'website',
+      url,
+      images: [
+        {
+          url: imagenOG,
+          width: 1200,
+          height: 630,
+          alt: titulo,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: titulo,
+      description: descripcion,
+      images: [imagenOG],
     },
   };
 }
 
-// ✅ CORREGIDO: sin desestructurar `params` dentro de la función
 export default async function Page({ params, searchParams }: PageProps) {
   const glamping = await ObtenerGlampingPorId(params.slug);
 
@@ -51,7 +69,6 @@ export default async function Page({ params, searchParams }: PageProps) {
       </header>
 
       <main className="propiedad-container">
-
         <section className="propiedad-encabezado">
           <EncabezadoExplorado nombreGlamping={nombreGlamping} />
         </section>
@@ -71,10 +88,9 @@ export default async function Page({ params, searchParams }: PageProps) {
 
         {/* Cliente con lógica JS */}
         <GlampingCliente initialData={glamping} initialParams={searchParams} />
-
       </main>
 
-      <footer className='propiedad-footer'>
+      <footer className="propiedad-footer">
         <Footer />
       </footer>
     </div>

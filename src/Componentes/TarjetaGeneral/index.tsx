@@ -285,15 +285,15 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
                 const tipoFormateado = mapaTipo[tipoGlamping.toLowerCase()] || tipoGlamping;
                 const sufijos = [
                   { valor: "playa", prefijo: "cerca a la" },
-                  { valor: "malla-catamaran", prefijo: "con" },
-                  { valor: "vista-al-lago", prefijo: "con" },
                   { valor: "desierto", prefijo: "en el" },
                   { valor: "jacuzzi", prefijo: "con" },
+                  { valor: "malla-catamaran", prefijo: "con" },
                   { valor: "baño-privado", prefijo: "con" },
-                  { valor: "piscina", prefijo: "con" },
                   { valor: "tina", prefijo: "con" },
+                  { valor: "vista-al-lago", prefijo: "con" },
                   { valor: "rio", prefijo: "cerca al" },
                   { valor: "cascada", prefijo: "cerca a la" },
+                  { valor: "piscina", prefijo: "con" },
                   { valor: "en-la-montaña", prefijo: "" },
                   { valor: "zona-fogata", prefijo: "con" },
                 ];

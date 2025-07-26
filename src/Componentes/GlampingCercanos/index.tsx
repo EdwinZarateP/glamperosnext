@@ -11,7 +11,7 @@ type Glamping = {
   tipoGlamping: string;
   ciudad_departamento: string;
   precioEstandar: number;
-  descuento: number;               // ← ahora incluimos el % de descuento
+  descuento: number;
   imagenes: string[];
   Acepta_Mascotas: boolean;
 };
@@ -24,6 +24,17 @@ type Props = {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
+// Capitaliza primera letra
+function capitalize(s: string): string {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+}
+
+// Si es "cabana", mostrar "Cabaña", si no capitaliza normalmente
+function formatTipo(tipo: string): string {
+  return tipo.toLowerCase() === "cabana" ? "Cabaña" : capitalize(tipo);
+}
+
 async function fetchGlampings(lat: number, lng: number): Promise<Glamping[]> {
   const url = `${API_BASE}/glampings/glampingfiltrados?lat=${lat}&lng=${lng}&limit=10`;
   try {
@@ -33,7 +44,7 @@ async function fetchGlampings(lat: number, lng: number): Promise<Glamping[]> {
       return [];
     }
     const data = await res.json();
-    return (data.glampings as Glamping[]).slice(1); // salto el primero (mismo glamping)
+    return (data.glampings as Glamping[]).slice(1);
   } catch (e) {
     console.error("Error llamando a la API:", e);
     return [];
@@ -52,15 +63,13 @@ export default async function GlampingCercanos({ lat, lng, searchParams }: Props
 
   return (
     <div className="GlampingCercanos-contenedor">
-      <h2>Otros lojamientos cercanos:</h2>
+      <h2>Otros alojamientos cercanos:</h2>
       <div className="GlampingCercanos-carrusel">
-        
         {glampings.map((g) => {
           const ciudadCorta = g.ciudad_departamento.split("-")[0];
-          // Aplicamos la fórmula:
-          const descuento = g.descuento ? g.descuento / 100 : 0;
+          const descuentoPct = g.descuento ? g.descuento / 100 : 0;
           const { precioSinDescuento, precioConDescuento } =
-            calcularTarifaBasica(g.precioEstandar, descuento);
+            calcularTarifaBasica(g.precioEstandar, descuentoPct);
 
           return (
             <div key={g._id} className="GlampingCercanos-tarjeta">
@@ -80,7 +89,7 @@ export default async function GlampingCercanos({ lat, lng, searchParams }: Props
               </Link>
 
               <h3 className="GlampingCercanos-titulo">
-                {g.tipoGlamping} {ciudadCorta}
+                {formatTipo(g.tipoGlamping)} en {capitalize(ciudadCorta)}
               </h3>
 
               <div className="GlampingCercanos-precios">

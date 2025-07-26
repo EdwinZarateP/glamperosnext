@@ -60,7 +60,17 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        {/* Favicon y Apple Touch Icon apuntando a tu logo en Google Cloud */}
+        <link
+          rel="icon"
+          href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
+          type="image/jpeg"
+        />
+        <link
+          rel="apple-touch-icon"
+          href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
+        />
+
         <meta
           name="google-site-verification"
           content="TU-CODIGO-DE-VERIFICACION"
@@ -89,21 +99,21 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
 
-        {/* JSON-LD Schema */}
+        {/* JSON‑LD Schema para Google Search */}
         <Script type="application/ld+json" strategy="afterInteractive">
           {`
-            {
-              "@context": "https://schema.org",
-              "@type": "TravelAgency",
-              "name": "Glamperos",
-              "url": "https://glamperos.com",
-              "description": "Plataforma para descubrir y reservar glampings exclusivos en Colombia.",
-              "logo": "https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg",
-              "sameAs": [
-                "https://www.instagram.com/glamperos",
-                "https://www.facebook.com/glamperos"
-              ]
-            }
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Glamperos",
+            "url": "https://glamperos.com",
+            "description": "Plataforma para descubrir y reservar glampings exclusivos en Colombia.",
+            "logo": "https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg",
+            "sameAs": [
+              "https://www.instagram.com/glamperos",
+              "https://www.facebook.com/glamperos"
+            ]
+          }
           `}
         </Script>
 
@@ -112,7 +122,6 @@ export default function RootLayout({
           src="https://checkout.wompi.co/widget.js"
           strategy="beforeInteractive"
         />
-
       </head>
 
       <body className={openSans.className}>

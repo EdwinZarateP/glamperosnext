@@ -91,7 +91,16 @@ export default function GlampingCliente({ initialData }: Props) {
     <>
       {/* Galería móvil */}
       <section className="propiedad-imagen-individual">
-        <div className="propiedad-boton-volver-exploracion" onClick={() => window.history.back()}>
+        <div
+          className="propiedad-boton-volver-exploracion"
+          onClick={() => {
+            if (window.history.length > 1) {
+              window.history.back();
+            } else {
+              window.location.href = "/";
+            }
+          }}
+        >
           <IoChevronBackCircleSharp />
         </div>
         <ImgExploradasIndividual imagenes={initialData.imagenes} />

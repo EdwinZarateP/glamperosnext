@@ -1,52 +1,57 @@
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-import { ObtenerGlampingPorId } from '@/Funciones/ObtenerGlamping';
-import GlampingCliente from './GlampingCliente';
-import EncabezadoExplorado from '@/Componentes/EncabezadoExplorado';
-import ImagenesExploradas from '@/Componentes/ImgExploradas';
+import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
+import GlampingCliente from "./GlampingCliente";
+import EncabezadoExplorado from "@/Componentes/EncabezadoExplorado";
+import ImagenesExploradas from "@/Componentes/ImgExploradas";
 import HeaderIcono from "@/Componentes/HeaderIcono";
 import Footer from "@/Componentes/Footer";
-import type { Metadata } from 'next';
-import './estilos.css';
+import GlampingCercanos from "@/Componentes/GlampingCercanos";
+import type { Metadata } from "next";
+import "./estilos.css";
 
 type PageProps = {
-  params: { slug: string };
-  searchParams: Record<string, string | undefined>;
+  params: Promise<{ slug: string }>; // 🔹 ahora params es Promise
+  searchParams: Promise<Record<string, string | undefined>>; // 🔹 searchParams también
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const glamping = await ObtenerGlampingPorId(params.slug);
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const resolvedParams = await params; // ✅ Resolver params
 
-  const tipo = glamping?.tipoGlamping === 'cabana' ? 'Cabaña' : glamping?.tipoGlamping || 'Glamping';
-  const ciudad = glamping?.ciudad_departamento?.split(' - ')[0] || 'Colombia';
+  const glamping = await ObtenerGlampingPorId(resolvedParams.slug);
+
+  const tipo =
+    glamping?.tipoGlamping === "cabana"
+      ? "Cabaña"
+      : glamping?.tipoGlamping || "Glamping";
+  const ciudad =
+    glamping?.ciudad_departamento?.split(" - ")[0] || "Colombia";
 
   const titulo = `${tipo} en ${ciudad}`;
-  const descripcion = glamping?.descripcionGlamping?.slice(0, 150) || 'Explora una experiencia única de glamping en Colombia.';
-  const imagenOG = glamping?.imagenes?.[0] || 'https://glamperos.com/og-default.jpg';
-  const url = `https://glamperos.com/propiedad/${params.slug}`;
+  const descripcion =
+    glamping?.descripcionGlamping?.slice(0, 150) ||
+    "Explora una experiencia única de glamping en Colombia.";
+  const imagenOG =
+    glamping?.imagenes?.[0] || "https://glamperos.com/og-default.jpg";
+  const url = `https://glamperos.com/propiedad/${resolvedParams.slug}`;
 
   return {
     title: titulo,
     description: descripcion,
-    alternates: {
-      canonical: url,
-    },
+    alternates: { canonical: url },
     openGraph: {
       title: titulo,
       description: descripcion,
-      type: 'website',
+      type: "website",
       url,
       images: [
-        {
-          url: imagenOG,
-          width: 1200,
-          height: 630,
-          alt: titulo,
-        },
+        { url: imagenOG, width: 1200, height: 630, alt: titulo },
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title: titulo,
       description: descripcion,
       images: [imagenOG],
@@ -55,19 +60,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
-  const glamping = await ObtenerGlampingPorId(params.slug);
+  const resolvedParams = await params; // ✅ Resolver params
+  const resolvedSearchParams = await searchParams; // ✅ Resolver searchParams
+
+  const glamping = await ObtenerGlampingPorId(resolvedParams.slug);
 
   if (!glamping) {
     return <p className="propiedad-error">No se encontró el glamping.</p>;
   }
 
+  const ubicacion =
+    typeof glamping.ubicacion === "string"
+      ? JSON.parse(glamping.ubicacion)
+      : glamping.ubicacion;
+
   const nombreGlamping = `${
-    glamping?.tipoGlamping === 'cabana' ? 'Cabaña' : glamping?.tipoGlamping
-  } en ${glamping?.ciudad_departamento?.split(' - ')[0]}`;
+    glamping?.tipoGlamping === "cabana"
+      ? "Cabaña"
+      : glamping?.tipoGlamping
+  } en ${glamping?.ciudad_departamento?.split(" - ")[0]}`;
 
   return (
     <div className="propiedad-container-principal">
-      {/* Encabezado SSR */}
       <header className="propiedad-header">
         <HeaderIcono descripcion="Glamperos" />
       </header>
@@ -77,7 +91,6 @@ export default async function Page({ params, searchParams }: PageProps) {
           <EncabezadoExplorado nombreGlamping={nombreGlamping} />
         </section>
 
-        {/* Imágenes SSR */}
         <section className="propiedad-imagenes">
           {glamping.imagenes?.length > 0 ? (
             <ImagenesExploradas
@@ -90,8 +103,18 @@ export default async function Page({ params, searchParams }: PageProps) {
           )}
         </section>
 
-        {/* Cliente con lógica JS */}
-        <GlampingCliente initialData={glamping} initialParams={searchParams} />
+        <GlampingCliente
+          initialData={glamping}
+          initialParams={resolvedSearchParams}
+        />
+
+        {ubicacion?.lat && ubicacion?.lng && (
+          <GlampingCercanos
+            lat={ubicacion.lat}
+            lng={ubicacion.lng}
+            searchParams={resolvedSearchParams}
+          />
+        )}
       </main>
 
       <footer className="propiedad-footer">

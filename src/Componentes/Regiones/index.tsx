@@ -50,7 +50,7 @@ const Regiones: React.FC = () => {
   return (
     <div className="Regiones-container">
       {/* Mensaje de error con meme */}
-      <div className="Regiones-mensajeError">
+      {/* <div className="Regiones-mensajeError">
         <div className="Regiones-textoError">
           <h3>¡Ups! No encontramos glampings con esos filtros</h3>
           <p>No te preocupes… sigue explorando. Seguro en alguna de estas regiones encuentras tu Glamping ideal:</p>
@@ -60,9 +60,9 @@ const Regiones: React.FC = () => {
           src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/png-Tristeza-Intensamente.webp" 
           alt="Emoji triste" 
         />
-      </div>
+      </div> */}
       
-      <h2 className="Regiones-titulo">Explora glamping en</h2>
+      <h2 className="Regiones-titulo">Explora más opciones de glamping en</h2>
       <div className="Regiones-grid">
         {regiones.map((region, index) => (
           <a 

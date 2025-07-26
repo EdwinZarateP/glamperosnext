@@ -173,6 +173,7 @@ border-radius: 7px;
   width: 85%;
   margin: auto;
   grid-template-columns: repeat(1, 1fr);
+  background-color: #ffffff;
 }
 
 /* ≥ 600px → 2 columnas */

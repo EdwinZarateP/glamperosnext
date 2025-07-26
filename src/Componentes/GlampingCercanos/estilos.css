@@ -1,0 +1,160 @@
+/* /Componentes/GlampingCercanos/estilos.css */
+
+.GlampingCercanos-contenedor {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+.GlampingCercanos-carrusel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px;
+}
+
+/* Tarjeta individual */
+.GlampingCercanos-tarjeta {
+  flex: 0 0 auto;
+  width: 220px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+}
+.GlampingCercanos-tarjeta:hover {
+  transform: scale(1.02);
+}
+
+/* Imagen */
+.GlampingCercanos-imagen-contenedor {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+.GlampingCercanos-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Icono de mascotas */
+.GlampingCercanos-icono-mascotas {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  padding: 4px;
+  font-size: 20px;
+  color: #333;
+}
+
+/* Título */
+.GlampingCercanos-titulo {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 8px 10px 4px;
+  color: #333;
+}
+
+/* Precios */
+.GlampingCercanos-precios {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 10px 10px;
+}
+.GlampingCercanos-precio-item {
+  display: flex;
+  flex-direction: column;
+}
+.GlampingCercanos-precio-etiqueta {
+  font-size: 13px;
+  color: #777;
+}
+.GlampingCercanos-precio-valor {
+  font-size: 14px;
+  font-weight: bold;
+  color: #111;
+}
+
+/* Flechas */
+.GlampingCercanos-arrow {
+  display: none;
+}
+
+/* ——— Desktop (>=900px): mostrar scrollbar y flechas ——— */
+@media (min-width: 900px) {
+  /* Scrollbar visible */
+  .GlampingCercanos-carrusel {
+    -ms-overflow-style: auto;    /* IE/Edge */
+    scrollbar-width: auto;       /* Firefox */
+  }
+  .GlampingCercanos-carrusel::-webkit-scrollbar {
+    display: block;
+    height: 8px;
+  }
+  .GlampingCercanos-carrusel::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+
+  /* Flechas */
+  .GlampingCercanos-arrow {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  .GlampingCercanos-arrow-left {
+    left: 5px;
+  }
+  .GlampingCercanos-arrow-right {
+    right: 5px;
+  }
+}
+
+/* ——— Móvil (<900px): ocultar scrollbar y activar scroll táctil ——— */
+@media (max-width: 899px) {
+  .GlampingCercanos-carrusel {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+
+    /* ocultar scrollbar */
+    -ms-overflow-style: none;    /* IE/Edge */
+    scrollbar-width: none;       /* Firefox */
+  }
+  .GlampingCercanos-carrusel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .GlampingCercanos-tarjeta {
+    scroll-snap-align: start;
+  }
+
+  .GlampingCercanos-arrow {
+    display: none !important;
+  }
+
+  .GlampingCercanos-contenedor {
+    margin-left: 10px;
+  }
+
+}

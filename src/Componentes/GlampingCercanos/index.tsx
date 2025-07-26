@@ -44,7 +44,7 @@ async function fetchGlampings(lat: number, lng: number): Promise<Glamping[]> {
       return [];
     }
     const data = await res.json();
-    return (data.glampings as Glamping[]).slice(1);
+    return data.glampings as Glamping[]; // devolvemos todo
   } catch (e) {
     console.error("Error llamando a la API:", e);
     return [];
@@ -56,16 +56,19 @@ export default async function GlampingCercanos({ lat, lng, searchParams }: Props
   const fechaInicioUrl = searchParams?.fechaInicioUrl ?? "";
   const fechaFinUrl    = searchParams?.fechaFinUrl    ?? "";
 
-  if (glampings.length === 0) {
+  if (glampings.length <= 1) {
     const Regiones = (await import("@/Componentes/Regiones")).default;
     return <Regiones />;
   }
+
+  // descartamos el primero
+  const nearby = glampings.slice(1);
 
   return (
     <div className="GlampingCercanos-contenedor">
       <h2>Otros alojamientos cercanos:</h2>
       <div className="GlampingCercanos-carrusel">
-        {glampings.map((g) => {
+        {nearby.map((g) => {
           const ciudadCorta = g.ciudad_departamento.split("-")[0];
           const descuentoPct = g.descuento ? g.descuento / 100 : 0;
           const { precioSinDescuento, precioConDescuento } =

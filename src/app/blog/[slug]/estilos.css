@@ -99,7 +99,7 @@
 
 /* — Enlaces — */
 .post-content a {
-  color: #0070f3;
+  color: #0f6956;
   text-decoration: none;
   font-weight: 500;
 }
@@ -195,16 +195,14 @@
   margin: 2rem 0;
 }
 .post-content .wp-block-button__link {
-  background-color: #0070f3;
-  color: #fff;
+  /* background-color: #125721; */
+  color: #0f6956;
   padding: 0.6rem 1.2rem;
   text-decoration: none;
   border-radius: 8px;
   transition: background 0.3s;
 }
-.post-content .wp-block-button__link:hover {
-  background-color: #005bb5;
-}
+
 
 /* ==============================
    Link de vuelta al blog

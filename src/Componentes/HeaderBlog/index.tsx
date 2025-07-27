@@ -33,7 +33,7 @@ export default function HeaderBlog() {
   return (
     <header className="header-container" ref={menuRef}>
       <div className="header-inner">
-        <Link href="/" className="logo-link">
+        <Link href="/blog" className="logo-link">
           <Image
             src="/Imagenes/animal5.jpeg"
             alt="Logo Glamperos"

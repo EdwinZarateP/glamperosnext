@@ -1,11 +1,11 @@
-// src/app/blog/page.tsx (o BlogIndex.tsx)
+// src/app/blog/page.tsx
+export const dynamic = "force-dynamic"; // 🔹 Forzar SSR
+
 import Link from "next/link";
 import HeaderBlog from "../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
 import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
 import "./estilos.css";
-
-export const revalidate = 60;
 
 interface Post {
   id: number;
@@ -21,13 +21,16 @@ interface Post {
 
 export default async function BlogIndex() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?_embed&per_page=7&page=1`
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?_embed&per_page=7&page=1`,
+    { cache: "no-store" } // 🔹 Esto hace que siempre sea SSR
   );
+
+  if (!res.ok) return <p>Error al cargar artículos.</p>;
+
   const posts: Post[] = await res.json();
 
   if (!posts.length) return <p>No hay artículos disponibles.</p>;
 
-  // Separa la última entrada
   const [destacado, ...otros] = posts;
   const imagenDestacada =
     destacado._embedded?.["wp:featuredmedia"]?.[0]?.source_url;

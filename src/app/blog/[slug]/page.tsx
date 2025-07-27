@@ -1,78 +1,71 @@
-// src/app/blog/[slug]/page.tsx
 import Link from "next/link";
 import HeaderBlog from "../../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
 import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
 import "./estilos.css";
 
-// Habilitar revalidación ISR para esta página
 export const revalidate = 60;
 
-// Generar rutas estáticas para los posts
 export async function generateStaticParams() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts`);
-  const posts: any[] = await res.json();
-
+  const posts: { slug: string }[] = await res.json();
   return posts.map((post) => ({ slug: post.slug }));
 }
 
-// Página individual del post
 export default async function BlogPost({
   params: { slug },
 }: {
   params: { slug: string };
 }) {
-  if (!slug) {
-    return (
-      <main className="blog-container">
-        <p>Error: slug no proporcionado.</p>
-        <Link href="/blog">← Volver al blog</Link>
-      </main>
-    );
-  }
+  // Carga y validaciones
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?slug=${slug}`,
+    { next: { revalidate: 60 } }
+  );
+  const posts: any[] = res.ok ? await res.json() : [];
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?slug=${slug}`, {
-    next: { revalidate: 60 },
-  });
-
-  if (!res.ok) {
-    return (
-      <main className="blog-container">
-        <p>Error al cargar el post.</p>
-        <Link href="/blog">← Volver al blog</Link>
-      </main>
-    );
-  }
-
-  const posts: any[] = await res.json();
   const post = posts[0];
-
-  if (!post) {
-    return (
-      <main className="blog-container">
-        <p>No se encontró el post.</p>
-        <Link href="/blog">← Volver al blog</Link>
-      </main>
-    );
-  }
 
   return (
     <>
-    <HeaderBlog descripcion="Blog Glamperos" />
-    <main className="blog-container">
-      <h1
-        className="blog-title"
-        dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-      />
-      <article
-        className="blog-post-content"
-        dangerouslySetInnerHTML={{ __html: post.content.rendered }}
-      />
-      <Link href="/blog">← Volver al blog</Link>      
-    </main>
-    <Footer />
-    <BotonWhatsApp />
+      <HeaderBlog descripcion="Blog Glamperos" />
+
+      <main className="post-container">
+        {!slug || !res.ok || !post ? (
+          <>
+            <p className="post-error">
+              { !slug
+                ? "Error: slug no proporcionado."
+                : !res.ok
+                ? "Error al cargar el post."
+                : "No se encontró el post."
+              }
+            </p>
+            <Link href="/blog" className="post-back-link">
+              ← Ir al blog
+            </Link>
+          </>
+        ) : (
+          <>
+            <h1
+              className="post-title"
+              dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+            />
+
+            <article
+              className="post-content"
+              dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+            />
+
+            <Link href="/blog" className="post-back-link">
+              ← Ir al blog
+            </Link>
+          </>
+        )}
+      </main>
+
+      <Footer />
+      <BotonWhatsApp />
     </>
-    
   );
 }

@@ -4,10 +4,9 @@
    Contenedor principal
    ------------------------ */
 .Blog-contenedor {
-  width: 90%;
-  margin: 0 auto;
-  padding: 20px;
-  margin-top: 90px; /* deja espacio para el header fijo */
+  max-width: 1200px;
+  margin: 90px auto 40px;
+  padding: 0 1rem;
   box-sizing: border-box;
 }
 
@@ -15,63 +14,83 @@
    1) Estilos Artículo Destacado
    =========================== */
 .Blog-destacado {
+  width: 100%;
   margin-bottom: 3rem;
-  background: #f9f9f9;
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background: #fff;
 }
 
-/* Layout: imagen izq / texto der en escritorio */
+/* Flex: imagen / texto */
 .Blog-destacado-link {
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
   text-decoration: none;
   color: inherit;
-  max-height: 250px;
+
 }
 
-/* En móviles, apilar vertical */
+/* Imagen al 50% en desktop, 100% en móvil */
+.Blog-destacado-img {
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+}
 @media (max-width: 768px) {
-  .Blog-destacado-link {
-    flex-direction: column;
+  .Blog-destacado-img {
+    width: 100%;
+    max-height: 300px;
   }
 }
 
-/* Imagen ocupa mitad y se ajusta */
-.Blog-destacado-img {
-  flex: 1;
-  width: 100%;
-  max-height: 500px;
-  object-fit: cover;
-}
-
-/* Texto ocupa mitad, centrado vertical */
+/* Info: al 50% */
 .Blog-destacado-info {
-  flex: 1;
-  padding: 1.5rem;
+  width:100%;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  background: #f4f7f6;
+}
+@media (max-width: 768px) {
+  .Blog-destacado-info {
+    width: 100%;
+  }
+}
+
+.Blog-destacado-date {
+  font-size: 0.9rem;
+  color: #7a8b8e;
+  margin-bottom: 0.5rem;
 }
 
 .Blog-destacado-title {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #2F6B3E;
+  line-height: 1.2;
+  color: #005f73;
 }
 
 .Blog-destacado-excerpt {
+  flex: 1;            /* que ocupe todo el espacio vertical sobrante */
   font-size: 1rem;
   color: #444;
-  margin-bottom: 0.8rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  overflow: visible;  /* muestra todo el texto */
 }
 
 .Blog-destacado-mas {
-  font-weight: bold;
-  color: #F2A900;
+  font-weight: 600;
+  color: #ee9b00;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.Blog-destacado-mas:hover {
+  color: #ca6702;
 }
 
 /* ===========================
@@ -80,63 +99,78 @@
 .Blog-grid {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 /* Card individual */
 .Blog-card {
-  display: block;
-  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-decoration: none;
   color: inherit;
 }
-
 .Blog-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* Imagen de la card con altura fija */
-.Blog-card-img {
+/* Wrapper para control de aspecto */
+.Blog-card-img-wrapper {
   width: 100%;
-  height: 180px;
+  padding-top: 56.25%; /* ratio 16:9 */
+  position: relative;
+}
+.Blog-card-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
 /* Contenido interno */
 .Blog-card-content {
-  padding: 1rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .Blog-card-title {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #2F6B3E;
+  margin-bottom: 0.75rem;
+  color: #005f73;
+  line-height: 1.3;
 }
 
 .Blog-card-excerpt {
   font-size: 0.95rem;
   color: #555;
-  line-height: 1.4;
+  line-height: 1.5;
+  flex: 1;
+  margin-bottom: 1rem;
 }
 
+.Blog-card-mas {
+  align-self: flex-start;
+  font-weight: 600;
+  color: #ee9b00;
+  transition: color 0.2s;
+}
+.Blog-card-mas:hover {
+  color: #ca6702;
+}
+
+/* Botón WhatsApp fijo */
 .contenedor-principal-whatsapp-button {
   position: fixed;
   bottom: 20px;
-  right: 10px;
+  right: 20px;
   z-index: 1000;
-  background: #25d366;
-  border: none;
-  border-radius: 50%;
-  padding: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.contenedor-principal-whatsapp-button img {
-  display: block;
 }

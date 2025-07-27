@@ -33,6 +33,15 @@ function parseYMD(fecha: string): Date {
   return new Date(y, m - 1, d);
 }
 
+/** Formatea Date a YYYY-MM-DD sin UTC */
+function formatDateLocal(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+
 interface Huespedes {
   adultos: number;
   ninos: number;
@@ -142,8 +151,9 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         sun.setDate(sun.getDate() + 7);
         i++;
       }
-      const iStr = sat.toISOString().slice(0, 10);
-      const fStr = sun.toISOString().slice(0, 10);
+      const iStr = formatDateLocal(sat);
+      const fStr = formatDateLocal(sun);
+
       setRange([{ startDate: sat, endDate: sun, key: 'selection' }]);
       setFechaInicio(iStr);
       setFechaFin(fStr);
@@ -218,8 +228,8 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     const res = calcularTarifaReserva({
       initialData,
       viernesysabadosyfestivos: vsf,
-      fechaInicio: start.toISOString().slice(0, 10),
-      fechaFin: end.toISOString().slice(0, 10),
+      fechaInicio: formatDateLocal(start),
+      fechaFin: formatDateLocal(end),
       cantidadHuespedes: cant,
     });
     setTarifa(res);
@@ -338,8 +348,8 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
               onClick={() => {
                 if (!fechaFin || fechaFin === fechaInicio) {
                   const [sat, sun] = getNextWeekend(parseYMD(fechaInicio));
-                  const sstr = sat.toISOString().slice(0, 10);
-                  const fstr = sun.toISOString().slice(0, 10);
+                  const sstr = formatDateLocal(sat);
+                  const fstr = formatDateLocal(sun);
                   setRange([{ startDate: sat, endDate: sun, key: 'selection' }]);
                   setFechaInicio(sstr);
                   setFechaFin(fstr);

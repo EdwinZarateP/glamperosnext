@@ -126,15 +126,30 @@
   gap: 10px;
   margin: 1.5rem 0;
   width: 100%;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(1, 1fr);
 }
 
 /* 1 imagen = 1 columna */
 .post-content .wp-block-gallery:has(> .wp-block-image:only-child) {
-  grid-template-columns: 1fr;
+  display: grid;                   /* asegúrate que sigue siendo grid */
+  grid-template-columns: 1fr;      /* una sola columna */
+  width: 30%;                      /* ahora ocupa la mitad */
+  max-width: 200px;                /* opcional: limitar ancho máximo */
+  margin: 2rem auto;               /* centrarla con separación vertical */
+  gap: 0;
 }
 
-/* 3 imágenes = 3 columnas en una sola fila */
+.post-content img[class*="wp-image-"] {
+  display: block;
+  width: 50%;     /* opcional: limitar ancho */
+  margin: 1.5rem auto;    /* centrar y separar */
+  height: auto;           /* mantiene proporción */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* 3 imágenes = 1 columnas en una sola fila */
 .post-content .wp-block-gallery:has(> .wp-block-image:nth-child(2):nth-last-child(1)) {
   grid-template-columns: repeat(2, 1fr);
   width: 60%;
@@ -247,4 +262,9 @@
   .post-content .wp-block-gallery {
     grid-template-columns: 1fr !important;
   }
+
+  .post-content img[class*="wp-image-"] {
+  width: 100%;     /* opcional: limitar ancho */
+
+}
 }

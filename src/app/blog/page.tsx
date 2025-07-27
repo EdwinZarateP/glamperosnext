@@ -34,7 +34,7 @@ export default async function BlogIndex() {
 
   return (
     <>
-      <HeaderBlog descripcion="Blog Glamperos" />
+      <HeaderBlog />
 
       <main className="Blog-contenedor">
         {/* =====================

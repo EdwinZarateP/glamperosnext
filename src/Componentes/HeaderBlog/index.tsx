@@ -1,98 +1,74 @@
 'use client';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { FiMenu, FiX } from 'react-icons/fi';
+import './estilos.css';
 
-import Link from "next/link";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import "./estilos.css";
-
-export default function HeaderBlog({ descripcion }: { descripcion: string }) {
-  const [menuAbierto, setMenuAbierto] = useState(false);
-  const menuRef = useRef<HTMLDivElement | null>(null);
+export default function HeaderBlog() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Cierra el menú si se hace clic fuera
+  // Cerrar menú al clicar fuera
   useEffect(() => {
-    function manejarClickFuera(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuAbierto(false);
+    const onClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
       }
-    }
-
-    if (menuAbierto) {
-      document.addEventListener("mousedown", manejarClickFuera);
-    } else {
-      document.removeEventListener("mousedown", manejarClickFuera);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", manejarClickFuera);
     };
-  }, [menuAbierto]);
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, []);
 
-  // Función para validar login antes de publicar
-  const handlePublicaClick = (e: React.MouseEvent) => {
+  const handlePublica = (e: React.MouseEvent) => {
     e.preventDefault();
-    const idUsuario = Cookies.get("idUsuario");
-    if (idUsuario) {
-      router.push("/CrearGlamping");
-    } else {
-      router.push("/registro");
-    }
+    const idUsuario = Cookies.get('idUsuario');
+    router.push(idUsuario ? '/CrearGlamping' : '/registro');
+    setMenuOpen(false);
   };
 
   return (
-    <header className="HeaderBlog-contenedor" ref={menuRef}>
-      <div className="HeaderBlog-Header">
-        <div className="HeaderBlog-izquierda">
-          <Link href="/" className="HeaderBlog-logoLink">
-            <Image
-              src="/Imagenes/animal5.jpeg"
-              alt="Logo"
-              width={40}
-              height={40}
-              className="HeaderBlog-logo"
-            />
-          
-          {descripcion && (
-            <span className="HeaderBlog-descripcion">{descripcion}</span>
-          )}
-          </Link>
-        </div>
+    <header className="header-container" ref={menuRef}>
+      <div className="header-inner">
+        <Link href="/" className="logo-link">
+          <Image
+            src="/Imagenes/animal5.jpeg"
+            alt="Logo Glamperos"
+            width={32}
+            height={32}
+          />
+          <span className="logo-text">Blog Glamperos</span>
+        </Link>
 
-        <div className="HeaderBlog-derecha">
-          <Link href="/" className="HeaderBlog-btn HeaderBlog-btn-primario">
-            Descubre tu glamping
-          </Link>
-          <button
-            className="HeaderBlog-btn HeaderBlog-btn-secundario"
-            onClick={handlePublicaClick}
-          >
-            Publica tu glamping
+        {/* Nav de escritorio */}
+        <nav className="nav-links">
+          <Link href="/">Inicio</Link>
+          <Link href="/blog">Blog</Link>
+          <button className="btn-publish" onClick={handlePublica}>
+            Publica tu glamping
           </button>
-        </div>
+        </nav>
 
-        {/* Botón hamburguesa */}
+        {/* Botón hamburguesa móvil */}
         <button
-          className="HeaderBlog-hamburguesa"
-          onClick={() => setMenuAbierto(!menuAbierto)}
+          className="hamburger"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Menu"
         >
-          ☰
+          {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
         </button>
       </div>
 
       {/* Menú móvil desplegable */}
-      {menuAbierto && (
-        <div className="HeaderBlog-menuMovil">
-          <Link href="/" className="HeaderBlog-menuLink">
-            Inicio
-          </Link>
-          <button
-            className="HeaderBlog-menuLink"
-            onClick={handlePublicaClick}
-          >
-            Publica tu glamping
+      {menuOpen && (
+        <div className="mobile-menu">
+          <Link href="/">Inicio</Link>
+          <Link href="/blog">Blog</Link>
+          <button className="btn-publish" onClick={handlePublica}>
+            Publica tu glamping
           </button>
         </div>
       )}

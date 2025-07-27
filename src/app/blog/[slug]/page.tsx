@@ -28,7 +28,7 @@ export default async function BlogPost({
 
   return (
     <>
-      <HeaderBlog descripcion="Blog Glamperos" />
+      <HeaderBlog />
 
       <main className="post-container">
         {!slug || !res.ok || !post ? (

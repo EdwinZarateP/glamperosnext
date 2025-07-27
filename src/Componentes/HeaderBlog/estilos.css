@@ -1,155 +1,128 @@
-/* Contenedor fijo superior */
-.HeaderBlog-contenedor {
+/* ------------------------
+   Header fijo superior
+   ------------------------ */
+.header-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background: #ffffff;
   border-bottom: 1px solid #e6e3df;
-  background-color: #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+
 }
 
-/* Contenido principal del header */
-.HeaderBlog-Header {
-  display: flex;
+/* Barra interna centrada */
+.header-inner {
   width: 90%;
-  height: 70px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Lado izquierdo */
-.HeaderBlog-izquierda {
+  margin: auto;
+  height: 60px;
+  /* padding: 0 1rem; */
   display: flex;
   align-items: center;
-  gap: 8px;
+  box-sizing: border-box;
+
 }
 
-.HeaderBlog-logoLink {
+/* Logo + título */
+.logo-link {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
   text-decoration: none;
 }
-
-.HeaderBlog-logo {
-  width: 40px;
-  height: auto;
-}
-
-.HeaderBlog-descripcion {
-  margin-left: 1rem;
-  font-size: 1rem;
+.logo-text {
+  font-size: 1.1rem;
   font-weight: 600;
   color: #2F6B3E;
 }
 
-/* Botones desktop */
-.HeaderBlog-derecha {
+/* Navegación desktop */
+.nav-links {
+  margin-left: auto;
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 1.5rem;
 }
-
-/* Botones base */
-.HeaderBlog-btn {
-  display: inline-block;
-  padding: 0.5rem;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 500;
+.nav-links a {
+  color: #005f73;
   text-decoration: none;
-  text-align: center;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  border: 2px solid transparent;
-  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
 }
-
-/* Botón primario: verde marca */
-.HeaderBlog-btn-primario {
-  background-color: #2F6B3E;
-  color: #ffffff;
-  border-color: #2F6B3E;
-}
-.HeaderBlog-btn-primario:hover {
-  background-color: #24572f;
-  border-color: #24572f;
-}
-
-/* Botón secundario: amarillo con borde verde */
-.HeaderBlog-btn-secundario {
-  background-color: #ffffff;
+.nav-links a:hover {
   color: #2F6B3E;
-  border: 2px solid #2F6B3E;
-}
-.HeaderBlog-btn-secundario:hover {
-  background-color: #F2A900;
-  color: #000000;
-  border-color: #F2A900;
 }
 
-/* Botón hamburguesa (oculto por defecto) */
-.HeaderBlog-hamburguesa {
-  display: none;
+/* Botón “Publica tu glamping” en desktop */
+.btn-publish {
+  padding: 0.45rem 1rem;
+  background: #2F6B3E;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-publish:hover {
+  background: #24572f;
+}
+
+/* Hamburguesa móvil (oculto en desktop) */
+.hamburger {
+  margin-left: auto;
   background: none;
   border: none;
-  font-size: 2rem;
+  color: #2F6B3E;
   cursor: pointer;
-  color: #2F6B3E;
+  display: none;
 }
 
-/* Menú móvil */
-.HeaderBlog-menuMovil {
-  display: flex;
+/* Menú móvil (oculto por defecto) */
+.mobile-menu {
+  display: none;
   flex-direction: column;
-  width: 100%;
-  padding: 1rem 2rem;
-  background-color: #ffffff;
-  border-top: 1px solid #e5e7eb;
-  animation: fadeIn 0.3s ease-in-out;
+  background: #ffffff;
+  border-top: 1px solid #e6e3df;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  padding: 1rem;
+  gap: 0.5rem;
 }
 
-.HeaderBlog-menuLink {
-  padding: 0.75rem 14px;
-  font-size: 1rem;
+/* Unificar el estilo de TODOS los items del menú móvil
+   (incluye el enlace “Inicio”, “Explora glampings” y el botón público) */
+.mobile-menu a,
+.mobile-menu .btn-publish {
+  display: block;
+  padding: 0.75rem 1rem;
+  background: none;
+  color: #005f73;
   text-decoration: none;
-  color: #2F6B3E;
   font-weight: 500;
-  border-bottom: 1px solid #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+  text-align: left;
 }
-.HeaderBlog-menuLink:hover {
-  color: #F2A900;
-}
-.HeaderBlog-menuLink:last-child {
-  border-bottom: none;
+.mobile-menu a:hover,
+.mobile-menu .btn-publish:hover {
+  background-color: rgba(47, 107, 62, 0.1);
+  color: #2F6B3E;
 }
 
-/* Responsivo: ocultar botones y mostrar hamburguesa */
-@media (max-width: 900px) {
-  .HeaderBlog-derecha {
+/* Puntos de quiebre */
+@media (max-width: 768px) {
+  /* Esconder nav desktop, mostrar hamburguesa */
+  .nav-links {
     display: none;
   }
-
-  .HeaderBlog-hamburguesa {
+  .hamburger {
     display: block;
   }
-
-  .HeaderBlog-descripcion {
-    font-size: 0.95rem;
-    margin-left: 0.5rem;
-  }
-}
-
-/* Animación para el menú */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  /* Mostrar menú móvil cuando esté abierto */
+  .mobile-menu {
+    display: flex;
   }
 }

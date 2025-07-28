@@ -207,61 +207,76 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
   const [hasFetched, setHasFetched] = useState(false);
 
   // estados para geolocalización
-  const [userLocation, setUserLocation] = useState<{lat: number; lng: number} | null>(null);
+  const [userLocation, setUserLocation] = useState<{lat: number; lng: number} | null>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('glampings-geo') || 'null');
+    } catch {
+      return null;
+    }
+  });
+
   const [, setGeoError]                  = useState<string | null>(null);
 
   // Obtiene permiso y dispara getCurrentPosition de inmediato
+  
+
   // 🔄 Hook de geolocalización con fallback a Bogotá
   useEffect(() => {
-    if (ciudadFilter) return; // si ya filtró por ciudad, no pedimos geo
-    if (!navigator.geolocation) {
-      setUserLocation(defaultLocation);
-      setLoading(false);
-      return;
-    }
+    if (ciudadFilter) return;
 
-    const aplicarFallback = () => {
-      setGeoError("Usando ubicación por defecto (Bogotá)");
-      setUserLocation(defaultLocation);
-      setLoading(false);
+    // 1) cache en localStorage + cookie
+    const persistLocation = (lat: number, lng: number) => {
+      localStorage.setItem('glampings-geo', JSON.stringify({ lat, lng }));
+      document.cookie = `glampings_lat=${lat}; path=/`;
+      document.cookie = `glampings_lng=${lng}; path=/`;
     };
 
+    // 2) llamada a tu API
     const guardarLocalizacionAPI = (lat: number, lng: number) => {
-      try {
-        const cookies = document.cookie.split("; ").reduce((acc, current) => {
-          const [key, value] = current.split("=");
-          acc[key] = value;
+      const cookies = document.cookie
+        .split('; ')
+        .reduce<Record<string,string>>((acc, cur) => {
+          const [k, v] = cur.split('=');
+          acc[k] = v;
           return acc;
-        }, {} as Record<string, string>);
+        }, {});
+      const user_id = cookies['idUsuario'] || 'no_identificado';
 
-        const user_id = cookies['idUsuario'] || 'no_identificado';
-
-        fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/localizaciones`, {
-          method: 'POST',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lat, lng, user_id })
-        })
-        .then(res => res.json())
-        .then(json => console.log("✅ Localización guardada:", json))
-        .catch(err => console.error("❌ Error guardando localización:", err));
-      } catch (error) {
-        console.error("❌ Error en guardarLocalizacionAPI:", error);
-      }
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/localizaciones`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lat, lng, user_id })
+      })
+      .then(res => res.json())
+      .then(json => console.log('✅ Localización guardada:', json))
+      .catch(err => console.error('❌ Error guardando localización:', err));
     };
 
+    // 3) callbacks
     const successCallback = (pos: GeolocationPosition) => {
       const lat = pos.coords.latitude;
       const lng = pos.coords.longitude;
       setUserLocation({ lat, lng });
+      persistLocation(lat, lng);
       guardarLocalizacionAPI(lat, lng);
     };
 
     const errorCallback = () => {
-      aplicarFallback();
-      guardarLocalizacionAPI(defaultLocation.lat, defaultLocation.lng);
+      setGeoError("Usando ubicación por defecto (Bogotá)");
+      const { lat, lng } = defaultLocation;
+      setUserLocation({ lat, lng });
+      persistLocation(lat, lng);
+      guardarLocalizacionAPI(lat, lng);
     };
 
-    if (typeof navigator.permissions !== 'undefined') {
+    // 4) si no hay API de geoloc, fallo inmediato
+    if (!navigator.geolocation) {
+      errorCallback();
+      return;
+    }
+
+    // 5) pido permiso o directamente getCurrentPosition
+    if (navigator.permissions) {
       navigator.permissions
         .query({ name: 'geolocation' as PermissionName })
         .then(perm => {
@@ -275,13 +290,13 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
             );
           }
         })
-        .catch(() => {
+        .catch(() =>
           navigator.geolocation.getCurrentPosition(
             successCallback,
             errorCallback,
             { enableHighAccuracy: true, timeout: 10000 }
-          );
-        });
+          )
+        );
     } else {
       navigator.geolocation.getCurrentPosition(
         successCallback,
@@ -291,6 +306,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     }
   }, [ciudadFilter]);
 
+
+
+  
   const [redirigiendoInternamente, setRedirigiendoInternamente] = useState(false);
 
   useEffect(() => {
@@ -463,10 +481,11 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
   };
 
   useEffect(() => {
-    // Si no hay datos iniciales (CSR puro)
-    if (!initialData || initialData.length === 0) {
-      // Si ya tenemos ubicación o el usuario no ha concedido permisos
-      if (userLocation !== null || (ciudadFilter && !didFetchOnClient.current)) {
+    // Caso A: Llegaron datos por SSR
+    if (initialData.length > 0) {
+      // — Si no filtramos por ciudad (SSR usó Bogotá por defecto o cookies)
+      //   y acaban de aparecer coords en el cliente, disparar un solo fetch
+      if (!ciudadFilter && userLocation && !didFetchOnClient.current) {
         didFetchOnClient.current = true;
         setLoading(true);
         fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
@@ -475,14 +494,22 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
       return;
     }
 
-    // Si hay un cambio de orden, filtros o página (router.push)
-    // Solo hacer fetch si no estamos esperando la ubicación
-    if (userLocation !== null || ciudadFilter) {
+    // Caso B: CSR puro (no hubieron datos SSR)
+    // — Igual que antes: al tener location o filtro de ciudad, un único fetch
+    if ((userLocation !== null || ciudadFilter) && !didFetchOnClient.current) {
+      didFetchOnClient.current = true;
       setLoading(true);
       fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
         .finally(() => setHasFetched(true));
     }
-  }, [userLocation, ciudadFilter, pageFromUrl, extrasFromURL.join(','), ordenPrecio]);
+  }, [
+    userLocation,
+    ciudadFilter,
+    pageFromUrl,
+    extrasFromURL.join(','),
+    ordenPrecio,
+    initialData.length  // ojo: lo leemos para distinguir SSR vs CSR
+  ]);
 
   const handleCardClick = () => {
     sessionStorage.setItem("glampings-scroll", String(window.scrollY));

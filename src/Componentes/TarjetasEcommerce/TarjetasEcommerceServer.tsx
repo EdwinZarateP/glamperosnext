@@ -2,7 +2,7 @@
 import React from 'react';
 import TarjetasEcommerce from './index';
 import municipiosData from '../MunicipiosGeneral/municipiosGeneral.json';
-import { headers } from 'next/headers';
+import { headers, cookies } from 'next/headers';
 
 interface Props {
   filtros?: string[];
@@ -11,7 +11,6 @@ interface Props {
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
 const API_URL = `${API_BASE}/glampings/glampingfiltrados`;
 const PAGE_SIZE = 24;
-
 const DEFAULT_CITY_SLUG = 'bogota';
 
 type Municipio = {
@@ -21,37 +20,40 @@ type Municipio = {
   LATITUD: number;
   LONGITUD: number;
 };
-
 type MunicipioConSlug = Municipio & { SLUG: string };
 
+// 1) Array de municipios con slug
 const municipiosConSlug: MunicipioConSlug[] = municipiosData.map(m => ({
   ...m,
   SLUG: m.CIUDAD_DEPARTAMENTO.toLowerCase().replace(/\s+/g, '-'),
 }));
 
-const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod','chalet'];
+// 2) Tipos válidos de glamping
+const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod', 'chalet'];
 
-/**
- * Elimina cualquier segmento "pagina-N" y "orden-asc|desc" en la ruta
- */
+// 3) Limpia segmentos "pagina-N" y "orden-asc|desc"
 const limpiarSegmentosPagina = (segmentos: string[]) =>
-  segmentos.filter(seg => 
+  segmentos.filter(seg =>
     !/^pagina-\d+$/.test(seg) &&
     !/^orden-(asc|desc)$/.test(seg)
   );
 
+// 4) Obtiene MunicipioConSlug por slug
 function getCiudadFromSlug(slug: string | undefined): MunicipioConSlug | null {
   if (!slug) return null;
   return municipiosConSlug.find(m => m.SLUG === slug.toLowerCase()) || null;
 }
 
 /**
- * Construye query string con lat/lng, tipo, amenidades y ordenamiento
+ * 5) Construye la query string para la API,
+ *    ahora recibiendo también latCookie/lngCookie.
  */
 function construirQuery(
   pageArg: number,
   filtrosSinPagina: string[],
-  usarBogotaFallback: boolean,
+  latCookie: string | undefined,
+  lngCookie: string | undefined,
+  usarBotFallback: boolean,
   orden?: string
 ): string {
   const params = new URLSearchParams();
@@ -59,10 +61,10 @@ function construirQuery(
   params.set('limit', String(PAGE_SIZE));
   if (orden) params.set('ordenPrecio', orden);
 
-  // — 1) Extraer fechas y huéspedes de los segmentos
-  let fechaInicio: string|undefined;
-  let fechaFin:    string|undefined;
-  let huespedes:   string|undefined;
+  // — extraer fechas y huéspedes
+  let fechaInicio: string | undefined;
+  let fechaFin:    string | undefined;
+  let huespedes:   string | undefined;
 
   const restantes = filtrosSinPagina.filter(seg => {
     if (seg.startsWith('fechainicio=')) {
@@ -79,29 +81,33 @@ function construirQuery(
     }
     return true;
   });
-
   if (fechaInicio) params.set('fechaInicio', fechaInicio);
   if (fechaFin)    params.set('fechaFin', fechaFin);
   if (huespedes && Number(huespedes) > 1) {
     params.set('totalHuespedes', huespedes);
   }
 
-  // — 2) Ciudad / fallback Bogotá
+  // — ciudad ruta
   const ciudad = getCiudadFromSlug(restantes[0]);
   if (ciudad) {
     params.set('lat', String(ciudad.LATITUD));
     params.set('lng', String(ciudad.LONGITUD));
-  } else if (usarBogotaFallback) {
+  } else if (latCookie && lngCookie && !usarBotFallback) {
+    // — fallback a cookie
+    params.set('lat', latCookie);
+    params.set('lng', lngCookie);
+  } else {
+    // — último recurso, Bogotá (bot o sin cookies)
     const bog = getCiudadFromSlug(DEFAULT_CITY_SLUG)!;
     params.set('lat', String(bog.LATITUD));
     params.set('lng', String(bog.LONGITUD));
   }
 
-  // — 3) Tipo de glamping
+  // — tipo de glamping
   const tipo = restantes.find(f => TIPOS.includes(f.toLowerCase()));
   if (tipo) params.set('tipoGlamping', tipo.toLowerCase());
 
-  // — 4) Amenidades “reales” (ahora en `restantes` sólo quedan ellas)
+  // — amenidades “reales”
   const sinCiudad = ciudad ? restantes.slice(1) : restantes;
   const sinTipo   = tipo   ? sinCiudad.filter(f => f.toLowerCase() !== tipo.toLowerCase()) : sinCiudad;
   const amenidades = sinTipo.filter(a =>
@@ -112,41 +118,48 @@ function construirQuery(
   );
   amenidades.forEach(a => params.append('amenidades', a.toLowerCase()));
 
-
   return params.toString();
 }
 
 export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
-  const headersList = await headers();
-  const userAgent = headersList.get('user-agent') || '';
-  const isBot = /googlebot|bingbot|slurp|duckduckbot/i.test(userAgent);
+  // 0) Leer cookies y headers en SSR
+  const headersList   = await headers();
+  const cookieStore   = await cookies();   
+  const userAgent     = headersList.get('user-agent') || '';
+  const isBot         = /googlebot|bingbot|slurp|duckduckbot/i.test(userAgent);
+  const latCookie     = cookieStore.get('glampings_lat')?.value;
+  const lngCookie     = cookieStore.get('glampings_lng')?.value;
 
-  // 1) detecta página
-  const last = filtros[filtros.length - 1] || '';
-  const match = last.match(/^pagina-(\d+)$/);
-  const pageArg = match ? parseInt(match[1], 10) : 1;
+  // 1) Detecta página
+  const last         = filtros[filtros.length - 1] || '';
+  const match        = last.match(/^pagina-(\d+)$/);
+  const pageArg      = match ? parseInt(match[1], 10) : 1;
 
-  // 2) Extraer el segmento de ordenamiento si existe
+  // 2) Extrae orden si existe
   const ordenSegment = filtros.find(seg => /^orden-(asc|desc)$/.test(seg));
-  const orden = ordenSegment ? ordenSegment.replace('orden-', '') : '';
+  const orden        = ordenSegment ? ordenSegment.replace('orden-', '') : '';
 
-  // 3) limpia segmentos "pagina-N" y "orden-asc|desc" con función robusta
+  // 3) Limpia segmentos de página y orden
   const filtrosSinPagina = limpiarSegmentosPagina(filtros);
 
-  // 4) decide usar Bogotá como fallback solo si es bot
-  const usarBogotaFallback = isBot;
+  // 4) Construye y llama a la API
+  const qs = construirQuery(
+    pageArg,
+    filtrosSinPagina,
+    latCookie,
+    lngCookie,
+    isBot,
+    orden
+  );
 
-  // 5) construye y ejecuta la petición SSR, pasando el orden
-  const qs = construirQuery(pageArg, filtrosSinPagina, usarBogotaFallback, orden);
   let glampings: any[] = [];
   let total = 0;
-
   try {
     const res = await fetch(`${API_URL}?${qs}`, { cache: 'no-store' });
     if (res.ok) {
       const json = await res.json();
       glampings = json.glampings || [];
-      total = typeof json.total === 'number' ? json.total : 0;
+      total     = typeof json.total === 'number' ? json.total : 0;
     } else {
       console.warn(`API responded ${res.status}`);
     }

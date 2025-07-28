@@ -1,22 +1,23 @@
 // propiedad/[slug]/GlampingCliente.tsx
-
 'use client';
 
 import { useState, useEffect, useContext } from 'react';
+import { usePathname } from 'next/navigation';
 import ImgExploradasIndividual from '@/Componentes/ImgExploradasIndividual';
 import { ContextoApp } from '@/context/AppContext';
 import VerVideo from '@/Componentes/VerVideo';
-import DescripcionGlamping from "@/Componentes/DescripcionGlamping/index";
-import LoQueOfrece from"@/Componentes/LoQueOfrece/index";
+import DescripcionGlamping from "@/Componentes/DescripcionGlamping";
+import LoQueOfrece from "@/Componentes/LoQueOfrece";
 import { MdOndemandVideo } from 'react-icons/md';
 import ManejoErrores from "@/Funciones/ManejoErrores";
 import Comentarios from "@/Componentes/Comentarios";
-import MapaGlampings from "@/Componentes/Mapa/index";
+import MapaGlampings from "@/Componentes/Mapa";
 import PerfilUsuario from "@/Componentes/PerfilUsuario";
-import { IoChevronBackCircleSharp } from "react-icons/io5"
+import { IoChevronBackCircleSharp } from "react-icons/io5";
 import FormularioReserva from '@/Componentes/FormularioReserva';
 import NombreGlamping from "@/Componentes/NombreGlamping";
 import FormularioReservaMobile from '@/Componentes/FormularioReservaMobile';
+import SkeletonCard from '@/Componentes/SkeletonCard';
 import './estilos.css';
 
 type Props = {
@@ -27,27 +28,25 @@ type Props = {
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
 export default function GlampingCliente({ initialData }: Props) {
-  // Estado para controlar si estamos en el cliente
+  const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(true);
 
-   useEffect(() => {
+  useEffect(() => {
     setIsClient(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    setLoadingPage(false);
   }, []);
+
+  useEffect(() => {
+    if (isClient) window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [pathname, isClient]);
 
   const { setVerVideo } = useContext(ContextoApp)!;
-
-  useEffect(() => {
-    // Esto solo se ejecuta en el cliente
-    setIsClient(true);
-  }, []);
-
-  // Calificaciones
   const [calProm, setCalProm] = useState(5);
   const [calCount, setCalCount] = useState(0);
+
   useEffect(() => {
     if (!initialData?._id || !isClient) return;
-    
     (async () => {
       try {
         const resp = await fetch(
@@ -60,52 +59,49 @@ export default function GlampingCliente({ initialData }: Props) {
     })();
   }, [initialData._id, isClient]);
 
-  // Si no estamos en el cliente, no renderizar nada
-  if (!isClient) {
-    return null;
+  if (!isClient || loadingPage) {
+    return (
+      <div className="glamping-skeleton">
+        <SkeletonCard />
+      </div>
+    );
   }
 
-  // Obtener parámetros de la URL (solo en cliente)
   const search = new URLSearchParams(window.location.search);
   const utmParams: Record<string, string> = {};
   ['utm_source', 'utm_medium', 'utm_campaign'].forEach((key) => {
-    const valor = search.get(key);
-    if (valor) utmParams[key] = valor;
+    const val = search.get(key);
+    if (val) utmParams[key] = val;
   });
 
-  // Video
   const tieneVideo =
-    initialData.video_youtube &&
-    initialData.video_youtube.trim() !== '' &&
-    initialData.video_youtube.trim().toLowerCase() !== 'sin video';
+    initialData.video_youtube?.trim().toLowerCase() !== '' &&
+    initialData.video_youtube?.trim().toLowerCase() !== 'sin video';
   const onVideo = () => setVerVideo(true);
 
   const redirigirWhatsApp = () => {
-    const numeroWhatsApp = "+573218695196";
+    const numero = "+573218695196";
     const urlActual = window.location.href;
-    const mensaje = encodeURIComponent(
-      `Hola equipo Glamperos, ¡Quiero información sobre este glamping!\n \n${urlActual}`
+    const msg = encodeURIComponent(
+      `Hola equipo Glamperos, ¡Quiero información sobre este glamping!\n\n${urlActual}`
     );
-    const esPantallaPequena = window.innerWidth < 600;
-    const urlWhatsApp = esPantallaPequena
-      ? `https://wa.me/${numeroWhatsApp}?text=${mensaje}`
-      : `https://web.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensaje}`;
-    window.open(urlWhatsApp, "_blank");
+    const esPequeña = window.innerWidth < 600;
+    const waUrl = esPequeña
+      ? `https://wa.me/${numero}?text=${msg}`
+      : `https://web.whatsapp.com/send?phone=${numero}&text=${msg}`;
+    window.open(waUrl, "_blank");
   };
 
   return (
-    <>
-      {/* Galería móvil */}
-      <section className="propiedad-imagen-individual">
+    <div className="GlampingCliente-contenedor-principal-cliente">
+      <section className="GlampingCliente-imagen-individual">
         <div
-          className="propiedad-boton-volver-exploracion"
-          onClick={() => {
-            if (window.history.length > 1) {
-              window.history.back();
-            } else {
-              window.location.href = "/";
-            }
-          }}
+          className="GlampingCliente-boton-volver-exploracion"
+          onClick={() =>
+            window.history.length > 1
+              ? window.history.back()
+              : (window.location.href = "/")
+          }
         >
           <IoChevronBackCircleSharp />
         </div>
@@ -121,8 +117,7 @@ export default function GlampingCliente({ initialData }: Props) {
         <VerVideo urlVideo={initialData.video_youtube} />
       </section>
 
-      {/* Titulo para moviles */}
-      <section className="propiedad-nombre-glamping">
+      <section className="GlampingCliente-nombre-glamping">
         <NombreGlamping
           nombreGlamping={`${
             initialData.tipoGlamping === 'cabana' ? 'Cabaña' : initialData.tipoGlamping
@@ -130,35 +125,30 @@ export default function GlampingCliente({ initialData }: Props) {
         />
       </section>
 
-      <section className="propiedad-contenedor-descripcion">
-
-        <div className="propiedad-contenedor-descripcion-izq">
-
-          <div className="propiedad-descripcion">
+      <section className="GlampingCliente-contenedor-descripcion">
+        <div className="GlampingCliente-contenedor-descripcion-izq">
+          <div className="GlampingCliente-descripcion">
             <DescripcionGlamping
               calificacionNumero={calProm}
               calificacionEvaluaciones={calCount}
               calificacionMasAlta="Su piscina fue lo mejor calificado"
-              descripcion_glamping={
-                initialData.descripcionGlamping
-              }
+              descripcion_glamping={initialData.descripcionGlamping}
             />
           </div>
-          <div className="propiedad-amenidades">
-            <LoQueOfrece
-              amenidades={initialData.amenidadesGlobal}
-            />
+          <div className="GlampingCliente-amenidades">
+            <LoQueOfrece amenidades={initialData.amenidadesGlobal} />
           </div>
         </div>
-
-        <div className="propiedad-contenedor-descripcion-der">
+        <div className="GlampingCliente-contenedor-descripcion-der">
           <FormularioReserva initialData={initialData} />
         </div>
       </section>
-      <section className='propiedad-comentarios'>
+
+      <section className="GlampingCliente-comentarios">
         <Comentarios glampingId={initialData.glampingId} />
       </section>
-      <section className='propiedad-mapa'>
+
+      <section className="GlampingCliente-mapa">
         <ManejoErrores>
           <MapaGlampings
             lat={initialData.ubicacion.lat}
@@ -167,32 +157,17 @@ export default function GlampingCliente({ initialData }: Props) {
         </ManejoErrores>
       </section>
 
-      <section className='propiedad-propietario'>
-      {initialData.propietario_id ? (
-        <PerfilUsuario
-          propietario_id={initialData.propietario_id}
-        />
-      ) : (
-        <p>El propietario no está disponible</p>
-      )}
+      <section className="GlampingCliente-propietario">
+        {initialData.propietario_id ? (
+          <PerfilUsuario propietario_id={initialData.propietario_id} />
+        ) : (
+          <p>El propietario no está disponible</p>
+        )}
       </section>
 
       <button
         type="button"
-        className="contenedor-principal-whatsapp-button"
-        onClick={redirigirWhatsApp}
-        aria-label="Chatea por WhatsApp"
-      >
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-          alt="WhatsApp"
-          width={32}
-          height={32}
-        />
-      </button>
-      <button
-        type="button"
-        className="contenedor-principal-whatsapp-button"
+        className="GlampingCliente-principal-whatsapp-button"
         onClick={redirigirWhatsApp}
         aria-label="Chatea por WhatsApp"
       >
@@ -204,7 +179,9 @@ export default function GlampingCliente({ initialData }: Props) {
         />
       </button>
 
-      <FormularioReservaMobile initialData={initialData} />
-    </>
+      <div className="GlampingCliente-contenedor-mobile">
+        <FormularioReservaMobile initialData={initialData} />
+      </div>
+    </div>
   );
 }

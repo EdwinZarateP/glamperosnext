@@ -1,0 +1,56 @@
+/* app/propiedad/[slug]/estilosPage.css */
+
+/* propiedad/[slug]/estilosGlampingCliente.css */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+
+.propiedad-container-principal {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.propiedad-container {
+  margin: 0 auto;
+  margin-top: 70px;
+  padding: 0;
+  width: 85%;
+  box-sizing: border-box;
+}
+
+.propiedad-encabezado {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.propiedad-encabezado h1 {
+  margin: 0;
+}
+
+.propiedad-imagenes {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.propiedad-error {
+  color: red;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .propiedad-container {
+    margin-top: 0;
+    width: 100%;
+  }
+
+  .propiedad-encabezado,
+  .propiedad-imagenes {
+    display: none;
+  }
+}

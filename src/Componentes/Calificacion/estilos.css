@@ -7,6 +7,7 @@
   border-radius: 8px;
   padding: 10px;
   font-family: inherit;
+  width: 100%;
 }
 
 .calificacion-icono {
@@ -83,7 +84,7 @@
 @media (max-width: 960px) {
   .calificacion-contenedor {
     width: 95%;
-    margin: 0 auto;
+    margin: 0;
   }
   .calificacion-mas-alta{
     display: none;

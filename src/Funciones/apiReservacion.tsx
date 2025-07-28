@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 
 type Modo = "produccion" | "pruebas";
 // Cambia esta línea cuando desees cambiar de entorno:
-const modo: Modo = "pruebas";
-// const modo: Modo = "produccion";
+// const modo: Modo = "pruebas";
+const modo: Modo = "produccion";
 
 
 const PUBLIC_KEY = {

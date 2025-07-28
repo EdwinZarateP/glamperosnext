@@ -315,12 +315,33 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         mascotas: huespedes.mascotas,
       };
 
-      await apiReservacion(params);
       const wompiOverlay = document.querySelector('.wc-overlay-backdrop') 
                       || document.querySelector('.widget__overlay');
       if (wompiOverlay && wompiOverlay.parentNode) {
         wompiOverlay.parentNode.removeChild(wompiOverlay);
       }
+      const codigoReserva = await apiReservacion(params);
+      // Crear el objeto con los datos de la compra
+      const transaccion = {
+        event: "purchase",
+        ecommerce: {
+          transaction_id: codigoReserva, // o un ID único de la reserva
+          value: tarifa!.costoTotalConIncremento,
+          currency: "COP",
+          items: [
+            {
+              item_id: initialData._id, // ID del glamping
+              item_name: initialData.nombreGlamping,
+              quantity: 1,
+              value: tarifa!.costoTotalConIncremento
+            }
+          ]
+        }
+      };
+
+      // Guardar en cookie por 1 día
+      Cookies.set("transaccionFinal", JSON.stringify(transaccion), { expires: 1, path: "/" });
+      console.log("✅ transaccionFinal guardada:", transaccion);
       router.push("/gracias");
     } catch (err: any) {
       Swal.fire("Error", err.message || "Algo salió mal", "error");

@@ -115,9 +115,3 @@
   color: #6d6155;
 }
 
-@media (max-width: 900px) {
-  .footer-container {
-    margin-bottom: 45px;
-  }
-}
-

@@ -15,6 +15,7 @@ import {
 } from "react-icons/md";
 import Regiones from "../Regiones/index";
 import municipiosData from "../MunicipiosGeneral/municipiosGeneral.json";
+import Footer from "@/Componentes/Footer";
 
 type Municipio = {
   CIUDAD_DEPARTAMENTO: string;
@@ -793,6 +794,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
           ))}
         </div>
       )}
+
+      {!loading && <Footer />}
+
     </div>
   );
 }

@@ -167,10 +167,11 @@ export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
     console.error('Fetch error glampings:', err);
   }
 
-  return (
+  return ( 
     <TarjetasEcommerce
       initialData={glampings}
       initialTotal={total}
     />
+
   );
 }

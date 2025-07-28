@@ -5,7 +5,7 @@ import React from "react";
 // import TarjetasEcommerce from "@/Componentes/TarjetasEcommerce";
 import TarjetasEcommerceServer from "@/Componentes/TarjetasEcommerce/TarjetasEcommerceServer";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
-import Footer from "@/Componentes/Footer";
+
 import "./page.css"; 
 
 export default function GlampingsPage() {
@@ -15,9 +15,7 @@ export default function GlampingsPage() {
         <div className="GlampingsPage-tarjetas">
           <TarjetasEcommerceServer key="all" />
         </div>
-        <div className="GlampingsPage-Footer">
-          <Footer />
-        </div>
+
         <div className="GlampingsPage-menu">
           <MenuUsuariosInferior />
         </div>

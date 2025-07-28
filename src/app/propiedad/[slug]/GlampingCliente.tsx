@@ -29,6 +29,12 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 export default function GlampingCliente({ initialData }: Props) {
   // Estado para controlar si estamos en el cliente
   const [isClient, setIsClient] = useState(false);
+
+   useEffect(() => {
+    setIsClient(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+  }, []);
+
   const { setVerVideo } = useContext(ContextoApp)!;
 
   useEffect(() => {

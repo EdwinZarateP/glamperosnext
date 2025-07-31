@@ -245,6 +245,7 @@ const ModificarGlamping: React.FC = () => {
               <option value="remolque">remolque</option>
               <option value="tipi">tipi</option>
               <option value="Lumipod">Lumipod</option>
+              <option value="Loto">Loto</option>              
               <option value="chalet">Chalet</option>
             </select>
           </div>

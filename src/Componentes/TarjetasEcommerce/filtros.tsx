@@ -26,14 +26,15 @@ import { PiCoffeeBeanFill, PiMountainsBold } from 'react-icons/pi';
 import { BsTreeFill } from "react-icons/bs";
 
 export const FILTROS = [
-  { value: 'bogota',   label: 'Cerca a Bogotá',    icon: <GiEagleEmblem /> },
-  { value: 'medellin', label: 'Cerca a Medellín',  icon: <PiCoffeeBeanFill /> },
-  { value: 'cali',     label: 'Cerca a Cali',      icon: <FaCat /> },
+  { value: 'bogota',   label: 'Cerca a Bogotá',     icon: <GiEagleEmblem /> },
+  { value: 'medellin', label: 'Cerca a Medellín',   icon: <PiCoffeeBeanFill /> },
+  { value: 'cali',     label: 'Cerca a Cali',       icon: <FaCat /> },
   { value: 'domo',     label: 'Domo',               icon: <GiHabitatDome /> },
   { value: 'tipi',     label: 'Tipi',               icon: <GiHut /> },
   { value: 'tienda',   label: 'Tienda',             icon: <GiCampingTent /> },
   { value: 'cabana',   label: 'Cabaña',             icon: <MdOutlineCabin /> },
   { value: 'lumipod',  label: 'Lumipod',            icon: <img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="TarjetasEcommerce-svg-icon" /> },
+  { value: 'loto',     label: 'Loto',               icon: <img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/loto%20icono.png" alt="Lumipod" className="TarjetasEcommerce-svg-icon" /> },  
   { value: 'chalet',   label: 'Chalet',             icon: <GiWoodCabin /> },
   { value: 'jacuzzi',          label: 'Jacuzzi',    icon: <FaHotTubPerson /> },
   { value: 'piscina',          label: 'Piscina',    icon: <MdPool /> },

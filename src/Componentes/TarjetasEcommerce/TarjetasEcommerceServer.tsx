@@ -29,7 +29,7 @@ const municipiosConSlug: MunicipioConSlug[] = municipiosData.map(m => ({
 }));
 
 // 2) Tipos válidos de glamping
-const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod', 'chalet'];
+const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod','loto', 'chalet'];
 
 // 3) Limpia segmentos "pagina-N" y "orden-asc|desc"
 const limpiarSegmentosPagina = (segmentos: string[]) =>

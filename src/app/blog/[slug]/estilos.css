@@ -1,20 +1,18 @@
-/* ==============================
-   Contenedor principal
-   ============================== */
+/* ==========================================================================
+   1. Contenedor y Layout Principal
+   ========================================================================== */
+
 .post-container {
   width: 90%;
   margin: 2rem auto;
   padding: 2rem;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   font-family: var(--font-be-vietnam), sans-serif;
   color: #333;
 }
 
-/* ==============================
-   Mensajes de error
-   ============================== */
 .post-error {
   color: #d9534f;
   text-align: center;
@@ -22,9 +20,10 @@
   margin-bottom: 1.5rem;
 }
 
-/* ==============================
-   Título del post
-   ============================== */
+/* ==========================================================================
+   2. Título del Post
+   ========================================================================== */
+
 .post-title {
   font-size: clamp(2rem, 5vw, 2.8rem);
   text-align: center;
@@ -34,6 +33,7 @@
   padding-bottom: 0.5rem;
   border-bottom: 3px solid #fbbf24;
 }
+
 .post-title::after {
   content: "";
   display: block;
@@ -44,9 +44,10 @@
   border-radius: 2px;
 }
 
-/* ==============================
-   Contenido del artículo
-   ============================== */
+/* ==========================================================================
+   3. Contenido del Artículo
+   ========================================================================== */
+
 .post-content {
   font-size: clamp(1rem, 2.5vw, 1.125rem);
   line-height: 1.8;
@@ -54,40 +55,49 @@
   overflow-wrap: break-word;
 }
 
-/* — Párrafos — */
+/* 3.1 Párrafos y Alineaciones */
+
 .post-content p {
   margin-bottom: 1.2rem;
 }
 
-/* — Alineaciones de texto — */
-.post-content .has-text-align-left { text-align: left; }
+.post-content .has-text-align-left   { text-align: left; }
 .post-content .has-text-align-center { text-align: center; }
-.post-content .has-text-align-right { text-align: right; }
+.post-content .has-text-align-right  { text-align: right; }
 
-/* — Encabezados dentro del contenido — */
+/* 3.2 Encabezados */
+
 .post-content .wp-block-heading,
 .post-content h2,
 .post-content h3 {
   font-family: var(--font-be-vietnam), sans-serif;
   color: #2e2e2e;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin: 2rem 0 1rem;
   font-weight: 600;
 }
-.post-content h2 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
+
+.post-content h2 {
+  font-size: clamp(1.5rem, 4vw, 1.9rem);
+}
+
 .post-content h3 {
   font-size: clamp(1.3rem, 3vw, 1.6rem);
   margin-top: 1.5rem;
 }
 
-/* — Listas — */
+/* 3.3 Listas */
+
 .post-content ul,
 .post-content ol {
   margin: 1rem 0 1.5rem 1.5rem;
 }
-.post-content li { margin-bottom: 0.5rem; }
 
-/* — Citas — */
+.post-content li {
+  margin-bottom: 0.5rem;
+}
+
+/* 3.4 Citas */
+
 .post-content blockquote {
   margin: 1.5rem 0;
   padding: 1rem 1.5rem;
@@ -97,30 +107,35 @@
   font-style: italic;
 }
 
-/* — Enlaces — */
+/* 3.5 Enlaces */
+
 .post-content a {
   color: #0f6956;
-  text-decoration: none;
   font-weight: 500;
 }
-.post-content a:hover { text-decoration: underline; }
 
-/* ==============================
-   Imágenes individuales (altura fija)
-   ============================== */
+.post-content a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   4. Multimedia: Imágenes, Galerías y Vídeos
+   ========================================================================== */
+
+/* 4.1 Imágenes Simples */
+
 .post-content .wp-block-image img {
   display: block;
   width: 100%;
-  height: 300px;
-  border-radius: 10px;
+  height: 500px;
   object-fit: cover;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   background-color: #d7f3e2;
 }
 
-/* ==============================
-   Galería dinámica (1–3 en una fila; ≥4 en 2x2)
-   ============================== */
+/* 4.2 Galerías Dinámicas */
+
 .post-content .wp-block-gallery {
   display: grid;
   gap: 10px;
@@ -129,54 +144,41 @@
   grid-template-columns: repeat(1, 1fr);
 }
 
-/* 1 imagen = 1 columna */
+/* 1 imagen en galería */
 .post-content .wp-block-gallery:has(> .wp-block-image:only-child) {
-  display: grid;                   /* asegúrate que sigue siendo grid */
-  grid-template-columns: 1fr;      /* una sola columna */
-  width: 30%;                      /* ahora ocupa la mitad */
-  max-width: 200px;                /* opcional: limitar ancho máximo */
-  margin: 2rem auto;               /* centrarla con separación vertical */
+  grid-template-columns: 1fr;
+  width: 30%;
+  max-width: 200px;
+  margin: 2rem auto;
   gap: 0;
 }
 
-.post-content img[class*="wp-image-"] {
-  display: block;
-  width: 50%;     /* opcional: limitar ancho */
-  margin: 1.5rem auto;    /* centrar y separar */
-  height: auto;           /* mantiene proporción */
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-/* 3 imágenes = 1 columnas en una sola fila */
+/* 2 imágenes en galería */
 .post-content .wp-block-gallery:has(> .wp-block-image:nth-child(2):nth-last-child(1)) {
   grid-template-columns: repeat(2, 1fr);
   width: 60%;
   margin: auto;
 }
 
-
-/* 3 imágenes = 3 columnas en una sola fila */
+/* 3 imágenes en galería */
 .post-content .wp-block-gallery:has(> .wp-block-image:nth-child(3):nth-last-child(1)) {
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* Items de la galería */
+/* Estilos de items */
 .post-content .wp-block-gallery .wp-block-image {
   margin: 0;
 }
+
 .post-content .wp-block-gallery .wp-block-image img {
-  display: block;
   width: 100%;
-  height: 300px;
+  height: 500px;
   object-fit: cover;
   border-radius: 10px;
 }
 
-/* ==============================
-   Videos e iframes incrustados
-   ============================== */
+/* 4.3 Vídeos e iFrames */
+
 .post-content iframe {
   width: 100%;
   aspect-ratio: 16/9;
@@ -186,27 +188,74 @@
   overflow: hidden;
 }
 
-/* ==============================
-   Botones generados por Gutenberg
-   ============================== */
+/* ==========================================================================
+   5. Bloques Especiales de Gutenberg
+   ========================================================================== */
+
+/* 5.1 Media + Texto en Dos Columnas */
+
+.post-content .wp-block-media-text {
+  display: grid;
+  grid-template-columns: 50% 1fr;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+
+.wp-block-media-text__media {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border-radius: 14px;
+}
+
+.wp-block-media-text__media img {
+  display: block;
+  width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  border-radius: 14px;
+  background-color: #094134;
+}
+
+.wp-block-media-text__content {
+  margin: 0;
+  padding: 0;
+}
+
+
+/* 5.2 Botones */
+
 .post-content .wp-block-buttons {
   display: flex;
   justify-content: center;
   margin: 2rem 0;
 }
+
 .post-content .wp-block-button__link {
-  /* background-color: #125721; */
-  color: #0f6956;
-  padding: 0.6rem 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:center;
+  align-items: center;
+  background-color: #0c5244;
+  color: #fff;
+  padding: 1rem 1.2rem;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 28px;
+  border: 2px solid #25d366;
   transition: background 0.3s;
 }
 
+.post-content .wp-block-button__link:hover {
+  background-color: #094134;
+}
 
-/* ==============================
-   Link de vuelta al blog
-   ============================== */
+/* ==========================================================================
+   6. Navegación y Links de Regreso
+   ========================================================================== */
+
 .post-back-link {
   display: inline-block;
   margin-top: 2rem;
@@ -216,13 +265,15 @@
   border-bottom: 1px solid transparent;
   transition: border-color 0.2s;
 }
+
 .post-back-link:hover {
   border-color: #0070f3;
 }
 
-/* ==============================
-   Botón flotante de WhatsApp
-   ============================== */
+/* ==========================================================================
+   7. Botón Flotante de WhatsApp
+   ========================================================================== */
+
 .contenedor-principal-whatsapp-button {
   position: fixed;
   bottom: 20px;
@@ -233,36 +284,64 @@
   border-radius: 50%;
   padding: 12px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease;
 }
+
 .contenedor-principal-whatsapp-button:hover {
   transform: scale(1.05);
 }
+
 .contenedor-principal-whatsapp-button img {
   width: 32px;
   height: 32px;
   display: block;
 }
 
-/* ==============================
-   Responsive (móvil y tablet)
-   ============================== */
+/* ==========================================================================
+   8. Responsive (Móvil y Tablet)
+   ========================================================================== */
+
 @media (max-width: 900px) {
   .post-container {
     width: 95%;
     padding: 1rem;
   }
+
   .post-title {
     font-size: clamp(1.8rem, 6vw, 2.2rem);
   }
-  /* Siempre 1 columna en móvil */
+
+  /* Galería siempre en 1 columna */
   .post-content .wp-block-gallery {
     grid-template-columns: 1fr !important;
   }
 
-  .post-content img[class*="wp-image-"] {
-  width: 100%;     /* opcional: limitar ancho */
 
-}
+  .wp-block-media-text__media img {
+    max-height: 300px;
+  }
+
+  /* Imágenes responsivas */
+  .post-content img[class*="wp-image-"] {
+    width: 100%;
+  }
+
+    .post-content .wp-block-media-text {
+      display: grid !important;
+      grid-template-columns: 1fr !important; /* fuerza una sola columna */
+    }
+
+  .wp-block-media-text__media {
+      order: 1; /* asegura que la imagen vaya arriba */
+    }
+
+  .wp-block-media-text__content {
+      order: 2; /* texto debajo */
+      margin-top: 1rem;
+    }
+  .post-content .wp-block-button__link{
+    margin: 0.5rem 0;
+    font-size: 0.8rem;
+  }
 }

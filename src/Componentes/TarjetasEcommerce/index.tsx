@@ -482,11 +482,10 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
   };
 
   useEffect(() => {
-    // Caso A: Llegaron datos por SSR
+    // Si ya llegó SSR, NO volver a pedir datos
     if (initialData.length > 0) {
-      // — Si no filtramos por ciudad (SSR usó Bogotá por defecto o cookies)
-      //   y acaban de aparecer coords en el cliente, disparar un solo fetch
-      if (!ciudadFilter && userLocation && !didFetchOnClient.current) {
+      // ✅ PERO si hay fechas en la URL, hacer un fetch inicial para aplicar filtros
+      if ((initialFechaInicio || initialFechaFin || initialTotalHuespedes > 1) && !didFetchOnClient.current) {
         didFetchOnClient.current = true;
         setLoading(true);
         fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
@@ -495,8 +494,7 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
       return;
     }
 
-    // Caso B: CSR puro (no hubieron datos SSR)
-    // — Igual que antes: al tener location o filtro de ciudad, un único fetch
+    // CSR puro: siempre pedir datos si hay ciudad o geolocalización
     if ((userLocation !== null || ciudadFilter) && !didFetchOnClient.current) {
       didFetchOnClient.current = true;
       setLoading(true);
@@ -507,10 +505,11 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     userLocation,
     ciudadFilter,
     pageFromUrl,
-    extrasFromURL.join(','),
+    extrasFromURL.join(","),
     ordenPrecio,
-    initialData.length  // ojo: lo leemos para distinguir SSR vs CSR
+    initialData.length
   ]);
+
 
   const handleCardClick = () => {
     sessionStorage.setItem("glampings-scroll", String(window.scrollY));
@@ -518,60 +517,52 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
 
   // Toggle filtros rápidos
   const toggleFilter = (value: string) => {
-    sessionStorage.removeItem("glampings-cache");
-    sessionStorage.removeItem("glampings-page");
-    sessionStorage.removeItem("glampings-scroll");
+  sessionStorage.removeItem("glampings-cache");
+  sessionStorage.removeItem("glampings-page");
+  sessionStorage.removeItem("glampings-scroll");
 
-    const val = value.toLowerCase();
-    const valSlug = val.replace(/\s+/g, '-');
-    const isCity = CIUDADES.includes(valSlug);
-    const isType = TIPOS.includes(val);
-    const isAmenity = AMENIDADES.includes(val);
+  const val = value.toLowerCase();
+  const valSlug = val.replace(/\s+/g, '-');
+  const isCity = CIUDADES.includes(valSlug);
+  const isType = TIPOS.includes(val);
+  const isAmenity = AMENIDADES.includes(val);
 
-    let newCitySlug = ciudadFilter
-      ? ciudadFilter.toLowerCase().replace(/\s+/g, '-')
-      : null;
+  let newCitySlug = ciudadFilter
+    ? ciudadFilter.toLowerCase().replace(/\s+/g, '-')
+    : null;
 
-    let newType = tipoFilter?.toLowerCase() ?? null;
-    let newAmenities = [...amenidadesFilter];
+  let newType = tipoFilter?.toLowerCase() ?? null;
+  let newAmenities = [...amenidadesFilter];
 
-    if (isCity) {
-      newCitySlug = newCitySlug === valSlug ? null : valSlug;
-    } else if (isType) {
-      newType = newType === val ? null : val;
-    } else if (isAmenity) {
-      const lowerAmenities = newAmenities.map(a => a.toLowerCase());
-      if (lowerAmenities.includes(val)) {
-        newAmenities = newAmenities.filter(a => a.toLowerCase() !== val);
-      } else {
-        const originalAmenity = FILTROS.find(f => f.value.toLowerCase() === val)?.value;
-        if (originalAmenity) newAmenities.push(originalAmenity);
-      }
+  if (isCity) {
+    newCitySlug = newCitySlug === valSlug ? null : valSlug;
+  } else if (isType) {
+    newType = newType === val ? null : val;
+  } else if (isAmenity) {
+    const lowerAmenities = newAmenities.map(a => a.toLowerCase());
+    if (lowerAmenities.includes(val)) {
+      newAmenities = newAmenities.filter(a => a.toLowerCase() !== val);
+    } else {
+      const originalAmenity = FILTROS.find(f => f.value.toLowerCase() === val)?.value;
+      if (originalAmenity) newAmenities.push(originalAmenity);
     }
+  }
 
-    const rutaFiltros: string[] = [
-      ...(newCitySlug ? [newCitySlug] : []),
-      ...(newType ? [newType.toLowerCase().replace(/\s+/g, '-')] : []),
-      ...newAmenities.map(a => a.toLowerCase().replace(/\s+/g, '-'))
-    ];
+  const rutaFiltros: string[] = [
+    ...(newCitySlug ? [newCitySlug] : []),
+    ...(newType ? [newType.toLowerCase().replace(/\s+/g, '-')] : []),
+    ...newAmenities.map(a => a.toLowerCase().replace(/\s+/g, '-'))
+  ];
 
-    // ⚠️ Construir query string separado
-    const params = new URLSearchParams();
-    if (fechaInicio) params.append("fechaInicio", fechaInicio);
-    if (fechaFin) params.append("fechaFin", fechaFin);
-    if (totalHuespedes > 1) params.append("totalHuespedes", String(totalHuespedes));
-    if (aceptaMascotas) params.append("aceptaMascotas", "true");
-    if (utmSource) params.append("utm_source", utmSource);
-    if (utmMedium) params.append("utm_medium", utmMedium);
-    if (utmCampaign) params.append("utm_campaign", utmCampaign);
+  // ✅ Tomar SIEMPRE los params actuales de la URL
+  const currentParams = new URLSearchParams(window.location.search);
 
-    const path = rutaFiltros.length > 0
-      ? `/${rutaFiltros.join('/')}${params.toString() ? '?' + params.toString() : ''}`
-      : `/${params.toString() ? '?' + params.toString() : ''}`;
+  const path = rutaFiltros.length > 0
+    ? `/${rutaFiltros.join('/')}${currentParams.toString() ? '?' + currentParams.toString() : ''}`
+    : `/${currentParams.toString() ? '?' + currentParams.toString() : ''}`;
 
-    router.push(path);
-  };
-
+  router.push(path);
+};
 
   const redirigirWhatsApp = () => {
     const numeroWhatsApp = "+573218695196";
@@ -614,40 +605,50 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
       {/* Controles */}
       <div className="TarjetasEcommerce-filters-top">
         <HeaderGeneral
-          onBuscarAction={({ fechaInicio, fechaFin, totalHuespedes, aceptaMascotas, destino }) => {
-            const ciudadSlug = destino
-              ? destino.toLowerCase().trim().replace(/\s+/g, '-')
-              : null;
-            const tipoSlug = tipoFilter
-              ? tipoFilter.toLowerCase().replace(/\s+/g, '-')
-              : null;
-            const amenitySlugs = amenidadesFilter.map(a =>
-              a.toLowerCase().trim().replace(/\s+/g, '-')
-            );
+            onBuscarAction={({ fechaInicio, fechaFin, totalHuespedes, aceptaMascotas, destino }) => {
+              const ciudadSlug = destino
+                ? destino.toLowerCase().trim().replace(/\s+/g, '-')
+                : null;
 
-            // 4) fechas y huéspedes COMO key=value
-            const segments = [
-              ...(ciudadSlug ? [ciudadSlug] : []),
-              ...(tipoSlug   ? [tipoSlug]   : []),
-              ...amenitySlugs,
-            ];
+              const tipoSlug = tipoFilter
+                ? tipoFilter.toLowerCase().replace(/\s+/g, '-')
+                : null;
 
-            const params = new URLSearchParams();
-            if (fechaInicio) params.append("fechaInicio", fechaInicio);
-            if (fechaFin) params.append("fechaFin", fechaFin);
-            if (totalHuespedes) params.append("totalHuespedes", String(totalHuespedes));
-            if (aceptaMascotas) params.append("aceptaMascotas", "true");
-            if (utmSource) params.append("utm_source", utmSource);
-            if (utmMedium) params.append("utm_medium", utmMedium);
-            if (utmCampaign) params.append("utm_campaign", utmCampaign);
+              const amenitySlugs = amenidadesFilter.map(a =>
+                a.toLowerCase().trim().replace(/\s+/g, '-')
+              );
 
-            router.push(`/${segments.join('/')}?${params.toString()}`);
+              const segments = [
+                ...(ciudadSlug ? [ciudadSlug] : []),
+                ...(tipoSlug ? [tipoSlug] : []),
+                ...amenitySlugs,
+              ];
 
-          }}
-          ciudadSlug={ciudadData ? posibleCiudad : undefined}
-          tipoFilter={tipoFilter}
-          amenidadesFilter={amenidadesFilter}
-        />
+              const params = new URLSearchParams();
+              if (fechaInicio) params.append("fechaInicio", fechaInicio);
+              if (fechaFin) params.append("fechaFin", fechaFin);
+              if (totalHuespedes) params.append("totalHuespedes", String(totalHuespedes));
+              if (aceptaMascotas) params.append("aceptaMascotas", "true");
+              if (utmSource) params.append("utm_source", utmSource);
+              if (utmMedium) params.append("utm_medium", utmMedium);
+              if (utmCampaign) params.append("utm_campaign", utmCampaign);
+
+              // 1️⃣ Cambiar la URL
+              router.push(`/${segments.join('/')}?${params.toString()}`);
+
+              // 2️⃣ Forzar la llamada a la API inmediatamente
+              fetchGlampings(1, [
+                ...(fechaInicio ? [`fechainicio=${fechaInicio}`] : []),
+                ...(fechaFin ? [`fechafin=${fechaFin}`] : []),
+                ...(totalHuespedes ? [`huespedes=${totalHuespedes}`] : []),
+                ...(aceptaMascotas ? ["mascotas"] : [])
+              ]);
+            }}
+            ciudadSlug={ciudadData ? posibleCiudad : undefined}
+            tipoFilter={tipoFilter}
+            amenidadesFilter={amenidadesFilter}
+          />
+
 
       </div>
       {/* Filtros rápidos */}

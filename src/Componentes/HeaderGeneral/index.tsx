@@ -129,6 +129,7 @@
 
     // Búsqueda CORREGIDA - Reemplaza esta función
     const handleSearch = () => {
+      console.log("hola, llegue")
       if (!fechaInicioConfirmado || !fechaFinConfirmado) {
         setError("Seleccione fechas.");
         setShowToast(true);

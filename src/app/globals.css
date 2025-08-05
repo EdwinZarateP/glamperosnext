@@ -10,9 +10,9 @@ body {
 }
 
 /* Evitar la selección de texto en toda la página */
-* {
+/* * {
   user-select: none;
-}
+} */
 
 .permitir-seleccion {
   user-select: text !important;

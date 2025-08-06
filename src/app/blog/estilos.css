@@ -13,35 +13,34 @@
 /* ===========================
    1) Estilos Artículo Destacado
    =========================== */
+/* Artículo destacado */
 .Blog-destacado {
-  display: flex;
   width: 100%;
   margin-bottom: 3rem;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  background: #fff;
   background-color: #ca6702;
 }
 
-/* Flex: imagen / texto */
+/* Layout horizontal por defecto */
 .Blog-destacado-link {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  flex-direction: row; /* 👈 imagen izquierda / texto derecha */
+  flex-direction: row;
+  flex-wrap: nowrap; /* ✅ Importante para mantener la imagen y texto en línea */
   text-decoration: none;
   color: inherit;
+  width: 100%;
 }
 
-/* Imagen al 50% en desktop, 100% en móvil */
+/* Imagen lado izquierdo */
 .Blog-destacado-img {
   width: 50%;
   height: auto;
   object-fit: cover;
 }
 
-/* Texto info: al lado derecho */
+/* Info lado derecho */
 .Blog-destacado-info {
   width: 50%;
   padding: 2rem;
@@ -51,15 +50,16 @@
   background: #f4f7f6;
 }
 
-/* Responsive: en móviles todo en columna */
+/* Responsive: stack en columnas */
 @media (max-width: 900px) {
 
   .Blog-contenedor {
-    max-width: 100%;
-}
+    max-width: 95%;
+  }
 
   .Blog-destacado-link {
     flex-direction: column;
+    flex-wrap: wrap; /* 🟨 Ya no afecta en columna */
   }
 
   .Blog-destacado-img {

@@ -52,7 +52,7 @@ export default function LoQueOfrece({ amenidades }: Props) {
 
   return (
     <div className="LoQueOfrece-contenedor">
-      <h2 className="LoQueOfrece-titulo">Lo que ofrece</h2>
+      <h2 className="LoQueOfrece-titulo">Amenidades</h2>
 
       <div className="LoQueOfrece-lista-contenida">
         <div className="LoQueOfrece-lista">

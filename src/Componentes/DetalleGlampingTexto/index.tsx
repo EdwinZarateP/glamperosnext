@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import React from "react";
 import "./estilos.css";
 
 interface DescripcionGlampingTextoProps {
@@ -10,63 +10,33 @@ interface DescripcionGlampingTextoProps {
 export default function DescripcionGlampingTexto({
   descripcionGlamping,
 }: DescripcionGlampingTextoProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showButton, setShowButton] = useState(false);
-  const textoRef = useRef<HTMLDivElement>(null);
+  // Lista de términos a resaltar
+  const highlights = ["servicios adicionales", "check-in", "check-out","Políticas de la casa","Horarios","Cancelaciones"];
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  useEffect(() => {
-    const paragraph = textoRef.current;
-    if (paragraph) {
-      setShowButton(paragraph.scrollHeight > paragraph.clientHeight);
-    }
-  }, [descripcionGlamping]);
-
-  // Bloquea el scroll del fondo cuando el modal está abierto
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isModalOpen]);
+  // Construye un regex que capture cualquiera de los términos (case-insensitive)
+  const regex = new RegExp(`(${highlights.join("|")})`, "gi");
 
   return (
     <div className="DescripcionGlampingTexto-contenedor">
-      <div className="DescripcionGlampingTexto-parrafo" ref={textoRef}>
-        {descripcionGlamping}
+      <h2 className="DescripcionGlampingTexto-titulo">Este glamping te ofrece</h2>
+      <div className="DescripcionGlampingTexto-texto">
+        {descripcionGlamping.split("\n").map((linea, index) => {
+          const parts = linea.split(regex);
+          return (
+            <p key={index}>
+              {parts.map((part, i) =>
+                regex.test(part) ? (
+                  <strong key={i} className="DescripcionGlampingTexto-highlight">
+                    {part}
+                  </strong>
+                ) : (
+                  part
+                )
+              )}
+            </p>
+          );
+        })}
       </div>
-      {showButton && (
-        <span
-          className="DescripcionGlampingTexto-mostrar-mas-texto"
-          onClick={openModal}
-        >
-          Mostrar más &gt;
-        </span>
-      )}
-      {isModalOpen && (
-        <div className="DescripcionGlampingTexto-modal">
-          <div className="DescripcionGlampingTexto-modal-contenido">
-            <h2 className="DescripcionGlampingTexto-titulo">Tenemos para ti</h2>
-            <button
-              className="DescripcionGlampingTexto-cerrar-boton"
-              onClick={closeModal}
-            >
-              ×
-            </button>
-            <div>
-              {descripcionGlamping.split("\n").map((linea, index) => (
-                <p key={index}>{linea}</p>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

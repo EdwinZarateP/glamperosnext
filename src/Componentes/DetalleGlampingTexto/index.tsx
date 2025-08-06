@@ -11,7 +11,7 @@ export default function DescripcionGlampingTexto({
   descripcionGlamping,
 }: DescripcionGlampingTextoProps) {
   // Lista de términos a resaltar
-  const highlights = ["servicios adicionales", "check-in", "check-out","Políticas de la casa","Horarios","Cancelaciones"];
+  const highlights = ["servicios adicionales","Incluye","incluye","CHECK IN", "CHECK OUT","check in", "check out", "check-in", "check-out","Políticas de la casa","Horarios","Cancelaciones"];
 
   // Construye un regex que capture cualquiera de los términos (case-insensitive)
   const regex = new RegExp(`(${highlights.join("|")})`, "gi");

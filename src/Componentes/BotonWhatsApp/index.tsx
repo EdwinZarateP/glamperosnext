@@ -25,8 +25,8 @@ export default function BotonWhatsApp() {
       <img
         src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
         alt="WhatsApp"
-        width={32}
-        height={32}
+        width={45}
+        height={45}
       />
     </button>
   );

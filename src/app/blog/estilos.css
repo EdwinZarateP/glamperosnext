@@ -20,7 +20,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  background-color: #ca6702;
+  background-color: transparent;
 }
 
 /* Layout horizontal por defecto */
@@ -36,8 +36,8 @@
 /* Imagen lado izquierdo */
 .Blog-destacado-img {
   width: 50%;
-  height: auto;
-  object-fit: cover;
+  /* height: auto; */
+  object-fit: contain;
 }
 
 /* Info lado derecho */
@@ -186,4 +186,6 @@
   bottom: 20px;
   right: 20px;
   z-index: 1000;
+  background-color: transparent;
+  border: none;
 }

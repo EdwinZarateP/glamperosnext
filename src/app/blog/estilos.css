@@ -4,7 +4,7 @@
    Contenedor principal
    ------------------------ */
 .Blog-contenedor {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 90px auto 40px;
   padding: 0 1rem;
   box-sizing: border-box;
@@ -14,12 +14,14 @@
    1) Estilos Artículo Destacado
    =========================== */
 .Blog-destacado {
+  display: flex;
   width: 100%;
   margin-bottom: 3rem;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   background: #fff;
+  background-color: #ca6702;
 }
 
 /* Flex: imagen / texto */
@@ -27,9 +29,9 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  flex-direction: row; /* 👈 imagen izquierda / texto derecha */
   text-decoration: none;
   color: inherit;
-
 }
 
 /* Imagen al 50% en desktop, 100% en móvil */
@@ -38,23 +40,33 @@
   height: auto;
   object-fit: cover;
 }
-@media (max-width: 768px) {
-  .Blog-destacado-img {
-    width: 100%;
-    max-height: 300px;
-  }
-}
 
-/* Info: al 50% */
+/* Texto info: al lado derecho */
 .Blog-destacado-info {
-  width:100%;
+  width: 50%;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   background: #f4f7f6;
 }
-@media (max-width: 768px) {
+
+/* Responsive: en móviles todo en columna */
+@media (max-width: 900px) {
+
+  .Blog-contenedor {
+    max-width: 100%;
+}
+
+  .Blog-destacado-link {
+    flex-direction: column;
+  }
+
+  .Blog-destacado-img {
+    width: 100%;
+    max-height: 300px;
+  }
+
   .Blog-destacado-info {
     width: 100%;
   }
@@ -75,12 +87,12 @@
 }
 
 .Blog-destacado-excerpt {
-  flex: 1;            /* que ocupe todo el espacio vertical sobrante */
+  flex: 1;
   font-size: 1rem;
   color: #444;
   line-height: 1.6;
   margin-bottom: 1.5rem;
-  overflow: visible;  /* muestra todo el texto */
+  overflow: visible;
 }
 
 .Blog-destacado-mas {
@@ -127,7 +139,8 @@
 }
 .Blog-card-img {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;

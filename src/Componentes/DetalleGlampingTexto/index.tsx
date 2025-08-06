@@ -10,11 +10,21 @@ interface DescripcionGlampingTextoProps {
 export default function DescripcionGlampingTexto({
   descripcionGlamping,
 }: DescripcionGlampingTextoProps) {
-  // Lista de términos a resaltar
-  const highlights = ["servicios adicionales","Incluye","incluye","CHECK IN", "CHECK OUT","check in", "check out", "check-in", "check-out","Políticas de la casa","Horarios","Cancelaciones"];
+  // Lista en minúsculas (una sola vez cada término)
+  const highlights = [
+    "servicios adicionales",
+    "incluye",
+    "check in",
+    "check out",
+    "check-in",
+    "check-out",
+    "políticas de la casa",
+    "horarios",
+    "horario",
+    "cancelaciones",
+  ];
 
-  // Construye un regex que capture cualquiera de los términos (case-insensitive)
-  const regex = new RegExp(`(${highlights.join("|")})`, "gi");
+  const regex = new RegExp(`(${highlights.join("|")})`, "i");
 
   return (
     <div className="DescripcionGlampingTexto-contenedor">
@@ -25,7 +35,7 @@ export default function DescripcionGlampingTexto({
           return (
             <p key={index}>
               {parts.map((part, i) =>
-                regex.test(part) ? (
+                regex.test(part.toLowerCase()) ? (
                   <strong key={i} className="DescripcionGlampingTexto-highlight">
                     {part}
                   </strong>

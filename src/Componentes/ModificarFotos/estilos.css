@@ -98,6 +98,7 @@
 /* Área para agregar nuevas imágenes */
 .ModificarFotos-agregar {
   margin-top: 20px;
+  margin-bottom: 40px;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,5 +1,4 @@
 // src/app/ModificarGlamping.tsx
-
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -10,6 +9,20 @@ import { opcionesAmenidades } from "../../Componentes/Amenidades/index";
 import Swal from "sweetalert2";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+
+// Config para dibujar y manejar servicios adicionales (solo servicios con/ sin precio)
+const SERVICIOS: { desc: string; val?: string; label: string }[] = [
+  { desc: "dia_sol", val: "valor_dia_sol", label: "Día de sol ☀️🏖️" },
+  { desc: "kit_fogata", val: "valor_kit_fogata", label: "Kit de fogata 🔥🪵" },
+  { desc: "mascota_adicional", val: "valor_mascota_adicional", label: "Mascota adicional 🐶➕" },
+  { desc: "decoracion_sencilla", val: "valor_decoracion_sencilla", label: "Decoración sencilla 🎈" },
+  { desc: "decoracion_especial", val: "valor_decoracion_especial", label: "Decoración especial 🎉✨" },
+  { desc: "paseo_cuatrimoto", val: "valor_paseo_cuatrimoto", label: "Paseo en cuatrimoto 🏍️" },
+  { desc: "paseo_caballo", val: "valor_paseo_caballo", label: "Paseo a caballo 🐎" },
+  { desc: "masaje_pareja", val: "valor_masaje_pareja", label: "Masaje en pareja 💆‍♀️💆‍♂️💕" },
+  { desc: "caminata", val: "valor_caminata", label: "Caminata 🚶‍♂️🌲" },
+  { desc: "cena_romantica", val: "valor_cena_romantica", label: "Cena romántica 🍷🍽️💖" },
+];
 
 const ModificarGlamping: React.FC = () => {
   const searchParams = useSearchParams();
@@ -30,47 +43,63 @@ const ModificarGlamping: React.FC = () => {
   const [video_youtube, setVideo_youtube] = useState("");
   const [amenidadesGlobal, setAmenidadesGlobal] = useState<string[]>([]);
 
-  // ——— Nuevos estados para decoración ———
-  const [decoracionSencilla, setDecoracionSencilla] = useState<string>("");
-  const [valorDecoracionSencilla, setValorDecoracionSencilla] = useState<number>(0);
-  const [decoracionEspecial, setDecoracionEspecial] = useState<string>("");
-  const [valorDecoracionEspecial, setValorDecoracionEspecial] = useState<number>(0);
+  // ——— Ten en cuenta ———
+  const [horarios, setHorarios] = useState<string>("");
+  const [politicasCasa, setPoliticasCasa] = useState<string>("");
+
+  // ——— Servicios adicionales ———
+  const [extrasTxt, setExtrasTxt] = useState<Record<string, string>>({});
+  const [extrasVal, setExtrasVal] = useState<Record<string, number>>({});
 
   // Carga inicial
   useEffect(() => {
-    if (glampingId) {
-      axios
-        .get(`${API_BASE}/glampings/${glampingId}`)
-        .then(({ data }) => {
-          // existentes
-          setNombreGlamping(data.nombreGlamping || "");
-          setTipoGlamping(data.tipoGlamping || "");
-          setCantidad_Huespedes(data.Cantidad_Huespedes ?? 0);
-          setCantidad_Huespedes_Adicional(data.Cantidad_Huespedes_Adicional ?? 0);
-          setAcepta_Mascotas(data.Acepta_Mascotas || false);
-          setPrecioEstandar(data.precioEstandar ?? 0);
-          setPrecioEstandarAdicional(data.precioEstandarAdicional ?? 0);
-          setMinimoNoches(data.minimoNoches ?? 1);
-          setDiasCancelacion(data.diasCancelacion ?? 0);
-          setDescuento(data.descuento ?? 0);
-          setDescripcionGlamping(data.descripcionGlamping || "");
-          setVideo_youtube(data.video_youtube || "");
-          setAmenidadesGlobal(data.amenidadesGlobal || []);
-          // nuevos
-          setDecoracionSencilla(data.decoracion_sencilla || "");
-          setValorDecoracionSencilla(data.valor_decoracion_sencilla ?? 0);
-          setDecoracionEspecial(data.decoracion_especial || "");
-          setValorDecoracionEspecial(data.valor_decoracion_especial ?? 0);
-        })
-        .catch(console.error);
-    }
+    if (!glampingId) return;
+    axios
+      .get(`${API_BASE}/glampings/${glampingId}`)
+      .then(({ data }) => {
+        setNombreGlamping(data.nombreGlamping || "");
+        setTipoGlamping(data.tipoGlamping || "");
+        setCantidad_Huespedes(data.Cantidad_Huespedes ?? 0);
+        setCantidad_Huespedes_Adicional(data.Cantidad_Huespedes_Adicional ?? 0);
+        setAcepta_Mascotas(!!data.Acepta_Mascotas);
+        setPrecioEstandar(data.precioEstandar ?? 0);
+        setPrecioEstandarAdicional(data.precioEstandarAdicional ?? 0);
+        setMinimoNoches(data.minimoNoches ?? 1);
+        setDiasCancelacion(data.diasCancelacion ?? 0);
+        setDescuento(data.descuento ?? 0);
+        setDescripcionGlamping(data.descripcionGlamping || "");
+        setVideo_youtube(data.video_youtube || "");
+        setAmenidadesGlobal(
+          Array.isArray(data.amenidadesGlobal)
+            ? data.amenidadesGlobal
+            : data.amenidadesGlobal?.split?.(",") ?? []
+        );
+
+        // Ten en cuenta
+        setHorarios(data.horarios || "");
+        setPoliticasCasa(data.politicas_casa || "");
+
+        // Servicios
+        setExtrasTxt(
+          SERVICIOS.reduce(
+            (acc, s) => ({ ...acc, [s.desc]: data[s.desc] || "" }),
+            {} as Record<string, string>
+          )
+        );
+        setExtrasVal(
+          SERVICIOS.reduce((acc, s) => {
+            if (!s.val) return acc;
+            const v = data[s.val];
+            return { ...acc, [s.val]: typeof v === "number" ? v : Number(v ?? 0) };
+          }, {} as Record<string, number>)
+        );
+      })
+      .catch(console.error);
   }, [glampingId]);
 
   // Reset precio adicional si no hay huéspedes adicionales
   useEffect(() => {
-    if (Cantidad_Huespedes_Adicional <= 0) {
-      setPrecioEstandarAdicional(0);
-    }
+    if (Cantidad_Huespedes_Adicional <= 0) setPrecioEstandarAdicional(0);
   }, [Cantidad_Huespedes_Adicional]);
 
   const toggleAmenidad = useCallback((amenidad: string) => {
@@ -80,35 +109,40 @@ const ModificarGlamping: React.FC = () => {
   }, []);
 
   const actualizarGlamping = async () => {
-    // Aquí puedes agregar validaciones...
-    const formData = new FormData();
-    // Datos generales
-    formData.append("nombreGlamping", nombreGlamping);
-    formData.append("precioEstandar", precioEstandar.toString());
-    formData.append("descuento", descuento.toString());
-    formData.append("Cantidad_Huespedes", Cantidad_Huespedes.toString());
-    formData.append("precioEstandarAdicional", precioEstandarAdicional.toString());
-    formData.append("Cantidad_Huespedes_Adicional", Cantidad_Huespedes_Adicional.toString());
-    formData.append("minimoNoches", minimoNoches.toString());
-    formData.append("diasCancelacion", diasCancelacion.toString());
-    formData.append("tipoGlamping", tipoGlamping);
-    formData.append("Acepta_Mascotas", Acepta_Mascotas ? "true" : "false");
-    formData.append("video_youtube", video_youtube || "sin video");
-    // Servicios adicionales
-    formData.append("decoracion_sencilla", decoracionSencilla);
-    formData.append("valor_decoracion_sencilla", valorDecoracionSencilla.toString());
-    formData.append("decoracion_especial", decoracionEspecial);
-    formData.append("valor_decoracion_especial", valorDecoracionEspecial.toString());
-    // Descripción
-    formData.append("descripcionGlamping", descripcionGlamping);
-    // Amenidades
-    formData.append("amenidadesGlobal", amenidadesGlobal.join(","));
-
     try {
       if (!glampingId) throw new Error("ID de Glamping no encontrado");
+      const formData = new FormData();
+
+      // Datos generales
+      formData.append("nombreGlamping", nombreGlamping);
+      formData.append("precioEstandar", String(precioEstandar));
+      formData.append("descuento", String(descuento));
+      formData.append("Cantidad_Huespedes", String(Cantidad_Huespedes));
+      formData.append("precioEstandarAdicional", String(precioEstandarAdicional));
+      formData.append("Cantidad_Huespedes_Adicional", String(Cantidad_Huespedes_Adicional));
+      formData.append("minimoNoches", String(minimoNoches));
+      formData.append("diasCancelacion", String(diasCancelacion));
+      formData.append("tipoGlamping", tipoGlamping);
+      formData.append("Acepta_Mascotas", Acepta_Mascotas ? "true" : "false");
+      formData.append("video_youtube", video_youtube || "sin video");
+      formData.append("descripcionGlamping", descripcionGlamping);
+      formData.append("amenidadesGlobal", amenidadesGlobal.join(","));
+
+      // Ten en cuenta (en claves separadas)
+      if (horarios.trim()) formData.append("horarios", horarios);
+      if (politicasCasa.trim()) formData.append("politicas_casa", politicasCasa);
+
+      // Servicios adicionales (evita sobreescribir con vacío)
+      for (const s of SERVICIOS) {
+        const descVal = extrasTxt[s.desc];
+        if (descVal?.trim()) formData.append(s.desc, descVal);
+        if (s.val && Number.isFinite(extrasVal[s.val]))
+          formData.append(s.val, String(extrasVal[s.val]));
+      }
+
       const res = await fetch(`${API_BASE}/glampings/Datos/${glampingId}`, {
         method: "PUT",
-        body: formData
+        body: formData,
       });
       if (!res.ok) throw new Error("Error al actualizar");
       await Swal.fire("Éxito", "Actualizado correctamente", "success");
@@ -122,12 +156,12 @@ const ModificarGlamping: React.FC = () => {
     <div className="ModificarGlamping-contenedor">
       <form
         className="ModificarGlamping-formulario"
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           actualizarGlamping();
         }}
       >
-        {/* === Sección: Datos generales === */}
+        {/* === Datos generales === */}
         <h2 className="ModificarGlamping-subtitulo">Datos generales</h2>
         <div className="ModificarGlamping-grid">
           <div className="ModificarGlamping-campo">
@@ -144,7 +178,7 @@ const ModificarGlamping: React.FC = () => {
               type="number"
               className="ModificarGlamping-input"
               value={precioEstandar}
-              onChange={e => setPrecioEstandar(+e.target.value)}
+              onChange={e => setPrecioEstandar(+e.target.value || 0)}
             />
           </div>
           <div className="ModificarGlamping-campo">
@@ -155,7 +189,7 @@ const ModificarGlamping: React.FC = () => {
               min={0}
               max={100}
               value={descuento}
-              onChange={e => setDescuento(+e.target.value)}
+              onChange={e => setDescuento(+e.target.value || 0)}
             />
           </div>
           <div className="ModificarGlamping-campo">
@@ -165,7 +199,7 @@ const ModificarGlamping: React.FC = () => {
               className="ModificarGlamping-input"
               min={1}
               value={Cantidad_Huespedes}
-              onChange={e => setCantidad_Huespedes(+e.target.value)}
+              onChange={e => setCantidad_Huespedes(+e.target.value || 0)}
             />
           </div>
           <div className="ModificarGlamping-campo">
@@ -175,7 +209,7 @@ const ModificarGlamping: React.FC = () => {
               className="ModificarGlamping-input"
               min={0}
               value={precioEstandarAdicional}
-              onChange={e => setPrecioEstandarAdicional(+e.target.value)}
+              onChange={e => setPrecioEstandarAdicional(+e.target.value || 0)}
               disabled={Cantidad_Huespedes_Adicional <= 0}
             />
           </div>
@@ -186,7 +220,7 @@ const ModificarGlamping: React.FC = () => {
               className="ModificarGlamping-input"
               min={0}
               value={Cantidad_Huespedes_Adicional}
-              onChange={e => setCantidad_Huespedes_Adicional(+e.target.value)}
+              onChange={e => setCantidad_Huespedes_Adicional(+e.target.value || 0)}
             />
           </div>
           <div className="ModificarGlamping-campo">
@@ -196,7 +230,7 @@ const ModificarGlamping: React.FC = () => {
               className="ModificarGlamping-input"
               min={1}
               value={minimoNoches}
-              onChange={e => setMinimoNoches(+e.target.value)}
+              onChange={e => setMinimoNoches(+e.target.value || 1)}
             />
           </div>
           <div className="ModificarGlamping-campo">
@@ -206,7 +240,7 @@ const ModificarGlamping: React.FC = () => {
               className="ModificarGlamping-input"
               min={0}
               value={diasCancelacion}
-              onChange={e => setDiasCancelacion(+e.target.value)}
+              onChange={e => setDiasCancelacion(+e.target.value || 0)}
             />
           </div>
           <div className="ModificarGlamping-campo">
@@ -248,7 +282,7 @@ const ModificarGlamping: React.FC = () => {
           </div>
         </div>
 
-        {/* === Sección: Descripción === */}
+        {/* === Descripción === */}
         <h2 className="ModificarGlamping-subtitulo">Descripción del Glamping</h2>
         <div className="ModificarGlamping-campo full-width">
           <textarea
@@ -258,53 +292,68 @@ const ModificarGlamping: React.FC = () => {
           />
         </div>
 
-        {/* === Sección: Servicios adicionales === */}
-        <h2 className="ModificarGlamping-subtitulo">Servicios adicionales</h2>
-        <div className="ModificarGlamping-grid ModificarGlamping-servicios">
+        {/* === Ten en cuenta (sección propia) === */}
+        <h2 className="ModificarGlamping-subtitulo">Horarios y politicas</h2>
+        <div className="ModificarGlamping-grid">
           <div className="ModificarGlamping-campo">
-            <label htmlFor="decoracion_sencilla">Describe tu decoración sencilla</label>
+            <label htmlFor="horarios">Check-in y Check-out ⏰</label>
             <textarea
-              id="decoracion_sencilla"
+              id="horarios"
               className="ModificarGlamping-textarea ModificarGlamping-textarea-large"
-              value={decoracionSencilla}
-              onChange={e => setDecoracionSencilla(e.target.value)}
+              value={horarios}
+              onChange={e => setHorarios(e.target.value)}
             />
           </div>
           <div className="ModificarGlamping-campo">
-            <label htmlFor="valor_decoracion_sencilla">Valor decoración sencilla</label>
-            <input
-              id="valor_decoracion_sencilla"
-              type="number"
-              className="ModificarGlamping-input"
-              min={0}
-              value={valorDecoracionSencilla}
-              onChange={e => setValorDecoracionSencilla(+e.target.value)}
-            />
-          </div>
-          <div className="ModificarGlamping-campo">
-            <label htmlFor="decoracion_especial">Describe tu Decoración especial</label>
+            <label htmlFor="politicas_casa">Políticas de la casa 📜</label>
             <textarea
-              id="decoracion_especial"
+              id="politicas_casa"
               className="ModificarGlamping-textarea ModificarGlamping-textarea-large"
-              value={decoracionEspecial}
-              onChange={e => setDecoracionEspecial(e.target.value)}
-            />
-          </div>
-          <div className="ModificarGlamping-campo">
-            <label htmlFor="valor_decoracion_especial">Valor decoración especial</label>
-            <input
-              id="valor_decoracion_especial"
-              type="number"
-              className="ModificarGlamping-input"
-              min={0}
-              value={valorDecoracionEspecial}
-              onChange={e => setValorDecoracionEspecial(+e.target.value)}
+              value={politicasCasa}
+              onChange={e => setPoliticasCasa(e.target.value)}
             />
           </div>
         </div>
 
+        {/* === Servicios adicionales === */}
+        <h2 className="ModificarGlamping-subtitulo">Servicios adicionales</h2>
+        <div className="ModificarGlamping-grid ModificarGlamping-servicios">
+          {SERVICIOS.map(s => (
+            <div key={s.desc} className="ModificarGlamping-servicio-bloque">
+              <div className="ModificarGlamping-campo">
+                <label htmlFor={s.desc}>Describe {s.label.toLowerCase()}</label>
+                <textarea
+                  id={s.desc}
+                  className="ModificarGlamping-textarea ModificarGlamping-textarea-large"
+                  value={extrasTxt[s.desc] ?? ""}
+                  onChange={e =>
+                    setExtrasTxt(prev => ({ ...prev, [s.desc]: e.target.value }))
+                  }
+                />
+              </div>
+              {s.val && (
+                <div className="ModificarGlamping-campo">
+                  <label htmlFor={s.val}>Valor {s.label.toLowerCase()}</label>
+                  <input
+                    id={s.val}
+                    type="number"
+                    className="ModificarGlamping-input"
+                    min={0}
+                    value={extrasVal[s.val] ?? 0}
+                    onChange={e =>
+                      setExtrasVal(prev => ({
+                        ...prev,
+                        [s.val as string]: +e.target.value || 0,
+                      }))
+                    }
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
 
-        {/* === Sección: Amenidades === */}
+        {/* === Amenidades === */}
         <h2 className="ModificarGlamping-subtitulo">Amenidades</h2>
         <div className="ModificarGlamping-campo full-width">
           <div className="amenidades-container">
@@ -324,10 +373,19 @@ const ModificarGlamping: React.FC = () => {
           </div>
         </div>
 
-        {/* === Botón === */}
-        <button type="submit" className="ModificarGlamping-boton">
-          Actualizar
-        </button>
+        {/* === Barra fija de acción (siempre visible) === */}
+        <div className="ModificarGlamping-cta">
+          <div className="ModificarGlamping-cta-inner">
+            {/* === Barra fija de acción (siempre visible) === */}
+            <div className="ModificarGlamping-cta" aria-live="polite">
+              <div className="ModificarGlamping-cta-inner">
+                <button type="submit" className="ModificarGlamping-boton">
+                  Actualizar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </form>
     </div>
   );

@@ -1,3 +1,4 @@
+/* estilos.css */
 .ModificarGlamping-contenedor {
   width: 90%;
   margin: 0 auto;
@@ -11,6 +12,8 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  /* espacio inferior para que el contenido no quede tapado por la barra fija */
+  padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
 }
 
 .ModificarGlamping-subtitulo {
@@ -27,12 +30,26 @@
   gap: 16px;
 }
 
+/* === "Ten en cuenta" -> que se vea igual a Servicios === */
+.ModificarGlamping-grid:has(#horarios) {
+  grid-template-columns: repeat(1, minmax(300px,1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.ModificarGlamping-grid:has(#horarios) .ModificarGlamping-campo {
+  padding-top: 10px;
+  border-top: 2px dashed #4d4d4d;
+}
+.ModificarGlamping-grid:has(#horarios) .ModificarGlamping-campo:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
 /* Ajuste específico para la sección Servicios adicionales */
 .ModificarGlamping-servicios {
   grid-template-columns: repeat(1, minmax(300px,1fr));
   gap: 24px;
   margin-bottom: 24px;
-
 }
 
 .ModificarGlamping-campo {
@@ -44,6 +61,16 @@
   margin-bottom: 6px;
   font-weight: 600;
   color: #444;
+}
+
+.ModificarGlamping-servicio-bloque {
+  padding-top: 10px;
+  border-top: 2px dashed #4d4d4d;
+}
+/* Quita la línea superior en el primer bloque de servicios */
+.ModificarGlamping-servicio-bloque:first-child {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .ModificarGlamping-input,
@@ -94,21 +121,48 @@
   background: #2f6b3e;
 }
 
+/* === Barra fija inferior (CTA) === */
+.ModificarGlamping-cta {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(249, 249, 252, 0.88);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-top: 1px solid rgba(0,0,0,0.08);
+  padding: 12px 0;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+}
+
+.ModificarGlamping-cta-inner {
+  width: 90%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Botón principal */
 .ModificarGlamping-boton {
-  align-self: center;
-  width: 300px;
-  padding: 10px 20px;
+  width: 100%;
+  max-width: 360px;
+  padding: 12px 20px;
   background: #1fad21;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.05s ease-in-out;
 }
 
 .ModificarGlamping-boton:hover {
   background: #167e1a;
+}
+
+.ModificarGlamping-boton:active {
+  transform: translateY(1px);
 }
 
 .disabled-input {
@@ -119,7 +173,7 @@
 /* Textarea base */
 .ModificarGlamping-textarea {
   width: 100%;
-  /* padding: 8px 12px; */
+  padding: 8px 12px;
   font-size: 0.95rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -128,7 +182,7 @@
   transition: border-color 0.2s;
 }
 
-/* Textarea grande para descripciones de decoración */
+/* Textarea grande (decoraciones / “Ten en cuenta”) */
 .ModificarGlamping-textarea-large {
   min-height: 100px;
 }
@@ -143,5 +197,8 @@
   .ModificarGlamping-grid,
   .ModificarGlamping-servicios {
     grid-template-columns: 1fr;
+  }
+  .ModificarGlamping-boton {
+    max-width: 100%;
   }
 }

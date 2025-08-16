@@ -1,7 +1,7 @@
 // propiedad/[slug]/GlampingCliente.tsx
 'use client';
 
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import ImgExploradasIndividual from '@/Componentes/ImgExploradasIndividual';
 import { ContextoApp } from '@/context/AppContext';
@@ -27,6 +27,23 @@ type Props = {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
+// Helpers: normalización segura
+const textOrUndef = (v: unknown): string | undefined => {
+  if (typeof v !== 'string') return undefined;
+  const t = v.trim();
+  return t.length ? t : undefined;
+};
+
+const numOrUndef = (v: unknown): number | undefined => {
+  if (typeof v === 'number') return v;
+  if (typeof v === 'string' && v.trim() !== '') {
+    const n = Number(v);
+    return Number.isNaN(n) ? undefined : n;
+  }
+  // Permitimos 0 cuando venga ya como number
+  return undefined;
+};
+
 export default function GlampingCliente({ initialData }: Props) {
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -45,19 +62,36 @@ export default function GlampingCliente({ initialData }: Props) {
   const [calProm, setCalProm] = useState(5);
   const [calCount, setCalCount] = useState(0);
 
+  // Ubicación: en tu DB viene como string JSON
+  const ubicacion = useMemo(() => {
+    const raw = initialData?.ubicacion;
+    if (!raw) return undefined as undefined | { lat: number; lng: number };
+    if (typeof raw === 'object' && raw.lat && raw.lng) return raw;
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed.lat === 'number' && typeof parsed.lng === 'number'
+          ? parsed
+          : undefined;
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  }, [initialData?.ubicacion]);
+
+  // Calificaciones desde API
   useEffect(() => {
     if (!initialData?._id || !isClient) return;
     (async () => {
       try {
-        const resp = await fetch(
-          `${API_BASE}/evaluaciones/glamping/${initialData._id}/promedio`
-        );
+        const resp = await fetch(`${API_BASE}/evaluaciones/glamping/${initialData._id}/promedio`);
         const js = await resp.json();
-        setCalProm(js.calificacion_promedio || 5);
-        setCalCount(js.calificacionEvaluaciones || 0);
+        setCalProm(js.calificacion_promedio ?? 5);
+        setCalCount(js.calificacionEvaluaciones ?? 0);
       } catch {}
     })();
-  }, [initialData._id, isClient]);
+  }, [initialData?._id, isClient]);
 
   if (!isClient || loadingPage) {
     return (
@@ -75,8 +109,9 @@ export default function GlampingCliente({ initialData }: Props) {
   });
 
   const tieneVideo =
-    initialData.video_youtube?.trim().toLowerCase() !== '' &&
-    initialData.video_youtube?.trim().toLowerCase() !== 'sin video';
+    textOrUndef(initialData.video_youtube)?.toLowerCase() !== 'sin video' &&
+    !!textOrUndef(initialData.video_youtube);
+
   const onVideo = () => setVerVideo(true);
 
   const redirigirWhatsApp = () => {
@@ -105,7 +140,9 @@ export default function GlampingCliente({ initialData }: Props) {
         >
           <IoChevronBackCircleSharp />
         </div>
+
         <ImgExploradasIndividual imagenes={initialData.imagenes} />
+
         {tieneVideo && (
           <button
             className="ImgExploradas-iconoVideo-peque"
@@ -129,30 +166,69 @@ export default function GlampingCliente({ initialData }: Props) {
         <div className="GlampingCliente-contenedor-descripcion-izq">
           <div className="GlampingCliente-descripcion">
             <DescripcionGlamping
-              calificacionNumero={calProm}
+              calificacionNumero={numOrUndef(initialData.calificacion) ?? calProm}
               calificacionEvaluaciones={calCount}
-              calificacionMasAlta="Su piscina fue lo mejor calificado"
+              // calificacionMasAlta="Su piscina fue lo mejor calificado" // si decides usarla
+
+              // Descripción base (respeta saltos de línea del backend)
               descripcion_glamping={initialData.descripcionGlamping}
+
+              // — Ten en cuenta —
+              politicas_casa={textOrUndef(initialData.politicas_casa)}
+              horarios={textOrUndef(initialData.horarios)}
+
+              // — Servicios adicionales —
+              decoracion_sencilla={textOrUndef(initialData.decoracion_sencilla)}
+              valor_decoracion_sencilla={numOrUndef(initialData.valor_decoracion_sencilla)}
+
+              decoracion_especial={textOrUndef(initialData.decoracion_especial)}
+              valor_decoracion_especial={numOrUndef(initialData.valor_decoracion_especial)}
+
+              paseo_cuatrimoto={textOrUndef(initialData.paseo_cuatrimoto)}
+              valor_paseo_cuatrimoto={numOrUndef(initialData.valor_paseo_cuatrimoto)}
+
+              paseo_caballo={textOrUndef(initialData.paseo_caballo)}
+              valor_paseo_caballo={numOrUndef(initialData.valor_paseo_caballo)}
+
+              masaje_pareja={textOrUndef(initialData.masaje_pareja)}
+              valor_masaje_pareja={numOrUndef(initialData.valor_masaje_pareja)}
+
+              dia_sol={textOrUndef(initialData.dia_sol)}
+              valor_dia_sol={numOrUndef(initialData.valor_dia_sol)}
+
+              caminata={textOrUndef(initialData.caminata)}
+              valor_caminata={numOrUndef(initialData.valor_caminata)}
+
+              kit_fogata={textOrUndef(initialData.kit_fogata)}
+              valor_kit_fogata={numOrUndef(initialData.valor_kit_fogata)}
+
+              cena_romantica={textOrUndef(initialData.cena_romantica)}
+              valor_cena_romantica={numOrUndef(initialData.valor_cena_romantica)}
+
+              mascota_adicional={textOrUndef(initialData.mascota_adicional)}
+              valor_mascota_adicional={numOrUndef(initialData.valor_mascota_adicional)}
             />
           </div>
+
           <div className="GlampingCliente-amenidades">
             <LoQueOfrece amenidades={initialData.amenidadesGlobal} />
           </div>
         </div>
+
         <div className="GlampingCliente-contenedor-descripcion-der">
           <FormularioReserva initialData={initialData} />
         </div>
       </section>
 
       <section className="GlampingCliente-comentarios">
-        <Comentarios glampingId={initialData.glampingId} />
+        <Comentarios glampingId={initialData._id} />
       </section>
 
       <section className="GlampingCliente-mapa">
         <ManejoErrores>
           <MapaGlampings
-            lat={initialData.ubicacion.lat}
-            lng={initialData.ubicacion.lng}
+            lat={ubicacion?.lat ?? 0}
+            lng={ubicacion?.lng ?? 0}
           />
         </ManejoErrores>
       </section>

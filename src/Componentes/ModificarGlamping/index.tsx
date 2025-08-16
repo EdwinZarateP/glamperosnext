@@ -15,6 +15,7 @@ const ModificarGlamping: React.FC = () => {
   const searchParams = useSearchParams();
   const glampingId = searchParams.get("glampingId");
 
+  // ——— Estados existentes ———
   const [nombreGlamping, setNombreGlamping] = useState("");
   const [tipoGlamping, setTipoGlamping] = useState("");
   const [Cantidad_Huespedes, setCantidad_Huespedes] = useState<number>(0);
@@ -27,16 +28,21 @@ const ModificarGlamping: React.FC = () => {
   const [descuento, setDescuento] = useState<number>(0);
   const [descripcionGlamping, setDescripcionGlamping] = useState("");
   const [video_youtube, setVideo_youtube] = useState("");
-  // const [urlIcal, setUrlIcal] = useState("");
-  // const [urlIcalBooking, setUrlIcalBooking] = useState("");
   const [amenidadesGlobal, setAmenidadesGlobal] = useState<string[]>([]);
+
+  // ——— Nuevos estados para decoración ———
+  const [decoracionSencilla, setDecoracionSencilla] = useState<string>("");
+  const [valorDecoracionSencilla, setValorDecoracionSencilla] = useState<number>(0);
+  const [decoracionEspecial, setDecoracionEspecial] = useState<string>("");
+  const [valorDecoracionEspecial, setValorDecoracionEspecial] = useState<number>(0);
 
   // Carga inicial
   useEffect(() => {
-    if (glampingId?.trim()) {
+    if (glampingId) {
       axios
         .get(`${API_BASE}/glampings/${glampingId}`)
         .then(({ data }) => {
+          // existentes
           setNombreGlamping(data.nombreGlamping || "");
           setTipoGlamping(data.tipoGlamping || "");
           setCantidad_Huespedes(data.Cantidad_Huespedes ?? 0);
@@ -49,15 +55,18 @@ const ModificarGlamping: React.FC = () => {
           setDescuento(data.descuento ?? 0);
           setDescripcionGlamping(data.descripcionGlamping || "");
           setVideo_youtube(data.video_youtube || "");
-          // setUrlIcal(data.urlIcal || "");
-          // setUrlIcalBooking(data.urlIcalBooking || "");
           setAmenidadesGlobal(data.amenidadesGlobal || []);
+          // nuevos
+          setDecoracionSencilla(data.decoracion_sencilla || "");
+          setValorDecoracionSencilla(data.valor_decoracion_sencilla ?? 0);
+          setDecoracionEspecial(data.decoracion_especial || "");
+          setValorDecoracionEspecial(data.valor_decoracion_especial ?? 0);
         })
-        .catch((err) => console.error("Error al cargar glamping:", err));
+        .catch(console.error);
     }
   }, [glampingId]);
 
-  // Si no hay huespedes adicionales, reset precio adicional
+  // Reset precio adicional si no hay huéspedes adicionales
   useEffect(() => {
     if (Cantidad_Huespedes_Adicional <= 0) {
       setPrecioEstandarAdicional(0);
@@ -65,43 +74,46 @@ const ModificarGlamping: React.FC = () => {
   }, [Cantidad_Huespedes_Adicional]);
 
   const toggleAmenidad = useCallback((amenidad: string) => {
-    setAmenidadesGlobal((prev) =>
-      prev.includes(amenidad) ? prev.filter((a) => a !== amenidad) : [...prev, amenidad]
+    setAmenidadesGlobal(prev =>
+      prev.includes(amenidad) ? prev.filter(a => a !== amenidad) : [...prev, amenidad]
     );
   }, []);
 
   const actualizarGlamping = async () => {
-    // ——— aquí van **todas** tus validaciones tal como las tenías ———
-    // (limitar longitud, rangos, `Swal.fire` de error, etc.)
-
+    // Aquí puedes agregar validaciones...
     const formData = new FormData();
+    // Datos generales
     formData.append("nombreGlamping", nombreGlamping);
-    formData.append("tipoGlamping", tipoGlamping);
-    formData.append("Cantidad_Huespedes", Cantidad_Huespedes.toString());
-    formData.append("Cantidad_Huespedes_Adicional", Cantidad_Huespedes_Adicional.toString());
-    formData.append("Acepta_Mascotas", Acepta_Mascotas ? "true" : "false");
     formData.append("precioEstandar", precioEstandar.toString());
+    formData.append("descuento", descuento.toString());
+    formData.append("Cantidad_Huespedes", Cantidad_Huespedes.toString());
     formData.append("precioEstandarAdicional", precioEstandarAdicional.toString());
+    formData.append("Cantidad_Huespedes_Adicional", Cantidad_Huespedes_Adicional.toString());
     formData.append("minimoNoches", minimoNoches.toString());
     formData.append("diasCancelacion", diasCancelacion.toString());
-    formData.append("descuento", descuento.toString());
-    formData.append("descripcionGlamping", descripcionGlamping);
-    // formData.append("urlIcal", urlIcal || "Sin url");
-    // formData.append("urlIcalBooking", urlIcalBooking || "Sin url");
+    formData.append("tipoGlamping", tipoGlamping);
+    formData.append("Acepta_Mascotas", Acepta_Mascotas ? "true" : "false");
     formData.append("video_youtube", video_youtube || "sin video");
+    // Servicios adicionales
+    formData.append("decoracion_sencilla", decoracionSencilla);
+    formData.append("valor_decoracion_sencilla", valorDecoracionSencilla.toString());
+    formData.append("decoracion_especial", decoracionEspecial);
+    formData.append("valor_decoracion_especial", valorDecoracionEspecial.toString());
+    // Descripción
+    formData.append("descripcionGlamping", descripcionGlamping);
+    // Amenidades
     formData.append("amenidadesGlobal", amenidadesGlobal.join(","));
 
     try {
       if (!glampingId) throw new Error("ID de Glamping no encontrado");
-      const res = await fetch(
-        `${API_BASE}/glampings/Datos/${glampingId}`,
-        { method: "PUT", body: formData }
-      );
-      if (!res.ok) throw new Error("Error al actualizar glamping");
-      await Swal.fire("Éxito", "Glamping actualizado correctamente", "success");
+      const res = await fetch(`${API_BASE}/glampings/Datos/${glampingId}`, {
+        method: "PUT",
+        body: formData
+      });
+      if (!res.ok) throw new Error("Error al actualizar");
+      await Swal.fire("Éxito", "Actualizado correctamente", "success");
       window.location.reload();
     } catch (err) {
-      console.error(err);
       Swal.fire("Error", (err as Error).message, "error");
     }
   };
@@ -110,211 +122,194 @@ const ModificarGlamping: React.FC = () => {
     <div className="ModificarGlamping-contenedor">
       <form
         className="ModificarGlamping-formulario"
-        onSubmit={(e) => {
+        onSubmit={e => {
           e.preventDefault();
           actualizarGlamping();
         }}
       >
-        <div className="ModificarGlamping-formulario-contenedor1">
-          {/* Agrupo cada par label+campo en un div */}
+        {/* === Sección: Datos generales === */}
+        <h2 className="ModificarGlamping-subtitulo">Datos generales</h2>
+        <div className="ModificarGlamping-grid">
           <div className="ModificarGlamping-campo">
-            <label htmlFor="nombreGlamping">Nombre del Glamping:</label>
+            <label>Nombre del Glamping</label>
             <input
-              id="nombreGlamping"
               className="ModificarGlamping-input"
-              type="text"
               value={nombreGlamping}
-              onChange={(e) => setNombreGlamping(e.target.value.slice(0, 40))}
+              onChange={e => setNombreGlamping(e.target.value)}
             />
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="precioEstandar">Precio noche estandar:</label>
+            <label>Precio noche estándar</label>
             <input
-              id="precioEstandar"
-              className="ModificarGlamping-input"
               type="number"
+              className="ModificarGlamping-input"
               value={precioEstandar}
-              onChange={(e) => setPrecioEstandar(Number(e.target.value))}
+              onChange={e => setPrecioEstandar(+e.target.value)}
             />
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="descuento">Descuento entre semana (%):</label>
+            <label>Descuento (%)</label>
             <input
-              id="descuento"
-              className="ModificarGlamping-input"
               type="number"
-              value={descuento}
+              className="ModificarGlamping-input"
               min={0}
               max={100}
-              onChange={(e) =>
-                setDescuento(Math.min(100, Math.max(0, Number(e.target.value))))
-              }
+              value={descuento}
+              onChange={e => setDescuento(+e.target.value)}
             />
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="Cantidad_Huespedes">Huéspedes estándar:</label>
+            <label>Huéspedes estándar</label>
             <input
-              id="Cantidad_Huespedes"
-              className="ModificarGlamping-input"
               type="number"
-              value={Cantidad_Huespedes}
+              className="ModificarGlamping-input"
               min={1}
-              max={15}
-              onChange={(e) =>
-                setCantidad_Huespedes(Math.min(15, Math.max(1, Number(e.target.value))))
-              }
+              value={Cantidad_Huespedes}
+              onChange={e => setCantidad_Huespedes(+e.target.value)}
             />
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="Cantidad_Huespedes_Adicional">Huéspedes adicionales:</label>
+            <label>Precio p/ huésped adicional</label>
             <input
-              id="Cantidad_Huespedes_Adicional"
+              type="number"
               className="ModificarGlamping-input"
-              type="number"
-              value={Cantidad_Huespedes_Adicional}
               min={0}
-              max={15}
-              onChange={(e) =>
-                setCantidad_Huespedes_Adicional(
-                  Math.min(15, Math.max(0, Number(e.target.value)))
-                )
-              }
-            />
-          </div>
-
-          <div className="ModificarGlamping-campo">
-            <label htmlFor="precioEstandarAdicional">Precio por huésped adicional:</label>
-            <input
-              id="precioEstandarAdicional"
-              className={`ModificarGlamping-input ${
-                Cantidad_Huespedes_Adicional <= 0 ? "disabled-input" : ""
-              }`}
-              type="number"
               value={precioEstandarAdicional}
-              onChange={(e) => setPrecioEstandarAdicional(Number(e.target.value))}
+              onChange={e => setPrecioEstandarAdicional(+e.target.value)}
               disabled={Cantidad_Huespedes_Adicional <= 0}
             />
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="minimoNoches">Mínimo noches:</label>
+            <label>Huéspedes adicionales</label>
             <input
-              id="minimoNoches"
-              className="ModificarGlamping-input"
               type="number"
-              value={minimoNoches}
-              min={1}
-              max={30}
-              onChange={(e) =>
-                setMinimoNoches(Math.min(30, Math.max(1, Number(e.target.value))))
-              }
-            />
-          </div>
-
-          <div className="ModificarGlamping-campo">
-            <label htmlFor="diasCancelacion">Días de cancelación:</label>
-            <input
-              id="diasCancelacion"
               className="ModificarGlamping-input"
-              type="number"
-              value={diasCancelacion}
               min={0}
-              max={30}
-              onChange={(e) =>
-                setDiasCancelacion(Math.min(30, Math.max(0, Number(e.target.value))))
-              }
+              value={Cantidad_Huespedes_Adicional}
+              onChange={e => setCantidad_Huespedes_Adicional(+e.target.value)}
             />
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="tipoGlamping">Tipo de Glamping:</label>
+            <label>Mínimo noches</label>
+            <input
+              type="number"
+              className="ModificarGlamping-input"
+              min={1}
+              value={minimoNoches}
+              onChange={e => setMinimoNoches(+e.target.value)}
+            />
+          </div>
+          <div className="ModificarGlamping-campo">
+            <label>Días de cancelación</label>
+            <input
+              type="number"
+              className="ModificarGlamping-input"
+              min={0}
+              value={diasCancelacion}
+              onChange={e => setDiasCancelacion(+e.target.value)}
+            />
+          </div>
+          <div className="ModificarGlamping-campo">
+            <label>Tipo de Glamping</label>
             <select
-              id="tipoGlamping"
               className="ModificarGlamping-input"
               value={tipoGlamping}
-              onChange={(e) => setTipoGlamping(e.target.value)}
+              onChange={e => setTipoGlamping(e.target.value)}
             >
-              <option value="tienda">tienda</option>
-              <option value="cabana">cabana</option>
-              <option value="domo">domo</option>
-              <option value="casa del arbol">Casa del árbol</option>
-              <option value="remolque">remolque</option>
-              <option value="tipi">tipi</option>
-              <option value="Lumipod">Lumipod</option>
-              <option value="Loto">Loto</option>              
-              <option value="chalet">Chalet</option>
+              <option>tienda</option>
+              <option>cabaña</option>
+              <option>domo</option>
+              <option>Casa del árbol</option>
+              <option>remolque</option>
+              <option>tipi</option>
+              <option>Lumipod</option>
+              <option>Loto</option>
+              <option>Chalet</option>
             </select>
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="Acepta_Mascotas">¿Acepta Mascotas?:</label>
+            <label>¿Acepta Mascotas?</label>
             <select
-              id="Acepta_Mascotas"
               className="ModificarGlamping-input"
               value={Acepta_Mascotas ? "true" : "false"}
-              onChange={(e) => setAcepta_Mascotas(e.target.value === "true")}
+              onChange={e => setAcepta_Mascotas(e.target.value === "true")}
             >
               <option value="true">Sí</option>
               <option value="false">No</option>
             </select>
           </div>
-
           <div className="ModificarGlamping-campo">
-            <label htmlFor="video_youtube">Video de Youtube:</label>
+            <label>Video de YouTube</label>
             <input
-              id="video_youtube"
               className="ModificarGlamping-input"
-              type="text"
               value={video_youtube}
-              onChange={(e) => setVideo_youtube(e.target.value)}
+              onChange={e => setVideo_youtube(e.target.value)}
             />
           </div>
-{/* 
-          <div className="ModificarGlamping-campo">
-            <label htmlFor="urlIcal">URL iCal Airbnb:</label>
-            <input
-              id="urlIcal"
-              className="ModificarGlamping-input"
-              type="text"
-              value={urlIcal}
-              onChange={(e) => setUrlIcal(e.target.value)}
-            />
-          </div> */}
-
-          {/* <div className="ModificarGlamping-campo">
-            <label htmlFor="urlIcalBooking">URL iCal Booking:</label>
-            <input
-              id="urlIcalBooking"
-              className="ModificarGlamping-input"
-              type="text"
-              value={urlIcalBooking}
-              onChange={(e) => setUrlIcalBooking(e.target.value)}
-            />
-          </div> */}
         </div>
 
-        {/* Estos dos ocupan todo el ancho */}
+        {/* === Sección: Descripción === */}
+        <h2 className="ModificarGlamping-subtitulo">Descripción del Glamping</h2>
         <div className="ModificarGlamping-campo full-width">
-          <label htmlFor="descripcionGlamping">Descripción del Glamping:</label>
           <textarea
-            id="descripcionGlamping"
             className="ModificarGlamping-input-desc"
             value={descripcionGlamping}
-            onChange={(e) => setDescripcionGlamping(e.target.value)}
+            onChange={e => setDescripcionGlamping(e.target.value)}
           />
         </div>
 
+        {/* === Sección: Servicios adicionales === */}
+        <h2 className="ModificarGlamping-subtitulo">Servicios adicionales</h2>
+        <div className="ModificarGlamping-grid ModificarGlamping-servicios">
+          <div className="ModificarGlamping-campo">
+            <label htmlFor="decoracion_sencilla">Describe tu decoración sencilla</label>
+            <textarea
+              id="decoracion_sencilla"
+              className="ModificarGlamping-textarea ModificarGlamping-textarea-large"
+              value={decoracionSencilla}
+              onChange={e => setDecoracionSencilla(e.target.value)}
+            />
+          </div>
+          <div className="ModificarGlamping-campo">
+            <label htmlFor="valor_decoracion_sencilla">Valor decoración sencilla</label>
+            <input
+              id="valor_decoracion_sencilla"
+              type="number"
+              className="ModificarGlamping-input"
+              min={0}
+              value={valorDecoracionSencilla}
+              onChange={e => setValorDecoracionSencilla(+e.target.value)}
+            />
+          </div>
+          <div className="ModificarGlamping-campo">
+            <label htmlFor="decoracion_especial">Describe tu Decoración especial</label>
+            <textarea
+              id="decoracion_especial"
+              className="ModificarGlamping-textarea ModificarGlamping-textarea-large"
+              value={decoracionEspecial}
+              onChange={e => setDecoracionEspecial(e.target.value)}
+            />
+          </div>
+          <div className="ModificarGlamping-campo">
+            <label htmlFor="valor_decoracion_especial">Valor decoración especial</label>
+            <input
+              id="valor_decoracion_especial"
+              type="number"
+              className="ModificarGlamping-input"
+              min={0}
+              value={valorDecoracionEspecial}
+              onChange={e => setValorDecoracionEspecial(+e.target.value)}
+            />
+          </div>
+        </div>
+
+
+        {/* === Sección: Amenidades === */}
+        <h2 className="ModificarGlamping-subtitulo">Amenidades</h2>
         <div className="ModificarGlamping-campo full-width">
-          <label>Amenidades:</label>
           <div className="amenidades-container">
             {opcionesAmenidades.map(({ id, label }) => {
-              const sel = amenidadesGlobal
-                .map((s) => s.toLowerCase())
-                .includes(id.toLowerCase());
+              const sel = amenidadesGlobal.includes(id);
               return (
                 <button
                   key={id}
@@ -329,6 +324,7 @@ const ModificarGlamping: React.FC = () => {
           </div>
         </div>
 
+        {/* === Botón === */}
         <button type="submit" className="ModificarGlamping-boton">
           Actualizar
         </button>

@@ -11,7 +11,6 @@ interface Props {
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000';
 const API_URL = `${API_BASE}/glampings/glampingfiltrados`;
 const PAGE_SIZE = 24;
-const DEFAULT_CITY_SLUG = 'bogota';
 
 type Municipio = {
   CIUDAD_DEPARTAMENTO: string;
@@ -29,13 +28,12 @@ const municipiosConSlug: MunicipioConSlug[] = municipiosData.map(m => ({
 }));
 
 // 2) Tipos válidos de glamping
-const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod','loto', 'chalet'];
+const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod', 'loto', 'chalet'];
 
 // 3) Limpia segmentos "pagina-N" y "orden-asc|desc"
 const limpiarSegmentosPagina = (segmentos: string[]) =>
-  segmentos.filter(seg =>
-    !/^pagina-\d+$/.test(seg) &&
-    !/^orden-(asc|desc)$/.test(seg)
+  segmentos.filter(
+    seg => !/^pagina-\d+$/.test(seg) && !/^orden-(asc|desc)$/.test(seg)
   );
 
 // 4) Obtiene MunicipioConSlug por slug
@@ -45,15 +43,17 @@ function getCiudadFromSlug(slug: string | undefined): MunicipioConSlug | null {
 }
 
 /**
- * 5) Construye la query string para la API,
- *    ahora recibiendo también latCookie/lngCookie.
+ * 5) Construye la query string para la API.
+ *    ✅ Si hay ciudad en la ruta: manda lat/lng de esa ciudad (sin distanciaMax).
+ *    ✅ Si NO hay ciudad pero SÍ hay cookies de geo (y no es bot): manda lat/lng de cookies + distanciaMax=1500.
+ *    🚫 Si no hay ninguna de las dos, no manda lat/lng (backend devuelve catálogo completo).
  */
 function construirQuery(
   pageArg: number,
   filtrosSinPagina: string[],
   latCookie: string | undefined,
   lngCookie: string | undefined,
-  usarBotFallback: boolean,
+  isBot: boolean,
   orden?: string
 ): string {
   const params = new URLSearchParams();
@@ -63,8 +63,8 @@ function construirQuery(
 
   // — extraer fechas y huéspedes
   let fechaInicio: string | undefined;
-  let fechaFin:    string | undefined;
-  let huespedes:   string | undefined;
+  let fechaFin: string | undefined;
+  let huespedes: string | undefined;
 
   const restantes = filtrosSinPagina.filter(seg => {
     if (seg.startsWith('fechainicio=')) {
@@ -81,27 +81,25 @@ function construirQuery(
     }
     return true;
   });
+
   if (fechaInicio) params.set('fechaInicio', fechaInicio);
-  if (fechaFin)    params.set('fechaFin', fechaFin);
+  if (fechaFin) params.set('fechaFin', fechaFin);
   if (huespedes && Number(huespedes) > 1) {
     params.set('totalHuespedes', huespedes);
   }
 
-  // — ciudad ruta
+  // — ciudad en la ruta ⇒ enviamos lat/lng de la ciudad
   const ciudad = getCiudadFromSlug(restantes[0]);
   if (ciudad) {
     params.set('lat', String(ciudad.LATITUD));
     params.set('lng', String(ciudad.LONGITUD));
-  } else if (latCookie && lngCookie && !usarBotFallback) {
-    // — fallback a cookie
+  } else if (latCookie && lngCookie && !isBot) {
+    // — sin ciudad pero con cookies (y no bot) ⇒ usar ubicación guardada + radio 1500 km
     params.set('lat', latCookie);
     params.set('lng', lngCookie);
-  } else {
-    // — último recurso, Bogotá (bot o sin cookies)
-    const bog = getCiudadFromSlug(DEFAULT_CITY_SLUG)!;
-    params.set('lat', String(bog.LATITUD));
-    params.set('lng', String(bog.LONGITUD));
+    params.set('distanciaMax', '1500');
   }
+  // Nota: no hay fallback a Bogotá aquí. Si no hay ciudad ni cookies, no se envían coords.
 
   // — tipo de glamping
   const tipo = restantes.find(f => TIPOS.includes(f.toLowerCase()));
@@ -109,12 +107,16 @@ function construirQuery(
 
   // — amenidades “reales”
   const sinCiudad = ciudad ? restantes.slice(1) : restantes;
-  const sinTipo   = tipo   ? sinCiudad.filter(f => f.toLowerCase() !== tipo.toLowerCase()) : sinCiudad;
-  const amenidades = sinTipo.filter(a =>
-    !/^orden-(asc|desc)$/.test(a) &&
-    !a.startsWith('fechainicio=') &&
-    !a.startsWith('fechafin=') &&
-    !a.startsWith('huespedes=')
+  const sinTipo = tipo
+    ? sinCiudad.filter(f => f.toLowerCase() !== tipo.toLowerCase())
+    : sinCiudad;
+
+  const amenidades = sinTipo.filter(
+    a =>
+      !/^orden-(asc|desc)$/.test(a) &&
+      !a.startsWith('fechainicio=') &&
+      !a.startsWith('fechafin=') &&
+      !a.startsWith('huespedes=')
   );
   amenidades.forEach(a => params.append('amenidades', a.toLowerCase()));
 
@@ -122,22 +124,22 @@ function construirQuery(
 }
 
 export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
-  // 0) Leer cookies y headers en SSR
-  const headersList   = await headers();
-  const cookieStore   = await cookies();   
-  const userAgent     = headersList.get('user-agent') || '';
-  const isBot         = /googlebot|bingbot|slurp|duckduckbot/i.test(userAgent);
-  const latCookie     = cookieStore.get('glampings_lat')?.value;
-  const lngCookie     = cookieStore.get('glampings_lng')?.value;
+  // 0) Leer headers/cookies para detectar bot y geo guardada
+  const headersList = await headers();
+  const cookieStore = await cookies();
+  const userAgent = headersList.get('user-agent') || '';
+  const isBot = /googlebot|bingbot|slurp|duckduckbot/i.test(userAgent);
+  const latCookie = cookieStore.get('glampings_lat')?.value;
+  const lngCookie = cookieStore.get('glampings_lng')?.value;
 
   // 1) Detecta página
-  const last         = filtros[filtros.length - 1] || '';
-  const match        = last.match(/^pagina-(\d+)$/);
-  const pageArg      = match ? parseInt(match[1], 10) : 1;
+  const last = filtros[filtros.length - 1] || '';
+  const match = last.match(/^pagina-(\d+)$/);
+  const pageArg = match ? parseInt(match[1], 10) : 1;
 
   // 2) Extrae orden si existe
   const ordenSegment = filtros.find(seg => /^orden-(asc|desc)$/.test(seg));
-  const orden        = ordenSegment ? ordenSegment.replace('orden-', '') : '';
+  const orden = ordenSegment ? ordenSegment.replace('orden-', '') : '';
 
   // 3) Limpia segmentos de página y orden
   const filtrosSinPagina = limpiarSegmentosPagina(filtros);
@@ -159,7 +161,7 @@ export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
     if (res.ok) {
       const json = await res.json();
       glampings = json.glampings || [];
-      total     = typeof json.total === 'number' ? json.total : 0;
+      total = typeof json.total === 'number' ? json.total : 0;
     } else {
       console.warn(`API responded ${res.status}`);
     }
@@ -167,11 +169,5 @@ export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
     console.error('Fetch error glampings:', err);
   }
 
-  return ( 
-    <TarjetasEcommerce
-      initialData={glampings}
-      initialTotal={total}
-    />
-
-  );
+  return <TarjetasEcommerce initialData={glampings} initialTotal={total} />;
 }

@@ -14,6 +14,7 @@ export default function DescripcionGlampingTexto({
   const highlights = [
     "servicios adicionales",
     "incluye",
+    "incluyendo",
     "check in",
     "check out",
     "check-in",
@@ -22,6 +23,11 @@ export default function DescripcionGlampingTexto({
     "horarios",
     "horario",
     "cancelaciones",
+    "Atractivos",
+    "Experiencias",
+    "Terminos y condiciones",
+    "Servicios incluidos",
+    "comodidades"
   ];
 
   const regex = new RegExp(`(${highlights.join("|")})`, "i");

@@ -482,32 +482,50 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
   };
 
   useEffect(() => {
-    // Si ya llegó SSR, NO volver a pedir datos
+    // Usar geo solo si NO hay ciudad en la URL
+    const shouldUseGeo = !ciudadFilter && userLocation !== null;
+
+    // 1) Ya llegó SSR: permitir refetch si hay filtros de fechas/huespedes
+    //    o si (después) llega la geolocalización del usuario.
     if (initialData.length > 0) {
-      // ✅ PERO si hay fechas en la URL, hacer un fetch inicial para aplicar filtros
-      if ((initialFechaInicio || initialFechaFin || initialTotalHuespedes > 1) && !didFetchOnClient.current) {
+      const hayFiltrosDeBusqueda =
+        Boolean(initialFechaInicio || initialFechaFin || initialTotalHuespedes > 1);
+
+      if (!didFetchOnClient.current && (hayFiltrosDeBusqueda || shouldUseGeo)) {
         didFetchOnClient.current = true;
         setLoading(true);
-        fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
+        // Si usamos geo recién llegada, empezamos en página 1
+        fetchGlampings(shouldUseGeo ? 1 : pageFromUrl, extrasFromURL, ordenPrecio)
           .finally(() => setHasFetched(true));
       }
       return;
     }
 
-    // CSR puro: siempre pedir datos si hay ciudad o geolocalización
-    if ((userLocation !== null || ciudadFilter) && !didFetchOnClient.current) {
+    // 2) CSR puro: pedir datos cuando haya ciudad o geolocalización disponible
+    if (!didFetchOnClient.current && (ciudadFilter || shouldUseGeo)) {
       didFetchOnClient.current = true;
       setLoading(true);
       fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio)
         .finally(() => setHasFetched(true));
     }
   }, [
-    userLocation,
+    // disparar cuando cambie la ciudad o llegue/varíe la geo
     ciudadFilter,
+    userLocation?.lat,
+    userLocation?.lng,
+
+    // paginación/orden/filtros en URL
     pageFromUrl,
     extrasFromURL.join(","),
     ordenPrecio,
-    initialData.length
+
+    // SSR vs CSR
+    initialData.length,
+
+    // considerar filtros para el caso SSR
+    initialFechaInicio,
+    initialFechaFin,
+    initialTotalHuespedes,
   ]);
 
 

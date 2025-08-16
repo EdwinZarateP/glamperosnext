@@ -204,6 +204,9 @@ export default function GlampingCliente({ initialData }: Props) {
 
               cena_romantica={textOrUndef(initialData.cena_romantica)}
               valor_cena_romantica={numOrUndef(initialData.valor_cena_romantica)}
+              cena_estandar={textOrUndef(initialData.cena_estandar)}
+              valor_cena_estandar={numOrUndef(initialData.valor_cena_estandar)}
+              
 
               mascota_adicional={textOrUndef(initialData.mascota_adicional)}
               valor_mascota_adicional={numOrUndef(initialData.valor_mascota_adicional)}

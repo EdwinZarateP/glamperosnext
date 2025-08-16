@@ -34,6 +34,8 @@ interface DescripcionGlampingProps {
   valor_kit_fogata?: number;
   cena_romantica?: string;
   valor_cena_romantica?: number;
+  cena_estandar?: string;
+  valor_cena_estandar?: number;  
   mascota_adicional?: string;
   valor_mascota_adicional?: number;
 }
@@ -63,6 +65,8 @@ export default function DescripcionGlamping({
   valor_kit_fogata,
   cena_romantica,
   valor_cena_romantica,
+  cena_estandar,
+  valor_cena_estandar,
   mascota_adicional,
   valor_mascota_adicional,
 }: DescripcionGlampingProps) {
@@ -100,8 +104,10 @@ export default function DescripcionGlamping({
           valor_caminata={valor_caminata}
           kit_fogata={kit_fogata}
           valor_kit_fogata={valor_kit_fogata}
-          cena_romantica={cena_romantica}
+          cena_romantica={cena_romantica}          
           valor_cena_romantica={valor_cena_romantica}
+          cena_estandar={cena_estandar}
+          valor_cena_estandar={valor_cena_estandar}
           mascota_adicional={mascota_adicional}
           valor_mascota_adicional={valor_mascota_adicional}
         />

@@ -11,7 +11,7 @@
 .DescripcionGlampingTexto-titulo {
   font-size: 1.6rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #000000;
   margin-bottom: 1rem;
 }
 
@@ -35,7 +35,7 @@
 .DescripcionGlampingTexto-seccion h3 {
   font-size: 1.25rem;
   margin-bottom: 0.5rem;
-  color: #34495e;
+  color: #000000;
   border-bottom: 2px solid #eee;
   padding-bottom: 4px;
 }
@@ -47,8 +47,13 @@
 
 .DescripcionGlampingTexto-lista li {
   margin-bottom: 0.5rem;
-  font-size: 15px;
-  color: #555;
+  font-size: 16px;
+  color: #333;
+}
+
+/* 👇 Respeta saltos de línea en políticas, horarios y textos de servicios */
+.DescripcionGlampingTexto-multiline {
+  white-space: pre-line;
 }
 
 @media (max-width: 900px) {

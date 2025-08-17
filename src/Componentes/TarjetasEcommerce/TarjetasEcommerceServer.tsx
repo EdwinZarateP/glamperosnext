@@ -22,7 +22,7 @@ type Municipio = {
 type MunicipioConSlug = Municipio & { SLUG: string };
 
 // 1) Array de municipios con slug
-const municipiosConSlug: MunicipioConSlug[] = municipiosData.map(m => ({
+const municipiosConSlug: MunicipioConSlug[] = (municipiosData as Municipio[]).map(m => ({
   ...m,
   SLUG: m.CIUDAD_DEPARTAMENTO.toLowerCase().replace(/\s+/g, '-'),
 }));
@@ -36,10 +36,32 @@ const limpiarSegmentosPagina = (segmentos: string[]) =>
     seg => !/^pagina-\d+$/.test(seg) && !/^orden-(asc|desc)$/.test(seg)
   );
 
-// 4) Obtiene MunicipioConSlug por slug
+// 3.1) Alias rápidos para ciudades "cortas" en la ruta (p. ej. /bogota)
+const CITY_ALIASES: Record<string, { lat: number; lng: number; nombre: string }> = {
+  bogota:   { lat: 4.6589973718135, lng: -74.10152220780381, nombre: 'Bogotá' },
+  medellin: { lat: 6.379745895,     lng: -75.447957442,      nombre: 'Medellín' },
+  cali:     { lat: 3.4516,          lng: -76.5320,           nombre: 'Cali' },
+};
+
+// 4) Obtiene MunicipioConSlug por slug, con fallback a alias
 function getCiudadFromSlug(slug: string | undefined): MunicipioConSlug | null {
   if (!slug) return null;
-  return municipiosConSlug.find(m => m.SLUG === slug.toLowerCase()) || null;
+
+  const directo = municipiosConSlug.find(m => m.SLUG === slug.toLowerCase());
+  if (directo) return directo;
+
+  const alias = CITY_ALIASES[slug.toLowerCase()];
+  if (alias) {
+    return {
+      CIUDAD_DEPARTAMENTO: alias.nombre,
+      CIUDAD: slug.toLowerCase(),
+      DEPARTAMENTO: '',
+      LATITUD: alias.lat,
+      LONGITUD: alias.lng,
+      SLUG: slug.toLowerCase(),
+    } as MunicipioConSlug;
+  }
+  return null;
 }
 
 /**
@@ -61,7 +83,7 @@ function construirQuery(
   params.set('limit', String(PAGE_SIZE));
   if (orden) params.set('ordenPrecio', orden);
 
-  // — extraer fechas y huéspedes
+  // — extraer fechas y huéspedes (solo si vinieron como segmentos)
   let fechaInicio: string | undefined;
   let fechaFin: string | undefined;
   let huespedes: string | undefined;
@@ -124,9 +146,10 @@ function construirQuery(
 }
 
 export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
-  // 0) Leer headers/cookies para detectar bot y geo guardada
+  // 0) Leer headers/cookies para detectar bot y geo guardada (en tu setup son Promises)
   const headersList = await headers();
   const cookieStore = await cookies();
+
   const userAgent = headersList.get('user-agent') || '';
   const isBot = /googlebot|bingbot|slurp|duckduckbot/i.test(userAgent);
   const latCookie = cookieStore.get('glampings_lat')?.value;
@@ -145,17 +168,11 @@ export default async function TarjetasEcommerceServer({ filtros = [] }: Props) {
   const filtrosSinPagina = limpiarSegmentosPagina(filtros);
 
   // 4) Construye y llama a la API
-  const qs = construirQuery(
-    pageArg,
-    filtrosSinPagina,
-    latCookie,
-    lngCookie,
-    isBot,
-    orden
-  );
+  const qs = construirQuery(pageArg, filtrosSinPagina, latCookie, lngCookie, isBot, orden);
 
   let glampings: any[] = [];
   let total = 0;
+
   try {
     const res = await fetch(`${API_URL}?${qs}`, { cache: 'no-store' });
     if (res.ok) {

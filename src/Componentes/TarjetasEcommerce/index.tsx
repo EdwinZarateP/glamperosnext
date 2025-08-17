@@ -369,19 +369,18 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     const th = rawTh ? Number(rawTh.split("=")[1]) : undefined;
 
     // Determina loc según el lock
-    const loc =
-      locationMode === "city" && ciudadData
-        ? ciudadData
-        : locationMode === "user" && userLocation
-        ? {
-            CIUDAD_DEPARTAMENTO: "Tu ubicación",
-            CIUDAD: "Cercanos a ti",
-            DEPARTAMENTO: "",
-            LATITUD: userLocation.lat,
-            LONGITUD: userLocation.lng,
-            SLUG: "ubicacion-actual",
-          }
-        : null;
+    const loc = ciudadData
+      ? ciudadData
+      : (locationMode === "user" && userLocation
+          ? {
+              CIUDAD_DEPARTAMENTO: "Tu ubicación",
+              CIUDAD: "Cercanos a ti",
+              DEPARTAMENTO: "",
+              LATITUD: userLocation.lat,
+              LONGITUD: userLocation.lng,
+              SLUG: "ubicacion-actual",
+            }
+          : null);
 
     const qs = construirQuery(pageArg, fi, ff, th, loc, aceptaMascotas, orden);
     const url = `${API_URL}?${qs}`;
@@ -447,19 +446,27 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
 
   // ÚNICO efecto para pedir datos (evita doble fetch y parpadeo por geoloc)
   useEffect(() => {
-    // Esperar a tener definida la fuente de ubicación cuando no hay ciudad
+    // 1) Si hay datos SSR:
+    if (initialData.length > 0) {
+      // Solo refetch si NO hay ciudad y ya tenemos geoloc del usuario bloqueada:
+      if (!ciudadFilter && locationMode === "user") {
+        fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio);
+      }
+      return; // ✅ evita la llamada extra en /bogota
+    }
+
+    // 2) CSR puro: esperar a tener ciudad o geoloc lista
     if (!ciudadFilter && locationMode === null) return;
 
-    // Disparar fetch con la página de la URL y filtros actuales
     fetchGlampings(pageFromUrl, extrasFromURL, ordenPrecio);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    pageFromUrl, //
-    extrasFromURL.join(","), //
-    ordenPrecio, //
-    basePathKey, // cambia cuando cambian filtros base/orden
+    pageFromUrl,
+    extrasFromURL.join(","),
+    ordenPrecio,
     ciudadFilter,
-    locationMode, // estable por basePathKey
+    locationMode,
+    initialData.length,
   ]);
 
   const handleCardClick = () => {

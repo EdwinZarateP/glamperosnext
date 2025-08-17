@@ -30,6 +30,12 @@ interface DescripcionGlampingProps {
   valor_dia_sol?: number;
   caminata?: string;
   valor_caminata?: number;
+  torrentismo?: string;
+  valor_torrentismo?: number;
+  parapente?: string;
+  valor_parapente?: number;
+  paseo_lancha?: string;
+  valor_paseo_lancha?: number;
   kit_fogata?: string;
   valor_kit_fogata?: number;
   cena_romantica?: string;
@@ -61,6 +67,12 @@ export default function DescripcionGlamping({
   valor_dia_sol,
   caminata,
   valor_caminata,
+  torrentismo,
+  valor_torrentismo,
+  parapente,
+  valor_parapente,
+  paseo_lancha,
+  valor_paseo_lancha,
   kit_fogata,
   valor_kit_fogata,
   cena_romantica,
@@ -102,6 +114,12 @@ export default function DescripcionGlamping({
           valor_dia_sol={valor_dia_sol}
           caminata={caminata}
           valor_caminata={valor_caminata}
+          torrentismo={torrentismo}
+          valor_torrentismo={valor_torrentismo}
+          parapente={parapente}
+          valor_parapente={valor_parapente}
+          paseo_lancha={paseo_lancha}
+          valor_paseo_lancha={valor_paseo_lancha}
           kit_fogata={kit_fogata}
           valor_kit_fogata={valor_kit_fogata}
           cena_romantica={cena_romantica}          

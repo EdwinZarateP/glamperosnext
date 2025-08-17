@@ -31,6 +31,12 @@ interface DescripcionGlampingTextoProps {
 
   caminata?: string;
   valor_caminata?: number;
+  torrentismo?: string;
+  valor_torrentismo?: number;
+  parapente?: string;
+  valor_parapente?: number;
+  paseo_lancha?: string;
+  valor_paseo_lancha?: number;
 
   kit_fogata?: string;
   valor_kit_fogata?: number;
@@ -63,6 +69,12 @@ export default function DescripcionGlampingTexto({
   valor_dia_sol,
   caminata,
   valor_caminata,
+  torrentismo,
+  valor_torrentismo,
+  parapente,
+  valor_parapente,
+  paseo_lancha,
+  valor_paseo_lancha,
   kit_fogata,
   valor_kit_fogata,
   cena_romantica,
@@ -97,6 +109,9 @@ export default function DescripcionGlampingTexto({
     { titulo: "Masaje en pareja", texto: masaje_pareja, valor: valor_masaje_pareja },
     { titulo: "Día de sol", texto: dia_sol, valor: valor_dia_sol },
     { titulo: "Caminata", texto: caminata, valor: valor_caminata },
+    { titulo: "Torrentismo", texto: torrentismo, valor: valor_torrentismo },
+    { titulo: "Parapente", texto: parapente, valor: valor_parapente },
+    { titulo: "Paseo en lancha", texto: paseo_lancha, valor: valor_paseo_lancha },    
     { titulo: "Kit de fogata", texto: kit_fogata, valor: valor_kit_fogata },
     { titulo: "Cena estándar", texto: cena_estandar, valor: valor_cena_estandar },
     { titulo: "Cena romántica", texto: cena_romantica, valor: valor_cena_romantica },

@@ -198,6 +198,12 @@ export default function GlampingCliente({ initialData }: Props) {
 
               caminata={textOrUndef(initialData.caminata)}
               valor_caminata={numOrUndef(initialData.valor_caminata)}
+              torrentismo={textOrUndef(initialData.torrentismo)}
+              valor_torrentismo={numOrUndef(initialData.valor_torrentismo)}
+              parapente={textOrUndef(initialData.parapente)}
+              valor_parapente={numOrUndef(initialData.valor_parapente)}
+              paseo_lancha={textOrUndef(initialData.paseo_lancha)}
+              valor_paseo_lancha={numOrUndef(initialData.valor_paseo_lancha)}
 
               kit_fogata={textOrUndef(initialData.kit_fogata)}
               valor_kit_fogata={numOrUndef(initialData.valor_kit_fogata)}

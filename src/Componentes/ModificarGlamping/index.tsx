@@ -21,6 +21,9 @@ const SERVICIOS: { desc: string; val?: string; label: string }[] = [
   { desc: "paseo_caballo", val: "valor_paseo_caballo", label: "Paseo a caballo 🐎" },
   { desc: "masaje_pareja", val: "valor_masaje_pareja", label: "Masaje en pareja 💆‍♀️💆‍♂️💕" },
   { desc: "caminata", val: "valor_caminata", label: "Caminata 🚶‍♂️🌲" },
+  { desc: "torrentismo", val: "valor_torrentismo", label: "Torrentismo 🚶‍♂️" },
+  { desc: "parapente", val: "valor_parapente", label: "Parapente" },
+  { desc: "paseo_lancha", val: "valor_paseo_lancha", label: "Paseo_lancha" },
   { desc: "cena_estandar", val: "valor_cena_estandar", label: "Cena estandar 🍽️💖" },
   { desc: "cena_romantica", val: "valor_cena_romantica", label: "Cena romántica 🍷🍽️💖" },
 ];

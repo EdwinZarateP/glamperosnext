@@ -9,7 +9,6 @@ import { SERVICIOS_EXTRAS, ajustarValor } from "@/Funciones/serviciosExtras";
 interface DescripcionGlampingTextoProps {
   descripcionGlamping: string;
 
-  // — Ten en cuenta —
   politicas_casa?: string;
   horarios?: string;
 
@@ -87,12 +86,11 @@ export default function DescripcionGlampingTexto(props: DescripcionGlampingTexto
   const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const pattern = highlights.map(escapeRegExp).join("|");
 
-  // Para dividir y luego detectar coincidencias de forma segura
   const splitRegex = new RegExp(`(${pattern})`, "ig");
   const matchRegex = new RegExp(`^(${pattern})$`, "i");
 
   // ————————————————————————————————————————
-  // Servicios visibles: lectura segura de props por clave dinámica
+  // Servicios visibles
   // ————————————————————————————————————————
   const propsAny = props as unknown as Record<string, unknown>;
 
@@ -120,7 +118,7 @@ export default function DescripcionGlampingTexto(props: DescripcionGlampingTexto
     <div className="DescripcionGlampingTexto-contenedor">
       <h2 className="DescripcionGlampingTexto-titulo">Este glamping te ofrece</h2>
 
-      {/* Descripción (respeta \n y \r\n) */}
+      {/* Descripción */}
       <div className="DescripcionGlampingTexto-texto">
         {(descripcionGlamping || "")
           .split(/\r?\n/)
@@ -186,6 +184,18 @@ export default function DescripcionGlampingTexto(props: DescripcionGlampingTexto
           )}
         </div>
       )}
+
+      {/* Exoneración de responsabilidad */}
+      <div className="DescripcionGlampingTexto-seccion">
+        <h3>Exoneración de responsabilidad</h3>
+        <p className="DescripcionGlampingTexto-multiline">
+          Glamperos S.A.S. actúa únicamente en la promoción y reserva de
+          experiencias y servicios adicionales ofrecidos por terceros. Por lo tanto, no asume
+          responsabilidad alguna por la calidad, seguridad, disponibilidad, cumplimiento o
+          consecuencias derivadas de dichos servicios, siendo el tercero prestador el único
+          responsable frente al usuario.
+        </p>
+      </div>
     </div>
   );
 }

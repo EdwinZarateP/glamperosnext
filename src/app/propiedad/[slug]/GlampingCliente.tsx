@@ -175,7 +175,6 @@ export default function GlampingCliente({ initialData }: Props) {
               // Descripción base (respeta saltos de línea del backend)
               descripcion_glamping={initialData.descripcionGlamping}
 
-              // — Ten en cuenta —
               politicas_casa={textOrUndef(initialData.politicas_casa)}
               horarios={textOrUndef(initialData.horarios)}
 

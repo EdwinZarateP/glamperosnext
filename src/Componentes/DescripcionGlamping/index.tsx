@@ -12,7 +12,6 @@ interface DescripcionGlampingProps {
   calificacionMasAlta?: string;
   descripcion_glamping: string;
 
-  // — Ten en cuenta —
   politicas_casa?: string;
   horarios?: string;
 

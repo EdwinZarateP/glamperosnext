@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import Calificacion from "../../Componentes/Calificacion/index";
-import DetalleGlampingTexto from "../../Componentes/DetalleGlampingTexto/index";
+import Calificacion from "../../Componentes/Calificacion";
+import DetalleGlampingTexto from "../../Componentes/DetalleGlampingTexto";
+import { SERVICIOS_EXTRAS } from "@/Funciones/serviciosExtras";
 import "./estilos.css";
 
 interface DescripcionGlampingProps {
@@ -15,7 +16,7 @@ interface DescripcionGlampingProps {
   politicas_casa?: string;
   horarios?: string;
 
-  // — Servicios adicionales —
+  // — Servicios adicionales (se mantienen para compatibilidad) —
   decoracion_sencilla?: string;
   valor_decoracion_sencilla?: number;
   decoracion_especial?: string;
@@ -41,52 +42,36 @@ interface DescripcionGlampingProps {
   cena_romantica?: string;
   valor_cena_romantica?: number;
   cena_estandar?: string;
-  valor_cena_estandar?: number;  
+  valor_cena_estandar?: number;
   mascota_adicional?: string;
   valor_mascota_adicional?: number;
 }
 
-export default function DescripcionGlamping({
-  calificacionNumero,
-  calificacionEvaluaciones,
-  // calificacionMasAlta, // si decides usarla, pásala a <Calificacion /> o muéstrala en este componente
-  descripcion_glamping,
-  politicas_casa,
-  horarios,
-  decoracion_sencilla,
-  valor_decoracion_sencilla,
-  decoracion_especial,
-  valor_decoracion_especial,
-  paseo_cuatrimoto,
-  valor_paseo_cuatrimoto,
-  paseo_caballo,
-  valor_paseo_caballo,
-  masaje_pareja,
-  valor_masaje_pareja,
-  dia_sol,
-  valor_dia_sol,
-  caminata,
-  valor_caminata,
-  torrentismo,
-  valor_torrentismo,
-  parapente,
-  valor_parapente,
-  paseo_lancha,
-  valor_paseo_lancha,
-  kit_fogata,
-  valor_kit_fogata,
-  cena_romantica,
-  valor_cena_romantica,
-  cena_estandar,
-  valor_cena_estandar,
-  mascota_adicional,
-  valor_mascota_adicional,
-}: DescripcionGlampingProps) {
+export default function DescripcionGlamping(props: DescripcionGlampingProps) {
+  const {
+    calificacionNumero,
+    calificacionEvaluaciones,
+    descripcion_glamping,
+    politicas_casa,
+    horarios,
+  } = props;
+
   useEffect(() => {
     return () => {
       document.body.style.overflow = "auto";
     };
   }, []);
+
+  // Construye dinámicamente los props de servicios extra a partir del catálogo centralizado
+  const extrasProps: Record<string, unknown> = {};
+  for (const s of SERVICIOS_EXTRAS) {
+    if (s.desc && s.desc in props) {
+      extrasProps[s.desc] = (props as any)[s.desc];
+    }
+    if (s.val && s.val in props) {
+      extrasProps[s.val] = (props as any)[s.val];
+    }
+  }
 
   return (
     <div className="descripcion-glamping-contenedor">
@@ -100,34 +85,7 @@ export default function DescripcionGlamping({
           descripcionGlamping={descripcion_glamping}
           politicas_casa={politicas_casa}
           horarios={horarios}
-          decoracion_sencilla={decoracion_sencilla}
-          valor_decoracion_sencilla={valor_decoracion_sencilla}
-          decoracion_especial={decoracion_especial}
-          valor_decoracion_especial={valor_decoracion_especial}
-          paseo_cuatrimoto={paseo_cuatrimoto}
-          valor_paseo_cuatrimoto={valor_paseo_cuatrimoto}
-          paseo_caballo={paseo_caballo}
-          valor_paseo_caballo={valor_paseo_caballo}
-          masaje_pareja={masaje_pareja}
-          valor_masaje_pareja={valor_masaje_pareja}
-          dia_sol={dia_sol}
-          valor_dia_sol={valor_dia_sol}
-          caminata={caminata}
-          valor_caminata={valor_caminata}
-          torrentismo={torrentismo}
-          valor_torrentismo={valor_torrentismo}
-          parapente={parapente}
-          valor_parapente={valor_parapente}
-          paseo_lancha={paseo_lancha}
-          valor_paseo_lancha={valor_paseo_lancha}
-          kit_fogata={kit_fogata}
-          valor_kit_fogata={valor_kit_fogata}
-          cena_romantica={cena_romantica}          
-          valor_cena_romantica={valor_cena_romantica}
-          cena_estandar={cena_estandar}
-          valor_cena_estandar={valor_cena_estandar}
-          mascota_adicional={mascota_adicional}
-          valor_mascota_adicional={valor_mascota_adicional}
+          {...extrasProps}
         />
       </div>
     </div>

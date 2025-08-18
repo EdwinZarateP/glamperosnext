@@ -3,6 +3,9 @@
 import React from "react";
 import "./estilos.css";
 
+// Ajusta esta ruta según tu proyecto:
+import { SERVICIOS_EXTRAS, ajustarValor } from "@/Funciones/serviciosExtras";
+
 interface DescripcionGlampingTextoProps {
   descripcionGlamping: string;
 
@@ -10,7 +13,7 @@ interface DescripcionGlampingTextoProps {
   politicas_casa?: string;
   horarios?: string;
 
-  // — Servicios adicionales —
+  // — Servicios adicionales (texto + valor opcional) —
   decoracion_sencilla?: string;
   valor_decoracion_sencilla?: number;
 
@@ -31,10 +34,13 @@ interface DescripcionGlampingTextoProps {
 
   caminata?: string;
   valor_caminata?: number;
+
   torrentismo?: string;
   valor_torrentismo?: number;
+
   parapente?: string;
   valor_parapente?: number;
+
   paseo_lancha?: string;
   valor_paseo_lancha?: number;
 
@@ -51,78 +57,64 @@ interface DescripcionGlampingTextoProps {
   valor_mascota_adicional?: number;
 }
 
-export default function DescripcionGlampingTexto({
-  descripcionGlamping,
-  politicas_casa,
-  horarios,
-  decoracion_sencilla,
-  valor_decoracion_sencilla,
-  decoracion_especial,
-  valor_decoracion_especial,
-  paseo_cuatrimoto,
-  valor_paseo_cuatrimoto,
-  paseo_caballo,
-  valor_paseo_caballo,
-  masaje_pareja,
-  valor_masaje_pareja,
-  dia_sol,
-  valor_dia_sol,
-  caminata,
-  valor_caminata,
-  torrentismo,
-  valor_torrentismo,
-  parapente,
-  valor_parapente,
-  paseo_lancha,
-  valor_paseo_lancha,
-  kit_fogata,
-  valor_kit_fogata,
-  cena_romantica,
-  valor_cena_romantica,
-  cena_estandar,
-  valor_cena_estandar,
-  mascota_adicional,
-  valor_mascota_adicional,
-}: DescripcionGlampingTextoProps) {
-  // 🔹 Función para aplicar incremento +10% y redondeo al múltiplo de 1000 mayor
-  const ajustarValor = (valor: number): number => {
-    const aumentado = valor * 1.1;
-    return Math.ceil(aumentado / 1000) * 1000; // redondea SIEMPRE al múltiplo de 1000 superior
+export default function DescripcionGlampingTexto(props: DescripcionGlampingTextoProps) {
+  const { descripcionGlamping, politicas_casa, horarios } = props;
+
+  // ————————————————————————————————————————
+  // Resaltado de palabras clave en la descripción
+  // ————————————————————————————————————————
+  const highlights = [
+    "servicios adicionales",
+    "incluye",
+    "incluyendo",
+    "check in",
+    "check out",
+    "check-in",
+    "check-out",
+    "políticas de la casa",
+    "politicas de la casa",
+    "horarios",
+    "horario",
+    "cancelaciones",
+    "atractivos",
+    "experiencias",
+    "términos y condiciones",
+    "terminos y condiciones",
+    "servicios incluidos",
+    "Añade a tu plan",
+  ];
+
+  const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = highlights.map(escapeRegExp).join("|");
+
+  // Para dividir y luego detectar coincidencias de forma segura
+  const splitRegex = new RegExp(`(${pattern})`, "ig");
+  const matchRegex = new RegExp(`^(${pattern})$`, "i");
+
+  // ————————————————————————————————————————
+  // Servicios visibles: lectura segura de props por clave dinámica
+  // ————————————————————————————————————————
+  const propsAny = props as unknown as Record<string, unknown>;
+
+  const getText = (key: string): string | undefined => {
+    const v = propsAny[key];
+    return typeof v === "string" && v.trim() ? v : undefined;
   };
 
-  // Palabras a resaltar en la descripción
-  const highlights = [
-    "servicios adicionales","incluye","incluyendo","check in","check out",
-    "check-in","check-out","políticas de la casa","politicas de la casa",
-    "horarios","horario","cancelaciones","atractivos","experiencias",
-    "términos y condiciones","terminos y condiciones","servicios incluidos","Añade a tu plan",
-  ];
-  const regex = new RegExp(`(${highlights.join("|")})`, "i");
+  const getVal = (key?: string): number | undefined => {
+    if (!key) return undefined;
+    const v = propsAny[key];
+    return typeof v === "number" && v > 0 ? v : undefined;
+  };
 
-  // Lista base
-  const serviciosAdicionales = [
-    { titulo: "Mascota adicional", texto: mascota_adicional, valor: valor_mascota_adicional },
-    { titulo: "Decoración sencilla", texto: decoracion_sencilla, valor: valor_decoracion_sencilla },
-    { titulo: "Decoración especial", texto: decoracion_especial, valor: valor_decoracion_especial },
-    { titulo: "Paseo en cuatrimoto", texto: paseo_cuatrimoto, valor: valor_paseo_cuatrimoto },
-    { titulo: "Paseo a caballo", texto: paseo_caballo, valor: valor_paseo_caballo },
-    { titulo: "Masaje en pareja", texto: masaje_pareja, valor: valor_masaje_pareja },
-    { titulo: "Día de sol", texto: dia_sol, valor: valor_dia_sol },
-    { titulo: "Caminata", texto: caminata, valor: valor_caminata },
-    { titulo: "Torrentismo", texto: torrentismo, valor: valor_torrentismo },
-    { titulo: "Parapente", texto: parapente, valor: valor_parapente },
-    { titulo: "Paseo en lancha", texto: paseo_lancha, valor: valor_paseo_lancha },    
-    { titulo: "Kit de fogata", texto: kit_fogata, valor: valor_kit_fogata },
-    { titulo: "Cena estándar", texto: cena_estandar, valor: valor_cena_estandar },
-    { titulo: "Cena romántica", texto: cena_romantica, valor: valor_cena_romantica },
-  ];
-
-  // ✅ Filtra: mostrar solo si hay texto o precio > 0
-  const serviciosVisibles = serviciosAdicionales.filter((s) => {
-    const tieneTexto = Boolean(s.texto && s.texto.trim().length > 0);
-    const valorPositivo = typeof s.valor === "number" && s.valor > 0;
-    return tieneTexto || valorPositivo;
-  });
+  const serviciosVisibles = SERVICIOS_EXTRAS
+    .map((s) => {
+      const texto = getText(s.desc);
+      const valor = getVal(s.val);
+      if (!texto && !valor) return null;
+      return { titulo: s.label, texto, valor };
+    })
+    .filter(Boolean) as { titulo: string; texto?: string; valor?: number }[];
 
   return (
     <div className="DescripcionGlampingTexto-contenedor">
@@ -130,20 +122,24 @@ export default function DescripcionGlampingTexto({
 
       {/* Descripción (respeta \n y \r\n) */}
       <div className="DescripcionGlampingTexto-texto">
-        {descripcionGlamping.split(/\r?\n/).map((linea, index) => {
-          const parts = linea.split(regex);
-          return (
-            <p key={index}>
-              {parts.map((part, i) =>
-                regex.test(part) ? (
-                  <strong key={i} className="DescripcionGlampingTexto-highlight">{part}</strong>
-                ) : (
-                  part
-                )
-              )}
-            </p>
-          );
-        })}
+        {(descripcionGlamping || "")
+          .split(/\r?\n/)
+          .map((linea, index) => {
+            const parts = linea.split(splitRegex).filter((p) => p !== "");
+            return (
+              <p key={index}>
+                {parts.map((part, i) =>
+                  matchRegex.test(part) ? (
+                    <strong key={i} className="DescripcionGlampingTexto-highlight">
+                      {part}
+                    </strong>
+                  ) : (
+                    <span key={i}>{part}</span>
+                  )
+                )}
+              </p>
+            );
+          })}
       </div>
 
       {/* Servicios adicionales */}
@@ -152,20 +148,19 @@ export default function DescripcionGlampingTexto({
           <h3>Servicios adicionales</h3>
           <ul className="DescripcionGlampingTexto-lista">
             {serviciosVisibles.map((s, idx) => {
-              const tieneTexto = Boolean(s.texto && s.texto.trim().length > 0);
-              const valorPositivo = typeof s.valor === "number" && s.valor > 0;
+              const valorOk = typeof s.valor === "number" && s.valor > 0;
               return (
                 <li key={idx}>
                   <strong>{s.titulo}:</strong>{" "}
-                  {valorPositivo && (
+                  {valorOk && (
                     <>
-                      <span>— ${ajustarValor(s.valor!).toLocaleString("es-CO")}</span>
+                      <span>
+                        — ${ajustarValor(s.valor as number).toLocaleString("es-CO")}
+                      </span>
                       <br />
                     </>
                   )}
-                  {tieneTexto && (
-                    <span className="DescripcionGlampingTexto-multiline">{s.texto}</span>
-                  )}
+                  {s.texto && <span className="DescripcionGlampingTexto-multiline">{s.texto}</span>}
                 </li>
               );
             })}
@@ -174,16 +169,16 @@ export default function DescripcionGlampingTexto({
       )}
 
       {/* Ten en cuenta */}
-      {(politicas_casa || horarios) && (
+      {((politicas_casa && politicas_casa.trim()) || (horarios && horarios.trim())) && (
         <div className="DescripcionGlampingTexto-seccion">
           <h3>Ten en cuenta</h3>
-          {horarios && (
+          {horarios && horarios.trim() && (
             <p>
               <strong>Horarios:</strong>{" "}
               <span className="DescripcionGlampingTexto-multiline">{horarios}</span>
             </p>
           )}
-          {politicas_casa && (
+          {politicas_casa && politicas_casa.trim() && (
             <p>
               <strong>Políticas de la casa:</strong>{" "}
               <span className="DescripcionGlampingTexto-multiline">{politicas_casa}</span>

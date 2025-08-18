@@ -6,18 +6,19 @@ import { usePathname } from 'next/navigation';
 import ImgExploradasIndividual from '@/Componentes/ImgExploradasIndividual';
 import { ContextoApp } from '@/context/AppContext';
 import VerVideo from '@/Componentes/VerVideo';
-import DescripcionGlamping from "@/Componentes/DescripcionGlamping";
-import LoQueOfrece from "@/Componentes/LoQueOfrece";
+import DescripcionGlamping from '@/Componentes/DescripcionGlamping';
+import LoQueOfrece from '@/Componentes/LoQueOfrece';
 import { MdOndemandVideo } from 'react-icons/md';
-import ManejoErrores from "@/Funciones/ManejoErrores";
-import Comentarios from "@/Componentes/Comentarios";
-import MapaGlampings from "@/Componentes/Mapa";
-import PerfilUsuario from "@/Componentes/PerfilUsuario";
-import { IoChevronBackCircleSharp } from "react-icons/io5";
+import ManejoErrores from '@/Funciones/ManejoErrores';
+import Comentarios from '@/Componentes/Comentarios';
+import MapaGlampings from '@/Componentes/Mapa';
+import PerfilUsuario from '@/Componentes/PerfilUsuario';
+import { IoChevronBackCircleSharp } from 'react-icons/io5';
 import FormularioReserva from '@/Componentes/FormularioReserva';
-import NombreGlamping from "@/Componentes/NombreGlamping";
+import NombreGlamping from '@/Componentes/NombreGlamping';
 import FormularioReservaMobile from '@/Componentes/FormularioReservaMobile';
 import SkeletonCard from '@/Componentes/SkeletonCard';
+import { mapExtrasToDescripcionProps } from '@/Funciones/serviciosExtras';
 import './estilos.css';
 
 type Props = {
@@ -40,7 +41,6 @@ const numOrUndef = (v: unknown): number | undefined => {
     const n = Number(v);
     return Number.isNaN(n) ? undefined : n;
   }
-  // Permitimos 0 cuando venga ya como number
   return undefined;
 };
 
@@ -66,7 +66,9 @@ export default function GlampingCliente({ initialData }: Props) {
   const ubicacion = useMemo(() => {
     const raw = initialData?.ubicacion;
     if (!raw) return undefined as undefined | { lat: number; lng: number };
-    if (typeof raw === 'object' && raw.lat && raw.lng) return raw;
+    if (typeof raw === 'object' && (raw as any)?.lat && (raw as any)?.lng) {
+      return raw as { lat: number; lng: number };
+    }
     if (typeof raw === 'string') {
       try {
         const parsed = JSON.parse(raw);
@@ -93,6 +95,13 @@ export default function GlampingCliente({ initialData }: Props) {
     })();
   }, [initialData?._id, isClient]);
 
+  // 🧠 Mapeo automático de servicios adicionales (debe estar ANTES de cualquier early return)
+  const extrasProps = useMemo(
+    () => mapExtrasToDescripcionProps(initialData, textOrUndef, numOrUndef),
+    [initialData]
+  );
+
+  // Early return SIEMPRE después de declarar todos los hooks
   if (!isClient || loadingPage) {
     return (
       <div className="glamping-skeleton">
@@ -101,13 +110,6 @@ export default function GlampingCliente({ initialData }: Props) {
     );
   }
 
-  const search = new URLSearchParams(window.location.search);
-  const utmParams: Record<string, string> = {};
-  ['utm_source', 'utm_medium', 'utm_campaign'].forEach((key) => {
-    const val = search.get(key);
-    if (val) utmParams[key] = val;
-  });
-
   const tieneVideo =
     textOrUndef(initialData.video_youtube)?.toLowerCase() !== 'sin video' &&
     !!textOrUndef(initialData.video_youtube);
@@ -115,7 +117,7 @@ export default function GlampingCliente({ initialData }: Props) {
   const onVideo = () => setVerVideo(true);
 
   const redirigirWhatsApp = () => {
-    const numero = "+573218695196";
+    const numero = '+573218695196';
     const urlActual = window.location.href;
     const msg = encodeURIComponent(
       `Hola equipo Glamperos, ¡Quiero información sobre este glamping!\n\n${urlActual}`
@@ -124,7 +126,7 @@ export default function GlampingCliente({ initialData }: Props) {
     const waUrl = esPequeña
       ? `https://wa.me/${numero}?text=${msg}`
       : `https://web.whatsapp.com/send?phone=${numero}&text=${msg}`;
-    window.open(waUrl, "_blank");
+    window.open(waUrl, '_blank');
   };
 
   return (
@@ -135,7 +137,7 @@ export default function GlampingCliente({ initialData }: Props) {
           onClick={() =>
             window.history.length > 1
               ? window.history.back()
-              : (window.location.href = "/")
+              : (window.location.href = '/')
           }
         >
           <IoChevronBackCircleSharp />
@@ -158,7 +160,7 @@ export default function GlampingCliente({ initialData }: Props) {
         <NombreGlamping
           nombreGlamping={`${
             initialData.tipoGlamping === 'cabana' ? 'Cabaña' : initialData.tipoGlamping
-          } en ${initialData.ciudad_departamento.split(" - ")[0]}`}
+          } en ${initialData.ciudad_departamento.split(' - ')[0]}`}
         />
       </section>
 
@@ -168,7 +170,7 @@ export default function GlampingCliente({ initialData }: Props) {
             <DescripcionGlamping
               calificacionNumero={numOrUndef(initialData.calificacion) ?? calProm}
               calificacionEvaluaciones={calCount}
-              // calificacionMasAlta="Su piscina fue lo mejor calificado" // si decides usarla
+              // calificacionMasAlta="Su piscina fue lo mejor calificado"
 
               // Descripción base (respeta saltos de línea del backend)
               descripcion_glamping={initialData.descripcionGlamping}
@@ -177,45 +179,8 @@ export default function GlampingCliente({ initialData }: Props) {
               politicas_casa={textOrUndef(initialData.politicas_casa)}
               horarios={textOrUndef(initialData.horarios)}
 
-              // — Servicios adicionales —
-              decoracion_sencilla={textOrUndef(initialData.decoracion_sencilla)}
-              valor_decoracion_sencilla={numOrUndef(initialData.valor_decoracion_sencilla)}
-
-              decoracion_especial={textOrUndef(initialData.decoracion_especial)}
-              valor_decoracion_especial={numOrUndef(initialData.valor_decoracion_especial)}
-
-              paseo_cuatrimoto={textOrUndef(initialData.paseo_cuatrimoto)}
-              valor_paseo_cuatrimoto={numOrUndef(initialData.valor_paseo_cuatrimoto)}
-
-              paseo_caballo={textOrUndef(initialData.paseo_caballo)}
-              valor_paseo_caballo={numOrUndef(initialData.valor_paseo_caballo)}
-
-              masaje_pareja={textOrUndef(initialData.masaje_pareja)}
-              valor_masaje_pareja={numOrUndef(initialData.valor_masaje_pareja)}
-
-              dia_sol={textOrUndef(initialData.dia_sol)}
-              valor_dia_sol={numOrUndef(initialData.valor_dia_sol)}
-
-              caminata={textOrUndef(initialData.caminata)}
-              valor_caminata={numOrUndef(initialData.valor_caminata)}
-              torrentismo={textOrUndef(initialData.torrentismo)}
-              valor_torrentismo={numOrUndef(initialData.valor_torrentismo)}
-              parapente={textOrUndef(initialData.parapente)}
-              valor_parapente={numOrUndef(initialData.valor_parapente)}
-              paseo_lancha={textOrUndef(initialData.paseo_lancha)}
-              valor_paseo_lancha={numOrUndef(initialData.valor_paseo_lancha)}
-
-              kit_fogata={textOrUndef(initialData.kit_fogata)}
-              valor_kit_fogata={numOrUndef(initialData.valor_kit_fogata)}
-
-              cena_romantica={textOrUndef(initialData.cena_romantica)}
-              valor_cena_romantica={numOrUndef(initialData.valor_cena_romantica)}
-              cena_estandar={textOrUndef(initialData.cena_estandar)}
-              valor_cena_estandar={numOrUndef(initialData.valor_cena_estandar)}
-              
-
-              mascota_adicional={textOrUndef(initialData.mascota_adicional)}
-              valor_mascota_adicional={numOrUndef(initialData.valor_mascota_adicional)}
+              // — Servicios adicionales (inyectados automáticamente) —
+              {...extrasProps}
             />
           </div>
 

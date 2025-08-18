@@ -6,27 +6,15 @@ import "./estilos.css";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import { opcionesAmenidades } from "../../Componentes/Amenidades/index";
+import {
+  SERVICIOS_EXTRAS,
+  useServiciosExtras,
+  extractExtrasFromBackend,
+  appendExtrasToFormData,
+} from "@/Funciones/serviciosExtras";
 import Swal from "sweetalert2";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
-
-// Config para dibujar y manejar servicios adicionales (solo servicios con/ sin precio)
-const SERVICIOS: { desc: string; val?: string; label: string }[] = [
-  { desc: "dia_sol", val: "valor_dia_sol", label: "Día de sol ☀️🏖️" },
-  { desc: "kit_fogata", val: "valor_kit_fogata", label: "Kit de fogata 🔥🪵" },
-  { desc: "mascota_adicional", val: "valor_mascota_adicional", label: "Mascota adicional 🐶➕" },
-  { desc: "decoracion_sencilla", val: "valor_decoracion_sencilla", label: "Decoración sencilla 🎈" },
-  { desc: "decoracion_especial", val: "valor_decoracion_especial", label: "Decoración especial 🎉✨" },
-  { desc: "paseo_cuatrimoto", val: "valor_paseo_cuatrimoto", label: "Paseo en cuatrimoto 🏍️" },
-  { desc: "paseo_caballo", val: "valor_paseo_caballo", label: "Paseo a caballo 🐎" },
-  { desc: "masaje_pareja", val: "valor_masaje_pareja", label: "Masaje en pareja 💆‍♀️💆‍♂️💕" },
-  { desc: "caminata", val: "valor_caminata", label: "Caminata 🚶‍♂️🌲" },
-  { desc: "torrentismo", val: "valor_torrentismo", label: "Torrentismo 🚶‍♂️" },
-  { desc: "parapente", val: "valor_parapente", label: "Parapente" },
-  { desc: "paseo_lancha", val: "valor_paseo_lancha", label: "Paseo_lancha" },
-  { desc: "cena_estandar", val: "valor_cena_estandar", label: "Cena estandar 🍽️💖" },
-  { desc: "cena_romantica", val: "valor_cena_romantica", label: "Cena romántica 🍷🍽️💖" },
-];
 
 const ModificarGlamping: React.FC = () => {
   const searchParams = useSearchParams();
@@ -51,9 +39,8 @@ const ModificarGlamping: React.FC = () => {
   const [horarios, setHorarios] = useState<string>("");
   const [politicasCasa, setPoliticasCasa] = useState<string>("");
 
-  // ——— Servicios adicionales ———
-  const [extrasTxt, setExtrasTxt] = useState<Record<string, string>>({});
-  const [extrasVal, setExtrasVal] = useState<Record<string, number>>({});
+  // ——— Servicios adicionales (centralizado) ———
+  const { extrasTxt, setExtrasTxt, extrasVal, setExtrasVal } = useServiciosExtras();
 
   // Carga inicial
   useEffect(() => {
@@ -83,23 +70,13 @@ const ModificarGlamping: React.FC = () => {
         setHorarios(data.horarios || "");
         setPoliticasCasa(data.politicas_casa || "");
 
-        // Servicios
-        setExtrasTxt(
-          SERVICIOS.reduce(
-            (acc, s) => ({ ...acc, [s.desc]: data[s.desc] || "" }),
-            {} as Record<string, string>
-          )
-        );
-        setExtrasVal(
-          SERVICIOS.reduce((acc, s) => {
-            if (!s.val) return acc;
-            const v = data[s.val];
-            return { ...acc, [s.val]: typeof v === "number" ? v : Number(v ?? 0) };
-          }, {} as Record<string, number>)
-        );
+        // Servicios adicionales (con helper centralizado)
+        const { txt, val } = extractExtrasFromBackend(data);
+        setExtrasTxt(txt);
+        setExtrasVal(val);
       })
       .catch(console.error);
-  }, [glampingId]);
+  }, [glampingId, setExtrasTxt, setExtrasVal]);
 
   // Reset precio adicional si no hay huéspedes adicionales
   useEffect(() => {
@@ -136,13 +113,8 @@ const ModificarGlamping: React.FC = () => {
       if (horarios.trim()) formData.append("horarios", horarios);
       if (politicasCasa.trim()) formData.append("politicas_casa", politicasCasa);
 
-      // Servicios adicionales (evita sobreescribir con vacío)
-      for (const s of SERVICIOS) {
-        const descVal = extrasTxt[s.desc];
-        if (descVal?.trim()) formData.append(s.desc, descVal);
-        if (s.val && Number.isFinite(extrasVal[s.val]))
-          formData.append(s.val, String(extrasVal[s.val]));
-      }
+      // Servicios adicionales (helper centralizado)
+      appendExtrasToFormData(formData, extrasTxt, extrasVal);
 
       const res = await fetch(`${API_BASE}/glampings/Datos/${glampingId}`, {
         method: "PUT",
@@ -319,10 +291,10 @@ const ModificarGlamping: React.FC = () => {
           </div>
         </div>
 
-        {/* === Servicios adicionales === */}
+        {/* === Servicios adicionales (centralizado) === */}
         <h2 className="ModificarGlamping-subtitulo">Servicios adicionales</h2>
         <div className="ModificarGlamping-grid ModificarGlamping-servicios">
-          {SERVICIOS.map(s => (
+          {SERVICIOS_EXTRAS.map(s => (
             <div key={s.desc} className="ModificarGlamping-servicio-bloque">
               <div className="ModificarGlamping-campo">
                 <label htmlFor={s.desc}>Describe {s.label.toLowerCase()}</label>
@@ -380,7 +352,6 @@ const ModificarGlamping: React.FC = () => {
         {/* === Barra fija de acción (siempre visible) === */}
         <div className="ModificarGlamping-cta">
           <div className="ModificarGlamping-cta-inner">
-            {/* === Barra fija de acción (siempre visible) === */}
             <div className="ModificarGlamping-cta" aria-live="polite">
               <div className="ModificarGlamping-cta-inner">
                 <button type="submit" className="ModificarGlamping-boton">

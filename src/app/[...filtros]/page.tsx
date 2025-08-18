@@ -5,13 +5,14 @@ import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import Footer from "@/Componentes/Footer";
 import { Metadata } from "next";
 
-interface Props {
+interface PageProps {
   params: { filtros?: string[] };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-// ✅ Metadata dinámico con await params
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { filtros = [] } = await params;
+// ✅ Metadata dinámico (SIN await params)
+export async function generateMetadata({ params }: { params: { filtros?: string[] } }): Promise<Metadata> {
+  const { filtros = [] } = params;
 
   // 🔍 Lista de ciudades (ajústala según tu base de datos)
   const ciudades = ["bogota", "medellin", "cali"];
@@ -21,7 +22,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (filtros.length > 0) {
     const primerFiltro = filtros[0].toLowerCase();
     canonicalSegment = primerFiltro;
-    // Si es ciudad, úsala; si no, también usamos el primer filtro
     if (!ciudades.includes(primerFiltro)) {
       canonicalSegment = primerFiltro;
     }
@@ -31,9 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const url = `https://glamperos.com${canonicalSegment ? `/${canonicalSegment}` : ""}`;
 
   // Prepara title y description usando todos los filtros
-  const filtrosCapitalizados = filtros.map(f =>
-    f.charAt(0).toUpperCase() + f.slice(1)
-  );
+  const filtrosCapitalizados = filtros.map((f) => f.charAt(0).toUpperCase() + f.slice(1));
 
   let filtrosTexto = "";
   if (filtrosCapitalizados.length === 1) {
@@ -44,13 +42,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     filtrosTexto = `${filtrosCapitalizados.slice(0, -1).join(", ")} y ${filtrosCapitalizados.slice(-1)}`;
   }
 
-  const descBase = filtrosCapitalizados.length > 0
-    ? `Explora glampings en ${filtrosTexto} y vive una experiencia única de lujo en la naturaleza. Reserva fácil y rápido en Glamperos.`
-    : "Explora glampings exclusivos en Colombia y vive una experiencia de lujo en la naturaleza. Reserva fácil y rápido.";
+  const descBase =
+    filtrosCapitalizados.length > 0
+      ? `Explora glampings en ${filtrosTexto} y vive una experiencia única de lujo en la naturaleza. Reserva fácil y rápido en Glamperos.`
+      : "Explora glampings exclusivos en Colombia y vive una experiencia de lujo en la naturaleza. Reserva fácil y rápido.";
 
-  const title = filtrosCapitalizados.length > 0
-    ? `Glampings en ${filtrosTexto} | Glamperos`
-    : "Glampings en Colombia | Glamperos";
+  const title =
+    filtrosCapitalizados.length > 0
+      ? `Glampings en ${filtrosTexto} | Glamperos`
+      : "Glampings en Colombia | Glamperos";
 
   return {
     title,
@@ -61,14 +61,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// ✅ Server Component con await params
-export default async function FiltradosPage({ params }: Props) {
-  const { filtros = [] } = await params;
+// ✅ Server Component (SIN await params) y pasando searchParams
+export default function FiltradosPage({ params, searchParams }: PageProps) {
+  const { filtros = [] } = params;
 
   return (
     <div className="GlampingsPage-container">
       <div className="GlampingsPage-tarjetas">
-        <TarjetasEcommerceServer filtros={filtros} />
+        <TarjetasEcommerceServer filtros={filtros} searchParams={searchParams} />
       </div>
 
       <div className="GlampingsPage-Footer">

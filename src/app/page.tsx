@@ -1,19 +1,20 @@
-
 // src/app/page.tsx
-
 import React from "react";
-// import TarjetasEcommerce from "@/Componentes/TarjetasEcommerce";
 import TarjetasEcommerceServer from "@/Componentes/TarjetasEcommerce/TarjetasEcommerceServer";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
+import "./page.css";
 
-import "./page.css"; 
-
-export default function GlampingsPage() {
+export default function GlampingsPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   return (
     <>
       <div className="GlampingsPage-container">
         <div className="GlampingsPage-tarjetas">
-          <TarjetasEcommerceServer key="all" />
+          {/* En home no hay filtros de segmento, así que filtros: [] */}
+          <TarjetasEcommerceServer filtros={[]} searchParams={searchParams} />
         </div>
 
         <div className="GlampingsPage-menu">

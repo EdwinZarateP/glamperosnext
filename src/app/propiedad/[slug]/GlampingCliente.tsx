@@ -44,6 +44,34 @@ const numOrUndef = (v: unknown): number | undefined => {
   return undefined;
 };
 
+// === NUEVO: helpers para YouTube ===
+function extractYouTubeId(input?: string | null): string | null {
+  if (!input) return null;
+  const raw = input.trim();
+  if (/^[\w-]{10,15}$/.test(raw)) return raw;
+  try {
+    const u = new URL(raw);
+    const host = u.hostname.replace(/^m\./, 'www.');
+    const path = u.pathname;
+
+    if (host.includes('youtu.be')) {
+      const id = path.split('/').filter(Boolean).pop();
+      return id || null;
+    }
+    if (path.startsWith('/shorts/')) {
+      const id = path.split('/')[2];
+      return id || null;
+    }
+    const v = u.searchParams.get('v');
+    if (v) return v;
+
+    const last = path.split('/').filter(Boolean).pop();
+    return last && /^[\w-]{10,15}$/.test(last) ? last : null;
+  } catch {
+    return /^[\w-]{10,15}$/.test(raw) ? raw : null;
+  }
+}
+
 export default function GlampingCliente({ initialData }: Props) {
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -62,7 +90,7 @@ export default function GlampingCliente({ initialData }: Props) {
   const [calProm, setCalProm] = useState(5);
   const [calCount, setCalCount] = useState(0);
 
-  // Ubicación: en tu DB viene como string JSON
+  // Ubicación
   const ubicacion = useMemo(() => {
     const raw = initialData?.ubicacion;
     if (!raw) return undefined as undefined | { lat: number; lng: number };
@@ -95,13 +123,12 @@ export default function GlampingCliente({ initialData }: Props) {
     })();
   }, [initialData?._id, isClient]);
 
-  // 🧠 Mapeo automático de servicios adicionales (debe estar ANTES de cualquier early return)
+  // Servicios extra
   const extrasProps = useMemo(
     () => mapExtrasToDescripcionProps(initialData, textOrUndef, numOrUndef),
     [initialData]
   );
 
-  // Early return SIEMPRE después de declarar todos los hooks
   if (!isClient || loadingPage) {
     return (
       <div className="glamping-skeleton">
@@ -110,11 +137,20 @@ export default function GlampingCliente({ initialData }: Props) {
     );
   }
 
-  const tieneVideo =
-    textOrUndef(initialData.video_youtube)?.toLowerCase() !== 'sin video' &&
-    !!textOrUndef(initialData.video_youtube);
+  const videoStr = textOrUndef(initialData.video_youtube);
+  const videoId = extractYouTubeId(videoStr);
+  const tieneVideo = !!videoId;
+  const watchUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : undefined;
 
-  const onVideo = () => setVerVideo(true);
+  // DESKTOP: abre modal  |  MÓVIL: redirige a YouTube
+  const onVideo = () => {
+    if (!videoId) return;
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      window.location.href = watchUrl!;
+    } else {
+      setVerVideo(true);
+    }
+  };
 
   const redirigirWhatsApp = () => {
     const numero = '+573218695196';
@@ -122,8 +158,8 @@ export default function GlampingCliente({ initialData }: Props) {
     const msg = encodeURIComponent(
       `Hola equipo Glamperos, ¡Quiero información sobre este glamping!\n\n${urlActual}`
     );
-    const esPequeña = window.innerWidth < 600;
-    const waUrl = esPequeña
+    const esPequena = window.innerWidth < 600;
+    const waUrl = esPequena
       ? `https://wa.me/${numero}?text=${msg}`
       : `https://web.whatsapp.com/send?phone=${numero}&text=${msg}`;
     window.open(waUrl, '_blank');
@@ -149,11 +185,16 @@ export default function GlampingCliente({ initialData }: Props) {
           <button
             className="ImgExploradas-iconoVideo-peque"
             onClick={onVideo}
+            type="button"
+            aria-label="Ver video"
+            title="Ver video"
           >
             <MdOndemandVideo /> Video
           </button>
         )}
-        <VerVideo urlVideo={initialData.video_youtube} />
+
+        {/* Modal solo se abrirá en desktop por onVideo() */}
+        <VerVideo urlVideo={videoStr} />
       </section>
 
       <section className="GlampingCliente-nombre-glamping">
@@ -170,15 +211,9 @@ export default function GlampingCliente({ initialData }: Props) {
             <DescripcionGlamping
               calificacionNumero={numOrUndef(initialData.calificacion) ?? calProm}
               calificacionEvaluaciones={calCount}
-              // calificacionMasAlta="Su piscina fue lo mejor calificado"
-
-              // Descripción base (respeta saltos de línea del backend)
               descripcion_glamping={initialData.descripcionGlamping}
-
               politicas_casa={textOrUndef(initialData.politicas_casa)}
               horarios={textOrUndef(initialData.horarios)}
-
-              // — Servicios adicionales (inyectados automáticamente) —
               {...extrasProps}
             />
           </div>
@@ -199,10 +234,7 @@ export default function GlampingCliente({ initialData }: Props) {
 
       <section className="GlampingCliente-mapa">
         <ManejoErrores>
-          <MapaGlampings
-            lat={ubicacion?.lat ?? 0}
-            lng={ubicacion?.lng ?? 0}
-          />
+          <MapaGlampings lat={ubicacion?.lat ?? 0} lng={ubicacion?.lng ?? 0} />
         </ManejoErrores>
       </section>
 

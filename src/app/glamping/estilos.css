@@ -1,72 +1,85 @@
-/* Configuración básica del contenedor principal */
+/* ================================
+   📌 Contenedor principal
+=================================== */
 .contenedor-principal-exploracion {
-    margin: 0 auto;
-    margin-bottom: 10px;
-    padding: 0;
-    width: 85%;
-    box-sizing: border-box;
-    margin-top: 10px;
-  }
-  
-  /* .encabezado-explorado {
-    border-bottom: none;
-  } */
-  
-  .contenedor-lo-que-ofrece {
-    margin-top: 20px;
-    border-radius: 8px;
-  }
-  
-  .contenedor-descripcion-glamping {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .contenedor-descripcion-glamping-izq {
-    width: 60%;
-  }
-  
-  .contenedor-descripcion-glamping-der {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-end;
-    width: 35%;
-    position: relative;
-    height: auto;
-    padding-top: 0;
-  }
-  
-  .lottie-cargando {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Centrado total en la pantalla */
-  }
-  
-  .ImgExploradas-iconoVideo-peque {
-    position: absolute;
-    bottom: 45px;
-    right: 20px;
-    background-color: white;
-    border: 2px solid black;
-    border-radius: 15px;
-    padding: 8px 12px;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
+  margin: 0 auto;
+  margin-bottom: 10px;
+  padding: 0;
+  width: 85%;
+  box-sizing: border-box;
+  margin-top: 10px;
+}
 
-/* Estilos para el botón sticky de WhatsApp */
+/* ================================
+   📌 Secciones descriptivas
+=================================== */
+.contenedor-lo-que-ofrece {
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+.contenedor-descripcion-glamping {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.contenedor-descripcion-glamping-izq {
+  width: 60%;
+}
+
+.contenedor-descripcion-glamping-der {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+  width: 35%;
+  position: relative;
+  height: auto;
+  padding-top: 0;
+}
+
+.lottie-cargando {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Centrado total en la pantalla */
+}
+
+/* ================================
+   📌 Botón de Video (pequeño)
+=================================== */
+.ImgExploradas-iconoVideo-peque {
+  position: absolute;
+  bottom: 45px;
+  right: 20px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 8px 12px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 6;
+  transition: transform 0.2s ease;
+}
+
+.ImgExploradas-iconoVideo-peque:hover {
+  transform: scale(1.05);
+}
+
+/* ================================
+   📌 Botón WhatsApp flotante
+=================================== */
+.GlampingCliente-principal-whatsapp-button,
 .contenedor-principal-whatsapp-button {
   position: fixed;
-  bottom: 20px;       /* separación inferior */
-  right: 20px;        /* separación lateral */
+  bottom: 20px;
+  right: 20px;
   width: 60px;
   height: 60px;
   cursor: pointer;
@@ -79,27 +92,33 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   z-index: 1000;
   text-decoration: none;
-  }
-  
-  .contenedor-principal-whatsapp-button:hover {
+}
+
+.GlampingCliente-principal-whatsapp-button:hover,
+.contenedor-principal-whatsapp-button:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-  }
-  
-  .contenedor-principal-whatsapp-button img,
-  .contenedor-principal-whatsapp-button svg {
+}
+
+.GlampingCliente-principal-whatsapp-button img,
+.contenedor-principal-whatsapp-button img,
+.GlampingCliente-principal-whatsapp-button svg,
+.contenedor-principal-whatsapp-button svg {
   display: block;
   width: 36px;
   height: 36px;
-  }
+}
 
+/* ================================
+   📌 Botón volver
+=================================== */
 .boton-volver-exploracion {
   width: 40px;
   height: 35px;
   display: flex;
   align-items: center;
   justify-content: start;
-  font-size: 24x; /* tamaño de la flecha */
+  font-size: 24px; /* tamaño de la flecha */
   font-weight: 700;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
@@ -114,69 +133,78 @@
   padding: 0;
 }
 
-
-
 @media (max-width: 600px) {
   .boton-volver-exploracion {
     display: block; /* solo se ve en móviles */
   }
 }
 
-  /* 🔹 Responsive - Pantallas pequeñas (móviles) */
+/* ================================
+   📌 Responsive
+=================================== */
+
+/* 🔹 Pantallas pequeñas (móviles hasta 900px) */
 @media (max-width: 900px) {
+  .GlampingCliente-principal-whatsapp-button,
   .contenedor-principal-whatsapp-button {
     width: 2.5rem;
     height: 2.5rem;
     bottom: 130px;
     right: 15px;
-    }
   }
 
-  /* Ajustes para pantallas pequeñas (máximo ancho 600px) */
-  @media (max-width: 600px) {
-    .header-container,
-    .imagenes-exploradas-container,
-    .encabezado-explorado-container,
-    .contenedor-descripcion-glamping-der {
-      display: none;
-    }
-  
-    .contenedor-principal-exploracion {
-      width: 100%;
-      margin-top: 0;
-    }
-  
-    .contenedor-descripcion-glamping-izq {
-      width: 100%;
-    }
-    
-    .nombre-glamping-container {
-      display: block;
-    }
+  .ImgExploradas-iconoVideo-peque {
+    right: 10px;
+    bottom: 58px;
+    padding: 7px 10px;
+    font-size: 12px;
   }
-  
-  /* Ajustes para pantallas grandes (mínimo ancho 601px) */
-  @media (min-width: 601px) {
-    .img-exploradas-individual-container {
-      display: none;
-    }
-  
-    .nombre-glamping-container {
-      display: none;
-    }
-    
+}
+
+/* 🔹 Ajustes para pantallas muy pequeñas (máx 600px) */
+@media (max-width: 600px) {
+  .header-container,
+  .imagenes-exploradas-container,
+  .encabezado-explorado-container,
+  .contenedor-descripcion-glamping-der {
+    display: none;
   }
-  
-  /* Ajustes para pantallas muy grandes (mínimo ancho 1400px) */
-  @media (min-width: 1366px) {
-    .contenedor-principal-exploracion {
-      width: 80%;
-    }
+
+  .contenedor-principal-exploracion {
+    width: 100%;
+    margin-top: 0;
   }
-  
-  /* Ajustes para pantallas muy grandes (mínimo ancho 1400px) */
-  @media (min-width: 1600px) {
-    .contenedor-principal-exploracion {
-      width: 70%;
-    }
+
+  .contenedor-descripcion-glamping-izq {
+    width: 100%;
   }
+
+  .nombre-glamping-container {
+    display: block;
+  }
+}
+
+/* 🔹 Pantallas medianas (desde 601px) */
+@media (min-width: 601px) {
+  .img-exploradas-individual-container {
+    display: none;
+  }
+
+  .nombre-glamping-container {
+    display: none;
+  }
+}
+
+/* 🔹 Pantallas grandes (1366px) */
+@media (min-width: 1366px) {
+  .contenedor-principal-exploracion {
+    width: 80%;
+  }
+}
+
+/* 🔹 Pantallas extra grandes (1600px) */
+@media (min-width: 1600px) {
+  .contenedor-principal-exploracion {
+    width: 70%;
+  }
+}

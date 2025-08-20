@@ -6,10 +6,17 @@
   grid-template-rows: 1fr 1fr;
   gap: 7px;
   width: 100%;
-  height: 430px;
+  height: 430px;                /* alto fijo para el bloque */
   box-sizing: border-box;
   border-radius: 15px;
   overflow: hidden;             /* esquinas redondeadas coherentes */
+}
+
+/* Asegura que las dos columnas no desborden */
+.ImgExploradas-principal,
+.ImgExploradas-secundarias {
+  min-width: 0;
+  min-height: 0;
 }
 
 /* ===== Imagen principal ===== */
@@ -22,25 +29,35 @@
 .ImgExploradas-principal img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  display: block;
+  object-fit:cover;
   transition: filter .3s ease;
 }
 .ImgExploradas-principal img:hover {
   filter: brightness(.8);
 }
 
-/* ===== Imágenes secundarias ===== */
+/* ===== Imágenes secundarias (2x2 siempre) ===== */
 .ImgExploradas-secundarias {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 7px;
   grid-column: 2 / 3;
   grid-row: 1 / 3;
+  gap: 7px;
+  height: 100%; /* CLAVE: ocupa todo el alto del contenedor */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   overflow: hidden;
   cursor: pointer;
 }
+
+/* Evitar que las imágenes “empujen” el tamaño del grid */
+.ImgExploradas-secundarias > * {
+  min-width: 0;
+  min-height: 0;
+}
+
 .ImgExploradas-imagenSecundaria {
+  display: block;     /* elimina espacios inline */
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -68,12 +85,8 @@
   transition: transform .2s ease;
   z-index: 5; /* debajo del botón Video */
 }
-.ImgExploradas-botonMostrar:hover {
-  transform: scale(1.05);
-}
-.ImgExploradas-icono {
-  font-size: 18px;
-}
+.ImgExploradas-botonMostrar:hover { transform: scale(1.05); }
+.ImgExploradas-icono { font-size: 18px; }
 
 /* ===== Íconos flotantes ===== */
 .ImgExploradas-iconoMascotas {
@@ -103,9 +116,7 @@
   transition: transform .2s ease;
   z-index: 6;
 }
-.ImgExploradas-iconoVideo:hover {
-  transform: scale(1.05);
-}
+.ImgExploradas-iconoVideo:hover { transform: scale(1.05); }
 
 /* ===== Modal video (desktop) ===== */
 .VerVideo-overlay {
@@ -138,9 +149,7 @@
   font-size: 22px;
   cursor: pointer;
 }
-.VerVideo-close:hover {
-  background: rgba(0,0,0,.65);
-}
+.VerVideo-close:hover { background: rgba(0,0,0,.65); }
 
 /* ===== Responsive (pantallas pequeñas) ===== */
 @media (max-width: 768px) {

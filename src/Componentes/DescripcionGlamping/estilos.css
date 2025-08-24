@@ -19,10 +19,7 @@
   
   .descripcion-glamping-detalle {
     display: -webkit-box;
-    -webkit-line-clamp: 3; /* Works in WebKit browsers like Chrome, Safari, and Edge */
-    line-clamp: 3;         /* Standard, but not widely supported yet */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    /* overflow: hidden; */
     text-align: justify;
     /* margin-top: 30px; */
   }  

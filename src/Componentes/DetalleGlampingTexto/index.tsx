@@ -54,6 +54,13 @@ interface DescripcionGlampingTextoProps {
 
   mascota_adicional?: string;
   valor_mascota_adicional?: number;
+
+  tour_1?: string;
+  valor_tour_1?: number;
+
+  tour_2?: string;
+  valor_tour_2?: number;
+  
 }
 
 export default function DescripcionGlampingTexto(props: DescripcionGlampingTextoProps) {

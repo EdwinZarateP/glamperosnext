@@ -29,6 +29,8 @@ export const SERVICIOS_EXTRAS: ServicioDef[] = [
   { desc: "paseo_bicicleta", val: "valor_paseo_bicicleta", label: "Paseo bicicleta" },
   { desc: "paseo_caballo", val: "valor_paseo_caballo", label: "Paseo a caballo" },
   { desc: "paseo_cuatrimoto", val: "valor_paseo_cuatrimoto", label: "Paseo en cuatrimoto" },
+  { desc: "tour_1", val: "valor_tour_1", label: "Tour 1" },
+  { desc: "tour_2", val: "valor_tour_2", label: "Tour 2" },
 
   // 🧗 Deportes de aventura
   { desc: "torrentismo", val: "valor_torrentismo", label: "Torrentismo" },

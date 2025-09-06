@@ -40,6 +40,8 @@ interface DescripcionGlampingProps {
   valor_kit_fogata?: number;
   cena_romantica?: string;
   valor_cena_romantica?: number;
+  tour_1?: string;
+  valor_tour_1?: number;
   cena_estandar?: string;
   valor_cena_estandar?: number;
   mascota_adicional?: string;

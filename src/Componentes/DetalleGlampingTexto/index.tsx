@@ -174,6 +174,8 @@ export default function DescripcionGlampingTexto(props: DescripcionGlampingTexto
     partes.push("🏦 Cuenta Bancolombia – Glamperos SAS");
     partes.push("📂 Tipo: Ahorros");
     partes.push("🔢 Nº 292-000059-43");
+    partes.push("📂 Nuestra Llave");
+    partes.push("🔢 0089996468");
 
     // Exoneración
     partes.push("");
@@ -316,7 +318,7 @@ export default function DescripcionGlampingTexto(props: DescripcionGlampingTexto
           <div className="DescripcionGlampingTexto-pagosFila">🏦 Cuenta Bancolombia – <strong>Glamperos SAS</strong></div>
           <div className="DescripcionGlampingTexto-pagosFila">📂 Tipo: <strong>Ahorros</strong></div>
           <div className="DescripcionGlampingTexto-pagosFila">🔢 Nº <code>292-000059-43</code></div>
-           <div className="DescripcionGlampingTexto-pagosFila">O usa nuestra llave <code>0089996468</code></div>
+          <div className="DescripcionGlampingTexto-pagosFila">O usa nuestra llave <code>0089996468</code></div>
         </div>
       </section>
 

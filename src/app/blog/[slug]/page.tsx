@@ -7,12 +7,24 @@ import Footer from "@/Componentes/Footer";
 import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
 import "./estilos.css";
 
-// 🔹 Función auxiliar para limpiar HTML de título/description
+/* ===== Helpers para SEO ===== */
+function decodeEntities(str: string) {
+  return str
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
+    .replace(/&hellip;/g, "…")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
 function stripHtml(html?: string) {
-  return (html || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+  return decodeEntities((html || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim());
+}
+function clamp160(s: string) {
+  return s.length > 160 ? s.slice(0, 157) + "…" : s;
 }
 
-// ✅ Genera metadatos dinámicos para cada post
+/* ===== Metadatos dinámicos por post ===== */
 export async function generateMetadata(
   { params }: { params: { slug: string } }
 ): Promise<Metadata> {
@@ -31,14 +43,11 @@ export async function generateMetadata(
   }
 
   const posts: any[] = await res.json();
-  const post = posts[0];
+  const post = posts?.[0];
 
-  const title = post?.title?.rendered
-    ? stripHtml(post.title.rendered)
-    : "Glamperos";
-  const description = post?.excerpt?.rendered
-    ? stripHtml(post.excerpt.rendered)
-    : "Descubre y reserva glampings en Colombia.";
+  const title = stripHtml(post?.title?.rendered) || "Glamperos";
+  const rawDesc = stripHtml(post?.excerpt?.rendered) || "Descubre y reserva glampings en Colombia.";
+  const description = clamp160(rawDesc);
   const image = post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url;
 
   return {
@@ -62,6 +71,7 @@ export async function generateMetadata(
   };
 }
 
+/* ===== Página del post ===== */
 export default async function BlogPost({
   params: { slug },
 }: {
@@ -73,7 +83,7 @@ export default async function BlogPost({
   );
 
   const posts: any[] = res.ok ? await res.json() : [];
-  const post = posts[0];
+  const post = posts?.[0];
 
   return (
     <>
@@ -89,9 +99,7 @@ export default async function BlogPost({
                 ? "Error al cargar el post."
                 : "No se encontró el post."}
             </p>
-            <Link href="/blog" className="post-back-link">
-              ← Ir al blog
-            </Link>
+            <Link href="/blog" className="post-back-link">← Ir al blog</Link>
           </>
         ) : (
           <>
@@ -99,15 +107,11 @@ export default async function BlogPost({
               className="post-title"
               dangerouslySetInnerHTML={{ __html: post.title.rendered }}
             />
-
             <article
               className="post-content"
               dangerouslySetInnerHTML={{ __html: post.content.rendered }}
             />
-
-            <Link href="/blog" className="post-back-link">
-              ← Ir al blog
-            </Link>
+            <Link href="/blog" className="post-back-link">← Ir al blog</Link>
           </>
         )}
       </main>

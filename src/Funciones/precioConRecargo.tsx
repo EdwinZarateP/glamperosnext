@@ -2,7 +2,7 @@
 
 export const precioConRecargo = (precio: number): number => {
   if (precio <= 0) return 0;
-  if (precio <= 299999) return precio * 1.18;
+  if (precio <= 299999) return precio * 1.2;
   if (precio >= 300000 && precio < 400000) return precio * 1.15;
   if (precio >= 400000 && precio < 500000) return precio * 1.14;
   if (precio >= 500000 && precio < 600000) return precio * 1.13;

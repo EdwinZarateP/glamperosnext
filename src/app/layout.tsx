@@ -52,7 +52,7 @@ export const metadata: Metadata = {
       "https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg",
     ],
   },
-  alternates: { canonical: "https://glamperos.com" },
+  // alternates: { canonical: "https://glamperos.com" },
 };
 
 export const viewport = {

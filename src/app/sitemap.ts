@@ -1,9 +1,8 @@
 // app/sitemap.ts
-
-export default function sitemap() {
+export default async function sitemap() {
   const baseUrl = "https://glamperos.com";
 
-  // 1. Rutas básicas
+  // 1. Rutas estáticas principales
   const staticPaths = [
     "",
     "medellin",
@@ -15,37 +14,52 @@ export default function sitemap() {
     "guatavita-cundinamarca",
     "san-francisco-cundinamarca",
     "guatape-antioquia",
-  ].map(path => ({
+  ].map((path) => ({
     url: `${baseUrl}/${path}`,
     lastModified: new Date().toISOString(),
   }));
 
-  // 2. Listado de ciudades, tipos y amenidades clave
-  const ciudades   = ["medellin", "bogota", "cali"];
-  const tipos      = ["domo", "tipi", "tienda", "cabana", "lumipod",  "chalet"];
+  // 2. Rutas dinámicas de blog desde WordPress
+  let blogPaths: { url: string; lastModified: string }[] = [];
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_WORDPRESS_API}/posts?_fields=slug,date&per_page=100`,
+      { cache: "no-store" }
+    );
+    if (res.ok) {
+      const posts = await res.json();
+      blogPaths = posts.map((post: any) => ({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: new Date(post.date).toISOString(),
+      }));
+    }
+  } catch (err) {
+    console.error("Error cargando posts para sitemap:", err);
+  }
+
+  // 3. Listado de ciudades, tipos y amenidades clave
+  const ciudades = ["medellin", "bogota", "cali"];
+  const tipos = ["domo", "tipi", "tienda", "cabana", "lumipod", "chalet"];
   const amenidades = ["jacuzzi", "piscina", "mascotas"];
 
-  // 3. Generar combinaciones ciudad + tipo
-  const cityTypePaths = ciudades.flatMap(ciudad =>
-    tipos.map(tipo => ({
-      url:  `${baseUrl}/${ciudad}/${tipo}`,
+  const cityTypePaths = ciudades.flatMap((ciudad) =>
+    tipos.map((tipo) => ({
+      url: `${baseUrl}/${ciudad}/${tipo}`,
       lastModified: new Date().toISOString(),
     }))
   );
 
-  // 4. Ciudad + amenidad
-  const cityAmenityPaths = ciudades.flatMap(ciudad =>
-    amenidades.map(amen => ({
-      url:  `${baseUrl}/${ciudad}/${amen}`,
+  const cityAmenityPaths = ciudades.flatMap((ciudad) =>
+    amenidades.map((amen) => ({
+      url: `${baseUrl}/${ciudad}/${amen}`,
       lastModified: new Date().toISOString(),
     }))
   );
 
-  // 5. Ciudad + tipo + amenidad
-  const cityTypeAmenPaths = ciudades.flatMap(ciudad =>
-    tipos.flatMap(tipo =>
-      amenidades.map(amen => ({
-        url:  `${baseUrl}/${ciudad}/${tipo}/${amen}`,
+  const cityTypeAmenPaths = ciudades.flatMap((ciudad) =>
+    tipos.flatMap((tipo) =>
+      amenidades.map((amen) => ({
+        url: `${baseUrl}/${ciudad}/${tipo}/${amen}`,
         lastModified: new Date().toISOString(),
       }))
     )
@@ -53,6 +67,7 @@ export default function sitemap() {
 
   return [
     ...staticPaths,
+    ...blogPaths,          // ✅ ahora los posts se incluyen
     ...cityTypePaths,
     ...cityAmenityPaths,
     ...cityTypeAmenPaths,

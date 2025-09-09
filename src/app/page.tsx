@@ -1,8 +1,15 @@
 // src/app/page.tsx
 import React from "react";
+import type { Metadata } from "next";
 import TarjetasEcommerceServer from "@/Componentes/TarjetasEcommerce/TarjetasEcommerceServer";
 import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import "./page.css";
+
+// ✅ Canonical del home
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },   // se resolverá a https://glamperos.com/ gracias a metadataBase del layout
+  robots: { index: true, follow: true },
+};
 
 export default function GlampingsPage({
   searchParams,

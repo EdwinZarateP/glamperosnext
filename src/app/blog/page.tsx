@@ -1,11 +1,20 @@
 // src/app/blog/page.tsx
 export const dynamic = "force-dynamic"; // 🔹 Forzar SSR
-
+import type { Metadata } from "next";
 import Link from "next/link";
 import HeaderBlog from "../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
 import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
 import "./estilos.css";
+
+// ✅ Canonical y metadatos del índice del blog
+export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },     // → https://glamperos.com/blog
+  robots: { index: true, follow: true },
+  title: "Blog de Glamperos: guías y tips de glamping en Colombia",
+  description:
+    "Consejos, rutas y destinos para hacer glamping en Colombia. Inspiración y guías prácticas para tu próxima escapada.",
+};
 
 interface Post {
   id: number;

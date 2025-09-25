@@ -3,7 +3,7 @@
    ========================================================================== */
 
 .post-container {
-  width: 90%;
+  width: 60%;
   margin: 2rem auto;
   padding: 2rem;
   background: #fff;
@@ -127,12 +127,12 @@
 .post-content .wp-block-image img {
   display: block;
   width: 100%;
-  height:450px;
-  object-fit: cover;
+  height:400px;
+  object-fit:cover;
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  background-color: #d7f3e2;
 }
+
 
 /* 4.2 Galerías Dinámicas */
 
@@ -297,6 +297,52 @@
   display: block;
 }
 
+
+.wp-block-columns{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.wp-block-column{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.aligncenter {
+  margin: 0;
+}
+
+/* que el bloque video nunca se salga del contenedor */
+.post-content .wp-block-video,
+.post-content .wp-block-video video {
+  max-width: 100%;
+  /* width: 100%; */
+  height: auto;
+  display: block;
+  padding: 0;
+}
+
+/* opcional: dar proporción y aspecto bonito */
+.post-content .wp-block-video video {
+  aspect-ratio: 16 / 9;   /* cámbialo si quieres otra relación */
+  object-fit: cover;      /* o 'contain' si no quieres recorte */
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.1);
+}
+
+/* si Gutenberg lo puso en ancho completo, neutraliza márgenes extra */
+.post-content .alignfull,
+.post-content .alignwide {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+
 /* ==========================================================================
    8. Responsive (Móvil y Tablet)
    ========================================================================== */
@@ -326,21 +372,30 @@
     width: 100%;
   }
 
-    .post-content .wp-block-media-text {
-      display: grid !important;
-      grid-template-columns: 1fr !important; /* fuerza una sola columna */
-    }
+  .post-content .wp-block-image img {
+  display: block;
+  width: 100%;
+  height:200px;
+  object-fit:contain;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
 
-  .wp-block-media-text__media {
-      order: 1; /* asegura que la imagen vaya arriba */
-    }
-
-  .wp-block-media-text__content {
-      order: 2; /* texto debajo */
-      margin-top: 1rem;
-    }
-  .post-content .wp-block-button__link{
-    margin: 0.5rem 0;
-    font-size: 0.8rem;
+  .post-content .wp-block-media-text {
+    display: grid !important;
+    grid-template-columns: 1fr !important; /* fuerza una sola columna */
   }
+
+.wp-block-media-text__media {
+    order: 1; /* asegura que la imagen vaya arriba */
+  }
+
+.wp-block-media-text__content {
+    order: 2; /* texto debajo */
+    margin-top: 1rem;
+  }
+.post-content .wp-block-button__link{
+  margin: 0.5rem 0;
+  font-size: 0.8rem;
+}
 }

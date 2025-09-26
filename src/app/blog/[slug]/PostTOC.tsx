@@ -40,9 +40,20 @@ export default function PostTOC() {
   const [openMobile, setOpenMobile] = useState<boolean>(false);
   const headerOffsetRef = useRef<number>(96);
 
+  // Mantén actualizado el offset cuando cambie viewport/orientación
   useEffect(() => {
-    headerOffsetRef.current = useHeaderOffset();
+    const update = () => { headerOffsetRef.current = useHeaderOffset(); };
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("orientationchange", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("orientationchange", update);
+    };
+  }, []);
 
+  // Construye TOC y observa H2
+  useEffect(() => {
     const root = document.querySelector(".post-content");
     if (!root) return;
 
@@ -84,27 +95,29 @@ export default function PostTOC() {
     e.preventDefault();
     const el = document.getElementById(id);
     if (!el) return;
+
     const rect = el.getBoundingClientRect();
     const y = window.scrollY + rect.top - headerOffsetRef.current - 8;
     window.scrollTo({ top: y, behavior: "smooth" });
-    if (window.innerWidth < 900) setOpenMobile(false);
+
+    // Cierra después de iniciar el scroll (para no “cortar” la animación)
+    if (window.innerWidth < 900) setTimeout(() => setOpenMobile(false), 250);
   };
 
   if (!items.length) return null;
 
+  // IMPORTANTE: este wrapper da el grid-area "toc"
   return (
-    <>
+    <div className="post-toc">
       {/* Mobile (<900px) */}
       <div className="toc-mobile">
         <button
           className="toc-mobile-toggle"
           aria-expanded={openMobile}
-          onClick={() => setOpenMobile((v) => !v)}
+          onClick={() => setOpenMobile(v => !v)}
         >
           Tabla de contenidos
-          <span className={`toc-caret ${openMobile ? "open" : ""}`} aria-hidden>
-            ▾
-          </span>
+          <span className={`toc-caret ${openMobile ? "open" : ""}`} aria-hidden>▾</span>
         </button>
 
         {openMobile && (
@@ -147,6 +160,6 @@ export default function PostTOC() {
           </nav>
         </div>
       </aside>
-    </>
+    </div>
   );
 }

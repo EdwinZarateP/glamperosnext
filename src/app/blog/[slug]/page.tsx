@@ -5,7 +5,7 @@ import Link from "next/link";
 import HeaderBlog from "../../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
 import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
-import PostTOC from "./PostTOC";             // ← importa el client component
+import PostTOC from "./PostTOC";     // client component
 import "./estilos.css";
 
 /* Helpers SEO */
@@ -72,6 +72,7 @@ export async function generateMetadata(
   };
 }
 
+/* Página */
 export default async function BlogPost({
   params: { slug },
 }: {
@@ -87,7 +88,6 @@ export default async function BlogPost({
 
   return (
     <>
-      {/* expón la altura de tu header sticky via CSS var si quieres afinar offset */}
       <HeaderBlog />
 
       <main className="post-container">
@@ -109,7 +109,8 @@ export default async function BlogPost({
               dangerouslySetInnerHTML={{ __html: post.title.rendered }}
             />
 
-            <div className="post-layout">              
+            {/* Desktop: content | toc. Móvil: toc | content (via CSS grid-areas) */}
+            <div className="post-layout">
               <article
                 className="post-content"
                 dangerouslySetInnerHTML={{ __html: post.content.rendered }}

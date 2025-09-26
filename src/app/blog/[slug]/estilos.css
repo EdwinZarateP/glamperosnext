@@ -1,460 +1,256 @@
-/* ====================== Ajuste global opcional ======================= */
-/* Ajusta a la altura real de tu HeaderBlog sticky */
-:root { 
-  --header-sticky-height: 96px; 
+/* ====================== Ajuste global ======================= */
+:root{
+  /* Altura real del header sticky en desktop */
+  --header-sticky-height: 96px;
 }
 
-/* ==========================================================================
-   1. Contenedor y Layout Principal
-   ========================================================================== */
-
-.post-container {
-  width: 80%;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  font-family: var(--font-be-vietnam), sans-serif;
-  color: #333;
+/* El navegador compensa anclas/hashes con este padding */
+html{
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-sticky-height) + 8px);
 }
 
-.post-error {
-  color: #d9534f;
-  text-align: center;
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+/* ======================================================================
+   1. Contenedor y Layout
+   ====================================================================== */
+.post-container{
+  width:80%;
+  margin:2rem auto;
+  padding:2rem;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 4px 20px rgba(0,0,0,.05);
+  font-family:var(--font-be-vietnam),sans-serif;
+  color:#333;
+}
+.post-error{color:#d9534f;text-align:center;font-size:1.1rem;margin-bottom:1.5rem;}
+
+.post-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px; /* contenido | toc */
+  gap:28px;
+  align-items:start;
+  grid-template-areas:"content toc";
+  overflow:visible; /* imprescindible para que sticky funcione */
+}
+.post-content{grid-area:content;}
+/* NO sticky aquí por defecto: solo en ≥900px con la media query */
+
+/* ======================================================================
+   2. Título
+   ====================================================================== */
+.post-title{
+  font-size:clamp(2rem,5vw,2.8rem);
+  text-align:center;
+  color:#2e2e2e;
+  margin-bottom:1rem;
+  position:relative;
+  padding-bottom:.5rem;
+  border-bottom:3px solid #fbbf24;
+}
+.post-title::after{
+  content:"";
+  display:block;
+  width:60px;height:4px;background:#fbbf24;
+  margin:.5rem auto 0;border-radius:2px;
 }
 
-/* Layout con TOC a la derecha (desktop) usando grid-areas */
-.post-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px; /* contenido | TOC */
-  gap: 28px;
-  align-items: start;
-  position: relative;
-  grid-template-areas: "content toc";
+/* ======================================================================
+   3. Contenido
+   ====================================================================== */
+.post-content{
+  font-size:clamp(1rem,2.5vw,1.125rem);
+  line-height:1.8;
+  margin-top:2rem;
+  overflow-wrap:break-word;
 }
-
-/* Asignación de áreas */
-.post-content { grid-area: content; }
-.post-toc     { grid-area: toc; }
-
-/* ==========================================================================
-   2. Título del Post
-   ========================================================================== */
-
-.post-title {
-  font-size: clamp(2rem, 5vw, 2.8rem);
-  text-align: center;
-  color: #2e2e2e;
-  margin-bottom: 1rem;
-  position: relative;
-  padding-bottom: 0.5rem;
-  border-bottom: 3px solid #fbbf24;
-}
-
-.post-title::after {
-  content: "";
-  display: block;
-  width: 60px;
-  height: 4px;
-  background: #fbbf24;
-  margin: 0.5rem auto 0;
-  border-radius: 2px;
-}
-
-/* ==========================================================================
-   3. Contenido del Artículo
-   ========================================================================== */
-
-.post-content {
-  font-size: clamp(1rem, 2.5vw, 1.125rem);
-  line-height: 1.8;
-  margin-top: 2rem;
-  overflow-wrap: break-word;
-}
-
-/* 3.1 Párrafos y Alineaciones */
-
-.post-content p { margin-bottom: 1.2rem; }
-.post-content .has-text-align-left   { text-align: left; }
-.post-content .has-text-align-center { text-align: center; }
-.post-content .has-text-align-right  { text-align: right; }
-
-/* 3.2 Encabezados */
+.post-content p{margin-bottom:1.2rem;}
+.post-content .has-text-align-left{text-align:left;}
+.post-content .has-text-align-center{text-align:center;}
+.post-content .has-text-align-right{text-align:right;}
 
 .post-content .wp-block-heading,
 .post-content h2,
-.post-content h3 {
-  font-family: var(--font-be-vietnam), sans-serif;
-  color: #2e2e2e;
-  margin: 2rem 0 1rem;
-  font-weight: 600;
+.post-content h3{
+  font-family:var(--font-be-vietnam),sans-serif;
+  color:#2e2e2e;
+  margin:2rem 0 1rem;
+  font-weight:600;
 }
 
-.post-content h2 { font-size: clamp(1.5rem, 4vw, 1.9rem); }
-.post-content h3 { font-size: clamp(1.3rem, 3vw, 1.6rem); margin-top: 1.5rem; }
+/* evita que el header tape los H2/H3 */
+.post-content h2,
+.post-content h3{
+  scroll-margin-top: calc(var(--header-sticky-height) + 8px);
+}
 
-/* 3.3 Listas */
+.post-content h2{font-size:clamp(1.5rem,4vw,1.9rem);}
+.post-content h3{font-size:clamp(1.3rem,3vw,1.6rem);margin-top:1.5rem;}
 
 .post-content ul,
-.post-content ol { margin: 1rem 0 1.5rem 1.5rem; }
+.post-content ol{margin:1rem 0 1.5rem 1.5rem;}
+.post-content li{margin-bottom:.5rem;}
 
-.post-content li { margin-bottom: 0.5rem; }
+.post-content blockquote{
+  margin:1.5rem 0;padding:1rem 1.5rem;border-left:4px solid #fbbf24;
+  background:#fff9e6;color:#555;font-style:italic;
+}
+.post-content a{color:#0f6956;font-weight:500;}
+.post-content a:hover{text-decoration:underline;}
 
-/* 3.4 Citas */
-
-.post-content blockquote {
-  margin: 1.5rem 0;
-  padding: 1rem 1.5rem;
-  border-left: 4px solid #fbbf24;
-  background: #fff9e6;
-  color: #555;
-  font-style: italic;
+/* ======================================================================
+   4. Multimedia
+   ====================================================================== */
+.post-content .wp-block-image img{
+  display:block;width:100%;height:400px;object-fit:cover;border-radius:10px;
+  box-shadow:0 2px 12px rgba(0,0,0,.1);
+}
+.post-content .wp-block-gallery{
+  display:grid;gap:10px;margin:1.5rem 0;width:100%;
+  grid-template-columns:repeat(1,1fr);
+}
+.post-content .wp-block-gallery:has(> .wp-block-image:only-child){
+  grid-template-columns:1fr;width:30%;max-width:200px;margin:2rem auto;gap:0;
+}
+.post-content .wp-block-gallery:has(> .wp-block-image:nth-child(2):nth-last-child(1)){
+  grid-template-columns:repeat(2,1fr);width:60%;margin:auto;
+}
+.post-content .wp-block-gallery:has(> .wp-block-image:nth-child(3):nth-last-child(1)){
+  grid-template-columns:repeat(3,1fr);
+}
+.post-content .wp-block-gallery .wp-block-image{margin:0;}
+.post-content .wp-block-gallery .wp-block-image img{
+  width:100%;height:450px;object-fit:cover;border-radius:10px;
+}
+.post-content iframe{
+  width:100%;aspect-ratio:16/9;margin:1.5rem 0;border:none;border-radius:8px;overflow:hidden;
 }
 
-/* 3.5 Enlaces */
-
-.post-content a { color: #0f6956; font-weight: 500; }
-.post-content a:hover { text-decoration: underline; }
-
-/* ==========================================================================
-   4. Multimedia: Imágenes, Galerías y Vídeos
-   ========================================================================== */
-
-/* 4.1 Imágenes Simples */
-
-.post-content .wp-block-image img {
-  display: block;
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+/* ======================================================================
+   5. Gutenberg especiales
+   ====================================================================== */
+.post-content .wp-block-media-text{
+  display:grid;grid-template-columns:50% 1fr;gap:1.5rem;align-items:center;
 }
+.wp-block-media-text__media{display:flex;justify-content:center;align-items:center;border-radius:14px;}
+.wp-block-media-text__media img{display:block;width:100%;max-height:450px;object-fit:contain;border-radius:14px;}
+.wp-block-media-text__content{margin:0;padding:0;}
 
-/* 4.2 Galerías Dinámicas */
-
-.post-content .wp-block-gallery {
-  display: grid;
-  gap: 10px;
-  margin: 1.5rem 0;
-  width: 100%;
-  grid-template-columns: repeat(1, 1fr);
+.post-content .wp-block-buttons{display:flex;justify-content:center;margin:2rem 0;}
+.post-content .wp-block-button__link{
+  display:flex;flex-wrap:wrap;justify-content:center;align-items:center;background:#0c5244;color:#fff;
+  padding:1rem 1.2rem;text-decoration:none;border-radius:28px;border:2px solid #25d366;transition:background .3s;
 }
+.post-content .wp-block-button__link:hover{background:#094134;}
 
-/* 1 imagen en galería */
-.post-content .wp-block-gallery:has(> .wp-block-image:only-child) {
-  grid-template-columns: 1fr;
-  width: 30%;
-  max-width: 200px;
-  margin: 2rem auto;
-  gap: 0;
+/* ======================================================================
+   6. Link back
+   ====================================================================== */
+.post-back-link{
+  display:inline-block;margin-top:2rem;color:#0070f3;text-decoration:none;font-weight:500;
+  border-bottom:1px solid transparent;transition:border-color .2s;
 }
+.post-back-link:hover{border-color:#0070f3;}
 
-/* 2 imágenes en galería */
-.post-content .wp-block-gallery:has(> .wp-block-image:nth-child(2):nth-last-child(1)) {
-  grid-template-columns: repeat(2, 1fr);
-  width: 60%;
-  margin: auto;
+/* ======================================================================
+   7. WhatsApp
+   ====================================================================== */
+.contenedor-principal-whatsapp-button{
+  position:fixed;bottom:20px;right:20px;z-index:1000;background:#25d366;border:none;border-radius:50%;
+  padding:12px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.3);transition:transform .2s;
 }
+.contenedor-principal-whatsapp-button:hover{transform:scale(1.05);}
+.contenedor-principal-whatsapp-button img{width:40px;height:40px;display:block;}
 
-/* 3 imágenes en galería */
-.post-content .wp-block-gallery:has(> .wp-block-image:nth-child(3):nth-last-child(1)) {
-  grid-template-columns: repeat(3, 1fr);
-}
+.wp-block-columns{display:flex;flex-wrap:wrap;justify-content:space-around;align-items:center;}
+.wp-block-column{display:flex;flex-direction:column;justify-content:center;align-items:center;}
+.aligncenter{margin:0;}
 
-/* Estilos de items */
-.post-content .wp-block-gallery .wp-block-image { margin: 0; }
-.post-content .wp-block-gallery .wp-block-image img {
-  width: 100%;
-  height: 450px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-/* 4.3 Vídeos e iFrames */
-
-.post-content iframe {
-  width: 100%;
-  aspect-ratio: 16/9;
-  margin: 1.5rem 0;
-  border: none;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-/* ==========================================================================
-   5. Bloques Especiales de Gutenberg
-   ========================================================================== */
-
-/* 5.1 Media + Texto en Dos Columnas */
-
-.post-content .wp-block-media-text {
-  display: grid;
-  grid-template-columns: 50% 1fr;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.wp-block-media-text__media {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  border-radius: 14px;
-}
-
-.wp-block-media-text__media img {
-  display: block;
-  width: 100%;
-  max-height: 450px;
-  object-fit: contain;
-  border-radius: 14px;
-}
-
-.wp-block-media-text__content { margin: 0; padding: 0; }
-
-/* 5.2 Botones */
-
-.post-content .wp-block-buttons {
-  display: flex;
-  justify-content: center;
-  margin: 2rem 0;
-}
-
-.post-content .wp-block-button__link {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  background-color: #0c5244;
-  color: #fff;
-  padding: 1rem 1.2rem;
-  text-decoration: none;
-  border-radius: 28px;
-  border: 2px solid #25d366;
-  transition: background 0.3s;
-}
-
-.post-content .wp-block-button__link:hover { background-color: #094134; }
-
-/* ==========================================================================
-   6. Navegación y Links de Regreso
-   ========================================================================== */
-
-.post-back-link {
-  display: inline-block;
-  margin-top: 2rem;
-  color: #0070f3;
-  text-decoration: none;
-  font-weight: 500;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s;
-}
-.post-back-link:hover { border-color: #0070f3; }
-
-/* ==========================================================================
-   7. Botón Flotante de WhatsApp
-   ========================================================================== */
-
-.contenedor-principal-whatsapp-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
-  background: #25d366;
-  border: none;
-  border-radius: 50%;
-  padding: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease;
-}
-.contenedor-principal-whatsapp-button:hover { transform: scale(1.05); }
-.contenedor-principal-whatsapp-button img { width: 40px; height: 40px; display: block; }
-
-.wp-block-columns {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: center;
-}
-.wp-block-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.aligncenter { margin: 0; }
-
-/* que el bloque video nunca se salga del contenedor */
 .post-content .wp-block-video,
-.post-content .wp-block-video video {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  padding: 0;
-}
-
-/* opcional: dar proporción y aspecto bonito */
-.post-content .wp-block-video video {
-  aspect-ratio: 16 / 9;
-  object-fit: cover; /* o 'contain' si no quieres recorte */
-  border-radius: 10px;
-  box-shadow: 0 2px 12px rgba(0,0,0,.1);
-}
-
-/* si Gutenberg lo puso en ancho completo, neutraliza márgenes extra */
+.post-content .wp-block-video video{max-width:100%;height:auto;display:block;padding:0;}
+.post-content .wp-block-video video{aspect-ratio:16/9;object-fit:cover;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.1);}
 .post-content .alignfull,
-.post-content .alignwide {
-  max-width: 100%;
-  margin-left: 0;
-  margin-right: 0;
+.post-content .alignwide{max-width:100%;margin-left:0;margin-right:0;}
+
+/* ======================================================================
+   8. TOC
+   ====================================================================== */
+.toc-mobile{display:none;border:1px solid #eee;border-radius:10px;background:#fafafa;}
+.toc-mobile-toggle{
+  display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;
+  padding:12px 14px;font-weight:600;font-size:1rem;background:transparent;border:0;cursor:pointer;
+}
+.toc-caret{transition:transform .2s;}
+.toc-caret.open{transform:rotate(180deg);}
+
+.toc-box{border:1px solid #eee;border-radius:12px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.04);overflow:hidden;}
+.toc-title{padding:12px 14px;font-weight:700;border-bottom:1px solid #f1f1f1;background:#fafafa;}
+.toc-list{padding:8px 12px 10px;}
+.toc-list ul{list-style:none;margin:0;padding:0;}
+.toc-list li + li{margin-top:8px;}
+.toc-list a{
+  display:block;font-size:.95rem;line-height:1.35;color:#374151;border-left:3px solid transparent;
+  padding:6px 8px 6px 10px;border-radius:6px;text-decoration:underline;
+}
+.toc-list a:hover{background:#f8fafc;}
+.toc-list a.active{color:#0f6956;border-left-color:#fbbf24;background:#fff8e6;font-weight:600;}
+
+/* ======================================================================
+   9. Sticky SOLO en desktop y grid item fallback
+   ====================================================================== */
+@media (min-width: 901px){
+  /* Haz sticky el item de la columna del TOC (preferido) */
+  .post-toc{
+    position: sticky;
+    top: calc(var(--header-sticky-height) + 12px);
+    align-self: start;
+    height: fit-content;
+  }
+  /* Fallback: si no usas .post-toc, aplica al bloque de desktop */
+  .toc-desktop{
+    position: sticky;
+    top: calc(var(--header-sticky-height) + 12px);
+    align-self: start;
+    height: fit-content;
+  }
 }
 
-/* ==========================================================================
-   8. TOC – Desktop y Mobile
-   ========================================================================== */
-
-/* Mobile (<900px): bloque encima del contenido */
-.toc-mobile {
-  display: none;
-  /* margin: 1rem 0 1.25rem; */
-  border: 1px solid #eee;
-  border-radius: 10px;
-  background: #fafafa;
-}
-.toc-mobile-toggle {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 12px 14px;
-  font-weight: 600;
-  font-size: 1rem;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-}
-.toc-caret { transition: transform .2s ease; }
-.toc-caret.open { transform: rotate(180deg); }
-
-/* Desktop (≥900px): sticky a la derecha */
-.toc-desktop {
-  position: sticky;
-  top: calc(var(--header-sticky-height) + 12px);
-  height: fit-content;
-}
-.toc-box {
-  border: 1px solid #eee;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 10px rgba(0,0,0,.04);
-  overflow: hidden;
-}
-.toc-title {
-  padding: 12px 14px;
-  font-weight: 700;
-  border-bottom: 1px solid #f1f1f1;
-  background: #fafafa;
-}
-.toc-list { padding: 8px 12px 10px; }
-.toc-list ul { list-style: none; margin: 0; padding: 0; }
-.toc-list li + li { margin-top: 8px; }
-.toc-list a {
-  display: block;
-  font-size: .95rem;
-  line-height: 1.35;
-  text-decoration: none;
-  color: #374151;
-  border-left: 3px solid transparent;
-  padding: 6px 8px 6px 10px;
-  border-radius: 6px;
-}
-
-.toc-list li {
-  text-decoration: underline;
-}
-
-
-.toc-list a:hover { background: #f8fafc; }
-.toc-list a.active {
-  color: #0f6956;
-  border-left-color: #fbbf24;
-  background: #fff8e6;
-  font-weight: 600;
-}
-
-/* ==========================================================================
-   9. Responsive (Móvil y Tablet)
-   ========================================================================== */
-
-@media (max-width: 900px) {
-
-  .post-layout{
-  margin: 0;
-  padding:0 ;}
-
+/* ======================================================================
+   10. Responsive (móvil)
+   ====================================================================== */
+@media (max-width: 900px){
+  /* En móvil sumas ~70px de barra superior → compensamos */
+  :root{ --header-sticky-height: 266px; } /* 96 + 70 */
+  html{ scroll-padding-top: calc(var(--header-sticky-height) + 8px); }
+  
   .post-content{
     margin-top: 0;
   }
+  .post-container{ padding:1rem; margin-top:70px; padding-top:0; }
+  .post-title{ font-size:clamp(1.8rem,6vw,2.2rem); }
 
-
-  .post-container { 
-    padding: 1rem; 
-    margin-top: 70px;
-    padding-top: 0;
-    }
-  
-  .post-title { font-size: clamp(1.8rem, 6vw, 2.2rem); }
-
-  /* Reordenar: TOC arriba y contenido abajo */
-  .post-layout {
-    display: grid;
-    grid-template-columns: 1fr;
+  /* Reordenar: TOC arriba, contenido abajo */
+  .post-layout{
+    grid-template-columns:1fr;
     grid-template-areas:
       "toc"
       "content";
-    /* gap: 16px; */
+    gap:16px;
   }
 
-  /* TOC móvil visible y TOC desktop oculto */
-  .toc-mobile { display: block; }
-  .toc-desktop { display: none; }
+  .toc-mobile{display:block;}
+  .toc-desktop{display:none;}
 
-  /* Galería siempre en 1 columna */
-  .post-content .wp-block-gallery { grid-template-columns: 1fr !important; }
-
-  .wp-block-media-text__media img { max-height: 300px; }
-
-  /* Imágenes responsivas */
-  .post-content img[class*="wp-image-"] { width: 100%; }
-
-  .post-content .wp-block-image img {
-    display: block;
-    width: 100%;
-    height: 200px;
-    object-fit: contain;
-    border-radius: 10px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  .post-content .wp-block-gallery{grid-template-columns:1fr !important;}
+  .wp-block-media-text__media img{max-height:300px;}
+  .post-content img[class*="wp-image-"]{width:100%;}
+  .post-content .wp-block-image img{
+    width:100%;height:200px;object-fit:contain;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,.1);
   }
 
-  .post-content .wp-block-media-text {
-    display: grid !important;
-    grid-template-columns: 1fr !important; /* fuerza una sola columna */
-  }
+  .post-content .wp-block-media-text{display:grid !important;grid-template-columns:1fr !important;}
+  .wp-block-media-text__media{order:1;}
+  .wp-block-media-text__content{order:2;margin-top:1rem;}
 
-  .wp-block-media-text__media { order: 1; } /* imagen arriba */
-  .wp-block-media-text__content { order: 2; margin-top: 1rem; } /* texto abajo */
-
-  .post-content .wp-block-button__link { margin: 0.5rem 0; font-size: 0.8rem; }
+  .post-content .wp-block-button__link{margin:.5rem 0;font-size:.8rem;}
 }
-
-/* ==========================================================================
-   10. Accesibilidad y mejoras de UX
-   ========================================================================== */
-html { scroll-behavior: smooth; }

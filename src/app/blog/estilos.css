@@ -189,3 +189,69 @@
   background-color: transparent;
   border: none;
 }
+
+/* =========================
+   3) Paginación del listado
+   ========================= */
+.Blog-paginacion {
+  margin: 2.5rem 0 1rem;
+  padding: 0 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.Blog-page-btn {
+  display: inline-block;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  background: #005f73;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.Blog-page-btn:hover { transform: translateY(-2px); }
+.Blog-page-btn--disabled {
+  background: #c7d3d6;
+  color: #6a7a7d;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.Blog-page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.Blog-page-num {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.6rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef5f6;
+  color: #005f73;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.Blog-page-num:hover { background: #e5f0f2; transform: translateY(-1px); }
+
+.Blog-page-num--active {
+  background: #ee9b00;
+  color: #fff;
+}
+
+.Blog-page-ellipsis {
+  padding: 0 0.3rem;
+  color: #7a8b8e;
+}

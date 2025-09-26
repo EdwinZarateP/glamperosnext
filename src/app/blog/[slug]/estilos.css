@@ -394,8 +394,8 @@
    ========================================================================== */
 
 @media (max-width: 900px) {
+
   .post-layout{
-  /* background-color: #094134; */
   margin: 0;
   padding:0 ;}
 
@@ -403,7 +403,13 @@
     margin-top: 0;
   }
 
-  .post-container { width: 95%; padding: 1rem; }
+
+  .post-container { 
+    padding: 1rem; 
+    margin-top: 70px;
+    padding-top: 0;
+    }
+  
   .post-title { font-size: clamp(1.8rem, 6vw, 2.2rem); }
 
   /* Reordenar: TOC arriba y contenido abajo */

@@ -5,7 +5,8 @@ import Link from "next/link";
 import HeaderBlog from "../../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
 import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
-import PostTOC from "./PostTOC";     // client component
+import PostTOC from "./PostTOC";
+import GalleryEnhancer from "./GalleryEnhancer";
 import "./estilos.css";
 
 /* Helpers SEO */
@@ -115,6 +116,7 @@ export default async function BlogPost({
                 className="post-content"
                 dangerouslySetInnerHTML={{ __html: post.content.rendered }}
               />
+              <GalleryEnhancer />
               <PostTOC />
             </div>
 

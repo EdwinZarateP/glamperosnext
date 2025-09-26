@@ -123,8 +123,10 @@ html{
   width:100%;height:450px;object-fit:cover;border-radius:10px;
 }
 .post-content iframe{
-  width:100%;aspect-ratio:16/9;margin:1.5rem 0;border:none;border-radius:8px;overflow:hidden;
+  width:100%;aspect-ratio:16/9;border:none;border-radius:8px;overflow:hidden;
+  height: 350px;
 }
+
 
 /* ======================================================================
    5. Gutenberg especiales
@@ -195,6 +197,12 @@ html{
 .toc-list a:hover{background:#f8fafc;}
 .toc-list a.active{color:#0f6956;border-left-color:#fbbf24;background:#fff8e6;font-weight:600;}
 
+
+.wp-block-embed{
+  padding: 0;
+  margin: 0;
+}
+
 /* ======================================================================
    9. Sticky SOLO en desktop y grid item fallback
    ====================================================================== */
@@ -225,8 +233,15 @@ html{
   
   .post-content{
     margin-top: 0;
+    padding: 0;
   }
-  .post-container{ padding:1rem; margin-top:70px; padding-top:0; }
+  
+  .post-container{ 
+    width:90%;
+    margin-top:70px;
+    padding: 0;
+    padding-top:0; }
+
   .post-title{ font-size:clamp(1.8rem,6vw,2.2rem); }
 
   /* Reordenar: TOC arriba, contenido abajo */
@@ -253,4 +268,136 @@ html{
   .wp-block-media-text__content{order:2;margin-top:1rem;}
 
   .post-content .wp-block-button__link{margin:.5rem 0;font-size:.8rem;}
+
+
+}
+
+/* ===== Slider tipo Instagram para .wp-block-gallery ===== */
+/* CSS — todas las clases propias con prefijo bloggallery- */
+
+/* Contenedor del slider */
+.post-content .wp-block-gallery.bloggallery-slider{
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;            /* nuevo stacking context */
+  z-index: 0;                    /* base */
+}
+
+/* Rail scrolleable (UL) */
+.post-content .wp-block-gallery.bloggallery-slider > .blocks-gallery-grid{
+  display: block;
+  margin: 0; padding: 0; list-style: none;
+  overflow-x: auto; overflow-y: hidden;
+  white-space: nowrap;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 1;                    /* debajo del overlay */
+}
+
+/* Fallback: sin UL */
+.post-content .wp-block-gallery.bloggallery-slider:not(:has(> .blocks-gallery-grid)){
+  overflow-x: auto; overflow-y: hidden;
+  white-space: nowrap; scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  position: relative; z-index: 1;
+}
+
+/* Slides (explicítamente debajo del overlay) */
+.post-content .wp-block-gallery.bloggallery-slider > .blocks-gallery-grid > .blocks-gallery-item,
+.post-content .wp-block-gallery.bloggallery-slider > .wp-block-image,
+.post-content .wp-block-gallery.bloggallery-slider > figure.wp-block-image{
+  display: inline-block; vertical-align: top;
+  width: 100%; min-width: 100%;
+  margin: 0; padding: 0;
+  scroll-snap-align: center;
+  position: relative;
+  z-index: 1;                    /* < overlay */
+}
+
+/* Cualquier media no puede superar al overlay */
+.post-content .wp-block-gallery.bloggallery-slider img,
+.post-content .wp-block-gallery.bloggallery-slider video,
+.post-content .wp-block-gallery.bloggallery-slider iframe{
+  position: relative !important;
+  z-index: 1 !important;         /* < overlay */
+}
+
+/* Imágenes */
+.post-content .wp-block-gallery.bloggallery-slider img{
+  width: 100%; height: 420px;
+  object-fit: cover; border-radius: 12px; display: block;
+}
+
+/* Paginación */
+.bloggallery-pagination{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  margin:.5rem 0 0; font-family:var(--font-be-vietnam, system-ui, sans-serif);
+}
+.bloggallery-dots{display:flex; align-items:center; gap:8px;}
+
+.bloggallery-dot{
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  display:inline-block;
+  width:8px; height:8px;
+  min-width:8px; min-height:8px;
+  aspect-ratio:1/1;            /* asegura proporción 1:1 */
+  padding:0;                    /* quita padding por defecto */
+  border:0;                     /* quita borde por defecto */
+  border-radius:50%;
+  background:#d7dbe0;
+  flex:0 0 auto;                /* no permitir que el flex lo estire */
+  line-height:0;                /* sin caja de texto */
+  box-sizing:content-box;       /* que width/height sean el diámetro real */
+  cursor:pointer;
+}
+
+.bloggallery-dot.bloggallery-active{ background: #0f6956; }
+.bloggallery-counter{ font-size: .9rem; color: #4b5563; }
+.bloggallery-dot:focus-visible{ outline: 2px solid #0f6956; outline-offset: 2px; }
+
+/* ---------- Overlay de flechas (siempre visible y por encima) ---------- */
+.bloggallery-arrows{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 2147483647;           /* por encima de cualquier slide */
+  transform: translateZ(0);      /* nueva capa de composición */
+}
+
+/* Botones de flecha */
+.bloggallery-arrow{
+  pointer-events: auto;
+  display: flex;
+  align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 0; background: rgba(255,255,255,.92);
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
+  font-size: 28px; line-height: 1; color: #0f172a;
+  transition: background .2s, transform .2s;
+  user-select: none;
+  visibility: visible !important;    /* nunca ocultas por CSS externo */
+}
+.bloggallery-arrow:hover{ background: #fff; transform: scale(1.05); }
+.bloggallery-arrow-left{  margin-left: 10px; }
+.bloggallery-arrow-right{ margin-right: 10px; }
+
+/* Estado desactivado (visible) */
+.bloggallery-arrow.bloggallery-is-disabled,
+.bloggallery-arrow:disabled{
+  opacity: .45;
+  cursor: default;
+  pointer-events: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+/* Desktop */
+@media (min-width: 900px){
+  .post-content .wp-block-gallery.bloggallery-slider img{ height: 520px; }
+  .bloggallery-dots{ display:none; }
+  .bloggallery-pagination{ justify-content:flex-end; }
 }

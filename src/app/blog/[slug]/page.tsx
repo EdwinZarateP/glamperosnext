@@ -5,9 +5,10 @@ import Link from "next/link";
 import HeaderBlog from "../../../Componentes/HeaderBlog";
 import Footer from "@/Componentes/Footer";
 import BotonWhatsApp from "@/Componentes/BotonWhatsApp";
+import PostTOC from "./PostTOC";             // ← importa el client component
 import "./estilos.css";
 
-/* ===== Helpers para SEO ===== */
+/* Helpers SEO */
 function decodeEntities(str: string) {
   return str
     .replace(/&#8220;/g, '"')
@@ -24,7 +25,7 @@ function clamp160(s: string) {
   return s.length > 160 ? s.slice(0, 157) + "…" : s;
 }
 
-/* ===== Metadatos dinámicos por post ===== */
+/* Metadata */
 export async function generateMetadata(
   { params }: { params: { slug: string } }
 ): Promise<Metadata> {
@@ -71,7 +72,6 @@ export async function generateMetadata(
   };
 }
 
-/* ===== Página del post ===== */
 export default async function BlogPost({
   params: { slug },
 }: {
@@ -87,6 +87,7 @@ export default async function BlogPost({
 
   return (
     <>
+      {/* expón la altura de tu header sticky via CSS var si quieres afinar offset */}
       <HeaderBlog />
 
       <main className="post-container">
@@ -107,10 +108,15 @@ export default async function BlogPost({
               className="post-title"
               dangerouslySetInnerHTML={{ __html: post.title.rendered }}
             />
-            <article
-              className="post-content"
-              dangerouslySetInnerHTML={{ __html: post.content.rendered }}
-            />
+
+            <div className="post-layout">              
+              <article
+                className="post-content"
+                dangerouslySetInnerHTML={{ __html: post.content.rendered }}
+              />
+              <PostTOC />
+            </div>
+
             <Link href="/blog" className="post-back-link">← Ir al blog</Link>
           </>
         )}

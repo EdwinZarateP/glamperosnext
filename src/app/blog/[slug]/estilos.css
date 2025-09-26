@@ -375,6 +375,12 @@
   padding: 6px 8px 6px 10px;
   border-radius: 6px;
 }
+
+.toc-list li {
+  text-decoration: underline;
+}
+
+
 .toc-list a:hover { background: #f8fafc; }
 .toc-list a.active {
   color: #0f6956;

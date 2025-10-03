@@ -230,7 +230,7 @@ const ModificarGlamping: React.FC = () => {
               <option>cabaña</option>
               <option>domo</option>
               <option>Casa del árbol</option>
-              <option>remolque</option>
+              <option>tiny_house</option>
               <option>tipi</option>
               <option>Lumipod</option>
               <option>Loto</option>

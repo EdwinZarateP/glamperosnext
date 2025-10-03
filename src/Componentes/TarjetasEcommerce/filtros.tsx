@@ -3,6 +3,7 @@ import {
   MdPool,
   MdOutlineCabin,
 } from "react-icons/md";
+import { FaCaravan } from "react-icons/fa";
 import {
   FaHotTubPerson,
   FaCat,
@@ -31,6 +32,7 @@ export const FILTROS = [
   { value: 'cali',     label: 'Cerca a Cali',       icon: <FaCat /> },
   { value: 'domo',     label: 'Domo',               icon: <GiHabitatDome /> },
   { value: 'tipi',     label: 'Tipi',               icon: <GiHut /> },
+  { value: 'tiny_house',     label: 'Tiny house',   icon: <FaCaravan /> },  
   { value: 'tienda',   label: 'Tienda',             icon: <GiCampingTent /> },
   { value: 'cabana',   label: 'Cabaña',             icon: <MdOutlineCabin /> },
   { value: 'lumipod',  label: 'Lumipod',            icon: <img src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/lumi.svg" alt="Lumipod" className="TarjetasEcommerce-svg-icon" /> },

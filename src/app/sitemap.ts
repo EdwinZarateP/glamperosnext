@@ -39,7 +39,7 @@ export default async function sitemap() {
 
   // 3. Listado de ciudades, tipos y amenidades clave
   const ciudades = ["medellin", "bogota", "cali"];
-  const tipos = ["domo", "tipi", "tienda", "cabana", "lumipod", "chalet"];
+  const tipos = ["domo", "tipi", "tienda", "cabana", "lumipod", "chalet","tiny_house"];
   const amenidades = ["jacuzzi", "piscina", "mascotas"];
 
   const cityTypePaths = ciudades.flatMap((ciudad) =>

@@ -32,7 +32,7 @@ const municipiosConSlug: MunicipioConSlug[] = (municipiosData as Municipio[]).ma
 }));
 
 // 2) Tipos válidos
-const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod', 'loto', 'chalet'];
+const TIPOS = ['domo', 'tipi', 'tienda', 'cabana', 'lumipod', 'loto', 'chalet','tiny_house'];
 
 // 3) Limpieza de segmentos
 const limpiarSegmentosPagina = (segmentos: string[]) =>

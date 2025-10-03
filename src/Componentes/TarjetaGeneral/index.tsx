@@ -282,6 +282,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
                   lulipod: "Lulipod",
                   loto: "Loto",
                   chalet: "Chalet",
+                  tiny_house:"Tiny house"
                 };
                 const tipoFormateado = mapaTipo[tipoGlamping.toLowerCase()] || tipoGlamping;
                 const sufijos = [

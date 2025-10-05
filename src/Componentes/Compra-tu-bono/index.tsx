@@ -33,6 +33,13 @@ const money = (n: number) =>
 
 const presets = [200_000, 300_000, 400_000, 500_000];
 
+// 🔐 Datos bancarios + QR
+const CUENTA_TITULAR = "Bancolombia – Glamperos SAS";
+const CUENTA_TIPO = "Ahorros";
+const CUENTA_NUMERO = "292-000059-43";
+const QR_LLAVE_URL =
+  "https://storage.googleapis.com/glamperos-imagenes/Imagenes/llave%20glamepros.jpeg";
+
 export default function CompraTuBono() {
   // Cookie de usuario (opcional). Si no existe, enviaremos "user_no_registrado"
   const [idUsuarioCookie, setIdUsuarioCookie] = useState<string | null>(null);
@@ -52,7 +59,7 @@ export default function CompraTuBono() {
   // Bonos seleccionados
   const [items, setItems] = useState<BonosItem[]>([]);
   const [customValor, setCustomValor] = useState<number | "">("");
-  const [filePDF, setFilePDF] = useState<File | null>(null);
+  const [fileSoporte, setFileSoporte] = useState<File | null>(null);
 
   // UI
   const [loading, setLoading] = useState(false);
@@ -92,22 +99,50 @@ export default function CompraTuBono() {
 
   const handleFile = (f: File | null) => {
     if (!f) {
-      setFilePDF(null);
+      setFileSoporte(null);
       return;
     }
-    if (f.type !== "application/pdf") {
-      setError("El comprobante debe ser un archivo PDF.");
+    // Permitimos PDF o imagen (jpg/png/webp)
+    const okTypes = [
+      "application/pdf",
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+    ];
+    if (!okTypes.includes(f.type)) {
+      setError("El comprobante debe ser PDF o imagen (JPG/PNG/WEBP).");
       return;
     }
     setError(null);
-    setFilePDF(f);
+    setFileSoporte(f);
+  };
+
+  const copy = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: `${label} copiado`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch {
+      Swal.fire({
+        icon: "info",
+        title: "No se pudo copiar",
+        text: text,
+      });
+    }
   };
 
   // ✅ Ya NO validamos la cookie; si no existe, enviamos "user_no_registrado"
   const validar = () => {
     if (!emailComprador.trim()) return "Ingresa tu correo electrónico.";
     if (!cedulaNit.trim()) return "Ingresa tu cédula o NIT.";
-    if (!filePDF) return "Adjunta el comprobante de pago en PDF.";
+    if (!fileSoporte) return "Adjunta el comprobante de pago (PDF o imagen).";
     if (items.length === 0) return "Agrega al menos un bono.";
     if (items.some((i) => i.valor < FORM_MINIMO))
       return `Todos los bonos deben ser mínimo ${money(FORM_MINIMO)}.`;
@@ -156,8 +191,8 @@ export default function CompraTuBono() {
       }
 
       const form = new FormData();
-      if (!filePDF) throw new Error("Falta el comprobante PDF.");
-      form.append("soporte_pago", filePDF);
+      if (!fileSoporte) throw new Error("Falta el comprobante de pago.");
+      form.append("soporte_pago", fileSoporte);
 
       const url = `${API_BASE}/bonos/comprar?${qs.toString()}`;
       const resp = await fetch(url, { method: "POST", body: form });
@@ -179,7 +214,6 @@ export default function CompraTuBono() {
 
       const data: ApiRespuesta = await resp.json();
 
-      // ✅ Mostrar mensaje en SweetAlert (no en el JSX)
       await Swal.fire({
         icon: "success",
         title: "Pago recibido",
@@ -204,9 +238,9 @@ export default function CompraTuBono() {
         confirmButtonText: "Entendido",
       });
 
-      // Limpieza mínima
+      // Limpieza
       setItems([]);
-      setFilePDF(null);
+      setFileSoporte(null);
     } catch (e: any) {
       setError(e?.message || "Error inesperado.");
     } finally {
@@ -226,7 +260,7 @@ export default function CompraTuBono() {
           </div>
         </header>
 
-        {/* Datos del comprador (idUsuario va oculto desde cookie o "user_no_registrado") */}
+        {/* Datos del comprador */}
         <section className="compra-tu-bono-section">
           <h2 className="compra-tu-bono-section-title">Tus datos</h2>
           <div className="compra-tu-bono-grid">
@@ -274,7 +308,7 @@ export default function CompraTuBono() {
 
         {/* Personalizados */}
         <section className="compra-tu-bono-section">
-          <h2 className="compra-tu-bono-section-title">Arma tu paquete</h2>
+          <h2 className="compra-tu-bono-section-title">Personaliza tu precio</h2>
           <div className="compra-tu-bono-custom">
             <input
               className="compra-tu-bono-input compra-tu-bono-input-number"
@@ -318,17 +352,51 @@ export default function CompraTuBono() {
           )}
         </section>
 
-        {/* Comprobante PDF */}
+        {/* 🔔 Datos para transferir (AQUÍ VA EL BLOQUE QUE PREGUNTASTE) */}
         <section className="compra-tu-bono-section">
-          <h2 className="compra-tu-bono-section-title">Comprobante de pago (PDF)</h2>
+          <h2 className="compra-tu-bono-section-title">Datos para transferir</h2>
+
+          <div className="compra-tu-bono-bank">
+            <div className="compra-tu-bono-bank-left">
+              <p>🏦 <b>{CUENTA_TITULAR}</b></p>
+              <p>📂 <b>Tipo:</b> {CUENTA_TIPO}</p>
+              <p>
+                🔢 <b>Nº</b> {CUENTA_NUMERO}{" "}
+                <button
+                  type="button"
+                  className="compra-tu-bono-mini-btn"
+                  onClick={() => copy(CUENTA_NUMERO, "Número de cuenta")}
+                >
+                  Copiar
+                </button>
+              </p>
+              <p>
+              </p>
+              <small>Transfiere y adjunta el comprobante en el siguiente paso.</small>
+            </div>
+
+            <div className="compra-tu-bono-bank-right">
+              <img
+                src={QR_LLAVE_URL}
+                alt="QR de la llave Bancolombia"
+                className="compra-tu-bono-qr"
+              />
+              <small>Escanéame para pagar con la llave</small>
+            </div>
+          </div>
+        </section>
+
+        {/* Comprobante (PDF o Imagen) */}
+        <section className="compra-tu-bono-section">
+          <h2 className="compra-tu-bono-section-title">Comprobante de pago</h2>
           <label className="compra-tu-bono-upload">
             <input
               type="file"
-              accept="application/pdf"
+              accept="application/pdf,image/*"
               onChange={(e) => handleFile(e.target.files?.[0] || null)}
             />
             <span className="compra-tu-bono-upload-hint">
-              {filePDF ? filePDF.name : "Selecciona tu comprobante (PDF) *"}
+              {fileSoporte ? fileSoporte.name : "Selecciona tu comprobante (PDF o imagen) *"}
             </span>
           </label>
         </section>

@@ -251,7 +251,65 @@
   font-weight: 700;
 }
 
-/* =============== Subida de PDF =============== */
+/* =============== Datos bancarios + QR =============== */
+.compra-tu-bono-bank {
+  display: grid;
+  gap: 14px;
+  background: #f4fffb;
+  border: 1px solid #cfeee3;
+  border-radius: 14px;
+  padding: 14px;
+  align-items: start;
+}
+
+/* ≥ 700px: dos columnas (texto / QR) */
+@media (min-width: 700px) {
+  .compra-tu-bono-bank {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.compra-tu-bono-bank-left p {
+  margin: 6px 0;
+  color: #234;
+  font-size: 14px;
+}
+
+.compra-tu-bono-bank-left small {
+  color: #5b7b71;
+}
+
+.compra-tu-bono-mini-btn {
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 10px;
+  border: 1px solid #cdeee1;
+  background: #e8fff6;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.compra-tu-bono-mini-btn:hover {
+  background: #dffff2;
+}
+
+.compra-tu-bono-bank-right {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.compra-tu-bono-qr {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #d9efe7;
+  box-shadow: 0 8px 22px rgba(23, 147, 104, 0.08);
+}
+
+/* =============== Subida de comprobante (PDF o imagen) =============== */
 .compra-tu-bono-upload {
   display: grid;
   grid-template-columns: 1fr;

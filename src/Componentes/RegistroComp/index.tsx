@@ -13,7 +13,7 @@ type ApiRespuesta = {
   bonos?: any[];
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || ""; // ej: "http://127.0.0.1:8000"
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || ""; 
 const FORM_MINIMO = 200_000; // mínimo en el front
 const IVA_PORCENTAJE = 0.19;
 const presets = [200_000, 300_000, 400_000, 500_000];

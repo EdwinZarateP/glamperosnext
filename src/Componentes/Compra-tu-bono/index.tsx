@@ -1,7 +1,8 @@
-'use client';
+// src/Componentes/CompraTuBono.tsx
+"use client";
+
 import React, { useEffect, useMemo, useState } from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 import "./estilos.css";
 
 type BonosItem = { valor: number; id: string };
@@ -10,24 +11,29 @@ type ApiRespuesta = {
   estado_compra: string;
   compra_lote_id: string;
   bonos_creados: number;
-  totales?: { valor_redimible_total_sin_iva: number; total_pagado_con_iva: number };
+  totales?: {
+    valor_redimible_total_sin_iva: number;
+    total_pagado_con_iva: number;
+  };
   bonos?: any[];
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || ""; // ej: "http://127.0.0.1:8000"
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || ""; // ej: "http://127.0.0.1:8000"
 
 const FORM_MINIMO = 200_000; // mínimo en el front
 const IVA_PORCENTAJE = 0.19;
 
 const money = (n: number) =>
-  new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+  }).format(n);
 
 const presets = [200_000, 300_000, 400_000, 500_000];
 
 export default function CompraTuBono() {
-  const router = useRouter();
-
-  // idUsuario desde cookie (solo lectura)
+  // Cookie de usuario (opcional). Si no existe, enviaremos "user_no_registrado"
   const [idUsuarioCookie, setIdUsuarioCookie] = useState<string | null>(null);
 
   // Datos del comprador
@@ -53,13 +59,14 @@ export default function CompraTuBono() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Lee la cookie al montar el componente
-    const id = Cookies.get("idUsuario") || null;
-    setIdUsuarioCookie(id);
+    setIdUsuarioCookie(Cookies.get("idUsuario") || null);
   }, []);
 
   // Cálculos
-  const totalBase = useMemo(() => items.reduce((acc, it) => acc + it.valor, 0), [items]);
+  const totalBase = useMemo(
+    () => items.reduce((acc, it) => acc + it.valor, 0),
+    [items]
+  );
   const totalIVA = useMemo(() => Math.round(totalBase * IVA_PORCENTAJE), [totalBase]);
   const totalConIVA = useMemo(() => totalBase + totalIVA, [totalBase, totalIVA]);
 
@@ -96,8 +103,8 @@ export default function CompraTuBono() {
     setFilePDF(f);
   };
 
+  // ✅ Ya NO validamos la cookie; si no existe, enviamos "user_no_registrado"
   const validar = () => {
-    if (!idUsuarioCookie) return "Debes registrarte para continuar.";
     if (!emailComprador.trim()) return "Ingresa tu correo electrónico.";
     if (!cedulaNit.trim()) return "Ingresa tu cédula o NIT.";
     if (!filePDF) return "Adjunta el comprobante de pago en PDF.";
@@ -109,6 +116,9 @@ export default function CompraTuBono() {
       if (!razonSocial.trim() || !nitFact.trim() || !emailFact.trim() || !direccionFact.trim()) {
         return "Completa los datos de facturación requeridos.";
       }
+    }
+    if (!API_BASE) {
+      return "API_BASE no está configurado. Define NEXT_PUBLIC_API_BASE en tu entorno.";
     }
     return null;
   };
@@ -129,8 +139,10 @@ export default function CompraTuBono() {
       const bonos = items.map((it) => ({ valor: it.valor }));
       const datos_bonos_json = JSON.stringify(bonos);
 
+      const idAEnviar = idUsuarioCookie || "user_no_registrado";
+
       const qs = new URLSearchParams();
-      qs.set("id_usuario", idUsuarioCookie as string);
+      qs.set("id_usuario", idAEnviar);
       qs.set("email_comprador", emailComprador);
       qs.set("cedula_o_nit", cedulaNit);
       qs.set("fechaCompra", new Date().toISOString());
@@ -148,16 +160,27 @@ export default function CompraTuBono() {
       if (!filePDF) throw new Error("Falta el comprobante PDF.");
       form.append("soporte_pago", filePDF);
 
-      const resp = await fetch(`${API_BASE}/bonos/comprar?${qs.toString()}`, {
-        method: "POST",
-        body: form,
-      });
+      const url = `${API_BASE}/bonos/comprar?${qs.toString()}`;
+      const resp = await fetch(url, { method: "POST", body: form });
+
+      // Manejo robusto: si no es JSON, mostrar texto (evita "Unexpected token <")
+      const ct = resp.headers.get("content-type") || "";
+      const isJson = ct.includes("application/json");
 
       if (!resp.ok) {
-        const text = await resp.text();
-        throw new Error(text || "Error al procesar la compra.");
+        const msg = isJson ? (await resp.json())?.detail || (await resp.text()) : await resp.text();
+        throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
       }
-      const data: ApiRespuesta = await resp.json();
+
+      const data: ApiRespuesta = isJson ? await resp.json() : ({} as any);
+      if (!isJson) {
+        // Si el server respondió HTML u otra cosa, advierte claramente
+        const snippet = await resp.text();
+        throw new Error(
+          `La API no respondió JSON.\nRevisa CORS/URL (${url}).\nRespuesta: ${snippet.slice(0, 260)}`
+        );
+      }
+
       setApiResp(data);
       // Limpieza mínima
       setItems([]);
@@ -169,45 +192,6 @@ export default function CompraTuBono() {
     }
   };
 
-  // Si NO existe cookie idUsuario, mostramos mensaje y CTA a /registro
-  if (!idUsuarioCookie) {
-    return (
-      <div className="compra-tu-bono-root">
-        <div className="compra-tu-bono-card" role="alert">
-          <header className="compra-tu-bono-header">
-            <div className="compra-tu-bono-titles">
-              <h1 className="compra-tu-bono-title">Compra tu Bono Glamperos</h1>
-              <p className="compra-tu-bono-subtitle">
-                Para continuar, primero debes registrarte.
-              </p>
-            </div>
-          </header>
-
-          <div className="compra-tu-bono-error" style={{ marginTop: 12 }}>
-            No encontramos tu sesión. Debes iniciar sesion o registrarte y luego volver para continuar.
-          </div>
-
-          <div className="compra-tu-bono-actions" style={{ marginTop: 16 }}>
-            <button
-              type="button"
-              className="compra-tu-bono-submit"
-              onClick={() => router.push("/registro")}
-            >
-              Ir a registro
-            </button>
-          </div>
-
-          <footer className="compra-tu-bono-footer">
-            <p>
-              ¿Ya te registraste? Vuelve a esta página después de iniciar sesión para completar tu compra.
-            </p>
-          </footer>
-        </div>
-      </div>
-    );
-  }
-
-  // Si SÍ hay cookie idUsuario, render normal del formulario
   return (
     <div className="compra-tu-bono-root">
       <form className="compra-tu-bono-card" onSubmit={onSubmit}>
@@ -220,7 +204,7 @@ export default function CompraTuBono() {
           </div>
         </header>
 
-        {/* Datos del comprador (SIN pedir idUsuario) */}
+        {/* Datos del comprador (idUsuario va oculto desde cookie o "user_no_registrado") */}
         <section className="compra-tu-bono-section">
           <h2 className="compra-tu-bono-section-title">Tus datos</h2>
           <div className="compra-tu-bono-grid">
@@ -247,14 +231,9 @@ export default function CompraTuBono() {
               />
             </label>
           </div>
-
-          {/* Solo informativo: idUsuario tomado de cookie */}
-          <div className="compra-tu-bono-footer" style={{ marginTop: 8 }}>
-            <small>Tu ID de usuario se detectó automáticamente.</small>
-          </div>
         </section>
 
-        {/* Presets */}
+        {/* Bonos estándar */}
         <section className="compra-tu-bono-section">
           <h2 className="compra-tu-bono-section-title">Bonos estándar</h2>
           <div className="compra-tu-bono-presets">
@@ -408,7 +387,7 @@ export default function CompraTuBono() {
         </section>
 
         {/* Estados */}
-        {error && <div className="compra-tu-bono-error">{error}</div>}
+        {error && <div className="compra-tu-bono-error" role="alert">{error}</div>}
         {apiResp && (
           <div className="compra-tu-bono-success">
             <h3>{apiResp.mensaje}</h3>

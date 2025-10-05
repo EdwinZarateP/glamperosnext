@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 import "./estilos.css";
 
 type BonosItem = { valor: number; id: string };
@@ -55,7 +56,6 @@ export default function CompraTuBono() {
 
   // UI
   const [loading, setLoading] = useState(false);
-  const [apiResp, setApiResp] = useState<ApiRespuesta | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function CompraTuBono() {
       }
     }
     if (!API_BASE) {
-      return "API_BASE no está configurado. Define NEXT_PUBLIC_API_BASE en tu entorno.";
+      return "API_BASE no está configurado. Define NEXT_PUBLIC_API_BASE_URL en tu entorno.";
     }
     return null;
   };
@@ -126,7 +126,6 @@ export default function CompraTuBono() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setApiResp(null);
 
     const err = validar();
     if (err) {
@@ -163,7 +162,6 @@ export default function CompraTuBono() {
       const url = `${API_BASE}/bonos/comprar?${qs.toString()}`;
       const resp = await fetch(url, { method: "POST", body: form });
 
-      // Manejo robusto: si no es JSON, mostrar texto (evita "Unexpected token <")
       const ct = resp.headers.get("content-type") || "";
       const isJson = ct.includes("application/json");
 
@@ -172,16 +170,40 @@ export default function CompraTuBono() {
         throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
       }
 
-      const data: ApiRespuesta = isJson ? await resp.json() : ({} as any);
       if (!isJson) {
-        // Si el server respondió HTML u otra cosa, advierte claramente
         const snippet = await resp.text();
         throw new Error(
           `La API no respondió JSON.\nRevisa CORS/URL (${url}).\nRespuesta: ${snippet.slice(0, 260)}`
         );
       }
 
-      setApiResp(data);
+      const data: ApiRespuesta = await resp.json();
+
+      // ✅ Mostrar mensaje en SweetAlert (no en el JSX)
+      await Swal.fire({
+        icon: "success",
+        title: "Pago recibido",
+        html: `
+          <p>Tu pago fue recibido y está en validación.<br/>
+          Una vez aprobado, te enviaremos un único correo con tus bonos adjuntos/enlaces.</p>
+          <hr/>
+          <div style="text-align:left">
+            <p><b>Lote:</b> ${data.compra_lote_id}</p>
+            <p><b>Bonos creados:</b> ${data.bonos_creados}</p>
+            ${
+              data.totales
+                ? `<p><b>Total redimible (sin IVA):</b> ${money(
+                    data.totales.valor_redimible_total_sin_iva
+                  )}<br/><b>Total pagado (con IVA):</b> ${money(
+                    data.totales.total_pagado_con_iva
+                  )}</p>`
+                : ""
+            }
+          </div>
+        `,
+        confirmButtonText: "Entendido",
+      });
+
       // Limpieza mínima
       setItems([]);
       setFilePDF(null);
@@ -387,18 +409,9 @@ export default function CompraTuBono() {
         </section>
 
         {/* Estados */}
-        {error && <div className="compra-tu-bono-error" role="alert">{error}</div>}
-        {apiResp && (
-          <div className="compra-tu-bono-success">
-            <h3>{apiResp.mensaje}</h3>
-            <p>
-              Lote: <b>{apiResp.compra_lote_id}</b> &nbsp;|&nbsp; Bonos:{" "}
-              <b>{apiResp.bonos_creados}</b>
-            </p>
-            <p>
-              Te enviamos un correo indicando que el pago está en validación. Cuando
-              se apruebe, te llegará un solo correo con tus bonos. ✨
-            </p>
+        {error && (
+          <div className="compra-tu-bono-error" role="alert">
+            {error}
           </div>
         )}
 

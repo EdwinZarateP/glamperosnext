@@ -1,0 +1,385 @@
+/* =============== Reset base (opcional y suave) =============== */
+.compra-tu-bono-root * {
+  box-sizing: border-box;
+}
+
+/* =============== Layout base =============== */
+.compra-tu-bono-root {
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(1200px 400px at -10% -20%, #f3fff8 0%, transparent 60%),
+    radial-gradient(1000px 380px at 110% -10%, #fff9f3 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #f7f9fb 100%);
+}
+
+.compra-tu-bono-card {
+  width: 100%;
+  max-width: 980px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  padding: 18px;
+  border: 1px solid #eef2f7;
+}
+
+/* ≥ 600px: aire extra */
+@media (min-width: 600px) {
+  .compra-tu-bono-card {
+    padding: 22px;
+    border-radius: 22px;
+  }
+}
+
+/* ≥ 900px: margen superior de 70px (requerido) y fondo liso si quieres */
+@media (min-width: 900px) {
+  .compra-tu-bono-root {
+    margin-top: 70px;
+    padding-top: 20px;
+    background-image: none;     /* si dejas el fondo verde, apaga los gradientes */
+  }
+  .compra-tu-bono-card {
+    padding: 26px;
+  }
+}
+
+/* =============== Header =============== */
+.compra-tu-bono-header {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.compra-tu-bono-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 2px solid #e9f5ef;
+}
+
+.compra-tu-bono-titles {
+  display: grid;
+  gap: 2px;
+  min-width: 240px;
+}
+
+.compra-tu-bono-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+}
+
+.compra-tu-bono-subtitle {
+  margin: 0;
+  color: #607080;
+  font-size: 13px;
+}
+
+/* Tipos más grandes en pantallas medianas/grandes */
+@media (min-width: 600px) {
+  .compra-tu-bono-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+  }
+  .compra-tu-bono-title {
+    font-size: 24px;
+  }
+  .compra-tu-bono-subtitle {
+    font-size: 14px;
+  }
+}
+
+/* =============== Secciones =============== */
+.compra-tu-bono-section {
+  margin-top: 20px;
+}
+
+.compra-tu-bono-section-title {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  color: #2a3b45;
+}
+
+/* =============== Grid de campos =============== */
+.compra-tu-bono-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr; /* Mobile por defecto */
+}
+
+/* ≥ 700px: dos columnas */
+@media (min-width: 700px) {
+  .compra-tu-bono-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ≥ 1024px: tres columnas donde tenga sentido */
+@media (min-width: 1024px) {
+  .compra-tu-bono-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Campo + input */
+.compra-tu-bono-field {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.compra-tu-bono-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dfe7ee;
+  border-radius: 12px;
+  outline: none;
+  background: #fbfdff;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.compra-tu-bono-input:focus {
+  border-color: #99d5bf;
+  box-shadow: 0 0 0 4px rgba(63, 199, 144, 0.15);
+}
+
+/* =============== Presets =============== */
+.compra-tu-bono-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.compra-tu-bono-chip {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #d6efe4;
+  background: #f3fff9;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+
+.compra-tu-bono-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(63, 199, 144, 0.15);
+}
+
+/* =============== Custom (bono personalizado) =============== */
+.compra-tu-bono-custom {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ≥ 520px: input + botón en fila */
+@media (min-width: 520px) {
+  .compra-tu-bono-custom {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+.compra-tu-bono-input-number {
+  max-width: 100%;
+}
+
+@media (min-width: 600px) {
+  .compra-tu-bono-input-number {
+    max-width: 260px;
+  }
+}
+
+.compra-tu-bono-btn {
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #38cc8c, #2fb47a);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  box-shadow: 0 10px 22px rgba(56, 204, 140, 0.25);
+  transition: transform 0.06s ease, box-shadow 0.12s ease;
+}
+
+.compra-tu-bono-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.compra-tu-bono-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(56, 204, 140, 0.32);
+}
+
+/* =============== Lista de bonos agregados =============== */
+.compra-tu-bono-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.compra-tu-bono-item {
+  background: #f7fbff;
+  border: 1px solid #e6eef6;
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.compra-tu-bono-item-left {
+  color: #2b3b44;
+}
+
+.compra-tu-bono-remove {
+  background: #ffecee;
+  border: 1px solid #ffd1d6;
+  color: #c23a4a;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 6px 10px;
+  font-weight: 700;
+}
+
+/* =============== Subida de PDF =============== */
+.compra-tu-bono-upload {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: center;
+  background: #fffef8;
+  border: 1px dashed #e9e0b3;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+@media (min-width: 600px) {
+  .compra-tu-bono-upload {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+.compra-tu-bono-upload input[type="file"] {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.compra-tu-bono-upload-hint {
+  color: #7a6e2d;
+  font-size: 14px;
+}
+
+/* =============== Switch de factura =============== */
+.compra-tu-bono-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+/* =============== Resumen =============== */
+.compra-tu-bono-summary {
+  background: #f9fffb;
+  border: 1px solid #d8f1e6;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.compra-tu-bono-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 4px;
+  border-bottom: 1px dashed #e5efe9;
+}
+
+.compra-tu-bono-summary-row:last-child {
+  border-bottom: none;
+}
+
+.compra-tu-bono-summary-total strong {
+  font-size: 18px;
+}
+
+/* =============== Estados =============== */
+.compra-tu-bono-error {
+  margin-top: 12px;
+  background: #fff1f2;
+  border: 1px solid #ffc6cc;
+  color: #9b1c2a;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.compra-tu-bono-success {
+  margin-top: 12px;
+  background: #f0fff7;
+  border: 1px solid #bfead7;
+  color: #1b6e54;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+/* =============== Acciones =============== */
+.compra-tu-bono-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.compra-tu-bono-submit {
+  width: 100%;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #38cc8c, #2fb47a);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.25px;
+  box-shadow: 0 12px 26px rgba(56, 204, 140, 0.28);
+}
+
+/* Botón ancho fijo en pantallas grandes */
+@media (min-width: 600px) {
+  .compra-tu-bono-submit {
+    width: auto;
+    min-width: 220px;
+  }
+}
+
+/* =============== Footer nota =============== */
+.compra-tu-bono-footer {
+  margin-top: 18px;
+  font-size: 13px;
+  color: #5a6b75;
+}
+
+.compra-tu-bono-footer a {
+  color: #2fb47a;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.compra-tu-bono-footer a:hover {
+  text-decoration: underline;
+}
+
+/* =============== Accesibilidad / Motion =============== */
+@media (prefers-reduced-motion: reduce) {
+  .compra-tu-bono-chip,
+  .compra-tu-bono-btn,
+  .compra-tu-bono-submit {
+    transition: none;
+  }
+}

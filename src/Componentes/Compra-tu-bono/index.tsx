@@ -219,10 +219,10 @@ export default function CompraTuBono() {
         title: "Pago recibido",
         html: `
           <p>Tu pago fue recibido y está en validación.<br/>
-          Una vez aprobado, te enviaremos un único correo con tus bonos adjuntos/enlaces.</p>
+          Una vez aprobado, te enviaremos un único correo con tus bonos adjuntos</p>
           <hr/>
           <div style="text-align:left">
-            <p><b>Lote:</b> ${data.compra_lote_id}</p>
+            <p><b>Codigo compra:</b> ${data.compra_lote_id}</p>
             <p><b>Bonos creados:</b> ${data.bonos_creados}</p>
             ${
               data.totales

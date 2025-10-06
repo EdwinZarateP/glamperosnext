@@ -1,408 +1,200 @@
-'use client';
-import React, { useMemo, useState, useEffect } from "react";
+// src/Componentes/RegistroComp.tsx
+"use client";
+
+import { useState, useContext, useEffect } from "react";
+import axios from "axios";
+import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+import {jwtDecode} from "jwt-decode";
+import { ContextoApp } from "../../context/AppContext";
+import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 import "./estilos.css";
 
-type BonosItem = { valor: number; id: string };
-type ApiRespuesta = {
-  mensaje: string;
-  estado_compra: string;
-  compra_lote_id: string;
-  bonos_creados: number;
-  totales?: { valor_redimible_total_sin_iva: number; total_pagado_con_iva: number };
-  bonos?: any[];
-};
+interface UsuarioAPI {
+  id: string;
+  nombre: string;
+  email: string;
+  telefono?: string;
+  rol?: string;
+  aceptaTratamientoDatos?: boolean;
+}
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || ""; 
-const FORM_MINIMO = 200_000; // mínimo en el front
-const IVA_PORCENTAJE = 0.19;
-const presets = [200_000, 300_000, 400_000, 500_000];
+const RegistroComp: React.FC = () => {
+  const contexto = useContext(ContextoApp)!;
+  const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+  const [aceptaTratamientoDatos, setAceptaTratamientoDatos] = useState(false);
 
-const money = (n: number) =>
-  new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(n);
+  const {
+    setIdUsuario,
+    setLogueado,
+    setNombreUsuario,
+    setCorreoUsuario,
+    siono,
+    activarChat,
+    setActivarChat,
+    idUrlConversacion,
+  } = contexto;
 
-export default function CompraTuBono() {
-  // idUsuario: se toma de cookie si existe; si no, "user_no_registrado"
-  const [idUsuarioEfectivo, setIdUsuarioEfectivo] = useState<string>("user_no_registrado");
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+  const API_URL = `${API_BASE}/usuarios`;
 
-  // Datos del comprador
-  const [emailComprador, setEmailComprador] = useState("");
-  const [cedulaNit, setCedulaNit] = useState("");
-
-  // Facturación
-  const [requiereFactura, setRequiereFactura] = useState(false);
-  const [razonSocial, setRazonSocial] = useState("");
-  const [nitFact, setNitFact] = useState("");
-  const [emailFact, setEmailFact] = useState("");
-  const [direccionFact, setDireccionFact] = useState("");
-  const [telefonoFact, setTelefonoFact] = useState("");
-
-  // Bonos seleccionados
-  const [items, setItems] = useState<BonosItem[]>([]);
-  const [customValor, setCustomValor] = useState<number | "">("");
-  const [filePDF, setFilePDF] = useState<File | null>(null);
-
-  // UI
-  const [loading, setLoading] = useState(false);
-  const [apiResp, setApiResp] = useState<ApiRespuesta | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Lee cookie al montar
   useEffect(() => {
-    const idCookie = Cookies.get("idUsuario");
-    setIdUsuarioEfectivo(idCookie && idCookie.trim() ? idCookie : "user_no_registrado");
-  }, []);
+    setIsClient(true);
+    const idGuardado = Cookies.get("idUsuario");
+    if (idGuardado) {
+      setIdUsuario(idGuardado);
+    }
+  }, [setIdUsuario]);
 
-  // Cálculos
-  const totalBase = useMemo(() => items.reduce((acc, it) => acc + it.valor, 0), [items]);
-  const totalIVA = useMemo(() => Math.round(totalBase * IVA_PORCENTAJE), [totalBase]);
-  const totalConIVA = useMemo(() => totalBase + totalIVA, [totalBase, totalIVA]);
+  // me lleva segun url
+  const redireccionSegunEstado = () => {
+    const urlDesdeCookie = Cookies.get("UrlActual");
 
-  const addPreset = (valor: number) => {
-    const id = crypto.randomUUID();
-    setItems((prev) => [...prev, { valor, id }]);
+    if (siono) return "/CrearGlamping";
+
+    if (activarChat) {
+      setActivarChat(false);
+      return idUrlConversacion;
+    }
+
+    if (urlDesdeCookie) {
+      Cookies.remove("UrlActual"); // Elimina la cookie inmediatamente
+      return urlDesdeCookie;
+    }
+
+    return "/";
   };
 
-  const addCustom = () => {
-    if (customValor === "" || isNaN(Number(customValor))) return;
-    if (Number(customValor) < FORM_MINIMO) {
-      setError(`Cada bono debe ser mínimo de ${money(FORM_MINIMO)}.`);
+  const guardarYRedirigir = (apiUsuario: UsuarioAPI) => {
+    const { id, nombre, email, telefono, rol } = apiUsuario;
+    if (!id || id === "undefined") {
+      toast.error("Error interno: no se obtuvo el identificador de usuario");
       return;
     }
-    const id = crypto.randomUUID();
-    setItems((prev) => [...prev, { valor: Number(customValor), id }]);
-    setCustomValor("");
+
+    Cookies.set("idUsuario", id, { expires: 7 });
+    Cookies.set("nombreUsuario", nombre, { expires: 7 });
+    Cookies.set("correoUsuario", email, { expires: 7 });
+    Cookies.set("telefonoUsuario", telefono?.trim() || "sintelefono", { expires: 7 });
+    Cookies.set("rolUsuario", rol || "usuario", { expires: 7 });
+
+    setIdUsuario(id);
+    setNombreUsuario(nombre);
+    setCorreoUsuario(email);
+    setLogueado(true);
+
+    const tieneTel = Boolean(telefono && telefono.trim());
+    router.push(tieneTel ? redireccionSegunEstado() : "/EdicionPerfil");
   };
 
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((it) => it.id !== id));
-  };
-
-  const handleFile = (f: File | null) => {
-    if (!f) {
-      setFilePDF(null);
-      return;
-    }
-    if (f.type !== "application/pdf") {
-      setError("El comprobante debe ser un archivo PDF.");
-      return;
-    }
-    setError(null);
-    setFilePDF(f);
-  };
-
-  // 👉 Quitamos la validación del idUsuario (ya no es obligatorio porque usamos default)
-  const validar = () => {
-    if (!emailComprador.trim()) return "Ingresa tu correo electrónico.";
-    if (!cedulaNit.trim()) return "Ingresa tu cédula o NIT.";
-    if (!filePDF) return "Adjunta el comprobante de pago en PDF.";
-    if (items.length === 0) return "Agrega al menos un bono.";
-    if (items.some((i) => i.valor < FORM_MINIMO))
-      return `Todos los bonos deben ser mínimo ${money(FORM_MINIMO)}.`;
-
-    if (requiereFactura) {
-      if (!razonSocial.trim() || !nitFact.trim() || !emailFact.trim() || !direccionFact.trim()) {
-        return "Completa los datos de facturación requeridos.";
-      }
-    }
-    return null;
-  };
-
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setApiResp(null);
-
-    const err = validar();
-    if (err) {
-      setError(err);
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse | undefined
+  ) => {
+    if (!credentialResponse?.credential) {
+      toast.error("No se recibió el credencial de Google");
       return;
     }
 
     try {
-      setLoading(true);
-      const bonos = items.map((it) => ({ valor: it.valor }));
-      const datos_bonos_json = JSON.stringify(bonos);
+      const decoded = jwtDecode<{ name: string; email: string }>(
+        credentialResponse.credential
+      );
+      const nombreUsuario = decoded.name;
+      const emailUsuario = decoded.email;
 
-      const qs = new URLSearchParams();
-      qs.set("id_usuario", idUsuarioEfectivo); // cookie o "user_no_registrado"
-      qs.set("email_comprador", emailComprador);
-      qs.set("cedula_o_nit", cedulaNit);
-      qs.set("fechaCompra", new Date().toISOString());
-      qs.set("datos_bonos_json", datos_bonos_json);
-      qs.set("requiere_factura_electronica", String(requiereFactura));
-      if (requiereFactura) {
-        qs.set("razon_social", razonSocial);
-        qs.set("nit_facturacion", nitFact);
-        qs.set("email_facturacion", emailFact);
-        qs.set("direccion_facturacion", direccionFact);
-        if (telefonoFact) qs.set("telefono_facturacion", telefonoFact);
+      if (!nombreUsuario || !emailUsuario) {
+        toast.error("No se pudo obtener tu nombre o correo desde Google.");
+        return;
       }
 
-      const form = new FormData();
-      if (!filePDF) throw new Error("Falta el comprobante PDF.");
-      form.append("soporte_pago", filePDF);
+      const payload = {
+        nombre: nombreUsuario,
+        email: emailUsuario,
+        aceptaTratamientoDatos,
+      };
 
-      const resp = await fetch(`${API_BASE}/bonos/comprar?${qs.toString()}`, {
-        method: "POST",
-        body: form,
+      const response = await axios.post(`${API_URL}/google`, payload, {
+        headers: { "Content-Type": "application/json" },
       });
 
-      if (!resp.ok) {
-        const text = await resp.text();
-        throw new Error(text || "Error al procesar la compra.");
+      if (response.status === 200) {
+        const { usuario: apiUsuario } = response.data as { usuario: UsuarioAPI };
+        guardarYRedirigir(apiUsuario);
       }
-      const data: ApiRespuesta = await resp.json();
-      setApiResp(data);
-      // Limpieza mínima
-      setItems([]);
-      setFilePDF(null);
-    } catch (e: any) {
-      setError(e?.message || "Error inesperado.");
-    } finally {
-      setLoading(false);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 400) {
+        const data = err.response!.data as { usuario: UsuarioAPI };
+
+        if (data.usuario.aceptaTratamientoDatos) {
+          setAceptaTratamientoDatos(true);
+          guardarYRedirigir(data.usuario);
+          return;
+        }
+
+        toast.error(
+          "Debes aceptar el tratamiento de datos personales para continuar."
+        );
+        return;
+      }
+
+      toast.error(
+        axios.isAxiosError(err)
+          ? err.response?.data?.detail || "Hubo un error inesperado."
+          : "Ocurrió un error desconocido."
+      );
     }
   };
 
+  if (!isClient) return null;
+
   return (
-    <div className="compra-tu-bono-root">
-      <form className="compra-tu-bono-card" onSubmit={onSubmit}>
-        <header className="compra-tu-bono-header">
-          <div className="compra-tu-bono-titles">
-            <h1 className="compra-tu-bono-title">Compra tu Bono Glamperos</h1>
-            <p className="compra-tu-bono-subtitle">
-              Elige bonos de regalo o arma tu propio paquete. Mínimo por bono: {money(FORM_MINIMO)}.
-            </p>
-          </div>
-        </header>
+    <div className="RegistroComp-contenedor">
+      <h1 className="RegistroComp-titulo">Ingreso y/o Registro</h1>
 
-        {/* Datos del comprador (idUsuario se envía automáticamente) */}
-        <section className="compra-tu-bono-section">
-          <h2 className="compra-tu-bono-section-title">Tus datos</h2>
-          <div className="compra-tu-bono-grid">
-            <label className="compra-tu-bono-field">
-              <span>Correo *</span>
-              <input
-                type="email"
-                className="compra-tu-bono-input"
-                value={emailComprador}
-                onChange={(e) => setEmailComprador(e.target.value)}
-                placeholder="tu@email.com"
-                required
-              />
-            </label>
+      <div className="RegistroComp-google">
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() =>
+            toast.error(
+              "Hubo un error al iniciar sesión con Google. Intenta nuevamente."
+            )
+          }
+        />
+      </div>
 
-            <label className="compra-tu-bono-field">
-              <span>Cédula / NIT *</span>
-              <input
-                className="compra-tu-bono-input"
-                value={cedulaNit}
-                onChange={(e) => setCedulaNit(e.target.value)}
-                placeholder="123456789"
-                required
-              />
-            </label>
-          </div>
+      <div className="RegistroComp-check">
+        <label>
+          <input
+            type="checkbox"
+            checked={aceptaTratamientoDatos}
+            onChange={(e) => {
+              setAceptaTratamientoDatos(e.target.checked);
+            }}
+          />{' '}
+          Acepto el{' '}
+          <a
+            href="/politicas-privacidad"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            tratamiento de datos personales
+          </a>
+        </label>
+      </div>
 
-          {/* Info visible: qué idUsuario se usará */}
-          <div className="compra-tu-bono-footer" style={{ marginTop: 8 }}>
-            <small>
-              ID usuario usado: <b>{idUsuarioEfectivo}</b>
-              {idUsuarioEfectivo === "user_no_registrado" ? " (aún no has iniciado sesión)" : ""}
-            </small>
-          </div>
-        </section>
-
-        {/* Presets */}
-        <section className="compra-tu-bono-section">
-          <h2 className="compra-tu-bono-section-title">Bonos estándar</h2>
-          <div className="compra-tu-bono-presets">
-            {presets.map((p) => (
-              <button
-                key={p}
-                type="button"
-                className="compra-tu-bono-chip"
-                onClick={() => addPreset(p)}
-              >
-                {money(p)}
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Personalizados */}
-        <section className="compra-tu-bono-section">
-          <h2 className="compra-tu-bono-section-title">Arma tu paquete</h2>
-          <div className="compra-tu-bono-custom">
-            <input
-              className="compra-tu-bono-input compra-tu-bono-input-number"
-              type="number"
-              min={FORM_MINIMO}
-              step={50_000}
-              placeholder={`${FORM_MINIMO}`}
-              value={customValor}
-              onChange={(e) =>
-                setCustomValor(e.target.value === "" ? "" : Number(e.target.value))
-              }
-            />
-            <button
-              type="button"
-              className="compra-tu-bono-btn"
-              onClick={addCustom}
-              disabled={customValor === "" || Number(customValor) < FORM_MINIMO}
-            >
-              Agregar bono
-            </button>
-          </div>
-
-          {items.length > 0 && (
-            <div className="compra-tu-bono-list">
-              {items.map((it, idx) => (
-                <div key={it.id} className="compra-tu-bono-item">
-                  <span className="compra-tu-bono-item-left">
-                    <b>Bono #{idx + 1}</b> — {money(it.valor)}
-                  </span>
-                  <button
-                    type="button"
-                    className="compra-tu-bono-remove"
-                    onClick={() => removeItem(it.id)}
-                    aria-label="Eliminar"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Comprobante PDF */}
-        <section className="compra-tu-bono-section">
-          <h2 className="compra-tu-bono-section-title">Comprobante de pago (PDF)</h2>
-          <label className="compra-tu-bono-upload">
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={(e) => handleFile(e.target.files?.[0] || null)}
-            />
-            <span className="compra-tu-bono-upload-hint">
-              {filePDF ? filePDF.name : "Selecciona tu comprobante (PDF) *"}
-            </span>
-          </label>
-        </section>
-
-        {/* Facturación */}
-        <section className="compra-tu-bono-section">
-          <div className="compra-tu-bono-switch">
-            <input
-              id="requiere-factura"
-              type="checkbox"
-              checked={requiereFactura}
-              onChange={(e) => setRequiereFactura(e.target.checked)}
-            />
-            <label htmlFor="requiere-factura">¿Requieres factura electrónica?</label>
-          </div>
-
-          {requiereFactura && (
-            <div className="compra-tu-bono-grid">
-              <label className="compra-tu-bono-field">
-                <span>Razón social *</span>
-                <input
-                  className="compra-tu-bono-input"
-                  value={razonSocial}
-                  onChange={(e) => setRazonSocial(e.target.value)}
-                />
-              </label>
-              <label className="compra-tu-bono-field">
-                <span>NIT *</span>
-                <input
-                  className="compra-tu-bono-input"
-                  value={nitFact}
-                  onChange={(e) => setNitFact(e.target.value)}
-                />
-              </label>
-              <label className="compra-tu-bono-field">
-                <span>Correo de facturación *</span>
-                <input
-                  type="email"
-                  className="compra-tu-bono-input"
-                  value={emailFact}
-                  onChange={(e) => setEmailFact(e.target.value)}
-                />
-              </label>
-              <label className="compra-tu-bono-field">
-                <span>Dirección *</span>
-                <input
-                  className="compra-tu-bono-input"
-                  value={direccionFact}
-                  onChange={(e) => setDireccionFact(e.target.value)}
-                />
-              </label>
-              <label className="compra-tu-bono-field">
-                <span>Teléfono (opcional)</span>
-                <input
-                  className="compra-tu-bono-input"
-                  value={telefonoFact}
-                  onChange={(e) => setTelefonoFact(e.target.value)}
-                />
-              </label>
-            </div>
-          )}
-        </section>
-
-        {/* Resumen */}
-        <section className="compra-tu-bono-section compra-tu-bono-summary">
-          <div className="compra-tu-bono-summary-row">
-            <span>Total redimible (sin IVA)</span>
-            <strong>{money(totalBase)}</strong>
-          </div>
-          <div className="compra-tu-bono-summary-row">
-            <span>IVA (19%)</span>
-            <strong>{money(totalIVA)}</strong>
-          </div>
-          <div className="compra-tu-bono-summary-row compra-tu-bono-summary-total">
-            <span>Total a pagar</span>
-            <strong>{money(totalConIVA)}</strong>
-          </div>
-        </section>
-
-        {/* Estados */}
-        {error && <div className="compra-tu-bono-error">{error}</div>}
-        {apiResp && (
-          <div className="compra-tu-bono-success">
-            <h3>{apiResp.mensaje}</h3>
-            <p>
-              Lote: <b>{apiResp.compra_lote_id}</b> &nbsp;|&nbsp; Bonos:{" "}
-              <b>{apiResp.bonos_creados}</b>
-            </p>
-            <p>
-              Te enviamos un correo indicando que el pago está en validación. Cuando
-              se apruebe, te llegará un solo correo con tus bonos. ✨
-            </p>
-          </div>
-        )}
-
-        {/* Submit */}
-        <div className="compra-tu-bono-actions">
-          <button className="compra-tu-bono-submit" type="submit" disabled={loading}>
-            {loading ? "Procesando..." : "Comprar bonos"}
-          </button>
-        </div>
-
-        {/* Nota de uso */}
-        <footer className="compra-tu-bono-footer">
-          <p>
-            Los bonos tienen validez de 1 año. Para redimirlos, visita{" "}
-            <a href="https://glamperos.com" target="_blank" rel="noreferrer">
-              glamperos.com
-            </a>{" "}
-            y confirma disponibilidad del glamping escribiendo al WhatsApp{" "}
-            <a href="https://wa.me/573218695196" target="_blank" rel="noreferrer">
-              321 869 5196
-            </a>.
-          </p>
-        </footer>
-      </form>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        closeOnClick
+        pauseOnHover
+      />
     </div>
   );
-}
+};
+
+export default RegistroComp;

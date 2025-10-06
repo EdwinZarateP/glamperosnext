@@ -144,8 +144,11 @@ export default function Aprobacion() {
     setMensaje(null);
     setError(null);
     try {
-      const fd = new FormData();
-      if (facturaLote) fd.append('factura_pdf', facturaLote);
+      let body: FormData | undefined;
+      if (facturaLote) {
+        body = new FormData();
+        body.append('factura_pdf', facturaLote);
+      }
 
       const params = new URLSearchParams({
         id_usuario_admin: idUsuario,
@@ -154,12 +157,19 @@ export default function Aprobacion() {
 
       const res = await fetch(
         `${API_BASE}/bonos/compras/${encodeURIComponent(loteIdAprobar.trim())}/aprobar?${params.toString()}`,
-        { method: 'POST', body: fd }
+        { method: 'POST', body }
       );
-      if (!res.ok) throw new Error(await res.text());
-      const json = await res.json();
+
+      const ct = res.headers.get('content-type') || '';
+      const txt = await res.text();
+
+      if (!res.ok) throw new Error(txt);
+      if (!ct.includes('application/json')) {
+        throw new Error(`Respuesta inesperada (${res.status}): ${txt.slice(0, 120)}`);
+      }
+
+      const json = JSON.parse(txt);
       notifyOk(json?.mensaje || 'Lote aprobado.');
-      // si justo es el mismo del panel "Cargar", refrescamos tabla
       if (loteIdAprobar.trim() === loteIdCargar.trim()) await cargarLote();
     } catch (e) {
       notifyErr(e);
@@ -167,6 +177,7 @@ export default function Aprobacion() {
       setCargando(false);
     }
   }
+
 
   // Rechazar Lote
   const [openRechazarLote, setOpenRechazarLote] = useState(false);

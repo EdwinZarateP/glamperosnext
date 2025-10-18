@@ -27,10 +27,7 @@ interface TarjetaProps {
   descuento?: number;
   tipoGlamping: string;
   nombreGlamping: string;
-  ubicacion: {
-    lat: number;
-    lng: number;
-  };
+  ubicacion: { lat: number; lng: number };
   Acepta_Mascotas: boolean;
   fechasReservadas: string[];
   amenidadesGlobal: string[];
@@ -38,9 +35,12 @@ interface TarjetaProps {
   precioEstandarAdicional: number;
   Cantidad_Huespedes_Adicional: number;
   onClick?: () => void;
+  /** Href limpio opcional. Si no viene, usamos `/propiedad/${glampingId}` */
+  href?: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
+// ✅ Fallback por si la env no está definida en cliente
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
 const TarjetaGeneral: React.FC<TarjetaProps> = ({
   glampingId,
@@ -56,6 +56,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   Cantidad_Huespedes,
   amenidadesGlobal,
   onClick,
+  href,
 }) => {
   // Estado y refs
   const [imagenActual, setImagenActual] = useState(0);
@@ -118,7 +119,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     }
   }, []);
 
-  // Formateo de moneda COP
+  // Formateo COP
   const precioConFormato = (valor: number) =>
     valor.toLocaleString("es-CO", {
       style: "currency",
@@ -127,7 +128,7 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
       maximumFractionDigits: 0,
     });
 
-  // Renderizado de precios con tarifa básica
+  // Precio con tarifa básica
   const renderPrecio = () => {
     const descuentoPct = descuento / 100;
     const { precioSinDescuento, precioConDescuento } = calcularTarifaBasica(
@@ -140,14 +141,12 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
           {precioConFormato(precioSinDescuento)} para {Cantidad_Huespedes}
         </span>
         <br />
-        <span>
-          {precioConFormato(precioConDescuento)} de domingo a jueves
-        </span>
+        <span>{precioConFormato(precioConDescuento)} de domingo a jueves</span>
       </div>
     );
   };
 
-  // Manejo de favoritos
+  // Favoritos
   const handleFavoritoChange = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!idUsuarioCookie) {
@@ -174,66 +173,67 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     }
   };
 
-  // Navegación de imágenes
-  const siguienteImagen = () => setImagenActual((prev) => Math.min(prev + 1, imagenes.length - 1));
-  const anteriorImagen = () => setImagenActual((prev) => Math.max(prev - 1, 0));
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartX = e.touches[0].clientX; };
+  // Carrusel
+  const siguienteImagen = () =>
+    setImagenActual((prev) => Math.min(prev + 1, imagenes.length - 1));
+  const anteriorImagen = () =>
+    setImagenActual((prev) => Math.max(prev - 1, 0));
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX = e.touches[0].clientX;
+  };
   const handleTouchEnd = (e: React.TouchEvent) => {
     touchEndX = e.changedTouches[0].clientX;
     if (touchStartX - touchEndX > 50) siguienteImagen();
     if (touchEndX - touchStartX > 50) anteriorImagen();
   };
 
-  // Puntos indicadores
+  // Puntos
   const maxPuntos = 5;
   const start = Math.max(0, imagenActual - Math.floor(maxPuntos / 2));
   const puntosVisibles = imagenes.slice(start, start + maxPuntos);
 
-  // Detección de pantalla pequeña
+  // Target en desktop
   const isClient = typeof window !== "undefined";
   const esPantallaPequena = isClient ? window.innerWidth <= 600 : false;
 
-  // Fechas por defecto para URL: siguiente fin de semana (viernes a domingo)
-  const hoy = new Date();
-  const diaActual = hoy.getDay(); // 0=domingo, ..., 5=viernes, 6=sábado
-  const diasHastaViernes = (5 - diaActual + 7) % 7 || 7;
-
-  const fechaInicioPorDefecto = new Date(hoy);
-  fechaInicioPorDefecto.setDate(hoy.getDate() + diasHastaViernes); // viernes
-
-  const fechaFinPorDefecto = new Date(fechaInicioPorDefecto);
-  fechaFinPorDefecto.setDate(fechaInicioPorDefecto.getDate() + 1); // domingo
-
-
-  const fechaInicioUrl = fechaInicio
-    ? fechaInicio.toISOString().split("T")[0]
-    : fechaInicioPorDefecto.toISOString().split("T")[0];
-  const fechaFinUrl = fechaFin
-    ? fechaFin.toISOString().split("T")[0]
-    : fechaFinPorDefecto.toISOString().split("T")[0];
-
-  // Parámetros de query
-  const queryParams = new URLSearchParams({
-    fechaInicioUrl,
-    fechaFinUrl,
-    totalDiasUrl: String(Math.max(1, totalDias ?? 1)),
-    totalAdultosUrl: String(Cantidad_Adultos ?? 1),
-    totalNinosUrl: String(Cantidad_Ninos ?? 0),
-    totalBebesUrl: String(Cantidad_Bebes ?? 0),
-    totalMascotasUrl: String(Cantidad_Mascotas ?? 0),
-  });
-  const urlDestino = `/propiedad/${glampingId}/?${queryParams.toString()}`;
+  // Helper para serializar fecha a 'YYYY-MM-DD' si viene Date (o dejar string)
+  const toYMD = (f: Date | string | null | undefined) => {
+    if (!f) return "";
+    if (typeof f === "string") return f;
+    try {
+      return f.toISOString().split("T")[0];
+    } catch {
+      return "";
+    }
+  };
 
   return (
     <div className="TarjetaGeneral">
       <Link
-        href={urlDestino}
+        href={href ?? `/propiedad/${glampingId}`} // 🔒 LINK LIMPIO (sin query)
         prefetch={false}
         className="TarjetaGeneral-link"
         target={esPantallaPequena ? undefined : "_blank"}
         rel={esPantallaPequena ? undefined : "noopener noreferrer"}
         onClick={() => {
           registrarVisita();
+          // Guardar scroll + bookingContext para prellenar en detalle
+          if (typeof window !== "undefined") {
+            sessionStorage.setItem("glampings-scroll", String(window.scrollY));
+            sessionStorage.setItem(
+              "bookingContext",
+              JSON.stringify({
+                fechaInicio: toYMD(fechaInicio),
+                fechaFin: toYMD(fechaFin),
+                totalHuespedes:
+                  (Cantidad_Adultos ?? 1) +
+                  (Cantidad_Ninos ?? 0) +
+                  (Cantidad_Bebes ?? 0),
+                aceptaMascotas: (Cantidad_Mascotas ?? 0) > 0,
+                totalDias: totalDias ?? 1,
+              })
+            );
+          }
           onClick?.();
         }}
       >
@@ -255,24 +255,33 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
               />
             ))}
           </div>
-          {Acepta_Mascotas && <MdOutlinePets className="TarjetaGeneral-icono-mascota" />}
+          {Acepta_Mascotas && (
+            <MdOutlinePets className="TarjetaGeneral-icono-mascota" />
+          )}
           {amenidadesGlobal.includes("incluye-desayuno") && (
-            <div className="TarjetaGeneral-desayuno-badge">Desayuno incluido</div>
+            <div className="TarjetaGeneral-desayuno-badge">
+              Desayuno incluido
+            </div>
           )}
           <div className="TarjetaGeneral-puntos">
             {puntosVisibles.map((_, i) => (
               <span
                 key={i}
-                className={`TarjetaGeneral-punto ${start + i === imagenActual ? "activo" : ""}`}
-                onClick={(e) => { e.stopPropagation(); setImagenActual(start + i); }}
+                className={`TarjetaGeneral-punto ${
+                  start + i === imagenActual ? "activo" : ""
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setImagenActual(start + i);
+                }}
               />
             ))}
           </div>
         </div>
+
         <div className="TarjetaGeneral-info">
           <div className="TarjetaGeneral-contenido">
             <span className="TarjetaGeneral-nombre">
-              {/* Lógica para formatear tipo y amenidades */}
               {(() => {
                 const mapaTipo: Record<string, string> = {
                   cabana: "Cabaña",
@@ -282,9 +291,10 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
                   lulipod: "Lulipod",
                   loto: "Loto",
                   chalet: "Chalet",
-                  tiny_house:"Tiny house"
+                  tiny_house: "Tiny house",
                 };
-                const tipoFormateado = mapaTipo[tipoGlamping.toLowerCase()] || tipoGlamping;
+                const tipoFormateado =
+                  mapaTipo[tipoGlamping.toLowerCase()] || tipoGlamping;
                 const sufijos = [
                   { valor: "playa", prefijo: "cerca a la" },
                   { valor: "desierto", prefijo: "en el" },
@@ -299,9 +309,13 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
                   { valor: "en-la-montaña", prefijo: "" },
                   { valor: "zona-fogata", prefijo: "con" },
                 ];
-                const encontrado = sufijos.find((s) => amenidadesGlobal.includes(s.valor));
+                const encontrado = sufijos.find((s) =>
+                  amenidadesGlobal.includes(s.valor)
+                );
                 return encontrado
-                  ? `${tipoFormateado}${encontrado.prefijo ? ` ${encontrado.prefijo}` : ""} ${encontrado.valor.replace(/-/g, " ")}`
+                  ? `${tipoFormateado}${
+                      encontrado.prefijo ? ` ${encontrado.prefijo}` : ""
+                    } ${encontrado.valor.replace(/-/g, " ")}`
                   : tipoFormateado;
               })()}
             </span>
@@ -314,19 +328,25 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
           {renderPrecio()}
         </div>
       </Link>
+
       {/* Flechas fuera del Link */}
       <div
-        className={`TarjetaGeneral-flecha izquierda ${imagenActual === 0 ? "oculta" : ""}`}
+        className={`TarjetaGeneral-flecha izquierda ${
+          imagenActual === 0 ? "oculta" : ""
+        }`}
         onClick={anteriorImagen}
       >
         <MdOutlineKeyboardArrowLeft />
       </div>
       <div
-        className={`TarjetaGeneral-flecha derecha ${imagenActual === imagenes.length - 1 ? "oculta" : ""}`}
+        className={`TarjetaGeneral-flecha derecha ${
+          imagenActual === imagenes.length - 1 ? "oculta" : ""
+        }`}
         onClick={siguienteImagen}
       >
         <MdOutlineKeyboardArrowRight />
       </div>
+
       {/* Botón favorito */}
       <div className="TarjetaGeneral-favorito" onClick={handleFavoritoChange}>
         {esFavorito ? (

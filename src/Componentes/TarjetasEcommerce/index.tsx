@@ -332,11 +332,21 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     return params.toString();
   };
 
+  // ——— contexto de reserva que queremos persistir SIN ponerlo en la URL ———
+  const getBookingContext = () => ({
+    fechaInicio: initialFechaInicio || '',
+    fechaFin: initialFechaFin || '',
+    totalHuespedes: initialTotalHuespedes || 1,
+    aceptaMascotas: !!aceptaMascotas,
+  });
+
+
   // Map props a TarjetaGeneral
   const mapProps = (g: any) => {
     const ubic = typeof g.ubicacion === "string" ? JSON.parse(g.ubicacion) : g.ubicacion;
     return {
       glampingId: g._id,
+      href: `/propiedad/${g._id}`,               // ← LINK LIMPIO
       imagenes: g.imagenes,
       ciudad: g.ciudad_departamento,
       precio: g.precioEstandar,
@@ -353,6 +363,7 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
       Cantidad_Huespedes_Adicional: g.Cantidad_Huespedes_Adicional,
       favorito: false,
       onFavoritoChange: () => {},
+      onClick: handleCardClick,                  // ← guardamos contexto y scroll
     };
   };
 
@@ -471,7 +482,9 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
 
   const handleCardClick = () => {
     sessionStorage.setItem("glampings-scroll", String(window.scrollY));
+    sessionStorage.setItem("bookingContext", JSON.stringify(getBookingContext()));
   };
+
 
   // Toggle filtros rápidos
   const toggleFilter = (value: string) => {

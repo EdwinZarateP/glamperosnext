@@ -38,7 +38,7 @@ const municipiosConSlug: MunicipioConSlug[] = (municipiosData as Municipio[]).ma
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 const API_URL = `${API_BASE}/glampings/glampingfiltrados`;
 
-const PAGE_SIZE = 24;
+const PAGE_SIZE = 40;
 
 // Coordenadas aproximadas para cada ciudad
 const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
@@ -610,7 +610,7 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
           onClick={() => scrollRef.current?.scrollBy({ left: -200, behavior: "smooth" })}
           aria-label="Desplazar filtros a la izquierda"
         >
-          <MdOutlineKeyboardArrowLeft size={24} />
+          <MdOutlineKeyboardArrowLeft size={40} />
         </button>
         <div className="TarjetasEcommerce-filtros-scroll" ref={scrollRef}>
           {FILTROS.map((f) => {
@@ -632,7 +632,7 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
           onClick={() => scrollRef.current?.scrollBy({ left: 200, behavior: "smooth" })}
           aria-label="Desplazar filtros a la derecha"
         >
-          <MdOutlineKeyboardArrowRight size={24} />
+          <MdOutlineKeyboardArrowRight size={40} />
         </button>
       </div>
 

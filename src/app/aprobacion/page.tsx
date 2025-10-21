@@ -30,7 +30,7 @@ type Bono = {
 };
 
 /* ======================= Utils ======================= */
-const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, '') || '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '') || '';
 
 function fmtMoney(v?: number) {
   if (v === undefined || v === null) return '';
@@ -462,6 +462,34 @@ export default function Aprobacion() {
       {/* ==================== TAB LOTE ==================== */}
       {tab === 'lote' && (
         <section className="aprobacion-seccion">
+          
+          <Accordion title="Aprobar Lote" open={openAprobarLote} onToggle={() => setOpenAprobarLote((v) => !v)}>
+            <div className="aprobacion-form-grupo">
+              <label className="aprobacion-label">compra_lote_id</label>
+              <input
+                className="aprobacion-input"
+                value={loteIdAprobar}
+                onChange={(e) => setLoteIdAprobar(e.target.value)}
+                placeholder="64f1c... (ObjectId)"
+              />
+            </div>
+            <div className="aprobacion-form-grupo">
+              <label className="aprobacion-label">Observación (opcional)</label>
+              <input className="aprobacion-input" value={obsLote} onChange={(e) => setObsLote(e.target.value)} />
+            </div>
+            <div className="aprobacion-form-grupo">
+              <label className="aprobacion-label">Factura (PDF/JPG/PNG/WEBP) opcional</label>
+              <input
+                className="aprobacion-input"
+                type="file"
+                onChange={(e) => setFacturaLote(e.target.files?.[0] || null)}
+              />
+            </div>
+            <button className="aprobacion-boton aprobacion-boton--exito" onClick={aprobarLote}>
+              Aprobar y notificar al comprador
+            </button>
+          </Accordion>
+
           <Accordion title="Cargar Lote" open={openCargar} onToggle={() => setOpenCargar((v) => !v)}>
             <div className="aprobacion-form-grupo">
               <label className="aprobacion-label">compra_lote_id</label>
@@ -525,33 +553,6 @@ export default function Aprobacion() {
                 </div>
               )}
             </div>
-          </Accordion>
-
-          <Accordion title="Aprobar Lote" open={openAprobarLote} onToggle={() => setOpenAprobarLote((v) => !v)}>
-            <div className="aprobacion-form-grupo">
-              <label className="aprobacion-label">compra_lote_id</label>
-              <input
-                className="aprobacion-input"
-                value={loteIdAprobar}
-                onChange={(e) => setLoteIdAprobar(e.target.value)}
-                placeholder="64f1c... (ObjectId)"
-              />
-            </div>
-            <div className="aprobacion-form-grupo">
-              <label className="aprobacion-label">Observación (opcional)</label>
-              <input className="aprobacion-input" value={obsLote} onChange={(e) => setObsLote(e.target.value)} />
-            </div>
-            <div className="aprobacion-form-grupo">
-              <label className="aprobacion-label">Factura (PDF/JPG/PNG/WEBP) opcional</label>
-              <input
-                className="aprobacion-input"
-                type="file"
-                onChange={(e) => setFacturaLote(e.target.files?.[0] || null)}
-              />
-            </div>
-            <button className="aprobacion-boton aprobacion-boton--exito" onClick={aprobarLote}>
-              Aprobar y notificar al comprador
-            </button>
           </Accordion>
 
           <Accordion title="Rechazar Lote" open={openRechazarLote} onToggle={() => setOpenRechazarLote((v) => !v)}>

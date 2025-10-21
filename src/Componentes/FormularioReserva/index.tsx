@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { ContextoApp } from "../../context/AppContext";
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { DateRange } from 'react-date-range';
 import { es } from 'date-fns/locale';
 import 'react-date-range/dist/styles.css';
@@ -41,7 +41,6 @@ function formatDateLocal(date: Date) {
   return `${y}-${m}-${d}`;
 }
 
-
 interface Huespedes {
   adultos: number;
   ninos: number;
@@ -62,7 +61,6 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
 }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Obtenemos el contexto
   const almacenVariables = useContext(ContextoApp);
@@ -79,10 +77,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const capacidadExtra = Number(initialData.Cantidad_Huespedes_Adicional || 0);
   const maxHuespedes = capacidadBase + capacidadExtra;
 
-  const getParam = (key: string, fallback: string) =>
-    searchParams.get(key) ?? fallback;
-
-  // Fechas reservadas
+  // Fechas reservadas (normalizadas a 00:00)
   const reservedDates: Date[] = fechasReservadas.map(d => {
     const dt = parseYMD(d);
     dt.setHours(0, 0, 0, 0);
@@ -95,9 +90,10 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
 
   /** Próximo sábado/domingo */
   const getNextWeekend = (from = new Date()): [Date, Date] => {
-    const day = from.getDay();
+    const day = from.getDay(); // 0=Dom, 6=Sáb
     const diffSat = (6 - day + 7) % 7 || 7;
     const sat = new Date(from);
+    sat.setHours(0, 0, 0, 0);
     sat.setDate(from.getDate() + diffSat);
     const sun = new Date(sat);
     sun.setDate(sat.getDate() + 1);
@@ -105,26 +101,22 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   };
 
   // Estados de fechas
-  const [fechaInicio, setFechaInicio] = useState<string>(
-    getParam('fechaInicioUrl', '')
-  );
-  const [fechaFin, setFechaFin] = useState<string>(
-    getParam('fechaFinUrl', '')
-  );
+  const [fechaInicio, setFechaInicio] = useState<string>('');
+  const [fechaFin, setFechaFin] = useState<string>('');
   const [range, setRange] = useState([
     {
-      startDate: fechaInicio ? parseYMD(fechaInicio) : new Date(),
-      endDate: fechaFin ? parseYMD(fechaFin) : new Date(),
+      startDate: new Date(),
+      endDate: new Date(),
       key: 'selection',
     },
   ]);
 
   // Estados de huéspedes
   const [huespedes, setHuespedes] = useState<Huespedes>({
-    adultos: Math.max(2, Number(getParam('totalAdultosUrl', '1'))),
-    ninos: Number(getParam('totalNinosUrl', '0')),
-    bebes: Number(getParam('totalBebesUrl', '0')),
-    mascotas: Number(getParam('totalMascotasUrl', '0')),
+    adultos: 2,
+    ninos: 0,
+    bebes: 0,
+    mascotas: 0,
   });
 
   // Tarifa calculada
@@ -136,46 +128,35 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const [mostrarModalTelefono, setMostrarModalTelefono] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  // 1) Inicializar fin de semana si no hay params
+  // 1) Inicializar SIEMPRE con el siguiente fin de semana disponible
   useEffect(() => {
-    if (!getParam('fechaInicioUrl', '') && !getParam('fechaFinUrl', '')) {
-      let [sat, sun] = getNextWeekend();
-      let i = 0;
-      while (
-        (reservedDates.some(d => isSameDay(d, sat)) ||
-          reservedDates.some(d => isSameDay(d, sun)) ||
-          hasInteriorReserved(sat, sun)) &&
-        i < 10
-      ) {
-        sat.setDate(sat.getDate() + 7);
-        sun.setDate(sun.getDate() + 7);
-        i++;
-      }
-      const iStr = formatDateLocal(sat);
-      const fStr = formatDateLocal(sun);
-
-      setRange([{ startDate: sat, endDate: sun, key: 'selection' }]);
-      setFechaInicio(iStr);
-      setFechaFin(fStr);
+    let [sat, sun] = getNextWeekend();
+    let i = 0;
+    while (
+      (reservedDates.some(d => isSameDay(d, sat)) ||
+        reservedDates.some(d => isSameDay(d, sun)) ||
+        hasInteriorReserved(sat, sun)) &&
+      i < 10
+    ) {
+      sat.setDate(sat.getDate() + 7);
+      sun.setDate(sun.getDate() + 7);
+      i++;
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const iStr = formatDateLocal(sat);
+    const fStr = formatDateLocal(sun);
 
-  // 2) Sincronizar URL
-  useEffect(() => {
-    const p = new URLSearchParams();
-    if (fechaInicio) p.set('fechaInicioUrl', fechaInicio);
-    if (fechaFin) p.set('fechaFinUrl', fechaFin);
-    p.set('totalAdultosUrl', String(huespedes.adultos));
-    p.set('totalNinosUrl', String(huespedes.ninos));
-    p.set('totalBebesUrl', String(huespedes.bebes));
-    p.set('totalMascotasUrl', String(huespedes.mascotas));
-    window.history.replaceState({}, '', `${pathname}?${p}`);
-  }, [fechaInicio, fechaFin, huespedes, pathname]);
+    setRange([{ startDate: sat, endDate: sun, key: 'selection' }]);
+    setFechaInicio(iStr);
+    setFechaFin(fStr);
+    onFechaFinActualizada(fStr);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); 
 
-  // 3) Cambio de rango
+  // 2) Cambio de rango (DateRange)
   const onRangeChange = ({ selection }: any) => {
-    const s = selection.startDate;
-    const e = selection.endDate;
+    const s = selection.startDate as Date;
+    const e = selection.endDate as Date;
+
     if (reservedDates.some(d => isSameDay(d, s))) {
       alert('No puedes iniciar en una fecha reservada.');
       return;
@@ -184,47 +165,58 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       alert('El rango incluye fechas reservadas.');
       return;
     }
-    const iStr = s.toISOString().slice(0, 10);
-    const fStr = e.toISOString().slice(0, 10);
+
     setRange([{ ...selection }]);
+    const iStr = formatDateLocal(s);
+    const fStr = formatDateLocal(e);
     setFechaInicio(iStr);
     setFechaFin(fStr);
     onFechaFinActualizada(fStr);
   };
 
-  // 4) Ajuste de huéspedes
+  // 3) Ajuste de huéspedes (con callback usando estado nuevo)
   const actualizarHuesped = (key: keyof Huespedes, delta: number) => {
     if (key === 'mascotas' && !aceptaMascotas) return;
+
     setHuespedes(prev => {
       let n = prev[key] + delta;
       n = key === 'adultos' ? Math.max(1, n) : Math.max(0, n);
+
       if (
         (key === 'adultos' || key === 'ninos') &&
         prev.adultos + prev.ninos + delta > maxHuespedes
-      )
+      ) {
         return prev;
-      return { ...prev, [key]: n };
+      }
+
+      const nextState = { ...prev, [key]: n };
+      onHuespedesActualizados(nextState);
+      return nextState;
     });
-    onHuespedesActualizados(huespedes);
   };
 
-  // 5) Recalcular tarifa
+  // 4) Recalcular tarifa
   useEffect(() => {
     if (!fechaInicio || !fechaFin) {
       setTarifa(null);
       return;
     }
+
     let start = parseYMD(fechaInicio);
     let end = parseYMD(fechaFin);
+
+    // Normaliza si el usuario seleccionó al revés
     if (start > end) {
       [start, end] = [end, start];
-      const i = start.toISOString().slice(0, 10);
-      const f = end.toISOString().slice(0, 10);
+      const i = formatDateLocal(start);
+      const f = formatDateLocal(end);
       setFechaInicio(i);
       setFechaFin(f);
     }
+
     const cant = huespedes.adultos + huespedes.ninos;
     const vsf = finesSemanaData.viernesysabadosyfestivos;
+
     const res = calcularTarifaReserva({
       initialData,
       viernesysabadosyfestivos: vsf,
@@ -232,17 +224,20 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       fechaFin: formatDateLocal(end),
       cantidadHuespedes: cant,
     });
-    setTarifa(res);
-  }, [fechaInicio, fechaFin, huespedes.adultos, huespedes.ninos]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // 6) Cierre de modales externo
+    setTarifa(res);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fechaInicio, fechaFin, huespedes.adultos, huespedes.ninos]);
+
+  // 5) Cierre de modales externo
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (overlayRef.current && e.target === overlayRef.current) {
         if (modalFechas && (!fechaFin || fechaFin === fechaInicio)) {
-          const [sat, sun] = getNextWeekend(parseYMD(fechaInicio));
-          const sstr = sat.toISOString().slice(0, 10);
-          const fstr = sun.toISOString().slice(0, 10);
+          const base = fechaInicio ? parseYMD(fechaInicio) : new Date();
+          const [sat, sun] = getNextWeekend(base);
+          const sstr = formatDateLocal(sat);
+          const fstr = formatDateLocal(sun);
           setRange([{ startDate: sat, endDate: sun, key: 'selection' }]);
           setFechaInicio(sstr);
           setFechaFin(fstr);
@@ -256,12 +251,12 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     return () => window.removeEventListener('click', handler);
   }, [modalFechas, fechaInicio, fechaFin, onFechaFinActualizada]);
 
-  // 7) Reservar
+  // 6) Reservar
   const handleReservarClick = async () => {
-    // 1️⃣ Validar fechas seleccionadas
+    // 1️⃣ Validar fechas seleccionadas (fin exclusivo: checkout no cuenta como noche)
     const start = parseYMD(fechaInicio);
     const end = parseYMD(fechaFin);
-    if (reservedDates.some(d => d >= start && d <= end)) {
+    if (reservedDates.some(d => d >= start && d < end)) {
       Swal.fire({
         icon: "error",
         title: "Fechas no disponibles",
@@ -279,13 +274,13 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         text: "Para reservar, primero inicia sesión o regístrate."
       }).then(() => {
         Cookies.set("redirigirExplorado", "true");
-        Cookies.set("UrlActual", window.location.href); 
+        Cookies.set("UrlActual", window.location.href);
         router.push("/registro");
       });
       return;
     }
 
-    // 3️⃣ Validación teléfono (si quisieras abrir modal aquí)
+    // 3️⃣ Validación teléfono
     const telefonoUsuario = Cookies.get("telefonoUsuario") || "";
     if (!telefonoUsuario || telefonoUsuario === "sintelefono") {
       setMostrarModalTelefono(true);
@@ -294,10 +289,12 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
 
     // 4️⃣ Llamada a la API de pagos
     try {
-      // —— Aquí está el único cambio: extraer ID con usePathname()
-      const segments = pathname.split('/');
-      const glampingId = segments[2] ?? '';
-      Cookies.set('cookieGlampingId', glampingId, {expires: 7,path: '/' });
+      // Obtén el id de la última parte de la ruta de forma robusta
+      const segments = pathname.split('/').filter(Boolean);
+      const glampingId = segments[segments.length - 1] ?? '';
+
+      Cookies.set('cookieGlampingId', glampingId, { expires: 7, path: '/' });
+
       const params: ReservacionParams = {
         idCliente: idClienteCookie,
         idPropietario: initialData.propietario_id,
@@ -315,22 +312,26 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         mascotas: huespedes.mascotas,
       };
 
-      const wompiOverlay = document.querySelector('.wc-overlay-backdrop') 
-                      || document.querySelector('.widget__overlay');
+      // Limpia overlay previo de Wompi si existiera
+      const wompiOverlay =
+        document.querySelector('.wc-overlay-backdrop') ||
+        document.querySelector('.widget__overlay');
       if (wompiOverlay && wompiOverlay.parentNode) {
         wompiOverlay.parentNode.removeChild(wompiOverlay);
       }
+
       const codigoReserva = await apiReservacion(params);
-      // Crear el objeto con los datos de la compra
+
+      // Datos para analítica
       const transaccion = {
         event: "purchase",
         ecommerce: {
-          transaction_id: codigoReserva, // o un ID único de la reserva
+          transaction_id: codigoReserva,
           value: tarifa!.costoTotalConIncremento,
           currency: "COP",
           items: [
             {
-              item_id: initialData._id, // ID del glamping
+              item_id: initialData._id,
               item_name: initialData.nombreGlamping,
               quantity: 1,
               value: tarifa!.costoTotalConIncremento
@@ -339,9 +340,9 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         }
       };
 
-      // Guardar en cookie por 1 día
       Cookies.set("transaccionFinal", JSON.stringify(transaccion), { expires: 1, path: "/" });
       console.log("✅ transaccionFinal guardada:", transaccion);
+
       router.push("/gracias");
     } catch (err: any) {
       Swal.fire("Error", err.message || "Algo salió mal", "error");
@@ -368,7 +369,8 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
               className="formularioReserva-submit"
               onClick={() => {
                 if (!fechaFin || fechaFin === fechaInicio) {
-                  const [sat, sun] = getNextWeekend(parseYMD(fechaInicio));
+                  const base = fechaInicio ? parseYMD(fechaInicio) : new Date();
+                  const [sat, sun] = getNextWeekend(base);
                   const sstr = formatDateLocal(sat);
                   const fstr = formatDateLocal(sun);
                   setRange([{ startDate: sat, endDate: sun, key: 'selection' }]);
@@ -402,17 +404,19 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                   {k === 'mascotas' && !aceptaMascotas && <span className="labelNoMascotas">No se aceptan mascotas</span>}
                 </span>
                 <div className="formularioReserva-huesped-controls">
-                  <button onClick={() => actualizarHuesped(k, -1)}
+                  <button
+                    onClick={() => actualizarHuesped(k, -1)}
                     disabled={
                       (k === 'adultos' && huespedes.adultos <= 1) ||
-                      (k !== 'adultos' && huespedes[k] <= 0) ||
+                      (k !== 'adultos' && (huespedes[k] as number) <= 0) ||
                       (k === 'mascotas' && !aceptaMascotas)
                     }
                   >−</button>
                   <span>{huespedes[k]}</span>
-                  <button onClick={() => actualizarHuesped(k, 1)}
+                  <button
+                    onClick={() => actualizarHuesped(k, 1)}
                     disabled={
-                      ((k === 'adultos' || k === 'ninos') && huespedes.adultos + huespedes.ninos >= maxHuespedes) ||
+                      ((k === 'adultos' || k === 'ninos') && (huespedes.adultos + huespedes.ninos) >= maxHuespedes) ||
                       (k === 'bebes' && huespedes.bebes >= 3) ||
                       (k === 'mascotas' && (!aceptaMascotas || huespedes.mascotas >= 3))
                     }
@@ -420,7 +424,10 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                 </div>
               </div>
             ))}
-            <button className="formularioReserva-elegidos" onClick={() => setModalHuespedes(false)}>
+            <button
+              className="formularioReserva-elegidos"
+              onClick={() => setModalHuespedes(false)}
+            >
               Ellos son los elegidos
             </button>
             <p className="formularioReserva-citaBiblica">
@@ -472,7 +479,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           <span>Huéspedes</span>
           <span>
             {huespedes.adultos + huespedes.ninos} huésped
-            {huespedes.adultos + huespedes.ninos !== 1 ? 'es' : ''}
+            {(huespedes.adultos + huespedes.ninos) !== 1 ? 'es' : ''}
           </span>
         </button>
 
@@ -485,29 +492,36 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
             >
               Reservar
             </button>
-            <div className="formularioReserva-nota">No se hará ningún cargo por ahora</div>
+            <div className="formularioReserva-nota">
+              No se hará ningún cargo por ahora
+            </div>
+
             <div className="formularioReserva-detalle">
               <div className="linea">
                 <span>
-                  ${Math.round(initialData.precioEstandar).toLocaleString('es-CO')} x {tarifa.totalDiasFacturados} noche
-                  {tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                  ${Math.round(initialData.precioEstandar).toLocaleString('es-CO')} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
                 </span>
-                <span>${tarifa.costoSinIncrementoBase.toLocaleString('es-CO')}</span>
+                <span>
+                  ${tarifa.costoSinIncrementoBase.toLocaleString('es-CO')}
+                </span>
               </div>
+
               {tarifa.huespedesAdicionales > 0 && (
                 <div className="linea">
                   <span>
-                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x {tarifa.huespedesAdicionales} adicional
-                    {tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x {tarifa.totalDiasFacturados} noche
-                    {tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x {tarifa.huespedesAdicionales} adicional{tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
                   </span>
-                  <span>${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')}</span>
+                  <span>
+                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')}
+                  </span>
                 </div>
               )}
+
               <div className="linea">
                 <span>Tarifa por servicio</span>
                 <span>${tarifa.tarifaServicio.toLocaleString('es-CO')}</span>
               </div>
+
               {tarifa.descuentoAplicado > 0 && (
                 <div className="linea descuento">
                   <span>Descuento</span>
@@ -515,19 +529,25 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                 </div>
               )}
             </div>
+
             <hr />
+
             <div className="formularioReserva-total">
               <strong>Total</strong>
               <span>${tarifa.costoTotalConIncremento.toLocaleString('es-CO')} COP</span>
             </div>
+
             <div className="formularioReserva-cancelacion">
-              <span>Este glamping permite cancelaciones hasta {initialData.diasCancelacion} días antes del check-in, con un reembolso del 95% del valor total</span>
+              <span>
+                Este glamping permite cancelaciones hasta {initialData.diasCancelacion} días antes del check-in, con un reembolso del 95% del valor total
+              </span>
             </div>
           </div>
         )}
       </div>
 
       {modalPortal}
+
       {mostrarModalTelefono && Cookies.get("correoUsuario") && (
         <ModalTelefono
           email={Cookies.get("correoUsuario")!}
@@ -535,7 +555,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           onSaved={(nuevoTelefono: string) => {
             Cookies.set("telefonoUsuario", nuevoTelefono);
             setMostrarModalTelefono(false);
-            handleReservarClick(); 
+            handleReservarClick();
           }}
         />
       )}

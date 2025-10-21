@@ -6,9 +6,9 @@
   --muted: #475569;
   --line: #ececec;
 
-  background: #fff;
+  background: transparent;
   border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  /* box-shadow: 0 8px 24px rgba(0,0,0,0.08); */
   /* padding: 22px 22px 18px; */
   margin: 0 auto;
   position: relative;
@@ -57,6 +57,7 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   /* padding: 16px 16px; */
+  padding: 10px;
   margin-top: 1rem;
 }
 
@@ -111,6 +112,6 @@
 
 /* —— Responsive —— */
 @media (max-width: 900px) {
-  .DescripcionGlampingTexto-contenedor { width: 95%; box-shadow: none; padding: 16px; }
+  .DescripcionGlampingTexto-contenedor { width: 95%; box-shadow: none; }
   .DescripcionGlampingTexto-lista { grid-template-columns: 1fr; }
 }

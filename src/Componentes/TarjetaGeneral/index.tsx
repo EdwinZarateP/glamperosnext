@@ -138,10 +138,10 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
     return (
       <div className="TarjetaGeneral-precio">
         <span>
-          {precioConFormato(precioSinDescuento)} para {Cantidad_Huespedes}
+          {precioConFormato(precioSinDescuento)} para {Cantidad_Huespedes} por noche
         </span>
         <br />
-        <span>{precioConFormato(precioConDescuento)} de domingo a jueves</span>
+        <span>{precioConFormato(precioConDescuento)} por noche de domingo a jueves</span>
       </div>
     );
   };

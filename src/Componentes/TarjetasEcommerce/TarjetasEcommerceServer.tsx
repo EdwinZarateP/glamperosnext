@@ -41,7 +41,7 @@ const limpiarSegmentosPagina = (segmentos: string[]) =>
 // 3.1) Alias rápidos para ciudades
 const CITY_ALIASES: Record<string, { lat: number; lng: number; nombre: string }> = {
   bogota:   { lat: 4.6589973718135, lng: -74.10152220780381, nombre: 'Bogotá' },
-  medellin: { lat: 6.379745895,     lng: -75.447957442,      nombre: 'Medellín' },
+  medellin: { lat: 6.042874952402983,     lng: -75.7585879588641,      nombre: 'Medellín' },
   cali:     { lat: 3.4516,          lng: -76.5320,           nombre: 'Cali' },
 };
 

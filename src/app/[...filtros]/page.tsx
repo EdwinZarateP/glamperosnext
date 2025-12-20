@@ -5,14 +5,16 @@ import MenuUsuariosInferior from "@/Componentes/MenuUsuariosInferior";
 import Footer from "@/Componentes/Footer";
 import { Metadata } from "next";
 
+type SearchParams = Record<string, string | string[] | undefined>;
+
 interface PageProps {
-  params: { filtros?: string[] };
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ filtros?: string[] }>;
+  searchParams: Promise<SearchParams>;
 }
 
-// ✅ Metadata dinámico (SIN await params)
-export async function generateMetadata({ params }: { params: { filtros?: string[] } }): Promise<Metadata> {
-  const { filtros = [] } = params;
+// ✅ Metadata dinámico (con await params)
+export async function generateMetadata({ params }: { params: Promise<{ filtros?: string[] }> }): Promise<Metadata> {
+  const { filtros = [] } = await params;
 
   // 🔍 Lista de ciudades (ajústala según tu base de datos)
   const ciudades = ["bogota", "medellin", "cali"];
@@ -61,14 +63,15 @@ export async function generateMetadata({ params }: { params: { filtros?: string[
   };
 }
 
-// ✅ Server Component (SIN await params) y pasando searchParams
-export default function FiltradosPage({ params, searchParams }: PageProps) {
-  const { filtros = [] } = params;
+// ✅ Server Component (con await params y await searchParams)
+export default async function FiltradosPage({ params, searchParams }: PageProps) {
+  const { filtros = [] } = await params;
+  const resolvedSearchParams = await searchParams;
 
   return (
     <div className="GlampingsPage-container">
       <div className="GlampingsPage-tarjetas">
-        <TarjetasEcommerceServer filtros={filtros} searchParams={searchParams} />
+        <TarjetasEcommerceServer filtros={filtros} searchParams={resolvedSearchParams} />
       </div>
 
       <div className="GlampingsPage-Footer">

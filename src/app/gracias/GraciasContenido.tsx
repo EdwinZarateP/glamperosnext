@@ -151,11 +151,11 @@ const GraciasContenido: React.FC = () => {
       console.log("✅ purchase enviado a dataLayer:", purchaseEvent);
 
       // 5) Evitar duplicados al refrescar
-      Cookies.remove("transaccionFinal");
+      Cookies.remove("transaccionFinal", { path: "/" });
     } catch (error) {
       console.error("❌ Error al parsear transaccionFinal:", error);
     }
-  }, [searchParams]);
+  }, []); // ✅ corre una sola vez en /gracias
 
   if (datos.cargando) {
     return <p className="GraciasMensaje">Cargando información...</p>;

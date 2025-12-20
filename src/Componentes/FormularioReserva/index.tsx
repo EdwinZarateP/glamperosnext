@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { createPortal } from 'react-dom';
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from '../../context/AppContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { DateRange } from 'react-date-range';
 import { es } from 'date-fns/locale';
@@ -10,22 +10,11 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { calcularTarifaReserva, ResultadoTarifa } from '@/Funciones/calcularTarifaReserva';
 import finesSemanaData from '@/Componentes/BaseFinesSemana/fds.json';
-import Cookies from "js-cookie";
-import { apiReservacion, ReservacionParams } from "@/Funciones/apiReservacion";
-import Swal from "sweetalert2";
+import Cookies from 'js-cookie';
+import { apiReservacion, ReservacionParams } from '@/Funciones/apiReservacion';
+import Swal from 'sweetalert2';
 import './estilos.css';
-import ModalTelefono from "@/Componentes/ModalTelefono";
-import Script from 'next/script';
-
-/** Formatea 'YYYY-MM-DD' a fecha corta */
-const formatearFechaCorta = (fechaStr: string) => {
-  const date = parseYMD(fechaStr);
-  return date.toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-};
+import ModalTelefono from '@/Componentes/ModalTelefono';
 
 /** Parsea 'YYYY-MM-DD' como Date local */
 function parseYMD(fecha: string): Date {
@@ -36,10 +25,20 @@ function parseYMD(fecha: string): Date {
 /** Formatea Date a YYYY-MM-DD sin UTC */
 function formatDateLocal(date: Date) {
   const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
+
+/** Formatea 'YYYY-MM-DD' a fecha corta */
+const formatearFechaCorta = (fechaStr: string) => {
+  const date = parseYMD(fechaStr);
+  return date.toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+};
 
 interface Huespedes {
   adultos: number;
@@ -66,7 +65,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const almacenVariables = useContext(ContextoApp);
   if (!almacenVariables) {
     throw new Error(
-      "El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto."
+      'El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto.'
     );
   }
 
@@ -78,15 +77,14 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const maxHuespedes = capacidadBase + capacidadExtra;
 
   // Fechas reservadas (normalizadas a 00:00)
-  const reservedDates: Date[] = fechasReservadas.map(d => {
+  const reservedDates: Date[] = fechasReservadas.map((d) => {
     const dt = parseYMD(d);
     dt.setHours(0, 0, 0, 0);
     return dt;
   });
 
   const isSameDay = (a: Date, b: Date) => a.getTime() === b.getTime();
-  const hasInteriorReserved = (start: Date, end: Date) =>
-    reservedDates.some(d => d > start && d < end);
+  const hasInteriorReserved = (start: Date, end: Date) => reservedDates.some((d) => d > start && d < end);
 
   /** Próximo sábado/domingo */
   const getNextWeekend = (from = new Date()): [Date, Date] => {
@@ -132,9 +130,10 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   useEffect(() => {
     let [sat, sun] = getNextWeekend();
     let i = 0;
+
     while (
-      (reservedDates.some(d => isSameDay(d, sat)) ||
-        reservedDates.some(d => isSameDay(d, sun)) ||
+      (reservedDates.some((d) => isSameDay(d, sat)) ||
+        reservedDates.some((d) => isSameDay(d, sun)) ||
         hasInteriorReserved(sat, sun)) &&
       i < 10
     ) {
@@ -142,6 +141,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       sun.setDate(sun.getDate() + 7);
       i++;
     }
+
     const iStr = formatDateLocal(sat);
     const fStr = formatDateLocal(sun);
 
@@ -150,14 +150,14 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     setFechaFin(fStr);
     onFechaFinActualizada(fStr);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, []);
 
   // 2) Cambio de rango (DateRange)
   const onRangeChange = ({ selection }: any) => {
     const s = selection.startDate as Date;
     const e = selection.endDate as Date;
 
-    if (reservedDates.some(d => isSameDay(d, s))) {
+    if (reservedDates.some((d) => isSameDay(d, s))) {
       alert('No puedes iniciar en una fecha reservada.');
       return;
     }
@@ -178,7 +178,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
   const actualizarHuesped = (key: keyof Huespedes, delta: number) => {
     if (key === 'mascotas' && !aceptaMascotas) return;
 
-    setHuespedes(prev => {
+    setHuespedes((prev) => {
       let n = prev[key] + delta;
       n = key === 'adultos' ? Math.max(1, n) : Math.max(0, n);
 
@@ -247,6 +247,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         setModalHuespedes(false);
       }
     };
+
     window.addEventListener('click', handler);
     return () => window.removeEventListener('click', handler);
   }, [modalFechas, fechaInicio, fechaFin, onFechaFinActualizada]);
@@ -256,33 +257,33 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     // 1️⃣ Validar fechas seleccionadas (fin exclusivo: checkout no cuenta como noche)
     const start = parseYMD(fechaInicio);
     const end = parseYMD(fechaFin);
-    if (reservedDates.some(d => d >= start && d < end)) {
+    if (reservedDates.some((d) => d >= start && d < end)) {
       Swal.fire({
-        icon: "error",
-        title: "Fechas no disponibles",
-        text: "El rango que elegiste incluye días ya reservados."
+        icon: 'error',
+        title: 'Fechas no disponibles',
+        text: 'El rango que elegiste incluye días ya reservados.',
       });
       return;
     }
 
     // 2️⃣ Validar sesión
-    const idClienteCookie = Cookies.get("idUsuario") || "";
+    const idClienteCookie = Cookies.get('idUsuario') || '';
     if (!idClienteCookie) {
       Swal.fire({
-        icon: "warning",
-        title: "Debes iniciar sesión",
-        text: "Para reservar, primero inicia sesión o regístrate."
+        icon: 'warning',
+        title: 'Debes iniciar sesión',
+        text: 'Para reservar, primero inicia sesión o regístrate.',
       }).then(() => {
-        Cookies.set("redirigirExplorado", "true");
-        Cookies.set("UrlActual", window.location.href);
-        router.push("/registro");
+        Cookies.set('redirigirExplorado', 'true');
+        Cookies.set('UrlActual', window.location.href);
+        router.push('/registro');
       });
       return;
     }
 
     // 3️⃣ Validación teléfono
-    const telefonoUsuario = Cookies.get("telefonoUsuario") || "";
-    if (!telefonoUsuario || telefonoUsuario === "sintelefono") {
+    const telefonoUsuario = Cookies.get('telefonoUsuario') || '';
+    if (!telefonoUsuario || telefonoUsuario === 'sintelefono') {
       setMostrarModalTelefono(true);
       return;
     }
@@ -312,45 +313,48 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         mascotas: huespedes.mascotas,
       };
 
-      // Limpia overlay previo de Wompi si existiera
-      const wompiOverlay =
-        document.querySelector('.wc-overlay-backdrop') ||
-        document.querySelector('.widget__overlay');
-      if (wompiOverlay && wompiOverlay.parentNode) {
-        wompiOverlay.parentNode.removeChild(wompiOverlay);
-      }
-
       const codigoReserva = await apiReservacion(params);
 
-      // Datos para analítica
-      const transaccion = {
-        event: "purchase",
-        ecommerce: {
-          transaction_id: codigoReserva,
-          value: tarifa!.costoTotalConIncremento,
-          currency: "COP",
-          items: [
-            {
-              item_id: initialData._id,
-              item_name: initialData.nombreGlamping,
-              quantity: 1,
-              value: tarifa!.costoTotalConIncremento
-            }
-          ]
-        }
+      // ✅ Datos base para GA4 ecommerce (para que /gracias lo convierta en purchase)
+      const noches = Math.max(1, Number(tarifa!.totalDiasFacturados || 1));
+      const total = Number(tarifa!.costoTotalConIncremento || 0);
+      const precioUnitario = Number((total / noches).toFixed(2));
+
+      const transaccionFinal = {
+        transaction_id: String(codigoReserva),
+        affiliation: 'Glamperos',
+        value: total,
+        currency: 'COP',
+        items: [
+          {
+            item_id: String(initialData._id || glampingId),
+            item_name: String(initialData.nombreGlamping || 'Glamping'),
+            item_category: 'Glamping',
+            item_category2: String(initialData.ciudad_departamento || ''),
+            price: precioUnitario,
+            quantity: noches,
+          },
+        ],
       };
 
-      Cookies.set("transaccionFinal", JSON.stringify(transaccion), { expires: 1, path: "/" });
-      console.log("✅ transaccionFinal guardada:", transaccion);
+      // Guardar cookie accesible desde /gracias
+      Cookies.set('transaccionFinal', JSON.stringify(transaccionFinal), {
+        expires: 1,
+        path: '/',
+      });
 
-      router.push("/gracias");
+      console.log('✅ transaccionFinal guardada:', transaccionFinal);
+
+      // Pasar id en la URL para trazabilidad y debugging
+      router.push(`/gracias?id=${encodeURIComponent(String(codigoReserva))}`);
     } catch (err: any) {
-      Swal.fire("Error", err.message || "Algo salió mal", "error");
+      Swal.fire('Error', err.message || 'Algo salió mal', 'error');
     }
   };
 
   // Construye el modal en un portal fuera del stacking context actual
-  const modalPortal = (modalFechas || modalHuespedes) &&
+  const modalPortal =
+    (modalFechas || modalHuespedes) &&
     createPortal(
       <div className="formularioReserva-overlay" ref={overlayRef}>
         {modalFechas && (
@@ -385,6 +389,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
             </button>
           </div>
         )}
+
         {modalHuespedes && (
           <div className="formularioReserva-modal formularioReserva-modal-huespedes">
             <div className="formularioReserva-huespedes-header">
@@ -394,15 +399,35 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                 className="formularioReserva-pareja-icono"
               />
             </div>
-            {(['adultos','ninos','bebes','mascotas'] as (keyof Huespedes)[]).map(k => (
+
+            {(['adultos', 'ninos', 'bebes', 'mascotas'] as (keyof Huespedes)[]).map((k) => (
               <div key={k} className="formularioReserva-huesped-row">
                 <span className="formularioReserva-huesped-label">
-                  {k === 'adultos' && <>Adultos<div className="formularioReserva-huesped-sub">Edad: 13 años o más</div></>}
-                  {k === 'ninos'   && <>Niños <div className="formularioReserva-huesped-sub">Edades 2 – 12</div></>}
-                  {k === 'bebes'   && <>Bebés <div className="formularioReserva-huesped-sub">Menos de 2 años</div></>}
-                  {k === 'mascotas'&& <>Mascotas<div className="formularioReserva-huesped-sub">Tu fiel amigo también lo merece</div></>}
-                  {k === 'mascotas' && !aceptaMascotas && <span className="labelNoMascotas">No se aceptan mascotas</span>}
+                  {k === 'adultos' && (
+                    <>
+                      Adultos<div className="formularioReserva-huesped-sub">Edad: 13 años o más</div>
+                    </>
+                  )}
+                  {k === 'ninos' && (
+                    <>
+                      Niños <div className="formularioReserva-huesped-sub">Edades 2 – 12</div>
+                    </>
+                  )}
+                  {k === 'bebes' && (
+                    <>
+                      Bebés <div className="formularioReserva-huesped-sub">Menos de 2 años</div>
+                    </>
+                  )}
+                  {k === 'mascotas' && (
+                    <>
+                      Mascotas<div className="formularioReserva-huesped-sub">Tu fiel amigo también lo merece</div>
+                    </>
+                  )}
+                  {k === 'mascotas' && !aceptaMascotas && (
+                    <span className="labelNoMascotas">No se aceptan mascotas</span>
+                  )}
                 </span>
+
                 <div className="formularioReserva-huesped-controls">
                   <button
                     onClick={() => actualizarHuesped(k, -1)}
@@ -411,27 +436,32 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                       (k !== 'adultos' && (huespedes[k] as number) <= 0) ||
                       (k === 'mascotas' && !aceptaMascotas)
                     }
-                  >−</button>
+                  >
+                    −
+                  </button>
                   <span>{huespedes[k]}</span>
                   <button
                     onClick={() => actualizarHuesped(k, 1)}
                     disabled={
-                      ((k === 'adultos' || k === 'ninos') && (huespedes.adultos + huespedes.ninos) >= maxHuespedes) ||
+                      ((k === 'adultos' || k === 'ninos') &&
+                        huespedes.adultos + huespedes.ninos >= maxHuespedes) ||
                       (k === 'bebes' && huespedes.bebes >= 3) ||
                       (k === 'mascotas' && (!aceptaMascotas || huespedes.mascotas >= 3))
                     }
-                  >+</button>
+                  >
+                    +
+                  </button>
                 </div>
               </div>
             ))}
-            <button
-              className="formularioReserva-elegidos"
-              onClick={() => setModalHuespedes(false)}
-            >
+
+            <button className="formularioReserva-elegidos" onClick={() => setModalHuespedes(false)}>
               Ellos son los elegidos
             </button>
+
             <p className="formularioReserva-citaBiblica">
-              <span role="img" aria-label="pareja"></span> Ámense unos a otros con un afecto genuino y deléitense al honrarse mutuamente. Romanos 12:10
+              <span role="img" aria-label="pareja"></span> Ámense unos a otros con un afecto genuino y
+              deléitense al honrarse mutuamente. Romanos 12:10
             </p>
           </div>
         )}
@@ -441,27 +471,16 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
 
   return (
     <>
-      <Script
-        src="https://checkout.wompi.co/widget.js"
-        strategy="afterInteractive"
-        onLoad={() => console.log("✅ Wompi widget cargado")}
-      />
-
       <div className="formularioReserva-container">
         {tarifa && (
           <div className="formularioReserva-header">
-            <span className="precio-noche">
-              ${tarifa.precioPorDia.toLocaleString('es-CO')}
-            </span>
+            <span className="precio-noche">${tarifa.precioPorDia.toLocaleString('es-CO')}</span>
             <span>COP / noche</span>
           </div>
         )}
 
         {/* Botones de selección */}
-        <button
-          className="formularioReserva-summary"
-          onClick={() => setModalFechas(true)}
-        >
+        <button className="formularioReserva-summary" onClick={() => setModalFechas(true)}>
           <div>
             <div className="labelResumen">LLEGADA</div>
             <div>{fechaInicio ? formatearFechaCorta(fechaInicio) : '--'}</div>
@@ -472,48 +491,40 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           </div>
         </button>
 
-        <button
-          className="formularioReserva-summary"
-          onClick={() => setModalHuespedes(true)}
-        >
+        <button className="formularioReserva-summary" onClick={() => setModalHuespedes(true)}>
           <span>Huéspedes</span>
           <span>
             {huespedes.adultos + huespedes.ninos} huésped
-            {(huespedes.adultos + huespedes.ninos) !== 1 ? 'es' : ''}
+            {huespedes.adultos + huespedes.ninos !== 1 ? 'es' : ''}
           </span>
         </button>
 
         {/* Resumen y detalle */}
         {tarifa && (
           <div className="formularioReserva-general">
-            <button
-              className="formularioReserva-submit reserva-principal"
-              onClick={handleReservarClick}
-            >
+            <button className="formularioReserva-submit reserva-principal" onClick={handleReservarClick}>
               Reservar
             </button>
-            <div className="formularioReserva-nota">
-              No se hará ningún cargo por ahora
-            </div>
+
+            <div className="formularioReserva-nota">No se hará ningún cargo por ahora</div>
 
             <div className="formularioReserva-detalle">
               <div className="linea">
                 <span>
-                  ${Math.round(initialData.precioEstandar).toLocaleString('es-CO')} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                  ${Math.round(initialData.precioEstandar).toLocaleString('es-CO')} x{' '}
+                  {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
                 </span>
-                <span>
-                  ${tarifa.costoSinIncrementoBase.toLocaleString('es-CO')}
-                </span>
+                <span>${tarifa.costoSinIncrementoBase.toLocaleString('es-CO')}</span>
               </div>
 
               {tarifa.huespedesAdicionales > 0 && (
                 <div className="linea">
                   <span>
-                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x {tarifa.huespedesAdicionales} adicional{tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x{' '}
+                    {tarifa.huespedesAdicionales} adicional{tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x{' '}
+                    {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
                   </span>
-                  <span>
-                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')}
-                  </span>
+                  <span>${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')}</span>
                 </div>
               )}
 
@@ -539,7 +550,8 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
 
             <div className="formularioReserva-cancelacion">
               <span>
-                Este glamping permite cancelaciones hasta {initialData.diasCancelacion} días antes del check-in, con un reembolso del 95% del valor total
+                Este glamping permite cancelaciones hasta {initialData.diasCancelacion} días antes del check-in,
+                con un reembolso del 95% del valor total
               </span>
             </div>
           </div>
@@ -548,12 +560,12 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
 
       {modalPortal}
 
-      {mostrarModalTelefono && Cookies.get("correoUsuario") && (
+      {mostrarModalTelefono && Cookies.get('correoUsuario') && (
         <ModalTelefono
-          email={Cookies.get("correoUsuario")!}
+          email={Cookies.get('correoUsuario')!}
           onClose={() => setMostrarModalTelefono(false)}
           onSaved={(nuevoTelefono: string) => {
-            Cookies.set("telefonoUsuario", nuevoTelefono);
+            Cookies.set('telefonoUsuario', nuevoTelefono);
             setMostrarModalTelefono(false);
             handleReservarClick();
           }}

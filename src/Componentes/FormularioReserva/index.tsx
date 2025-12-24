@@ -549,9 +549,6 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                 onChange={(e) => setModoPruebas(e.target.checked)}
                 style={{ width: 14, height: 14 }}
               />
-              {/* <span style={{ fontSize: 12 }}>
-                Modo pruebas {modoPruebas ? '(SANDBOX)' : '(PRODUCCIÓN)'}
-              </span> */}
             </label>
 
             <hr />

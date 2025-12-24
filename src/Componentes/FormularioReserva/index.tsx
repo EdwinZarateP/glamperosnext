@@ -11,7 +11,7 @@ import 'react-date-range/dist/theme/default.css';
 import { calcularTarifaReserva, ResultadoTarifa } from '@/Funciones/calcularTarifaReserva';
 import finesSemanaData from '@/Componentes/BaseFinesSemana/fds.json';
 import Cookies from 'js-cookie';
-import { apiReservacion, ReservacionParams } from '@/Funciones/apiReservacion';
+import { apiReservacion, ReservacionParams, ModoWompi } from '@/Funciones/apiReservacion';
 import Swal from 'sweetalert2';
 import './estilos.css';
 import ModalTelefono from '@/Componentes/ModalTelefono';
@@ -68,6 +68,15 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       'El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto.'
     );
   }
+
+  // ✅ Checkbox: modo pruebas (persistido en cookie para que no se pierda al recargar)
+  const [modoPruebas, setModoPruebas] = useState<boolean>(() => {
+    return Cookies.get('modoWompi') === 'pruebas';
+  });
+
+  useEffect(() => {
+    Cookies.set('modoWompi', modoPruebas ? 'pruebas' : 'produccion', { expires: 7, path: '/' });
+  }, [modoPruebas]);
 
   // Datos iniciales
   const fechasReservadas: string[] = initialData.fechasReservadas || [];
@@ -174,7 +183,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     onFechaFinActualizada(fStr);
   };
 
-  // 3) Ajuste de huéspedes (con callback usando estado nuevo)
+  // 3) Ajuste de huéspedes
   const actualizarHuesped = (key: keyof Huespedes, delta: number) => {
     if (key === 'mascotas' && !aceptaMascotas) return;
 
@@ -205,7 +214,6 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
     let start = parseYMD(fechaInicio);
     let end = parseYMD(fechaFin);
 
-    // Normaliza si el usuario seleccionó al revés
     if (start > end) {
       [start, end] = [end, start];
       const i = formatDateLocal(start);
@@ -254,9 +262,9 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
 
   // 6) Reservar
   const handleReservarClick = async () => {
-    // 1️⃣ Validar fechas seleccionadas (fin exclusivo: checkout no cuenta como noche)
     const start = parseYMD(fechaInicio);
     const end = parseYMD(fechaFin);
+
     if (reservedDates.some((d) => d >= start && d < end)) {
       Swal.fire({
         icon: 'error',
@@ -266,7 +274,6 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       return;
     }
 
-    // 2️⃣ Validar sesión
     const idClienteCookie = Cookies.get('idUsuario') || '';
     if (!idClienteCookie) {
       Swal.fire({
@@ -281,19 +288,15 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       return;
     }
 
-    // 3️⃣ Validación teléfono
     const telefonoUsuario = Cookies.get('telefonoUsuario') || '';
     if (!telefonoUsuario || telefonoUsuario === 'sintelefono') {
       setMostrarModalTelefono(true);
       return;
     }
 
-    // 4️⃣ Llamada a la API de pagos
     try {
-      // Obtén el id de la última parte de la ruta de forma robusta
       const segments = pathname.split('/').filter(Boolean);
       const glampingId = segments[segments.length - 1] ?? '';
-
       Cookies.set('cookieGlampingId', glampingId, { expires: 7, path: '/' });
 
       const params: ReservacionParams = {
@@ -313,9 +316,9 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         mascotas: huespedes.mascotas,
       };
 
-      const codigoReserva = await apiReservacion(params);
+      const modo: ModoWompi = modoPruebas ? 'pruebas' : 'produccion';
+      const codigoReserva = await apiReservacion(params, modo);
 
-      // ✅ Datos base para GA4 ecommerce (para que /gracias lo convierta en purchase)
       const noches = Math.max(1, Number(tarifa!.totalDiasFacturados || 1));
       const total = Number(tarifa!.costoTotalConIncremento || 0);
       const precioUnitario = Number((total / noches).toFixed(2));
@@ -337,22 +340,17 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
         ],
       };
 
-      // Guardar cookie accesible desde /gracias
       Cookies.set('transaccionFinal', JSON.stringify(transaccionFinal), {
         expires: 1,
         path: '/',
       });
 
-      console.log('✅ transaccionFinal guardada:', transaccionFinal);
-
-      // Pasar id en la URL para trazabilidad y debugging
       router.push(`/gracias?id=${encodeURIComponent(String(codigoReserva))}`);
     } catch (err: any) {
       Swal.fire('Error', err.message || 'Algo salió mal', 'error');
     }
   };
 
-  // Construye el modal en un portal fuera del stacking context actual
   const modalPortal =
     (modalFechas || modalHuespedes) &&
     createPortal(
@@ -479,7 +477,7 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           </div>
         )}
 
-        {/* Botones de selección */}
+
         <button className="formularioReserva-summary" onClick={() => setModalFechas(true)}>
           <div>
             <div className="labelResumen">LLEGADA</div>
@@ -499,7 +497,6 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
           </span>
         </button>
 
-        {/* Resumen y detalle */}
         {tarifa && (
           <div className="formularioReserva-general">
             <button className="formularioReserva-submit reserva-principal" onClick={handleReservarClick}>
@@ -511,8 +508,8 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
             <div className="formularioReserva-detalle">
               <div className="linea">
                 <span>
-                  ${Math.round(initialData.precioEstandar).toLocaleString('es-CO')} x{' '}
-                  {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                  ${Math.round(initialData.precioEstandar).toLocaleString('es-CO')} x {tarifa.totalDiasFacturados}{' '}
+                  noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
                 </span>
                 <span>${tarifa.costoSinIncrementoBase.toLocaleString('es-CO')}</span>
               </div>
@@ -520,9 +517,9 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
               {tarifa.huespedesAdicionales > 0 && (
                 <div className="linea">
                   <span>
-                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x{' '}
-                    {tarifa.huespedesAdicionales} adicional{tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x{' '}
-                    {tarifa.totalDiasFacturados} noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
+                    ${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')} x {tarifa.huespedesAdicionales}{' '}
+                    adicional{tarifa.huespedesAdicionales !== 1 ? 'es' : ''} x {tarifa.totalDiasFacturados}{' '}
+                    noche{tarifa.totalDiasFacturados !== 1 ? 's' : ''}
                   </span>
                   <span>${tarifa.costoAdicionalesSinIncremento.toLocaleString('es-CO')}</span>
                 </div>
@@ -540,6 +537,22 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
                 </div>
               )}
             </div>
+
+            {/* ✅ Toggle modo pruebas */}
+            <label
+              className="formularioReserva-modo"
+              style={{ display: 'flex', gap: 8, alignItems: 'center', margin: '8px 0' }}
+            >
+              <input
+                type="checkbox"
+                checked={modoPruebas}
+                onChange={(e) => setModoPruebas(e.target.checked)}
+                style={{ width: 14, height: 14 }}
+              />
+              {/* <span style={{ fontSize: 12 }}>
+                Modo pruebas {modoPruebas ? '(SANDBOX)' : '(PRODUCCIÓN)'}
+              </span> */}
+            </label>
 
             <hr />
 

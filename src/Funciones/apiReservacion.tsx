@@ -1,18 +1,15 @@
-// Funciones/apiReservacion.tsx
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
-type Modo = "produccion" | "pruebas";
-// Cambia esta línea cuando desees cambiar de entorno:
-// const modo: Modo = "pruebas";
-const modo: Modo = "produccion";
+export type ModoWompi = 'produccion' | 'pruebas';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
-const PUBLIC_KEY = {
-  produccion: process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY!,
-  pruebas:    process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_SANDBOX!,
-}[modo];
-
-const API_BASE   = process.env.NEXT_PUBLIC_API_BASE_URL!;
+// Declaración global para TS (WidgetCheckout existe cuando cargas el script)
+declare global {
+  interface Window {
+    WidgetCheckout?: any;
+  }
+}
 
 export interface ReservacionParams {
   idCliente: string;
@@ -20,77 +17,108 @@ export interface ReservacionParams {
   idGlamping: string;
   ciudad_departamento: string;
   fechaInicio: Date;
-  fechaFin:    Date;
-  totalDias:   number;
-  valorTotalCOP:     number;
+  fechaFin: Date;
+  totalDias: number;
+  valorTotalCOP: number;
   tarifaServicioCOP: number;
-  pagoGlampingCOP:   number;
-  adultos:    number;
-  ninos:      number;
-  bebes:      number;
-  mascotas:   number;
+  pagoGlampingCOP: number;
+  adultos: number;
+  ninos: number;
+  bebes: number;
+  mascotas: number;
 }
 
-export async function apiReservacion(params: ReservacionParams): Promise<string> {
-  const idClienteCookie   = Cookies.get("idUsuario") || "";
-  //1️⃣ Crear la reserva en el backend
+function getPublicKey(modo: ModoWompi) {
+  const key =
+    modo === 'produccion'
+      ? process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY
+      : process.env.NEXT_PUBLIC_WOMPI_PUBLIC_KEY_SANDBOX;
+
+  if (!key) {
+    throw new Error(
+      `Falta la llave pública de Wompi para modo: ${modo}. Revisa tus variables de entorno.`
+    );
+  }
+  return key;
+}
+
+export async function apiReservacion(params: ReservacionParams, modo: ModoWompi): Promise<string> {
+  const idClienteCookie = Cookies.get('idUsuario') || '';
+
+  // 1️⃣ Crear la reserva en el backend
   const createResp = await fetch(`${API_BASE}/reservas`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      idCliente:           idClienteCookie,
-      idPropietario:       params.idPropietario,
-      idGlamping:          params.idGlamping,
+      idCliente: idClienteCookie,
+      idPropietario: params.idPropietario,
+      idGlamping: params.idGlamping,
       ciudad_departamento: params.ciudad_departamento,
-      FechaIngreso:        params.fechaInicio.toISOString(),
-      FechaSalida:         params.fechaFin.toISOString(),
-      Noches:              params.totalDias,
-      ValorReserva:        params.valorTotalCOP,
-      CostoGlamping:       params.pagoGlampingCOP,
-      ComisionGlamperos:   params.tarifaServicioCOP,
-      adultos:             params.adultos,
-      ninos:               params.ninos,
-      bebes:               params.bebes,
-      mascotas:            params.mascotas,
-      EstadoReserva:       "Reservada",
-      EstadoPago:          "Pendiente",
-      codigoReserva:       crypto.randomUUID(),
+      FechaIngreso: params.fechaInicio.toISOString(),
+      FechaSalida: params.fechaFin.toISOString(),
+      Noches: params.totalDias,
+      ValorReserva: params.valorTotalCOP,
+      CostoGlamping: params.pagoGlampingCOP,
+      ComisionGlamperos: params.tarifaServicioCOP,
+      adultos: params.adultos,
+      ninos: params.ninos,
+      bebes: params.bebes,
+      mascotas: params.mascotas,
+      EstadoReserva: 'Reservada',
+      EstadoPago: 'Pendiente',
+      codigoReserva: crypto.randomUUID(),
     }),
   });
+
   if (!createResp.ok) {
-    throw new Error("No se pudo crear la reserva");
+    throw new Error('No se pudo crear la reserva');
+  }
+
+  const createBody = await createResp.json();
+  const reference = createBody?.reserva?.codigoReserva;
+
+  if (!reference) {
+    console.log('🔍 Respuesta /reservas:', createBody);
+    throw new Error('La API no devolvió codigoReserva (reference).');
   }
 
   // 2️⃣ Pedir firma Wompi
-  const reference    = (await createResp.json()).reserva.codigoReserva;
-  const montoCentav  = Math.round(params.valorTotalCOP * 100);
+  const montoCentav = Math.round(params.valorTotalCOP * 100);
   const sigResp = await fetch(
-    `${API_BASE}/wompi/generar-firma?referencia=${reference}` +
-    `&monto=${montoCentav}&moneda=COP&modo=${modo}`
-    );
+    `${API_BASE}/wompi/generar-firma?referencia=${encodeURIComponent(reference)}` +
+      `&monto=${montoCentav}&moneda=COP&modo=${encodeURIComponent(modo)}`
+  );
 
-    // 👇 Aquí colocas el log temporal
-    const sigBody = await sigResp.json();
-    console.log("👉 Firma /wompi/generar-firma:", sigBody); 
+  const sigBody = await sigResp.json();
+  console.log('👉 Firma /wompi/generar-firma:', sigBody);
 
-    const { firma_integridad } = sigBody;
-    if (!firma_integridad || !window.WidgetCheckout) {
-    throw new Error("No se pudo inicializar el pago");
-    }
+  const firma_integridad = sigBody?.firma_integridad;
+
+  if (!sigResp.ok || !firma_integridad) {
+    throw new Error(`No se pudo generar la firma de Wompi (modo=${modo}).`);
+  }
 
   // 3️⃣ Abrir widget
+  const PUBLIC_KEY = getPublicKey(modo);
+
+  if (!window.WidgetCheckout) {
+    throw new Error(
+      'Wompi Widget no está cargado. Asegúrate de incluir https://checkout.wompi.co/widget.js en el layout o página.'
+    );
+  }
+
   const checkout = new window.WidgetCheckout({
-    currency:      "COP",
+    currency: 'COP',
     amountInCents: montoCentav,
     reference,
-    publicKey:     PUBLIC_KEY,
-    signature:     { integrity: firma_integridad },
-    redirectUrl:   window.location.origin + "/gracias",
+    publicKey: PUBLIC_KEY,
+    signature: { integrity: firma_integridad },
+    redirectUrl: window.location.origin + '/gracias',
   });
 
   return new Promise((resolve, reject) => {
     checkout.open(
-      () => resolve(reference), 
+      () => resolve(reference),
       (err: any) => reject(err)
     );
   });

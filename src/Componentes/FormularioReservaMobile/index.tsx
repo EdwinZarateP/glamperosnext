@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { createPortal } from 'react-dom';
-import { ContextoApp } from "../../context/AppContext";
+import { ContextoApp } from '../../context/AppContext';
 import { useRouter, usePathname } from 'next/navigation';
 import { DateRange } from 'react-date-range';
 import { es } from 'date-fns/locale';
@@ -10,11 +10,11 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { calcularTarifaReserva, ResultadoTarifa } from '@/Funciones/calcularTarifaReserva';
 import finesSemanaData from '@/Componentes/BaseFinesSemana/fds.json';
-import Cookies from "js-cookie";
-import { apiReservacion, ReservacionParams } from "@/Funciones/apiReservacion";
-import Swal from "sweetalert2";
+import Cookies from 'js-cookie';
+import { apiReservacion, ReservacionParams, ModoWompi } from '@/Funciones/apiReservacion';
+import Swal from 'sweetalert2';
 import './estilos.css';
-import ModalTelefono from "@/Componentes/ModalTelefono";
+import ModalTelefono from '@/Componentes/ModalTelefono';
 import Script from 'next/script';
 
 /** Formatea 'YYYY-MM-DD' a fecha corta */
@@ -36,8 +36,8 @@ function parseYMD(fecha: string): Date {
 /** Formatea Date a YYYY-MM-DD sin UTC */
 function formatDateLocal(date: Date) {
   const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
 
@@ -66,9 +66,15 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
   const almacenVariables = useContext(ContextoApp);
   if (!almacenVariables) {
     throw new Error(
-      "El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto."
+      'El contexto no está disponible. Asegúrate de envolver el componente en un proveedor de contexto.'
     );
   }
+
+  /**
+   * ✅ SIEMPRE PRODUCCIÓN (NO SE MUESTRA CHECKBOX)
+   * Si algún día necesitas pruebas, cambia esta constante temporalmente a 'pruebas'.
+   */
+  const modo: ModoWompi = 'produccion';
 
   // Datos iniciales
   const fechasReservadas: string[] = initialData.fechasReservadas || [];
@@ -78,15 +84,14 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
   const maxHuespedes = capacidadBase + capacidadExtra;
 
   // Fechas reservadas (normalizadas 00:00)
-  const reservedDates: Date[] = fechasReservadas.map(d => {
+  const reservedDates: Date[] = fechasReservadas.map((d) => {
     const dt = parseYMD(d);
     dt.setHours(0, 0, 0, 0);
     return dt;
   });
 
   const isSameDay = (a: Date, b: Date) => a.getTime() === b.getTime();
-  const hasInteriorReserved = (start: Date, end: Date) =>
-    reservedDates.some(d => d > start && d < end);
+  const hasInteriorReserved = (start: Date, end: Date) => reservedDates.some((d) => d > start && d < end);
 
   /** Próximo sábado/domingo */
   const getNextWeekend = (from = new Date()): [Date, Date] => {
@@ -133,8 +138,8 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
     let [sat, sun] = getNextWeekend();
     let i = 0;
     while (
-      (reservedDates.some(d => isSameDay(d, sat)) ||
-        reservedDates.some(d => isSameDay(d, sun)) ||
+      (reservedDates.some((d) => isSameDay(d, sat)) ||
+        reservedDates.some((d) => isSameDay(d, sun)) ||
         hasInteriorReserved(sat, sun)) &&
       i < 10
     ) {
@@ -157,7 +162,7 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
     const s = selection.startDate as Date;
     const e = selection.endDate as Date;
 
-    if (reservedDates.some(d => isSameDay(d, s))) {
+    if (reservedDates.some((d) => isSameDay(d, s))) {
       alert('No puedes iniciar en una fecha reservada.');
       return;
     }
@@ -178,7 +183,7 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
   const actualizarHuesped = (key: keyof Huespedes, delta: number) => {
     if (key === 'mascotas' && !aceptaMascotas) return;
 
-    setHuespedes(prev => {
+    setHuespedes((prev) => {
       let n = prev[key] + delta;
       n = key === 'adultos' ? Math.max(1, n) : Math.max(0, n);
 
@@ -253,43 +258,39 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
 
   // 6) Reservar
   const handleReservarClick = async () => {
-    // 1️⃣ Validar fechas seleccionadas (fin exclusivo: checkout no cuenta como noche)
     const start = parseYMD(fechaInicio);
     const end = parseYMD(fechaFin);
-    if (reservedDates.some(d => d >= start && d < end)) {
+
+    if (reservedDates.some((d) => d >= start && d < end)) {
       Swal.fire({
-        icon: "error",
-        title: "Fechas no disponibles",
-        text: "El rango que elegiste incluye días ya reservados."
+        icon: 'error',
+        title: 'Fechas no disponibles',
+        text: 'El rango que elegiste incluye días ya reservados.',
       });
       return;
     }
 
-    // 2️⃣ Validar sesión
-    const idClienteCookie = Cookies.get("idUsuario") || "";
+    const idClienteCookie = Cookies.get('idUsuario') || '';
     if (!idClienteCookie) {
       Swal.fire({
-        icon: "warning",
-        title: "Debes iniciar sesión",
-        text: "Para reservar, primero inicia sesión o regístrate."
+        icon: 'warning',
+        title: 'Debes iniciar sesión',
+        text: 'Para reservar, primero inicia sesión o regístrate.',
       }).then(() => {
-        Cookies.set("redirigirExplorado", "true");
-        Cookies.set("UrlActual", window.location.href);
-        router.push("/registro");
+        Cookies.set('redirigirExplorado', 'true');
+        Cookies.set('UrlActual', window.location.href);
+        router.push('/registro');
       });
       return;
     }
 
-    // 3️⃣ Validación teléfono
-    const telefonoUsuario = Cookies.get("telefonoUsuario") || "";
-    if (!telefonoUsuario || telefonoUsuario === "sintelefono") {
+    const telefonoUsuario = Cookies.get('telefonoUsuario') || '';
+    if (!telefonoUsuario || telefonoUsuario === 'sintelefono') {
       setMostrarModalTelefono(true);
       return;
     }
 
-    // 4️⃣ Llamada a la API de pagos
     try {
-      // Obtén el id de la última parte de la ruta de forma robusta
       const segments = pathname.split('/').filter(Boolean);
       const glampingId = segments[segments.length - 1] ?? '';
 
@@ -314,43 +315,43 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
 
       // Limpia overlay previo de Wompi si existiera
       const wompiOverlay =
-        document.querySelector('.wc-overlay-backdrop') ||
-        document.querySelector('.widget__overlay');
+        document.querySelector('.wc-overlay-backdrop') || document.querySelector('.widget__overlay');
       if (wompiOverlay && wompiOverlay.parentNode) {
         wompiOverlay.parentNode.removeChild(wompiOverlay);
       }
 
-      const codigoReserva = await apiReservacion(params);
+      const codigoReserva = await apiReservacion(params, modo);
 
-      // Datos para analítica
+      // Datos para analítica (cookie para /gracias)
       const transaccion = {
-        event: "purchase",
+        event: 'purchase',
         ecommerce: {
-          transaction_id: codigoReserva,
-          value: tarifa!.costoTotalConIncremento,
-          currency: "COP",
+          transaction_id: String(codigoReserva),
+          value: Number(tarifa?.costoTotalConIncremento || 0),
+          currency: 'COP',
           items: [
             {
-              item_id: initialData._id,
-              item_name: initialData.nombreGlamping,
+              item_id: String(initialData._id || glampingId),
+              item_name: String(initialData.nombreGlamping || 'Glamping'),
               quantity: 1,
-              value: tarifa!.costoTotalConIncremento
-            }
-          ]
-        }
+              value: Number(tarifa?.costoTotalConIncremento || 0),
+            },
+          ],
+        },
       };
 
-      Cookies.set("transaccionFinal", JSON.stringify(transaccion), { expires: 1, path: "/" });
-      console.log("✅ transaccionFinal guardada:", transaccion);
+      Cookies.set('transaccionFinal', JSON.stringify(transaccion), { expires: 1, path: '/' });
+      console.log('✅ transaccionFinal guardada:', transaccion);
 
-      router.push("/gracias");
+      router.push('/gracias');
     } catch (err: any) {
-      Swal.fire("Error", err.message || "Algo salió mal", "error");
+      Swal.fire('Error', err.message || 'Algo salió mal', 'error');
     }
   };
 
   // Construye el modal en un portal fuera del stacking context actual
-  const modalPortal = (modalFechas || modalHuespedes) &&
+  const modalPortal =
+    (modalFechas || modalHuespedes) &&
     createPortal(
       <div className="formularioReservaMobile-overlay" ref={overlayRef}>
         {modalFechas && (
@@ -385,6 +386,7 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
             </button>
           </div>
         )}
+
         {modalHuespedes && (
           <div className="formularioReservaMobile-modal formularioReservaMobile-modal-huespedes">
             <div className="formularioReservaMobile-huespedes-header">
@@ -394,15 +396,35 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
                 className="formularioReservaMobile-pareja-icono"
               />
             </div>
-            {(['adultos','ninos','bebes','mascotas'] as (keyof Huespedes)[]).map(k => (
+
+            {(['adultos', 'ninos', 'bebes', 'mascotas'] as (keyof Huespedes)[]).map((k) => (
               <div key={k} className="formularioReservaMobile-huesped-row">
                 <span className="formularioReservaMobile-huesped-label">
-                  {k === 'adultos' && <>Adultos<div className="formularioReservaMobile-huesped-sub">Edad: 13 años o más</div></>}
-                  {k === 'ninos'   && <>Niños <div className="formularioReservaMobile-huesped-sub">Edades 2 – 12</div></>}
-                  {k === 'bebes'   && <>Bebés <div className="formularioReservaMobile-huesped-sub">Menos de 2 años</div></>}
-                  {k === 'mascotas'&& <>Mascotas<div className="formularioReservaMobile-huesped-sub">Tu fiel amigo también lo merece</div></>}
-                  {k === 'mascotas' && !aceptaMascotas && <span className="labelNoMascotas">No se aceptan mascotas</span>}
+                  {k === 'adultos' && (
+                    <>
+                      Adultos<div className="formularioReservaMobile-huesped-sub">Edad: 13 años o más</div>
+                    </>
+                  )}
+                  {k === 'ninos' && (
+                    <>
+                      Niños <div className="formularioReservaMobile-huesped-sub">Edades 2 – 12</div>
+                    </>
+                  )}
+                  {k === 'bebes' && (
+                    <>
+                      Bebés <div className="formularioReservaMobile-huesped-sub">Menos de 2 años</div>
+                    </>
+                  )}
+                  {k === 'mascotas' && (
+                    <>
+                      Mascotas<div className="formularioReservaMobile-huesped-sub">Tu fiel amigo también lo merece</div>
+                    </>
+                  )}
+                  {k === 'mascotas' && !aceptaMascotas && (
+                    <span className="labelNoMascotas">No se aceptan mascotas</span>
+                  )}
                 </span>
+
                 <div className="formularioReservaMobile-huesped-controls">
                   <button
                     onClick={() => actualizarHuesped(k, -1)}
@@ -411,27 +433,31 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
                       (k !== 'adultos' && (huespedes[k] as number) <= 0) ||
                       (k === 'mascotas' && !aceptaMascotas)
                     }
-                  >−</button>
+                  >
+                    −
+                  </button>
                   <span>{huespedes[k]}</span>
                   <button
                     onClick={() => actualizarHuesped(k, 1)}
                     disabled={
-                      ((k === 'adultos' || k === 'ninos') && (huespedes.adultos + huespedes.ninos) >= maxHuespedes) ||
+                      ((k === 'adultos' || k === 'ninos') && huespedes.adultos + huespedes.ninos >= maxHuespedes) ||
                       (k === 'bebes' && huespedes.bebes >= 3) ||
                       (k === 'mascotas' && (!aceptaMascotas || huespedes.mascotas >= 3))
                     }
-                  >+</button>
+                  >
+                    +
+                  </button>
                 </div>
               </div>
             ))}
-            <button
-              className="formularioReservaMobile-elegidos"
-              onClick={() => setModalHuespedes(false)}
-            >
+
+            <button className="formularioReservaMobile-elegidos" onClick={() => setModalHuespedes(false)}>
               Ellos son los elegidos
             </button>
+
             <p className="formularioReservaMobile-citaBiblica">
-              <span role="img" aria-label="pareja"></span> Ámense unos a otros con un afecto genuino y deléitense al honrarse mutuamente. Romanos 12:10
+              <span role="img" aria-label="pareja"></span> Ámense unos a otros con un afecto genuino y deléitense al
+              honrarse mutuamente. Romanos 12:10
             </p>
           </div>
         )}
@@ -444,47 +470,39 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
       <Script
         src="https://checkout.wompi.co/widget.js"
         strategy="afterInteractive"
-        onLoad={() => console.log("✅ Wompi widget cargado")}
+        onLoad={() => console.log('✅ Wompi widget cargado')}
       />
 
       <div className="formularioReservaMobile-container">
         <div className="formularioReservaMobile-summary-container">
           <div className="formularioReservaMobile-price">
             {tarifa && (
-              <span className="precio-noche">
-                ${tarifa.costoTotalConIncremento.toLocaleString('es-CO')}
-              </span>
+              <span className="precio-noche">${tarifa.costoTotalConIncremento.toLocaleString('es-CO')}</span>
             )}
           </div>
 
           <div className="formularioReservaMobile-buttons">
-            <button
-              className="formularioReservaMobile-date-button"
-              onClick={() => setModalFechas(true)}
-            >
+            <button className="formularioReservaMobile-date-button" onClick={() => setModalFechas(true)}>
               <div className="formularioReservaMobile-date-content">
                 <div className="labelResumen">FECHAS</div>
-                <div>{fechaInicio ? formatearFechaCorta(fechaInicio) : '--'} - {fechaFin ? formatearFechaCorta(fechaFin) : '--'}</div>
-              </div>
-            </button>
-
-            <button
-              className="formularioReservaMobile-guests-button"
-              onClick={() => setModalHuespedes(true)}
-            >
-              <div className="formularioReservaMobile-guests-content">
-                <div className="labelResumen">HUÉSPEDES</div>
                 <div>
-                  {huespedes.adultos + huespedes.ninos} huésped
-                  {(huespedes.adultos + huespedes.ninos) !== 1 ? 'es' : ''}
+                  {fechaInicio ? formatearFechaCorta(fechaInicio) : '--'} -{' '}
+                  {fechaFin ? formatearFechaCorta(fechaFin) : '--'}
                 </div>
               </div>
             </button>
 
-            <button
-              className="formularioReservaMobile-reserve-button"
-              onClick={handleReservarClick}
-            >
+            <button className="formularioReservaMobile-guests-button" onClick={() => setModalHuespedes(true)}>
+              <div className="formularioReservaMobile-guests-content">
+                <div className="labelResumen">HUÉSPEDES</div>
+                <div>
+                  {huespedes.adultos + huespedes.ninos} huésped
+                  {huespedes.adultos + huespedes.ninos !== 1 ? 'es' : ''}
+                </div>
+              </div>
+            </button>
+
+            <button className="formularioReservaMobile-reserve-button" onClick={handleReservarClick}>
               Reservar
             </button>
           </div>
@@ -493,12 +511,12 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
 
       {modalPortal}
 
-      {mostrarModalTelefono && Cookies.get("correoUsuario") && (
+      {mostrarModalTelefono && Cookies.get('correoUsuario') && (
         <ModalTelefono
-          email={Cookies.get("correoUsuario")!}
+          email={Cookies.get('correoUsuario')!}
           onClose={() => setMostrarModalTelefono(false)}
           onSaved={(nuevoTelefono: string) => {
-            Cookies.set("telefonoUsuario", nuevoTelefono);
+            Cookies.set('telefonoUsuario', nuevoTelefono);
             setMostrarModalTelefono(false);
             handleReservarClick();
           }}

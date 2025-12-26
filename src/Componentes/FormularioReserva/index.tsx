@@ -343,6 +343,8 @@ const FormularioReserva: React.FC<FormularioReservaProps> = ({
       Cookies.set('transaccionFinal', JSON.stringify(transaccionFinal), {
         expires: 1,
         path: '/',
+        sameSite: 'Lax',
+        secure: true,
       });
 
       router.push(`/gracias?id=${encodeURIComponent(String(codigoReserva))}`);

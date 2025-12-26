@@ -323,7 +323,7 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
       const codigoReserva = await apiReservacion(params, modo);
 
       // Datos para analítica (cookie para /gracias)
-      const transaccion = {
+      const transaccionFinal = {
         event: 'purchase',
         ecommerce: {
           transaction_id: String(codigoReserva),
@@ -340,8 +340,8 @@ const FormularioReservaMobile: React.FC<FormularioReservaMobileProps> = ({
         },
       };
 
-      Cookies.set('transaccionFinal', JSON.stringify(transaccion), { expires: 1, path: '/' });
-      console.log('✅ transaccionFinal guardada:', transaccion);
+      Cookies.set('transaccionFinal', JSON.stringify(transaccionFinal), { expires: 1, path: '/' });
+      console.log('✅ transaccionFinal guardada:', transaccionFinal);
 
       router.push('/gracias');
     } catch (err: any) {

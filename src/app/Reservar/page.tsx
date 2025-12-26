@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import dynamic from "next/dynamic";
 import animationData from "../../Componentes/Animaciones/AnimationPuntos.json";
-import Reservacion from '../../Componentes/Reservacion/index';
 import HeaderIcono from '../../Componentes/HeaderIcono/index';
 import './estilos.css';
 
@@ -21,7 +20,7 @@ const Lottie = dynamic<MyLottieProps>(
 );
 
 function Reservar() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -29,9 +28,9 @@ function Reservar() {
     }
   }, []);
 
-  const handleReservacionLoaded = () => {
-    setIsLoading(false);
-  };
+  // const handleReservacionLoaded = () => {
+  //   setIsLoading(false);
+  // };
 
   return (
     <div className="Reservar-contenedor">
@@ -49,7 +48,7 @@ function Reservar() {
       )}
 
       <Suspense fallback={<div>Cargando reservación…</div>}>
-        <Reservacion onLoaded={handleReservacionLoaded} />
+        {/* <Reservacion onLoaded={handleReservacionLoaded} /> */}
       </Suspense>
     </div>
   );

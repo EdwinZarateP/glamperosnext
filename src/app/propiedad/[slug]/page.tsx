@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
+import { aplicarIncremento, redondear50 } from "@/Funciones/calcularTarifaReserva";
 
 import GlampingCliente from "./GlampingCliente";
 import EncabezadoExplorado from "@/Componentes/EncabezadoExplorado";
@@ -14,23 +15,11 @@ import GlampingCercanos from "@/Componentes/GlampingCercanos";
 import "./page.css";
 
 // =========================
-// Helpers OG (precio + texto)
+// Helpers Open Graph
 // =========================
 
-// ✅ AJUSTA ESTO al incremento real que manejas (porcentaje)
-// Ejemplo: 12 significa +12%
-const INCREMENTO_PORC = 0;
-
-const formatCOP = (n: number) => `$${Math.round(n).toLocaleString("es-CO")} COP`;
-
-const aplicarIncremento = (valor: number) =>
-  Math.round(valor * (1 + INCREMENTO_PORC / 100));
-
-const aplicarDescuento = (valor: number, descuentoPorc?: number) => {
-  const d = Number(descuentoPorc || 0);
-  if (!d || d <= 0) return Math.round(valor);
-  return Math.round(valor * (1 - d / 100));
-};
+const formatCOP = (n: number) =>
+  `$${Math.round(n).toLocaleString("es-CO")} COP`;
 
 const limpiarTexto = (t?: string) =>
   (t || "")
@@ -50,7 +39,12 @@ type PageProps = {
   searchParams: Promise<Record<string, string | undefined>>;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+// =========================
+// METADATA (WhatsApp / OG)
+// =========================
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const glamping = await ObtenerGlampingPorId(slug);
 
@@ -59,15 +53,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? "Cabaña"
       : glamping?.tipoGlamping || "Glamping";
 
-  const ciudad = glamping?.ciudad_departamento?.split(" - ")[0] || "Colombia";
+  const ciudad =
+    glamping?.ciudad_departamento?.split(" - ")[0] || "Colombia";
+
   const titulo = `${tipo} en ${ciudad}`;
 
-  // ✅ Precio "Desde" (simple): precioEstandar -> descuento (si hay) -> incremento
+  // ✅ PRECIO "DESDE" usando EXACTAMENTE la misma lógica del sistema
   const precioBase = Number(glamping?.precioEstandar || 0);
-  const descuentoPorc = Number(glamping?.descuento || 0);
 
-  const precioConDescuento = aplicarDescuento(precioBase, descuentoPorc);
-  const precioFinal = aplicarIncremento(precioConDescuento);
+  // aplicarIncremento viene de calcularTarifaReserva.tsx
+  const precioConIncremento = aplicarIncremento(precioBase);
+
+  // mismo redondeo que usas en tarifas
+  const precioFinal = redondear50(precioConIncremento);
 
   const textoPrecio =
     precioFinal > 0 ? `Desde ${formatCOP(precioFinal)} / noche. ` : "";
@@ -76,14 +74,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     limpiarTexto(glamping?.descripcionGlamping).slice(0, 150) ||
     "Explora una experiencia única de glamping en Colombia.";
 
-  // WhatsApp corta rápido; dejamos margen
+  // WhatsApp corta texto → margen seguro
   const descripcion = `${textoPrecio}${descBase}`.slice(0, 200);
 
   const imagenOG = normalizarOgImage(glamping?.imagenes?.[0]);
   const url = `https://glamperos.com/propiedad/${slug}`;
 
   return {
-    // Opcional pero recomendado para consistencia
     metadataBase: new URL("https://glamperos.com"),
 
     title: titulo,
@@ -96,7 +93,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "website",
       url,
       siteName: "Glamperos",
-      images: [{ url: imagenOG, width: 1200, height: 630, alt: titulo }],
+      images: [
+        {
+          url: imagenOG,
+          width: 1200,
+          height: 630,
+          alt: titulo,
+        },
+      ],
     },
 
     twitter: {
@@ -108,6 +112,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+// =========================
+// PAGE
+// =========================
 export default async function Page({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;

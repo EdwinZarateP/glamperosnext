@@ -13,10 +13,10 @@ import GlampingCercanos from "@/Componentes/GlampingCercanos";
 
 import "./page.css";
 
-// =========================
-// 🔒 LÓGICA OFICIAL DE RECARGO
-// (misma que precioConRecargo.tsx, pero server-safe)
-// =========================
+/* =====================================================
+   🔒 LÓGICA OFICIAL DE RECARGO (server-safe)
+   Mismo comportamiento que precioConRecargo.tsx
+===================================================== */
 const precioConRecargoServer = (precio: number): number => {
   if (precio <= 0) return 0;
   if (precio <= 299_999) return precio * 1.2;
@@ -28,9 +28,9 @@ const precioConRecargoServer = (precio: number): number => {
   return precio;
 };
 
-// =========================
-// Helpers Open Graph
-// =========================
+/* =====================================================
+   Helpers
+===================================================== */
 const formatCOP = (n: number) =>
   `$${Math.round(n).toLocaleString("es-CO")} COP`;
 
@@ -47,47 +47,65 @@ const normalizarOgImage = (img?: string) => {
   return `https://glamperos.com/${img}`;
 };
 
+// Capitaliza primera letra
+const capFirst = (s: string) =>
+  s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+
+// Normaliza el tipo de glamping
+const tipoBonito = (tipoRaw?: string) => {
+  const t = (tipoRaw || "Glamping").toLowerCase();
+
+  const mapa: Record<string, string> = {
+    cabana: "Cabaña",
+    cabaña: "Cabaña",
+    domo: "Domo",
+    tiny_house: "Tiny house",
+    tinyhouse: "Tiny house",
+    casa_arbol: "Casa del árbol",
+    casa_del_arbol: "Casa del árbol",
+    tipi: "Tipi",
+    chalet: "Chalet",
+    contenedor: "Contenedor",
+  };
+
+  if (mapa[t]) return mapa[t];
+  return capFirst(t.replace(/_/g, " "));
+};
+
 type PageProps = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<Record<string, string | undefined>>;
 };
 
-// =========================
-// METADATA (WhatsApp / OG)
-// =========================
+/* =====================================================
+   METADATA (WhatsApp / OpenGraph)
+===================================================== */
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const glamping = await ObtenerGlampingPorId(slug);
 
-  const tipo =
-    glamping?.tipoGlamping === "cabana"
-      ? "Cabaña"
-      : glamping?.tipoGlamping || "Glamping";
+  const tipo = tipoBonito(glamping?.tipoGlamping);
 
-  const ciudad =
+  const ciudadRaw =
     glamping?.ciudad_departamento?.split(" - ")[0] || "Colombia";
+  const ciudad = capFirst(ciudadRaw);
 
-  const titulo = `${tipo} en ${ciudad}`;
-
-  // =========================
-  // 💰 PRECIO "DESDE" (BASE + RECARGO)
-  // =========================
+  // 💰 Precio base + recargo
   const precioBase = Number(glamping?.precioEstandar || 0);
   const precioFinal = precioConRecargoServer(precioBase);
 
-  const textoPrecio =
+  // ✅ PRECIO AFUERA → EN EL TÍTULO
+  const titulo =
     precioFinal > 0
-      ? `Desde ${formatCOP(precioFinal)} / noche. `
-      : "";
+      ? `${tipo} en ${ciudad} · Desde ${formatCOP(precioFinal)} / noche`
+      : `${tipo} en ${ciudad}`;
 
-  const descBase =
-    limpiarTexto(glamping?.descripcionGlamping).slice(0, 150) ||
+  // ✅ DESCRIPCIÓN LIMPIA (SIN PRECIO)
+  const descripcion =
+    limpiarTexto(glamping?.descripcionGlamping).slice(0, 180) ||
     "Explora una experiencia única de glamping en Colombia.";
-
-  // WhatsApp corta rápido → margen seguro
-  const descripcion = `${textoPrecio}${descBase}`.slice(0, 200);
 
   const imagenOG = normalizarOgImage(glamping?.imagenes?.[0]);
   const url = `https://glamperos.com/propiedad/${slug}`;
@@ -124,9 +142,9 @@ export async function generateMetadata({
   };
 }
 
-// =========================
-// PAGE
-// =========================
+/* =====================================================
+   PAGE
+===================================================== */
 export default async function Page({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const resolvedSearchParams = await searchParams;
@@ -141,9 +159,9 @@ export default async function Page({ params, searchParams }: PageProps) {
       ? JSON.parse(glamping.ubicacion)
       : glamping.ubicacion;
 
-  const nombreGlamping = `${
-    glamping.tipoGlamping === "cabana" ? "Cabaña" : glamping.tipoGlamping
-  } en ${glamping.ciudad_departamento.split(" - ")[0]}`;
+  const nombreGlamping = `${tipoBonito(
+    glamping.tipoGlamping
+  )} en ${capFirst(glamping.ciudad_departamento.split(" - ")[0])}`;
 
   return (
     <div className="propiedad-container-principal">

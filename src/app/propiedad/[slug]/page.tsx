@@ -3,7 +3,6 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import { ObtenerGlampingPorId } from "@/Funciones/ObtenerGlamping";
-import { aplicarIncremento, redondear50 } from "@/Funciones/calcularTarifaReserva";
 
 import GlampingCliente from "./GlampingCliente";
 import EncabezadoExplorado from "@/Componentes/EncabezadoExplorado";
@@ -15,9 +14,23 @@ import GlampingCercanos from "@/Componentes/GlampingCercanos";
 import "./page.css";
 
 // =========================
+// 🔒 LÓGICA OFICIAL DE RECARGO
+// (misma que precioConRecargo.tsx, pero server-safe)
+// =========================
+const precioConRecargoServer = (precio: number): number => {
+  if (precio <= 0) return 0;
+  if (precio <= 299_999) return precio * 1.2;
+  if (precio >= 300_000 && precio < 400_000) return precio * 1.16;
+  if (precio >= 400_000 && precio < 500_000) return precio * 1.14;
+  if (precio >= 500_000 && precio < 600_000) return precio * 1.13;
+  if (precio >= 600_000 && precio < 800_000) return precio * 1.11;
+  if (precio >= 800_000 && precio < 2_000_000) return precio * 1.1;
+  return precio;
+};
+
+// =========================
 // Helpers Open Graph
 // =========================
-
 const formatCOP = (n: number) =>
   `$${Math.round(n).toLocaleString("es-CO")} COP`;
 
@@ -58,23 +71,22 @@ export async function generateMetadata({
 
   const titulo = `${tipo} en ${ciudad}`;
 
-  // ✅ PRECIO "DESDE" usando EXACTAMENTE la misma lógica del sistema
+  // =========================
+  // 💰 PRECIO "DESDE" (BASE + RECARGO)
+  // =========================
   const precioBase = Number(glamping?.precioEstandar || 0);
-
-  // aplicarIncremento viene de calcularTarifaReserva.tsx
-  const precioConIncremento = aplicarIncremento(precioBase);
-
-  // mismo redondeo que usas en tarifas
-  const precioFinal = redondear50(precioConIncremento);
+  const precioFinal = precioConRecargoServer(precioBase);
 
   const textoPrecio =
-    precioFinal > 0 ? `Desde ${formatCOP(precioFinal)} / noche. ` : "";
+    precioFinal > 0
+      ? `Desde ${formatCOP(precioFinal)} / noche. `
+      : "";
 
   const descBase =
     limpiarTexto(glamping?.descripcionGlamping).slice(0, 150) ||
     "Explora una experiencia única de glamping en Colombia.";
 
-  // WhatsApp corta texto → margen seguro
+  // WhatsApp corta rápido → margen seguro
   const descripcion = `${textoPrecio}${descBase}`.slice(0, 200);
 
   const imagenOG = normalizarOgImage(glamping?.imagenes?.[0]);

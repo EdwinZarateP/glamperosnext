@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useContext, useMemo } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams  } from 'next/navigation';
 import ImgExploradasIndividual from '@/Componentes/ImgExploradasIndividual';
 import { ContextoApp } from '@/context/AppContext';
 import VerVideo from '@/Componentes/VerVideo';
@@ -74,6 +74,7 @@ function extractYouTubeId(input?: string | null): string | null {
 
 export default function GlampingCliente({ initialData }: Props) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isClient, setIsClient] = useState(false);
   const [loadingPage, setLoadingPage] = useState(true);
 
@@ -151,18 +152,42 @@ export default function GlampingCliente({ initialData }: Props) {
       setVerVideo(true);
     }
   };
+  // --- Helpers UTM (dentro del componente) ---
+  const buildUtmQuery = () => {
+    const params = new URLSearchParams();
+    // Copia cualquier utm_* y opcionalmente gclid/fbclid desde la URL actual
+    searchParams.forEach((value, key) => {
+      const k = key.toLowerCase();
+      if (k.startsWith('utm_') || k === 'gclid' || k === 'fbclid') {
+        params.set(key, value);
+      }
+    });
+    return params;
+  };
+
+  const getCurrentUrlWithUtm = () => {
+    if (typeof window === 'undefined') return '';
+    const base = `${window.location.origin}${window.location.pathname}`;
+    const qs = buildUtmQuery().toString();
+    return qs ? `${base}?${qs}` : base;
+  };
 
   const redirigirWhatsApp = () => {
-    const numero = '+573218695196';
-    const urlActual = window.location.href;
+    const numero = '573218695196'; // sin '+', wa.me lo prefiere así
+
+    const urlConUtm = getCurrentUrlWithUtm();
+
     const msg = encodeURIComponent(
-      `Hola equipo Glamperos, ¡Quiero información sobre este glamping!\n\n${urlActual}`
+      `${urlConUtm}\n\nHola equipo Glamperos, ¡Quiero información sobre este glamping!\n`
     );
-    const esPequena = window.innerWidth < 600;
+
+    const esPequena = typeof window !== 'undefined' && window.innerWidth < 600;
+
     const waUrl = esPequena
       ? `https://wa.me/${numero}?text=${msg}`
       : `https://web.whatsapp.com/send?phone=${numero}&text=${msg}`;
-    window.open(waUrl, '_blank');
+
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (

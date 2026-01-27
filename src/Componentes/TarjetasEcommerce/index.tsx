@@ -531,14 +531,47 @@ export default function TarjetasEcommerce({ initialData = [], initialTotal = 0 }
     router.push(path);
   };
 
+  const buildUtmQueryFromCurrentUrl = () => {
+    const params = new URLSearchParams();
+    if (typeof window === "undefined") return params;
+
+    const current = new URLSearchParams(window.location.search);
+
+    current.forEach((value, key) => {
+      const k = key.toLowerCase();
+      if (k.startsWith("utm_") || k === "gclid" || k === "fbclid") {
+        params.set(key, value);
+      }
+    });
+
+    return params;
+  };
+
+  const getCurrentFullUrlWithUtm = () => {
+    if (typeof window === "undefined") return "";
+    const utm = buildUtmQueryFromCurrentUrl();
+    const base = `${window.location.origin}${window.location.pathname}`;
+    const qs = utm.toString();
+    return qs ? `${base}?${qs}` : base;
+  };
+
+  
   const redirigirWhatsApp = () => {
-    const numeroWhatsApp = "+573218695196";
-    const mensaje = encodeURIComponent("Hola equipo Glamperos, ¡Quiero información sobre glampings!");
+    const numeroWhatsApp = "573218695196"; // sin '+', wa.me lo prefiere así
+
+    const linkConUtm = getCurrentFullUrlWithUtm();
+
+    const mensaje = encodeURIComponent(
+      `${linkConUtm}\n\nHola equipo Glamperos, ¡Quiero información sobre glampings!`
+    );
+
     const esPantallaPequena = typeof window !== "undefined" && window.innerWidth < 600;
+
     const urlWhatsApp = esPantallaPequena
       ? `https://wa.me/${numeroWhatsApp}?text=${mensaje}`
       : `https://web.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensaje}`;
-    window.open(urlWhatsApp, "_blank");
+
+    window.open(urlWhatsApp, "_blank", "noopener,noreferrer");
   };
 
   const noResults = hasFetched && !loading && glampings.length === 0;

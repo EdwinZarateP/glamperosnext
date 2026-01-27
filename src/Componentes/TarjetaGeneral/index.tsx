@@ -2,7 +2,7 @@
 
 import React, { useState, useContext, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams  } from "next/navigation";
 import { AiTwotoneHeart } from "react-icons/ai";
 import { BsBalloonHeartFill } from "react-icons/bs";
 import { FaStar } from "react-icons/fa6";
@@ -66,7 +66,23 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   // Favoritos
   const [esFavorito, setEsFavorito] = useState<boolean>(favorito);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const idUsuarioCookie = Cookies.get("idUsuario");
+
+  // Registrar utm cuando viaja hacia el glamping
+  const buildUtmQuery = () => {
+    const params = new URLSearchParams();
+
+    searchParams.forEach((value, key) => {
+      const k = key.toLowerCase();
+      if (k.startsWith("utm_") || k === "gclid" || k === "fbclid") {
+        params.set(key, value);
+      }
+    });
+
+    return params.toString();
+  };
+
 
   // Registrar visita
   const registrarVisita = async () => {
@@ -210,7 +226,13 @@ const TarjetaGeneral: React.FC<TarjetaProps> = ({
   return (
     <div className="TarjetaGeneral">
       <Link
-        href={href ?? `/propiedad/${glampingId}`} // 🔒 LINK LIMPIO (sin query)
+        href={
+          (() => {
+            const utmQs = buildUtmQuery();
+            const base = href ?? `/propiedad/${glampingId}`;
+            return utmQs ? `${base}?${utmQs}` : base;
+          })()
+        }
         prefetch={false}
         className="TarjetaGeneral-link"
         target={esPantallaPequena ? undefined : "_blank"}

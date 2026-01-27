@@ -108,7 +108,7 @@ export default function HeaderFinal() {
       document.removeEventListener("touchstart", handler);
     };
   }, []);
-
+  console.log(nextMonths)
   // Input destino
   const handleDestinoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const busqueda = e.target.value;

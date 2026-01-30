@@ -6,9 +6,12 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import "./estilos.css";
 
+export const dynamic = "force-dynamic"; // evita cachés inesperados en App Router
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
-type Persona = "HOMBRE" | "MUJER";
+// ✅ Ajuste por API: incluye AMBOS
+type Persona = "HOMBRE" | "MUJER" | "AMBOS";
 
 type Tarea = {
   id: string;
@@ -28,6 +31,7 @@ type Registro = {
   actualizado_en: string;
 };
 
+// ✅ Ajuste por API: incluye ambos en totales/porcentajes/detalle
 type Estadisticas = {
   pareja_id: string;
   rango: { desde: string | null; hasta: string | null };
@@ -35,11 +39,13 @@ type Estadisticas = {
     total_actividades_completadas: number;
     hombre: number;
     mujer: number;
+    ambos: number;
   };
-  porcentajes: { hombre: number; mujer: number };
+  porcentajes: { hombre: number; mujer: number; ambos: number };
   detalle: {
     hombre: Array<{ fecha: string; tarea_id: string; tarea: string }>;
     mujer: Array<{ fecha: string; tarea_id: string; tarea: string }>;
+    ambos: Array<{ fecha: string; tarea_id: string; tarea: string }>;
   };
 };
 
@@ -51,15 +57,7 @@ function hoyISO(): string {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function inicioMesISO(): string {
-  const d = new Date();
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return `${yyyy}-${mm}-01`;
-}
-
 export default function PageAseo() {
-  // pareja_id: intenta tomar cookie (si existe) y si no, guarda/lee localStorage
   const cookieParejaId = Cookies.get("parejaId") || "";
   const [parejaId, setParejaId] = useState<string>(cookieParejaId);
 
@@ -70,18 +68,18 @@ export default function PageAseo() {
   const [tareas, setTareas] = useState<Tarea[]>([]);
   const [nuevaTarea, setNuevaTarea] = useState("");
 
-  // Calendario / registros del día
+  // Día
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string>(hoyISO());
   const [registrosDelDia, setRegistrosDelDia] = useState<Record<string, Registro>>({});
 
-  // Estadísticas
-  const [desde, setDesde] = useState<string>(inicioMesISO());
-  const [hasta, setHasta] = useState<string>(hoyISO());
-  const [estadisticas, setEstadisticas] = useState<Estadisticas | null>(null);
+  // ✅ Porcentaje del día (siempre visible)
+  const [porcentajeDia, setPorcentajeDia] = useState<Estadisticas | null>(null);
+
+  // ✅ Modal de resumen (visor)
+  const [modalAbierto, setModalAbierto] = useState(false);
 
   const tareasActivas = useMemo(() => tareas.filter((t) => t.activa), [tareas]);
 
-  // Persistencia parejaId en localStorage (para que en móvil no lo pierda)
   useEffect(() => {
     try {
       const guardado = localStorage.getItem("aseo_pareja_id") || "";
@@ -101,7 +99,9 @@ export default function PageAseo() {
     setError("");
     try {
       setCargando(true);
-      const res = await fetch(`${API_BASE}/aseo/tareas?pareja_id=${encodeURIComponent(parejaId)}&solo_activas=false`);
+      const res = await fetch(
+        `${API_BASE}/aseo/tareas?pareja_id=${encodeURIComponent(parejaId)}&solo_activas=false`
+      );
       if (!res.ok) throw new Error("No se pudieron cargar las tareas.");
       const data = (await res.json()) as Tarea[];
       setTareas(data);
@@ -117,9 +117,9 @@ export default function PageAseo() {
     setError("");
     try {
       setCargando(true);
-      const url = `${API_BASE}/aseo/registros?pareja_id=${encodeURIComponent(parejaId)}&fecha=${encodeURIComponent(
-        fechaSeleccionada
-      )}`;
+      const url = `${API_BASE}/aseo/registros?pareja_id=${encodeURIComponent(
+        parejaId
+      )}&fecha=${encodeURIComponent(fechaSeleccionada)}`;
       const res = await fetch(url);
       if (!res.ok) throw new Error("No se pudieron cargar los registros del día.");
       const data = (await res.json()) as Registro[];
@@ -134,22 +134,24 @@ export default function PageAseo() {
     }
   }
 
-  async function cargarEstadisticas() {
+  // ✅ Estadísticas SOLO del día seleccionado: desde=fechaSeleccionada hasta=fechaSeleccionada
+  async function cargarPorcentajeDelDia() {
     if (!parejaId) return;
     setError("");
     try {
       setCargando(true);
       const qs = new URLSearchParams({
         pareja_id: parejaId,
-        ...(desde ? { desde } : {}),
-        ...(hasta ? { hasta } : {}),
+        desde: fechaSeleccionada,
+        hasta: fechaSeleccionada,
       });
       const res = await fetch(`${API_BASE}/aseo/estadisticas?${qs.toString()}`);
-      if (!res.ok) throw new Error("No se pudieron cargar las estadísticas.");
+      if (!res.ok) throw new Error("No se pudo cargar el porcentaje del día.");
       const data = (await res.json()) as Estadisticas;
-      setEstadisticas(data);
+      setPorcentajeDia(data);
     } catch (e: any) {
-      setError(e?.message || "Error cargando estadísticas.");
+      setError(e?.message || "Error cargando porcentaje del día.");
+      setPorcentajeDia(null);
     } finally {
       setCargando(false);
     }
@@ -163,7 +165,10 @@ export default function PageAseo() {
 
   useEffect(() => {
     if (!parejaId) return;
-    cargarRegistrosDia();
+    (async () => {
+      await cargarRegistrosDia();
+      await cargarPorcentajeDelDia();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parejaId, fechaSeleccionada]);
 
@@ -220,8 +225,7 @@ export default function PageAseo() {
         completado: true,
       });
       await cargarRegistrosDia();
-      // opcional: refrescar estadísticas si ya están cargadas
-      if (estadisticas) await cargarEstadisticas();
+      await cargarPorcentajeDelDia();
     } catch (e: any) {
       const msg = e?.response?.data?.detail || "No se pudo guardar el registro.";
       setError(msg);
@@ -230,7 +234,8 @@ export default function PageAseo() {
     }
   }
 
-  async function limpiar(tareaId: string) {
+  // ✅ “Limpiar” pasa a ser acción de cesto (desmarcar)
+  async function tirarAlCesto(tareaId: string) {
     if (!parejaId) return;
     setError("");
     try {
@@ -242,7 +247,7 @@ export default function PageAseo() {
         completado: false,
       });
       await cargarRegistrosDia();
-      if (estadisticas) await cargarEstadisticas();
+      await cargarPorcentajeDelDia();
     } catch (e: any) {
       const msg = e?.response?.data?.detail || "No se pudo desmarcar.";
       setError(msg);
@@ -251,27 +256,46 @@ export default function PageAseo() {
     }
   }
 
+  function etiquetaPersona(p?: Persona | null): string {
+    if (!p) return "—";
+    if (p === "HOMBRE") return "Él";
+    if (p === "MUJER") return "Ella";
+    return "Ambos";
+  }
+
   return (
     <main className="Aseo">
+      {/* ✅ No indexable (además del robots.tsx) */}
+      <meta name="robots" content="noindex,nofollow" />
+
       <header className="Aseo-header">
         <div className="Aseo-headerTop">
-          <h1 className="Aseo-title">Aseo en pareja</h1>
-          <p className="Aseo-subtitle">Crea tareas, marca quién las hizo por día y revisa participación.</p>
+          <h1 className="Aseo-title">Aseo en casa</h1>
+          <p className="Aseo-subtitle">
+            Tareas del hogar por día. Marca quién lo hizo (Él / Ella / Ambos) y mira el balance del día.
+          </p>
         </div>
 
         <div className="Aseo-parejaCard">
           <label className="Aseo-label">
-            ID de la pareja
+            ID del hogar
             <input
               className="Aseo-input"
               value={parejaId}
               onChange={(e) => setParejaId(e.target.value)}
-              placeholder="Ej: pareja_001"
+              placeholder="Ej: hogar_001"
               inputMode="text"
             />
           </label>
 
-          <button className="Aseo-btn Aseo-btnSecondary" onClick={() => { cargarTareas(); cargarRegistrosDia(); }}>
+          <button
+            className="Aseo-btn Aseo-btnSecondary"
+            onClick={() => {
+              cargarTareas();
+              cargarRegistrosDia();
+              cargarPorcentajeDelDia();
+            }}
+          >
             Actualizar
           </button>
         </div>
@@ -281,21 +305,44 @@ export default function PageAseo() {
       </header>
 
       <section className="Aseo-grid">
-        {/* Panel: Calendario + marcar tareas */}
+        {/* Panel: Día + lista */}
         <div className="Aseo-card">
-          <div className="Aseo-cardHeader">
-            <h2 className="Aseo-cardTitle">Calendario</h2>
-            <div className="Aseo-dateRow">
-              <label className="Aseo-label Aseo-labelInline">
-                Fecha
-                <input
-                  className="Aseo-input Aseo-inputDate"
-                  type="date"
-                  value={fechaSeleccionada}
-                  onChange={(e) => setFechaSeleccionada(e.target.value)}
-                />
-              </label>
+          <div className="Aseo-cardHeader Aseo-cardHeaderRow">
+            <div>
+              <h2 className="Aseo-cardTitle">Hoy en casa</h2>
+              <p className="Aseo-cardHint">Selecciona una fecha y marca tareas completadas.</p>
             </div>
+
+            {/* ✅ Chip hogareño con porcentaje del día (siempre visible) */}
+            <button
+              className="Aseo-chip"
+              onClick={() => setModalAbierto(true)}
+              disabled={!porcentajeDia}
+              title="Ver resumen del día"
+            >
+              <span className="Aseo-chipIcon" aria-hidden="true">🏡</span>
+              <span className="Aseo-chipText">
+                {porcentajeDia
+                  ? `Él ${porcentajeDia.porcentajes.hombre}% · Ella ${porcentajeDia.porcentajes.mujer}% · Ambos ${porcentajeDia.porcentajes.ambos}%`
+                  : "Resumen del día"}
+              </span>
+            </button>
+          </div>
+
+          <div className="Aseo-dateRow">
+            <label className="Aseo-label Aseo-labelInline">
+              Fecha
+              <input
+                className="Aseo-input Aseo-inputDate"
+                type="date"
+                value={fechaSeleccionada}
+                onChange={(e) => setFechaSeleccionada(e.target.value)}
+              />
+            </label>
+
+            <button className="Aseo-btn" onClick={() => setModalAbierto(true)} disabled={!porcentajeDia}>
+              Ver resumen
+            </button>
           </div>
 
           <div className="Aseo-taskList">
@@ -314,7 +361,7 @@ export default function PageAseo() {
                       <div className="Aseo-taskMeta">
                         {hecho ? (
                           <span className="Aseo-pill Aseo-pillDone">
-                            Hecho: {quien === "HOMBRE" ? "Hombre" : quien === "MUJER" ? "Mujer" : "—"}
+                            Hecho: {etiquetaPersona(quien)}
                           </span>
                         ) : (
                           <span className="Aseo-pill">Pendiente</span>
@@ -324,13 +371,23 @@ export default function PageAseo() {
 
                     <div className="Aseo-taskActions">
                       <button className="Aseo-btn Aseo-btnSmall" onClick={() => marcar(t.id, "HOMBRE")}>
-                        Hombre
+                        Él
                       </button>
                       <button className="Aseo-btn Aseo-btnSmall" onClick={() => marcar(t.id, "MUJER")}>
-                        Mujer
+                        Ella
                       </button>
-                      <button className="Aseo-btn Aseo-btnSmall Aseo-btnDanger" onClick={() => limpiar(t.id)}>
-                        Limpiar
+                      <button className="Aseo-btn Aseo-btnSmall" onClick={() => marcar(t.id, "AMBOS")}>
+                        Ambos
+                      </button>
+
+                      {/* ✅ Cesto de basura en vez de “Limpiar” */}
+                      <button
+                        className="Aseo-iconBtn"
+                        onClick={() => tirarAlCesto(t.id)}
+                        aria-label="Tirar al cesto (desmarcar)"
+                        title="Tirar al cesto (desmarcar)"
+                      >
+                        🗑️
                       </button>
                     </div>
                   </div>
@@ -340,11 +397,11 @@ export default function PageAseo() {
           </div>
         </div>
 
-        {/* Panel: Crear / administrar tareas */}
+        {/* Panel: Crear / administrar */}
         <div className="Aseo-card">
           <div className="Aseo-cardHeader">
-            <h2 className="Aseo-cardTitle">Tareas</h2>
-            <p className="Aseo-cardHint">Crea tareas y activa/desactiva. (Desactivar no borra el historial)</p>
+            <h2 className="Aseo-cardTitle">Tareas del hogar</h2>
+            <p className="Aseo-cardHint">Crea tareas y activa/desactiva. (Desactivar no borra historial)</p>
           </div>
 
           <div className="Aseo-createRow">
@@ -352,7 +409,7 @@ export default function PageAseo() {
               className="Aseo-input"
               value={nuevaTarea}
               onChange={(e) => setNuevaTarea(e.target.value)}
-              placeholder="Ej: Lavar baños"
+              placeholder="Ej: Lavar platos"
             />
             <button className="Aseo-btn" onClick={crearTarea}>
               Crear
@@ -384,89 +441,115 @@ export default function PageAseo() {
             )}
           </div>
         </div>
-
-        {/* Panel: Estadísticas */}
-        <div className="Aseo-card Aseo-cardFull">
-          <div className="Aseo-cardHeader">
-            <h2 className="Aseo-cardTitle">Participación</h2>
-            <p className="Aseo-cardHint">Calcula el porcentaje según actividades marcadas como completadas.</p>
-          </div>
-
-          <div className="Aseo-statsFilters">
-            <label className="Aseo-label Aseo-labelInline">
-              Desde
-              <input className="Aseo-input Aseo-inputDate" type="date" value={desde} onChange={(e) => setDesde(e.target.value)} />
-            </label>
-
-            <label className="Aseo-label Aseo-labelInline">
-              Hasta
-              <input className="Aseo-input Aseo-inputDate" type="date" value={hasta} onChange={(e) => setHasta(e.target.value)} />
-            </label>
-
-            <button className="Aseo-btn" onClick={cargarEstadisticas}>
-              Ver porcentaje
-            </button>
-          </div>
-
-          {estadisticas ? (
-            <div className="Aseo-statsGrid">
-              <div className="Aseo-statCard">
-                <div className="Aseo-statTitle">Hombre</div>
-                <div className="Aseo-statValue">{estadisticas.porcentajes.hombre}%</div>
-                <div className="Aseo-statMeta">{estadisticas.totales.hombre} actividades</div>
-              </div>
-
-              <div className="Aseo-statCard">
-                <div className="Aseo-statTitle">Mujer</div>
-                <div className="Aseo-statValue">{estadisticas.porcentajes.mujer}%</div>
-                <div className="Aseo-statMeta">{estadisticas.totales.mujer} actividades</div>
-              </div>
-
-              <div className="Aseo-statCard">
-                <div className="Aseo-statTitle">Total</div>
-                <div className="Aseo-statValue">{estadisticas.totales.total_actividades_completadas}</div>
-                <div className="Aseo-statMeta">completadas</div>
-              </div>
-
-              <div className="Aseo-detailWrap">
-                <div className="Aseo-detailCol">
-                  <h3 className="Aseo-detailTitle">Actividades del hombre</h3>
-                  <div className="Aseo-detailList">
-                    {estadisticas.detalle.hombre.length === 0 ? (
-                      <div className="Aseo-emptySmall">Sin actividades en el rango.</div>
-                    ) : (
-                      estadisticas.detalle.hombre.map((x, idx) => (
-                        <div className="Aseo-detailItem" key={`${x.tarea_id}-${x.fecha}-${idx}`}>
-                          <span className="Aseo-detailDate">{x.fecha}</span>
-                          <span className="Aseo-detailTask">{x.tarea}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-
-                <div className="Aseo-detailCol">
-                  <h3 className="Aseo-detailTitle">Actividades de la mujer</h3>
-                  <div className="Aseo-detailList">
-                    {estadisticas.detalle.mujer.length === 0 ? (
-                      <div className="Aseo-emptySmall">Sin actividades en el rango.</div>
-                    ) : (
-                      estadisticas.detalle.mujer.map((x, idx) => (
-                        <div className="Aseo-detailItem" key={`${x.tarea_id}-${x.fecha}-${idx}`}>
-                          <span className="Aseo-detailDate">{x.fecha}</span>
-                          <span className="Aseo-detailTask">{x.tarea}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="Aseo-empty">Selecciona un rango y pulsa “Ver porcentaje”.</div>
-          )}
-        </div>
       </section>
+
+      {/* ✅ MODAL: visor con resumen del día */}
+      {modalAbierto ? (
+        <div className="Aseo-modalOverlay" role="dialog" aria-modal="true" aria-label="Resumen del día">
+          <div className="Aseo-modalCard">
+            <div className="Aseo-modalHeader">
+              <div>
+                <div className="Aseo-modalTitle">Resumen del día</div>
+                <div className="Aseo-modalSub">{fechaSeleccionada}</div>
+              </div>
+              <button className="Aseo-iconBtn" onClick={() => setModalAbierto(false)} aria-label="Cerrar" title="Cerrar">
+                ✕
+              </button>
+            </div>
+
+            {porcentajeDia ? (
+              <>
+                <div className="Aseo-modalStats">
+                  <div className="Aseo-statCard">
+                    <div className="Aseo-statTitle">Él</div>
+                    <div className="Aseo-statValue">{porcentajeDia.porcentajes.hombre}%</div>
+                    <div className="Aseo-statMeta">{porcentajeDia.totales.hombre} tareas</div>
+                  </div>
+
+                  <div className="Aseo-statCard">
+                    <div className="Aseo-statTitle">Ella</div>
+                    <div className="Aseo-statValue">{porcentajeDia.porcentajes.mujer}%</div>
+                    <div className="Aseo-statMeta">{porcentajeDia.totales.mujer} tareas</div>
+                  </div>
+
+                  <div className="Aseo-statCard">
+                    <div className="Aseo-statTitle">Ambos</div>
+                    <div className="Aseo-statValue">{porcentajeDia.porcentajes.ambos}%</div>
+                    <div className="Aseo-statMeta">{porcentajeDia.totales.ambos} tareas</div>
+                  </div>
+
+                  <div className="Aseo-statCard">
+                    <div className="Aseo-statTitle">Total</div>
+                    <div className="Aseo-statValue">{porcentajeDia.totales.total_actividades_completadas}</div>
+                    <div className="Aseo-statMeta">completadas</div>
+                  </div>
+                </div>
+
+                <div className="Aseo-detailWrap Aseo-detailWrapModal">
+                  <div className="Aseo-detailCol">
+                    <h3 className="Aseo-detailTitle">Él hizo</h3>
+                    <div className="Aseo-detailList">
+                      {porcentajeDia.detalle.hombre.length === 0 ? (
+                        <div className="Aseo-emptySmall">Sin tareas.</div>
+                      ) : (
+                        porcentajeDia.detalle.hombre.map((x, idx) => (
+                          <div className="Aseo-detailItem" key={`${x.tarea_id}-${x.fecha}-${idx}`}>
+                            <span className="Aseo-detailDate">{x.fecha}</span>
+                            <span className="Aseo-detailTask">{x.tarea}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="Aseo-detailCol">
+                    <h3 className="Aseo-detailTitle">Ella hizo</h3>
+                    <div className="Aseo-detailList">
+                      {porcentajeDia.detalle.mujer.length === 0 ? (
+                        <div className="Aseo-emptySmall">Sin tareas.</div>
+                      ) : (
+                        porcentajeDia.detalle.mujer.map((x, idx) => (
+                          <div className="Aseo-detailItem" key={`${x.tarea_id}-${x.fecha}-${idx}`}>
+                            <span className="Aseo-detailDate">{x.fecha}</span>
+                            <span className="Aseo-detailTask">{x.tarea}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="Aseo-detailCol">
+                    <h3 className="Aseo-detailTitle">Ambos hicieron</h3>
+                    <div className="Aseo-detailList">
+                      {porcentajeDia.detalle.ambos.length === 0 ? (
+                        <div className="Aseo-emptySmall">Sin tareas.</div>
+                      ) : (
+                        porcentajeDia.detalle.ambos.map((x, idx) => (
+                          <div className="Aseo-detailItem" key={`${x.tarea_id}-${x.fecha}-${idx}`}>
+                            <span className="Aseo-detailDate">{x.fecha}</span>
+                            <span className="Aseo-detailTask">{x.tarea}</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="Aseo-modalFooter">
+                  <button className="Aseo-btn Aseo-btnSecondary" onClick={() => cargarPorcentajeDelDia()}>
+                    Actualizar resumen
+                  </button>
+                  <button className="Aseo-btn" onClick={() => setModalAbierto(false)}>
+                    Listo
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="Aseo-empty">No hay datos del día para mostrar aún.</div>
+            )}
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

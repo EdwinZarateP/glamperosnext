@@ -1,10 +1,13 @@
 /* src/app/aseo/estilos.css */
+/* Hogareño: fondo cálido, tarjetas suaves, chip tipo “imán” y modal acogedor */
 
 .Aseo {
   padding: 16px;
-  max-width: 980px;
+  max-width: 90%;
   margin: 0 auto;
   box-sizing: border-box;
+  background-color: rgb(255, 252, 243);
+  min-height: 100vh;
 }
 
 .Aseo-header {
@@ -31,8 +34,10 @@
   gap: 10px;
   align-items: flex-end;
   padding: 12px;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(6px);
 }
 
 .Aseo-label {
@@ -51,9 +56,9 @@
 .Aseo-input {
   width: 100%;
   padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.75);
   color: inherit;
   outline: none;
   box-sizing: border-box;
@@ -66,9 +71,9 @@
 
 .Aseo-btn {
   padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(255,255,255,0.08);
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.75);
   color: inherit;
   cursor: pointer;
   font-size: 14px;
@@ -80,23 +85,28 @@
 }
 
 .Aseo-btnSecondary {
-  background: rgba(255,255,255,0.04);
-}
-
-.Aseo-btnDanger {
-  background: rgba(255, 80, 80, 0.14);
-  border-color: rgba(255, 80, 80, 0.25);
+  background: rgba(255,255,255,0.55);
 }
 
 .Aseo-btnSmall {
   padding: 8px 10px;
   font-size: 13px;
-  border-radius: 10px;
+  border-radius: 12px;
+}
+
+/* ✅ Botón ícono hogareño */
+.Aseo-iconBtn {
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.75);
+  cursor: pointer;
+  line-height: 1;
 }
 
 .Aseo-alert {
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 13px;
 }
 
@@ -106,8 +116,8 @@
 }
 
 .Aseo-alertInfo {
-  border: 1px solid rgba(255,255,255,0.16);
-  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.55);
 }
 
 .Aseo-grid {
@@ -117,14 +127,11 @@
 }
 
 .Aseo-card {
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 18px;
   padding: 12px;
-  background: rgba(255,255,255,0.03);
-}
-
-.Aseo-cardFull {
-  grid-column: 1 / -1;
+  background: rgba(255,255,255,0.55);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
 }
 
 .Aseo-cardHeader {
@@ -132,6 +139,12 @@
   flex-direction: column;
   gap: 4px;
   margin-bottom: 10px;
+}
+
+.Aseo-cardHeaderRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .Aseo-cardTitle {
@@ -149,12 +162,14 @@
   display: flex;
   gap: 10px;
   margin-top: 6px;
+  align-items: end;
 }
 
 .Aseo-taskList {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 10px;
 }
 
 .Aseo-taskRow {
@@ -163,9 +178,9 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.55);
 }
 
 .Aseo-taskInfo {
@@ -178,7 +193,7 @@
 
 .Aseo-taskName {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -192,15 +207,16 @@
 
 .Aseo-pill {
   font-size: 12px;
-  padding: 5px 8px;
+  padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.14);
-  opacity: 0.9;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.65);
+  opacity: 0.95;
 }
 
 .Aseo-pillDone {
-  border-color: rgba(120, 255, 160, 0.25);
-  background: rgba(120, 255, 160, 0.10);
+  border-color: rgba(60, 190, 120, 0.25);
+  background: rgba(60, 190, 120, 0.10);
 }
 
 .Aseo-taskActions {
@@ -210,6 +226,7 @@
   justify-content: flex-end;
 }
 
+/* Crear */
 .Aseo-createRow {
   display: flex;
   gap: 10px;
@@ -228,9 +245,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  border-radius: 14px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.55);
 }
 
 .Aseo-adminInfo {
@@ -240,7 +257,7 @@
 
 .Aseo-adminName {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -252,25 +269,87 @@
   margin-top: 4px;
 }
 
-.Aseo-statsFilters {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
+/* ✅ Chip “hogareño” siempre visible */
+.Aseo-chip {
+  width: 100%;
+  display: flex;
   gap: 10px;
-  align-items: end;
-  margin-bottom: 12px;
+  align-items: center;
+  border-radius: 16px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.75);
+  cursor: pointer;
+  text-align: left;
 }
 
-.Aseo-statsGrid {
+.Aseo-chip:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.Aseo-chipIcon {
+  font-size: 18px;
+}
+
+.Aseo-chipText {
+  font-size: 13px;
+  opacity: 0.92;
+  line-height: 1.2;
+}
+
+/* ✅ Modal */
+.Aseo-modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 50;
+}
+
+.Aseo-modalCard {
+  width: 100%;
+  max-width: 860px;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgb(255, 252, 243);
+  box-shadow: 0 18px 60px rgba(0,0,0,0.18);
+  padding: 14px;
+}
+
+.Aseo-modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.Aseo-modalTitle {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.Aseo-modalSub {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.Aseo-modalStats {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
+  margin-bottom: 10px;
 }
 
 .Aseo-statCard {
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 16px;
   padding: 12px;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255,255,255,0.65);
 }
 
 .Aseo-statTitle {
@@ -280,7 +359,7 @@
 
 .Aseo-statValue {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 900;
   margin-top: 6px;
 }
 
@@ -294,26 +373,30 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
-  margin-top: 6px;
+}
+
+.Aseo-detailWrapModal {
+  margin-top: 8px;
 }
 
 .Aseo-detailCol {
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 16px;
   padding: 12px;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255,255,255,0.65);
 }
 
 .Aseo-detailTitle {
   margin: 0 0 10px 0;
   font-size: 14px;
+  font-weight: 800;
 }
 
 .Aseo-detailList {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 240px;
+  max-height: 220px;
   overflow: auto;
   padding-right: 4px;
 }
@@ -324,10 +407,10 @@
   gap: 10px;
   font-size: 13px;
   align-items: center;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 14px;
   padding: 8px 10px;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255,255,255,0.75);
 }
 
 .Aseo-detailDate {
@@ -343,10 +426,11 @@
 
 .Aseo-empty {
   padding: 12px;
-  border: 1px dashed rgba(255,255,255,0.18);
-  border-radius: 14px;
+  border: 1px dashed rgba(0,0,0,0.12);
+  border-radius: 16px;
   opacity: 0.85;
   font-size: 13px;
+  background: rgba(255,255,255,0.55);
 }
 
 .Aseo-emptySmall {
@@ -354,25 +438,37 @@
   font-size: 13px;
 }
 
-/* Desktop layout */
+.Aseo-modalFooter {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+/* Desktop */
 @media (min-width: 900px) {
   .Aseo-grid {
     grid-template-columns: 1.2fr 0.8fr;
     align-items: start;
   }
-  .Aseo-cardFull {
-    grid-column: 1 / -1;
+  .Aseo-cardHeaderRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
-  .Aseo-statsGrid {
-    grid-template-columns: 1fr 1fr 1fr;
+  .Aseo-chip {
+    width: auto;
+    max-width: 520px;
+  }
+  .Aseo-modalStats {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
   .Aseo-detailWrap {
-    grid-column: 1 / -1;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 
-/* Mobile tweaks */
+/* Mobile */
 @media (max-width: 480px) {
   .Aseo-parejaCard {
     flex-direction: column;
@@ -381,13 +477,14 @@
   .Aseo-createRow {
     flex-direction: column;
   }
-  .Aseo-statsFilters {
-    grid-template-columns: 1fr;
-  }
   .Aseo-taskRow {
     flex-direction: column;
   }
   .Aseo-taskActions {
     justify-content: flex-start;
+  }
+  .Aseo-dateRow {
+    flex-direction: column;
+    align-items: stretch;
   }
 }

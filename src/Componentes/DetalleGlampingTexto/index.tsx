@@ -167,7 +167,7 @@ export default function DescripcionGlampingTexto(props: DescripcionGlampingTexto
       "Las reservas se garantizan con una transferencia del *50% del valor total* 💳 para asegurar tu fecha."
     );
     partes.push(
-      "La plataforma te envia al correo toda la información de llegada y contactos posterior a confirmar tu consignación."
+      "La plataforma te envía al correo toda la información de llegada y contactos posterior a confirmar tu consignación."
     );
     partes.push(
       "Letra chiquita: Ten en cuenta que este valor no es reembolsable. El 50% restante se cancela a tu llegada al glamping 🏕️."

@@ -1,0 +1,393 @@
+/* src/app/aseo/estilos.css */
+
+.Aseo {
+  padding: 16px;
+  max-width: 980px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.Aseo-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.Aseo-title {
+  font-size: 22px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.Aseo-subtitle {
+  margin: 6px 0 0 0;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.Aseo-parejaCard {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+}
+
+.Aseo-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  opacity: 0.9;
+  flex: 1;
+}
+
+.Aseo-labelInline {
+  flex-direction: column;
+}
+
+.Aseo-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+  color: inherit;
+  outline: none;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.Aseo-inputDate {
+  padding: 9px 10px;
+}
+
+.Aseo-btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.Aseo-btn:active {
+  transform: translateY(1px);
+}
+
+.Aseo-btnSecondary {
+  background: rgba(255,255,255,0.04);
+}
+
+.Aseo-btnDanger {
+  background: rgba(255, 80, 80, 0.14);
+  border-color: rgba(255, 80, 80, 0.25);
+}
+
+.Aseo-btnSmall {
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+
+.Aseo-alert {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.Aseo-alertError {
+  border: 1px solid rgba(255, 80, 80, 0.35);
+  background: rgba(255, 80, 80, 0.12);
+}
+
+.Aseo-alertInfo {
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+}
+
+.Aseo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.Aseo-card {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(255,255,255,0.03);
+}
+
+.Aseo-cardFull {
+  grid-column: 1 / -1;
+}
+
+.Aseo-cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.Aseo-cardTitle {
+  margin: 0;
+  font-size: 16px;
+}
+
+.Aseo-cardHint {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.Aseo-dateRow {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.Aseo-taskList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Aseo-taskRow {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.02);
+}
+
+.Aseo-taskInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.Aseo-taskName {
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Aseo-taskMeta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.Aseo-pill {
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  opacity: 0.9;
+}
+
+.Aseo-pillDone {
+  border-color: rgba(120, 255, 160, 0.25);
+  background: rgba(120, 255, 160, 0.10);
+}
+
+.Aseo-taskActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.Aseo-createRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.Aseo-taskAdminList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.Aseo-adminRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.02);
+}
+
+.Aseo-adminInfo {
+  min-width: 0;
+  flex: 1;
+}
+
+.Aseo-adminName {
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Aseo-adminMeta {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.Aseo-statsFilters {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.Aseo-statsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.Aseo-statCard {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+}
+
+.Aseo-statTitle {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.Aseo-statValue {
+  font-size: 22px;
+  font-weight: 800;
+  margin-top: 6px;
+}
+
+.Aseo-statMeta {
+  margin-top: 4px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.Aseo-detailWrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.Aseo-detailCol {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+}
+
+.Aseo-detailTitle {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+}
+
+.Aseo-detailList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.Aseo-detailItem {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+  font-size: 13px;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.02);
+}
+
+.Aseo-detailDate {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.Aseo-detailTask {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Aseo-empty {
+  padding: 12px;
+  border: 1px dashed rgba(255,255,255,0.18);
+  border-radius: 14px;
+  opacity: 0.85;
+  font-size: 13px;
+}
+
+.Aseo-emptySmall {
+  opacity: 0.85;
+  font-size: 13px;
+}
+
+/* Desktop layout */
+@media (min-width: 900px) {
+  .Aseo-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: start;
+  }
+  .Aseo-cardFull {
+    grid-column: 1 / -1;
+  }
+  .Aseo-statsGrid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .Aseo-detailWrap {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  .Aseo-parejaCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .Aseo-createRow {
+    flex-direction: column;
+  }
+  .Aseo-statsFilters {
+    grid-template-columns: 1fr;
+  }
+  .Aseo-taskRow {
+    flex-direction: column;
+  }
+  .Aseo-taskActions {
+    justify-content: flex-start;
+  }
+}

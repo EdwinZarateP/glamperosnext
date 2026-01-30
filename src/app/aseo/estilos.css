@@ -445,6 +445,25 @@
   margin-top: 12px;
 }
 
+/* Agrega esto al final de src/app/aseo/estilos.css */
+
+/* Panel consolidado preview */
+.Aseo-consolidadoPreview {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.Aseo-pillRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+
 /* Desktop */
 @media (min-width: 900px) {
   .Aseo-grid {

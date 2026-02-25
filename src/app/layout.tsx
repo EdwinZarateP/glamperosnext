@@ -96,12 +96,6 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Lottie Web Component */}
-        <Script
-          src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"
-          strategy="beforeInteractive"
-        />
-
         {/* Google Maps Places */}
         <Script
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDP8Es7GVLkm_qdCItKb60pGH7ov_tEif0&libraries=places"

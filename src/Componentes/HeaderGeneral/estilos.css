@@ -1,5 +1,7 @@
 /* estilos.css */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -7,7 +9,7 @@
 .HeaderGeneral-container {
   width: 100%;
   padding: 0.75rem 1rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 1000;
   font-family: inherit;
@@ -30,6 +32,7 @@
   gap: 0.5rem;
   cursor: pointer;
 }
+
 .HeaderGeneral-brand {
   font-size: 1.5rem;
   font-weight: bold;
@@ -47,11 +50,12 @@
   max-width: 500px;
   border: 1px solid #ddd;
   border-radius: 50px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
 
 }
+
 .HeaderGeneral-pill-segment {
   padding: 0.6rem 1rem;
   font-size: 0.95rem;
@@ -60,9 +64,11 @@
   white-space: nowrap;
   font-weight: bold;
 }
+
 .HeaderGeneral-pill-segment:hover {
   background: #f5f5f5;
 }
+
 .HeaderGeneral-pill-divider {
   width: 1px;
   height: 24px;
@@ -102,7 +108,8 @@
 /* Publica tu Glamping */
 .HeaderGeneral-publish-btn {
   grid-column: 3;
-  justify-self: end;
+  /* justify-self: end; */
+  justify-self: flex-end;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -115,6 +122,7 @@
   font-size: 0.9rem;
   transition: background 0.2s;
 }
+
 .HeaderGeneral-publish-btn:hover {
   background: #f2efef;
 }
@@ -131,6 +139,7 @@
   font-size: 1.25rem;
   color: #333;
 }
+
 .HeaderGeneral-user-initial {
   display: inline-flex;
   align-items: center;
@@ -147,10 +156,11 @@
 .HeaderGeneral-SearchModal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
-  align-items: start;
+  /* align-items: start; */
+  align-items: flex-start;
   padding-top: 5rem;
   z-index: 2000;
 }
@@ -163,20 +173,22 @@
   width: 90%;
   max-width: 400px;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .HeaderGeneral-field {
   margin-bottom: 1rem;
   position: relative;
-  
+
 }
+
 .HeaderGeneral-field label {
   display: block;
   font-size: 0.85rem;
   margin-bottom: 0.25rem;
   color: #555;
 }
+
 .HeaderGeneral-field input,
 .HeaderGeneral-field .HeaderGeneral-fake-input {
   width: 100%;
@@ -186,6 +198,7 @@
   background: #fafafa;
   cursor: pointer;
 }
+
 .HeaderGeneral-field input:focus {
   outline: none;
   border-color: #aaa;
@@ -204,14 +217,19 @@
   overflow-y: auto;
   border-radius: 0 0 8px 8px;
   z-index: 10;
-  list-style: none;   /* quita los bullets */
-  margin: 0;          /* elimina margen externo */
-  padding: 0;         /* elimina padding interno */
+  list-style: none;
+  /* quita los bullets */
+  margin: 0;
+  /* elimina margen externo */
+  padding: 0;
+  /* elimina padding interno */
 }
+
 .HeaderGeneral-suggestions-list li {
   padding: 0.5rem 1rem;
   cursor: pointer;
 }
+
 .HeaderGeneral-suggestions-list li:hover {
   background: #f5f5f5;
 }
@@ -221,6 +239,7 @@
   justify-content: space-between;
   margin-top: 1.5rem;
 }
+
 .HeaderGeneral-clear-btn {
   background: none;
   border: none;
@@ -228,6 +247,7 @@
   font-weight: bold;
   cursor: pointer;
 }
+
 .HeaderGeneral-search-btn {
   background: #F2A900;
   border: none;
@@ -237,6 +257,7 @@
   font-weight: bold;
   cursor: pointer;
 }
+
 .HeaderGeneral-search-btn:hover {
   background: #d18b00;
 }
@@ -268,17 +289,32 @@
   color: #fff;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   z-index: 3000;
   animation: fadeInOut 3s ease forwards;
 }
 
 /* keyframes para fade in + hold + fade out */
 @keyframes fadeInOut {
-  0%   { opacity: 0; transform: translate(-50%, -10px); }
-  10%  { opacity: 1; transform: translate(-50%, 0); }
-  90%  { opacity: 1; transform: translate(-50%, 0); }
-  100% { opacity: 0; transform: translate(-50%, -10px); }
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  90% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
 }
 
 .error-toast-inside {
@@ -297,13 +333,15 @@
 @media (max-width: 900px) {
   .HeaderGeneral-top {
     grid-template-columns: auto 1fr;
-    grid-gap:0;
+    grid-gap: 0;
   }
+
   .HeaderGeneral-logo,
   .HeaderGeneral-publish-btn,
   .HeaderGeneral-menu-btn {
     display: none;
   }
+
   .HeaderGeneral-search-pill {
     max-width: none;
   }
@@ -316,18 +354,22 @@
     font-size: 0.85rem;
     padding: 0.3rem;
   }
+
   .HeaderGeneral-pill-segment {
     padding: 0.4rem 0.6rem;
   }
+
   .HeaderGeneral-pill-search-btn {
     padding: 0.4rem;
     font-size: 1rem;
   }
+
   .HeaderGeneral-searchModal-container {
     width: calc(100% - 1rem);
     margin: 0 0.5rem;
     padding: 1rem;
   }
+
   .HeaderGeneral-field input,
   .HeaderGeneral-field .HeaderGeneral-fake-input {
     padding: 0.4rem 0.8rem;
@@ -340,9 +382,11 @@
     padding: 0.4rem 0.8rem;
   }
 }
+
 @media (max-width: 400px) {
   .HeaderGeneral-search-pill {
-    padding-right: 3rem; /* deja más espacio para el botón */
+    padding-right: 3rem;
+    /* deja más espacio para el botón */
   }
 
   .HeaderGeneral-pill-segment {
@@ -352,8 +396,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.8rem; /* opcional: para más aire visual */
+    font-size: 0.8rem;
+    /* opcional: para más aire visual */
   }
 }
-
-

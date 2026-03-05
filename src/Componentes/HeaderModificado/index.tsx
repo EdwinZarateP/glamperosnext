@@ -2,6 +2,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./estilos.css";
@@ -31,6 +32,8 @@ interface CounterRowProps {
 }
 
 export default function HeaderFinal() {
+  const router = useRouter();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<"donde" | "fechas" | "quien" | null>(null);
 
@@ -206,18 +209,36 @@ export default function HeaderFinal() {
             )}
           </button>
 
-          <div className="headerFinal-logo">
+          <div className="headerFinal-logo" onClick={() => router.push("/prueba2")}>
             <Image
-              src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
+              // src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
+              src="/Imagenes/prueba/1-expanded.svg"
               alt="Logo"
               width={50}
               height={50}
               className="headerFinal-logoImage"
             />
-            <span className="headerFinal-logoText">GLAMPEROS</span>
+            {/* <span className="headerFinal-logoText">GLAMPEROS</span> */}
+            {/* <span className="HeaderGeneral-brand">Glamperos</span> */}
           </div>
 
+
           <ul className="headerFinal-navLinks">
+            <li>
+              <Link href="/registro" className="headerFinal-navLink">
+                Destino
+              </Link>
+            </li>
+            <li>
+              <Link href="/registro" className="headerFinal-navLink">
+                Tipo de alojamiento
+              </Link>
+            </li>
+            <li>
+              <Link href="/registro" className="headerFinal-navLink">
+                Comodidades
+              </Link>
+            </li>
             <li>
               <Link href="/registro" className="headerFinal-navLink">
                 Publica tu glamping

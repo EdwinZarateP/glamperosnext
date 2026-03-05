@@ -1,23 +1,24 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Open_Sans, Be_Vietnam_Pro } from "next/font/google";
+// import { Open_Sans, Be_Vietnam_Pro } from "next/font/google";
+import { bantayog, workSans } from '@/fonts';
 import Script from "next/script";
 import "./globals.css";
 import ClientProviders from "../Componentes/ClientProviders/index";
 
-const openSans = Open_Sans({
-  subsets: ["latin"],
-  weight: "400",
-  display: "optional",
-});
+// const openSans = Open_Sans({
+//   subsets: ["latin"],
+//   weight: "400",
+//   display: "optional",
+// });
 
 // Configura Be Vietnam Pro
-const beVietnam = Be_Vietnam_Pro({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-be-vietnam",
-});
+// const beVietnam = Be_Vietnam_Pro({
+//   subsets: ["latin"],
+//   weight: ["400", "500", "600", "700"],
+//   display: "swap",
+//   variable: "--font-be-vietnam",
+// });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://glamperos.com"),
@@ -66,7 +67,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={`${openSans.className} ${beVietnam.variable}`}>
+    // <html lang="es" className={`${openSans.className} ${beVietnam.variable}`}>
+    <html lang="es" className={`${bantayog.variable} ${workSans.variable}`}>
 
       <head>
         {/* Favicon y Apple Touch Icon apuntando a tu logo en Google Cloud */}
@@ -127,7 +129,8 @@ export default function RootLayout({
         /> */}
       </head>
 
-      <body className={openSans.className}>
+      {/* <body className={openSans.className}> */}
+      <body className={workSans.className}>
 
 
         {/* Google Tag Manager (noscript) */}

@@ -130,7 +130,8 @@ export default function RootLayout({
       </head>
 
       {/* <body className={openSans.className}> */}
-      <body className={workSans.className}>
+      {/* <body className={workSans.className}> */}
+      <body>
 
 
         {/* Google Tag Manager (noscript) */}

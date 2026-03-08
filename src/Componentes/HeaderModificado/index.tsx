@@ -291,7 +291,8 @@ export default function HeaderFinal() {
         </div>
 
         <div className="headerFinal-heroContent">
-          <h1 className="headerFinal-heroTitle">DESCUBRE GLAMPINGS Y ALOJAMIENTOS RURALES PARA RESERVAR EN COLOMBIA</h1>
+          {/* <h1 className="headerFinal-heroTitle">DESCUBRE GLAMPINGS Y ALOJAMIENTOS RURALES PARA RESERVAR EN COLOMBIA</h1> */}
+          <h1 className="headerFinal-heroTitle">Descubre glampings y alojamientos rurales para reservar en Colombia</h1>
 
           <div className="headerFinal-searchBarContainer">
             <div className="headerFinal-searchBar">

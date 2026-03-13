@@ -39,7 +39,7 @@ const Footer: React.FC = () => {
         <div className="footer-section footer-legal">
           <h4 className="footer-title">Legal</h4>
           <p className="footer-text">
-            RNT: <a href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/RNT%20GLAMPEROS%20SAS.pdf" target="_blank" rel="noopener noreferrer">246204</a>
+            RNT: <a href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/RNT%20GLAMPEROS%202026.pdf" target="_blank" rel="noopener noreferrer">246204</a>
           </p>
           <p className="footer-text">Glamperos SAS</p>
           <p className="footer-text">

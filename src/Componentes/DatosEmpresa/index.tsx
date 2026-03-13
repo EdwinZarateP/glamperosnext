@@ -24,7 +24,7 @@ const DatosEmpresa: React.FC = () => {
         <p>
           <strong>Registro Nacional de Turismo (RNT):</strong> 246204{" "}
           <a
-            href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/RNT%20GLAMPEROS%20SAS.pdf"
+            href="https://storage.googleapis.com/glamperos-imagenes/Imagenes/RNT%20GLAMPEROS%202026.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="boton-rnt"

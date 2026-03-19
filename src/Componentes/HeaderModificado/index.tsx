@@ -288,195 +288,198 @@ export default function HeaderFinal() {
             priority
           />
           <div className="headerFinal-heroOverlay" />
-        </div>
 
-        <div className="headerFinal-heroContent">
-          {/* <h1 className="headerFinal-heroTitle">DESCUBRE GLAMPINGS Y ALOJAMIENTOS RURALES PARA RESERVAR EN COLOMBIA</h1> */}
-          <h1 className="headerFinal-heroTitle">Descubre glampings y alojamientos rurales para reservar en Colombia</h1>
+          <div className="headerFinal-heroContent">
+            {/* <h1 className="headerFinal-heroTitle">DESCUBRE GLAMPINGS Y ALOJAMIENTOS RURALES PARA RESERVAR EN COLOMBIA</h1> */}
+            <h1 className="headerFinal-heroTitle">Descubre glampings y alojamientos rurales para reservar en Colombia</h1>
 
-          <div className="headerFinal-searchBarContainer">
-            <div className="headerFinal-searchBar">
-              {/* 1. DÓNDE */}
-              <div
-                className={`headerFinal-searchItem ${activeMenu === "donde" ? "headerFinal-searchItemActive" : ""}`}
-                onClick={() => toggleMenu("donde")}
-              >
-                <div className="headerFinal-searchItemContent">
-                  <div className="headerFinal-inputIcon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                      <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                  </div>
-                  <div className="headerFinal-searchTextGroup">
-                    <label className="headerFinal-searchLabel">Dónde</label>
-                    <input
-                      type="text"
-                      placeholder="¿A dónde vas?"
-                      className="headerFinal-searchInputText"
-                      value={destino}
-                      onChange={handleDestinoChange}
-                      onFocus={() => setActiveMenu("donde")}
-                    />
-                  </div>
-                </div>
-
-                {activeMenu === "donde" && (
-                  <div className="headerFinal-dropdownPanel headerFinal-locationDropdown" ref={dropdownRef}>
-                    <ul className="headerFinal-locationList">
-                      {municipiosFiltrados.slice(0, 6).map((item, index) => (
-                        <li
-                          key={index}
-                          className="headerFinal-locationItem"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            seleccionarDestino(item.CIUDAD_DEPARTAMENTO);
-                          }}
-                        >
-                          <div className="headerFinal-iconBox">📍</div>
-                          <div>
-                            <div className="headerFinal-locationTitle">{item.CIUDAD}</div>
-                            <div className="headerFinal-locationSub">{item.DEPARTAMENTO}</div>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              <div className="headerFinal-divider"></div>
-
-              {/* 2. FECHAS */}
-              <div
-                className={`headerFinal-searchItem ${activeMenu === "fechas" ? "headerFinal-searchItemActive" : ""}`}
-                onClick={() => toggleMenu("fechas")}
-              >
-                <div className="headerFinal-searchItemContent">
-                  <div className="headerFinal-inputIcon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="16" y1="2" x2="16" y2="6"></line>
-                      <line x1="8" y1="2" x2="8" y2="6"></line>
-                      <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                  </div>
-                  <div className="headerFinal-searchTextGroup">
-                    <label className="headerFinal-searchLabel">Fechas</label>
-                    <div className="headerFinal-searchInputText">
-                      {hasSelection
-                        ? `${format(stateDates[0].startDate, "dd MMM", { locale: es })} - ${format(stateDates[0].endDate, "dd MMM", { locale: es })}`
-                        : "Selecciona fechas"}
-                    </div>
-                  </div>
-                </div>
-
-                {activeMenu === "fechas" && (
-                  <div
-                    className="headerFinal-dropdownPanel headerFinal-calendarDropdown"
-                    ref={dropdownRef}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <DateRangePicker
-                      onChange={handleSelectDate}
-                      showSelectionPreview
-                      moveRangeOnFirstSelection={false}
-                      months={monthsToShow}
-                      ranges={stateDates}
-                      direction="horizontal"
-                      locale={es}
-                      minDate={new Date()}
-                      staticRanges={[]}
-                      inputRanges={[]}
-                      showDateDisplay={false}
-                      rangeColors={["#335429"]}
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="headerFinal-divider"></div>
-
-              {/* 3. QUIÉN */}
-              <div
-                className={`headerFinal-searchItem ${activeMenu === "quien" ? "headerFinal-searchItemActive" : ""}`}
-                onClick={() => toggleMenu("quien")}
-              >
-                <div className="headerFinal-searchItemRow">
-                  <div className="headerFinal-searchItemContent headerFinal-searchItemFull">
+            <div className="headerFinal-searchBarContainer">
+              <div className="headerFinal-searchBar">
+                {/* 1. DÓNDE */}
+                <div
+                  className={`headerFinal-searchItem ${activeMenu === "donde" ? "headerFinal-searchItemActive" : ""}`}
+                  onClick={() => toggleMenu("donde")}
+                >
+                  <div className="headerFinal-searchItemContent">
                     <div className="headerFinal-inputIcon">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
                       </svg>
                     </div>
                     <div className="headerFinal-searchTextGroup">
-                      <label className="headerFinal-searchLabel">Quién</label>
-                      <div className="headerFinal-searchInputText">{textoQuien}</div>
+                      <label className="headerFinal-searchLabel">Dónde</label>
+                      <input
+                        type="text"
+                        placeholder="¿A dónde vas?"
+                        className="headerFinal-searchInputText"
+                        value={destino}
+                        onChange={handleDestinoChange}
+                        onFocus={() => setActiveMenu("donde")}
+                      />
                     </div>
                   </div>
 
-                  <div className="headerFinal-searchBtnContainer headerFinal-desktopOnlyBtn">
-                    <button
-                      className="headerFinal-searchBtn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSearch();
-                      }}
-                      type="button"
-                      aria-label="Buscar"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="headerFinal-searchBtnIcon">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35" />
-                      </svg>
-                    </button>
-                  </div>
+                  {activeMenu === "donde" && (
+                    <div className="headerFinal-dropdownPanel headerFinal-locationDropdown" ref={dropdownRef}>
+                      <ul className="headerFinal-locationList">
+                        {municipiosFiltrados.slice(0, 6).map((item, index) => (
+                          <li
+                            key={index}
+                            className="headerFinal-locationItem"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              seleccionarDestino(item.CIUDAD_DEPARTAMENTO);
+                            }}
+                          >
+                            <div className="headerFinal-iconBox">📍</div>
+                            <div>
+                              <div className="headerFinal-locationTitle">{item.CIUDAD}</div>
+                              <div className="headerFinal-locationSub">{item.DEPARTAMENTO}</div>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
-                {activeMenu === "quien" && (
-                  <div className="headerFinal-dropdownPanel headerFinal-countersDropdown headerFinal-rightAligned" ref={dropdownRef}>
-                    <CounterRow
-                      label="Adultos"
-                      sublabel="13 años o más"
-                      value={viajeros.adultos}
-                      onChange={(op) => actualizarViajeros("adultos", op)}
-                      max={10}
-                    />
-                    <CounterRow
-                      label="Niños"
-                      sublabel="2 – 12 años"
-                      value={viajeros.ninos}
-                      onChange={(op) => actualizarViajeros("ninos", op)}
-                      max={10}
-                    />
-                    <CounterRow
-                      label="Bebés"
-                      sublabel="Menos de 2 años"
-                      value={viajeros.bebes}
-                      onChange={(op) => actualizarViajeros("bebes", op)}
-                      max={10}
-                    />
-                    <CounterRow
-                      label="Mascotas"
-                      sublabel="¿Traes mascota?"
-                      value={viajeros.mascotas}
-                      onChange={(op) => actualizarViajeros("mascotas", op)}
-                      max={5}
-                    />
-                  </div>
-                )}
-              </div>
+                <div className="headerFinal-divider"></div>
 
-              <button className="headerFinal-searchBtnMobileBig" onClick={handleSearch} type="button" aria-label="Buscar">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="headerFinal-searchBtnMobileIcon">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35" />
-                </svg>
-              </button>
+                {/* 2. FECHAS */}
+                <div
+                  className={`headerFinal-searchItem ${activeMenu === "fechas" ? "headerFinal-searchItemActive" : ""}`}
+                  onClick={() => toggleMenu("fechas")}
+                >
+                  <div className="headerFinal-searchItemContent">
+                    <div className="headerFinal-inputIcon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                      </svg>
+                    </div>
+                    <div className="headerFinal-searchTextGroup">
+                      <label className="headerFinal-searchLabel">Fechas</label>
+                      <div className="headerFinal-searchInputText">
+                        {hasSelection
+                          ? `${format(stateDates[0].startDate, "dd MMM", { locale: es })} - ${format(stateDates[0].endDate, "dd MMM", { locale: es })}`
+                          : "Selecciona fechas"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {activeMenu === "fechas" && (
+                    <div
+                      className="headerFinal-dropdownPanel headerFinal-calendarDropdown"
+                      ref={dropdownRef}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <DateRangePicker
+                        onChange={handleSelectDate}
+                        showSelectionPreview
+                        moveRangeOnFirstSelection={false}
+                        months={monthsToShow}
+                        ranges={stateDates}
+                        direction="horizontal"
+                        locale={es}
+                        minDate={new Date()}
+                        staticRanges={[]}
+                        inputRanges={[]}
+                        showDateDisplay={false}
+                        rangeColors={["#335429"]}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="headerFinal-divider"></div>
+
+                {/* 3. QUIÉN */}
+                <div
+                  className={`headerFinal-searchItem ${activeMenu === "quien" ? "headerFinal-searchItemActive" : ""}`}
+                  onClick={() => toggleMenu("quien")}
+                >
+                  <div className="headerFinal-searchItemRow">
+                    <div className="headerFinal-searchItemContent headerFinal-searchItemFull">
+                      <div className="headerFinal-inputIcon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="9" cy="7" r="4"></circle>
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                      </div>
+                      <div className="headerFinal-searchTextGroup">
+                        <label className="headerFinal-searchLabel">Quién</label>
+                        <div className="headerFinal-searchInputText">{textoQuien}</div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {activeMenu === "quien" && (
+                    <div className="headerFinal-dropdownPanel headerFinal-countersDropdown headerFinal-rightAligned" ref={dropdownRef}>
+                      <CounterRow
+                        label="Adultos"
+                        sublabel="13 años o más"
+                        value={viajeros.adultos}
+                        onChange={(op) => actualizarViajeros("adultos", op)}
+                        max={10}
+                      />
+                      <CounterRow
+                        label="Niños"
+                        sublabel="2 – 12 años"
+                        value={viajeros.ninos}
+                        onChange={(op) => actualizarViajeros("ninos", op)}
+                        max={10}
+                      />
+                      <CounterRow
+                        label="Bebés"
+                        sublabel="Menos de 2 años"
+                        value={viajeros.bebes}
+                        onChange={(op) => actualizarViajeros("bebes", op)}
+                        max={10}
+                      />
+                      <CounterRow
+                        label="Mascotas"
+                        sublabel="¿Traes mascota?"
+                        value={viajeros.mascotas}
+                        onChange={(op) => actualizarViajeros("mascotas", op)}
+                        max={5}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="headerFinal-searchBtnContainer headerFinal-desktopOnlyBtn">
+                  <button
+                    className="headerFinal-searchBtn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSearch();
+                    }}
+                    type="button"
+                    aria-label="Buscar"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="headerFinal-searchBtnIcon">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35" />
+                    </svg>
+                  </button>
+                </div>
+
+                <button className="headerFinal-searchBtnMobileBig" onClick={handleSearch} type="button" aria-label="Buscar">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="headerFinal-searchBtnMobileIcon">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.35-4.35" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
+
         </div>
+
 
         {/* Categorías móvil (carrusel) */}
         <nav className="headerFinal-categoriesMobile">

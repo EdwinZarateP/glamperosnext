@@ -212,7 +212,8 @@ export default function HeaderFinal() {
           <div className="headerFinal-logo" onClick={() => router.push("/prueba2")}>
             <Image
               // src="https://storage.googleapis.com/glamperos-imagenes/Imagenes/animal5.jpeg"
-              src="/Imagenes/prueba/1-expanded.svg"
+              // src="/Imagenes/prueba/1-expanded.svg"
+              src="/Imagenes/prueba/2(2).png"
               alt="Logo"
               width={50}
               height={50}

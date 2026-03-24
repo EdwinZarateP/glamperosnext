@@ -54,6 +54,12 @@ const glampingsDePrueba: Glamping[] = [
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80",
       "https://images.unsplash.com/photo-1510798831971-661eb04b3739?w=800&q=80",
       "https://images.unsplash.com/photo-1496080174650-637e3f22fa03?w=800&q=80",
+      "https://images.unsplash.com/photo-1641569618527-68e26db76db0?q=80&w=1074",
+      "https://plus.unsplash.com/premium_photo-1718204438280-484021f08ca1?q=80&w=1470",
+      "https://images.unsplash.com/photo-1516402707257-787c50fc3898?q=80&w=1470",
+      "https://images.unsplash.com/photo-1624254495476-db6cc8b77e98?q=80&w=1335",
+      "https://images.unsplash.com/photo-1593053272490-e0ed6d6a42c5?q=80&w=1470",
+      "https://images.unsplash.com/photo-1643494847699-149c403ac576?q=80&w=1430"
     ],
     favorito: true,
   },
@@ -330,15 +336,17 @@ function TarjetaGlamping({ glamping }: { glamping: Glamping }) {
 export default function ListadoGlampings() {
   return (
     <section className={styles.seccion}>
-      <div className={styles.encabezado}>
-        <h2 className={styles.titulo}>Glampings destacados</h2>
-        <p className={styles.subtitulo}>Experiencias únicas en la naturaleza colombiana</p>
-      </div>
+      <div className={styles.contenedor}>
+        <div className={styles.encabezado}>
+          <h2 className={styles.titulo}>Reserva fácil y seguro. Nuestros alojamientos son 100% verificados por nuestro equipo</h2>
+          <p className={styles.subtitulo}>Vive el comfort de un glamping con jacuzzi privado, piscina y desayuno incluido. ¡Desde 300 mil pesos por pareja!</p>
+        </div>
 
-      <div className={styles.grilla}>
-        {glampingsDePrueba.map((g) => (
-          <TarjetaGlamping key={g.id} glamping={g} />
-        ))}
+        <div className={styles.grilla}>
+          {glampingsDePrueba.map((g) => (
+            <TarjetaGlamping key={g.id} glamping={g} />
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -15,6 +15,15 @@
   --sombra: rgba(45, 74, 34, 0.12);
   --inactivo-bg: #f2f2f2;
   --inactivo-color: #aaa;
+
+  --fondo: #f0f0f0;
+  --negro: #1a1a1a;
+  --gris-texto: #444444;
+  --gris-suave: #888888;
+  --verde: #2e7d32;
+  --verde-claro: #e8f5e9;
+  /* --tierra: #b85c2a; */
+  --radio: 16px;
 }
 
 body {

@@ -1,6 +1,6 @@
 "use client";
 
-import ListadoGlampings from "@/Componentes/ListadoGlampingsPrueba/ListadoGlampings";
+import ListadoGlampings from "@/Componentes/ListadoGlampingsPrueba/ListadoGlampingsV2";
 import HeaderFinal from "../../Componentes/HeaderModificado";
 import "./estilos.css";
 

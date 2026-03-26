@@ -1,0 +1,368 @@
+/* =============================================
+   ListadoGlampings.module.css — diseño referencia
+   ============================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* :root {
+  --fondo: #f0f0f0;
+  --blanco: #ffffff;
+  --negro: #1a1a1a;
+  --gris-texto: #444444;
+  --gris-suave: #888888;
+  --verde: #2e7d32;
+  --verde-claro: #e8f5e9;
+  --tierra: #b85c2a;
+  --rojo-fav: #e05252;
+  --sombra: rgba(0, 0, 0, 0.08);
+  --radio: 16px;
+} */
+
+/* ── Sección ── */
+.seccion {
+  background-color: var(--fondo);
+  padding: 3rem 1.5rem 4rem;
+  font-family: "Inter", sans-serif;
+}
+
+/* ── Encabezado ── */
+.encabezado {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.titulo {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  color: var(--negro);
+  margin: 0 0 0.3rem;
+}
+
+.subtitulo {
+  font-size: 0.95rem;
+  color: var(--gris-suave);
+  margin: 0;
+}
+
+/* ── Grilla ── */
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Tarjeta ── */
+.tarjeta {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  overflow: hidden;
+  box-shadow: 0 2px 12px var(--sombra);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.13);
+}
+
+/* ── Zona imagen ── */
+.imagenContenedor {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  flex-shrink: 0;
+}
+
+/* ── Carrusel ── */
+.imagenWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--radio) var(--radio) 0 0;
+}
+
+.imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Flechas ── */
+.flecha {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(3px);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.flecha svg {
+  width: 16px;
+  height: 16px;
+  fill: #222;
+}
+
+.flechaIzq {
+  left: 8px;
+}
+
+.flechaDer {
+  right: 8px;
+}
+
+.flechaVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.flecha:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* ── Puntos indicadores ── */
+.indicadores {
+  position: absolute;
+  bottom: 42px;
+  /* sube para no solapar con badge */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  z-index: 10;
+}
+
+.punto {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.puntoActivo {
+  background: #fff;
+  transform: scale(1.35);
+}
+
+/* ── Badge desayuno — esquina inferior derecha imagen ── */
+.badgeDesayuno {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--negro);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 20px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  z-index: 15;
+  white-space: nowrap;
+}
+
+/* ── Favorito — esquina superior izquierda ── */
+.btnFavorito {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 20;
+  transition: transform 0.2s ease;
+}
+
+.btnFavorito:hover {
+  transform: scale(1.2);
+}
+
+.iconoCorazon {
+  width: 24px;
+  height: 24px;
+  fill: rgba(255, 255, 255, 0.85);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  transition: fill 0.2s ease;
+}
+
+.btnFavorito.activado .iconoCorazon {
+  fill: var(--rojo-fav);
+}
+
+/* ── Contenido ── */
+.contenido {
+  padding: 0.9rem 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+/* Fila nombre + puntuación */
+.filaNombre {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.nombre {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--negro);
+  margin: 0;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.puntuacion {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.starIcon {
+  color: #f4b942;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.puntuacionValor {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--negro);
+}
+
+/* Ubicación */
+.ubicacion {
+  font-size: 0.78rem;
+  color: var(--gris-suave);
+  margin: 0;
+  margin-bottom: 0.15rem;
+}
+
+/* Características en línea */
+.caracteristicas {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 0.1rem;
+  margin-bottom: 0.2rem;
+}
+
+.chipInline {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--gris-texto);
+  font-weight: 500;
+}
+
+.separadorLinea {
+  color: #ccc;
+  font-size: 0.85rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.chipActivo {
+  color: var(--verde);
+}
+
+.chipInactivo {
+  color: #bbb;
+}
+
+.chipIcono {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* ── Precios ── */
+.precioLinea {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0.3rem 0 0;
+}
+
+.precioValor {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--negro);
+}
+
+.precioLineaSecundaria {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0.1rem 0 0;
+}
+
+.precioValorSecundario {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--negro);
+}
+
+.precioLabel {
+  font-size: 0.78rem;
+  color: var(--gris-suave);
+  font-weight: 400;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .seccion {
+    padding: 2rem 1rem 3rem;
+  }
+
+  .grilla {
+    grid-template-columns: 1fr;
+  }
+
+  .flecha {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

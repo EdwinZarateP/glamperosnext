@@ -20,7 +20,7 @@
 
 /* ── Sección ── */
 .seccion {
-  background-color: var(--fondo);
+  background-color: var(--crema);
   padding: 3rem 1.5rem 4rem;
   font-family: "Inter", sans-serif;
 }

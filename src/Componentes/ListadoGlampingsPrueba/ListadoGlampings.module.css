@@ -23,7 +23,8 @@
 .seccion {
   background-color: var(--crema);
   padding: 2rem 2rem 5rem;
-  font-family: "DM Sans", sans-serif;
+  font-family: var(--font-work-sans), sans-serif;
+  color: var(--verde-bosque);
 }
 
 /* ── Contenedor ── */
@@ -40,23 +41,20 @@
 }
 
 .titulo {
-  /* font-family: "Playfair Display", serif; */
   font-family: var(--font-bantayog), serif;
   font-size: clamp(2rem, 4vw, 2.25rem);
-  font-weight: 400;
-  color: var(--verde-bosque);
-  margin: 0 0 1.5rem;
+  font-weight: 500;
   letter-spacing: -0.02em;
   /* text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35); */
   text-shadow: 0 2px 4px rgba(51, 84, 41, 0.35);
+  margin: 0 5% 0.3rem;
 }
 
 .subtitulo {
   font-family: var(--font-work-sans), sans-serif;
-  font-size: 1.3rem;
-  color: var(--verde-bosque);
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
   font-weight: 400;
-  margin: 0 15%;
+  margin: 2% 20% 0px;
 }
 
 /* ── Grilla ── */

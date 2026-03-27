@@ -27,7 +27,7 @@
 .seccion {
   /* background-image: url('https://cdn.wallpapersafari.com/35/64/3aHyVv.jpg'); */
   background-color: var(--crema);
-  padding: 3rem 1.5rem 4rem;
+  padding: 2rem 2rem 5rem;
   /* font-family: "Inter", sans-serif; */
   font-family: var(--font-work-sans), sans-serif;
   color: var(--verde-bosque);
@@ -60,8 +60,7 @@
   font-family: var(--font-work-sans), sans-serif;
   font-size: clamp(1.2rem, 2vw, 1.4rem);
   font-weight: 400;
-  /* color: var(--gris-suave); */
-  margin: 2% 15% 0px;
+  margin: 2% 20% 0px;
 }
 
 /* ── Grilla ── */
@@ -69,7 +68,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 1.25rem;
-  /* max-width: 1200px; */
   margin: 0 auto;
 }
 
@@ -80,7 +78,8 @@
   border: 1px solid rgba(51, 84, 41, 0.5);
   border-radius: var(--radio);
   overflow: hidden;
-  box-shadow: 0 2px 12px var(--sombra);
+  /* box-shadow: 0 2px 12px var(--sombra); */
+  box-shadow: 0 2px 10px var(--sombra-verde);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;
@@ -89,7 +88,7 @@
 
 .tarjeta:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.13);
+  box-shadow: 0 8px 28px var(--sombra-verde);
 }
 
 /* ── Zona imagen ── */

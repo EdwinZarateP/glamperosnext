@@ -210,14 +210,16 @@ function TarjetaGlampingV2({ glamping }: { glamping: Glamping }) {
 export default function ListadoGlampingsV2() {
   return (
     <section className={styles.seccion}>
-      <div className={styles.encabezado}>
-        <h2 className={styles.titulo}>Glampings destacados</h2>
-        <p className={styles.subtitulo}>Experiencias únicas en la naturaleza colombiana</p>
-      </div>
-      <div className={styles.grilla}>
-        {glampingsDePrueba.map((g) => (
-          <TarjetaGlampingV2 key={g.id} glamping={g} />
-        ))}
+      <div className={styles.contenedor}>
+        <div className={styles.encabezado}>
+          <h2 className={styles.titulo}>Reserva fácil y seguro. Nuestros alojamientos son 100% verificados por nuestro equipo</h2>
+          <p className={styles.subtitulo}>Vive el comfort de un glamping con jacuzzi privado, piscina y desayuno incluido. ¡Desde 300 mil pesos por pareja!</p>
+        </div>
+        <div className={styles.grilla}>
+          {glampingsDePrueba.map((g) => (
+            <TarjetaGlampingV2 key={g.id} glamping={g} />
+          ))}
+        </div>
       </div>
     </section>
   );

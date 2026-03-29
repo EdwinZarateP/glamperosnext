@@ -1,0 +1,60 @@
+.contenedor {
+  position: sticky;
+  display: flex;
+  justify-self: flex-end;
+  /* justify-self: center; */
+  align-items: center;
+  top: 10px;
+  right: 12px;
+  z-index: 50;
+  /* gap: 6px; */
+  /* width: auto;
+  height: auto; */
+  background: rgb(206, 72, 72);
+  border: 1px solid #e2e8f0;
+  border-radius: 50px;
+  padding: 6px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  gap: 3px;
+}
+
+.boton {
+  /* width: auto; */
+  /* height: auto; */
+  /* border-radius: 999px; */
+  border: 1px solid #e2e8f0;
+  /* border-radius: 100%; */
+  /* border: none; */
+  cursor: pointer;
+  /* background: #cbd5e1;
+  padding: 0;
+  font-size: 12px;
+  color: rgb(255, 255, 255);
+  white-space: nowrap; */
+}
+
+.boton.activo {
+  /* width: auto; */
+  /* padding: 0 10px; */
+  background: #6cd40a;
+  /* background: #6cd40a;
+  transition: all 0.2s ease;
+  white-space: nowrap; */
+}
+
+
+/* 
+style={{
+            width: i === current ? "auto" : "10px",
+            height: "10px",
+            borderRadius: "999px",
+            border: "none",
+            cursor: "pointer",
+            background: i === current ? "#6C63FF" : "#cbd5e1",
+            padding: i === current ? "0 10px" : "0",
+            fontSize: "12px",
+            color: "white",
+            fontWeight: 500,
+            transition: "all 0.2s ease",
+            whiteSpace: "nowrap",
+          }} */

@@ -25,10 +25,12 @@ export function VersionProvider({ children }: { children: React.ReactNode }) {
     );
 }
 
-export function useVersion(sectionId: string, totalVersions: number) {
+// export function useVersion(sectionId: string, totalVersions: number) {
+export function useVersion(sectionId: string) {
     const ctx = useContext(VersionContext);
     if (!ctx) throw new Error("useVersion must be used inside VersionProvider");
     const current = ctx.versions[sectionId] ?? 0;
     const setVersion = (v: number) => ctx.setVersion(sectionId, v);
-    return { current, setVersion, totalVersions };
+    // return { current, setVersion, totalVersions };
+    return { current, setVersion };
 }

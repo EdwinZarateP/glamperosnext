@@ -269,6 +269,15 @@ export default function HeaderFinal() {
 
         {mobileMenuOpen && (
           <div className="headerFinal-mobileMenu">
+            <Link href="/destino" className="headerFinal-mobileMenuItem" onClick={() => setMobileMenuOpen(false)}>
+              Destino
+            </Link>
+            <Link href="/destino" className="headerFinal-mobileMenuItem" onClick={() => setMobileMenuOpen(false)}>
+              Tipo de alojamiento
+            </Link>
+            <Link href="/destino" className="headerFinal-mobileMenuItem" onClick={() => setMobileMenuOpen(false)}>
+              Comodidades
+            </Link>
             <Link href="/registro" className="headerFinal-mobileMenuItem" onClick={() => setMobileMenuOpen(false)}>
               Publica tu glamping
             </Link>

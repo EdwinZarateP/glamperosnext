@@ -8,7 +8,6 @@ import HeaderFinal from "../../Componentes/HeaderModificado";
 import "./estilos.css";
 
 function ListadoSection() {
-  // const { current } = useVersion("listado", 2);
   const { current } = useVersion("listado");
   const versiones = [<ListadoGlampings key="v1" />, <ListadoGlampingsV2 key="v2" />, <ListadoGlampingsV2 key="v3" />];
   return versiones[current];
@@ -19,7 +18,6 @@ function Prueba() {
     <VersionProvider>
       <div className="prueba-contenedor">
         <HeaderFinal />
-        {/* <SectionWrapper sectionId="listado" totalVersions={2} labels={["V1 Original", "V2 Nuevo"]}> */}
         <SectionWrapper sectionId="listado" labels={["V1 Original", "V2 Nuevo", "V2 Repetido"]}>
           <ListadoSection />
         </SectionWrapper>

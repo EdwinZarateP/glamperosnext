@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import styles from "./ListadoGlampings.module.css";
-import { glampingsDePrueba } from './glampings';
+import styles from "./ListadoGlampingsV2.module.css";
+import { glampingsDePrueba } from '../glampings';
 
 // --- Tipos ---
 interface Glamping {

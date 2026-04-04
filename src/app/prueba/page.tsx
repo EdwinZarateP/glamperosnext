@@ -7,8 +7,8 @@ import ListadoGlampingsV2 from "@/Componentes/ListadoGlampingsPrueba/ListadoGlam
 import HeaderFinal from "../../Componentes/HeaderModificado";
 import "./estilos.css";
 
-function ListadoSection() {
-  const { current } = useVersion("listado");
+function ListadoGlampingsSection() {
+  const { current } = useVersion("listado-glamings");
   const versiones = [<ListadoGlampings key="v1" />, <ListadoGlampingsV2 key="v2" />, <ListadoGlampingsV2 key="v3" />];
   return versiones[current];
 }
@@ -18,11 +18,11 @@ function Prueba() {
     <VersionProvider>
       <div className="prueba-contenedor">
         <HeaderFinal />
-        <SectionWrapper sectionId="listado" labels={["V1 Original", "V2 Nuevo", "V2 Repetido"]}>
-          <ListadoSection />
+        <SectionWrapper sectionId="listado-glamings" labels={["V1 Original", "V2 Nuevo", "V2 Repetido"]}>
+          <ListadoGlampingsSection />
         </SectionWrapper>
       </div>
-    </VersionProvider>
+    </VersionProvider >
   );
 }
 

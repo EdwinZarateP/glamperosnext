@@ -1,7 +1,7 @@
 /*** Contenedor ***/
 .contenedor {
   position: absolute;
-  top: 12px;
+  top: 0px;
   right: 12px;
   z-index: 50;
   opacity: 0.6;

@@ -75,12 +75,14 @@
 .tarjeta {
   /* background: var(--blanco); */
   background: rgba(51, 84, 41, 0.1);
-  border: 1px solid rgba(51, 84, 41, 0.5);
-  border-radius: var(--radio);
+  border: 1px solid rgba(51, 84, 41, 0.04);
+  /* border-radius: var(--radio); */
+  border-radius: 10px;
   padding: 0.68rem;
   overflow: hidden;
-  /* box-shadow: 0 2px 12px var(--sombra); */
-  box-shadow: 0 2px 10px var(--sombra-verde);
+  box-shadow: 0 0 6px 1px rgba(51, 84, 41, 0.3),
+    0 0 4px 3px rgba(51, 84, 41, 0.15),
+    0 0 2px 6px rgba(51, 84, 41, 0.04);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;

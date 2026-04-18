@@ -1,16 +1,16 @@
 'use client';
 
-interface ChevronIconProps {
+interface ChevronIconoProps {
   open?: boolean;
   size?: number;
   className?: string;
 }
 
-export default function ChevronIcon({
+export default function ChevronIcono({
   open = false,
   size = 12,
   className,
-}: ChevronIconProps) {
+}: ChevronIconoProps) {
   return (
     <svg
       width={size}

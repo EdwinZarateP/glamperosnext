@@ -1,0 +1,51 @@
+/*
+  UTILIDADES DE TEXTO
+  ─────────────────────────────────────────────────────────────
+*/
+.texto-principal {
+  color: var(--color-texto-principal);
+}
+
+.texto-secundario {
+  color: var(--color-texto-secundario);
+}
+
+.texto-atenuado {
+  color: var(--color-texto-atenuado);
+}
+
+.texto-inverso {
+  color: var(--color-texto-inverso);
+}
+
+.texto-acento {
+  color: var(--color-acento);
+}
+
+.texto-primario-marca {
+  color: var(--color-primario);
+}
+
+.texto-centrado {
+  text-align: center;
+}
+
+.texto-derecha {
+  text-align: right;
+}
+
+.peso-regular {
+  font-weight: var(--peso-regular);
+}
+
+.peso-semibold {
+  font-weight: var(--peso-semibold);
+}
+
+.fuente-display {
+  font-family: var(--fuente-display);
+}
+
+.fuente-ui {
+  font-family: var(--fuente-ui);
+}

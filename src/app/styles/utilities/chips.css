@@ -1,0 +1,40 @@
+/*
+  CHIPS / ETIQUETAS
+  ─────────────────────────────────────────────────────────────
+  Uso:
+    1. <span class="chip chip-acento">Nuevo</span>
+    2. <span className={`chip chip-secundario`}>Nuevo</span>
+    3. <span className={`chip chip-secundario ${styles.chipPrueba}`}>Nuevo</span>
+*/
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espacio-1);
+  font-family: var(--fuente-ui);
+  font-size: var(--texto-legal);
+  font-weight: var(--peso-semibold);
+  line-height: 1;
+  padding: var(--espacio-1) var(--espacio-3);
+  border-radius: var(--radio-full);
+  white-space: nowrap;
+}
+
+.chip-primario {
+  background-color: var(--color-cafe-50);
+  color: var(--color-cafe-950);
+}
+
+.chip-acento {
+  background-color: var(--color-naranja-100);
+  color: var(--color-naranja-700);
+}
+
+.chip-secundario {
+  background-color: var(--color-verde-100);
+  color: var(--color-verde-900);
+}
+
+.chip-neutro {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}

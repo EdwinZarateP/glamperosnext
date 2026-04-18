@@ -1,0 +1,137 @@
+/*
+  BOTONES
+  ─────────────────────────────────────────────────────────────
+  Clase base .btn + modificador de variante.
+  Uso:
+    <button class="btn btn-primario">Reservar</button>
+    <button class="btn btn-secundario">Ver más</button>
+    <button class="btn btn-terciario">Saber más</button>
+    <button class="btn btn-primario btn-sm">Compacto</button>
+    <button class="btn btn-primario btn-bloque">Ancho completo</button>
+*/
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--espacio-2);
+
+  /* Tipografía */
+  font-family: var(--fuente-ui);
+  font-size: var(--texto-cuerpo-lg);
+  font-weight: var(--peso-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+
+  /* Geometría */
+  padding: var(--espacio-3) var(--espacio-6);
+  border-radius: var(--radio-md);
+  border: 1.5px solid transparent;
+
+  /* Interacción */
+  cursor: pointer;
+  transition:
+    background-color var(--transicion-rapida),
+    border-color var(--transicion-rapida),
+    color var(--transicion-rapida),
+    opacity var(--transicion-rapida);
+
+  /* Accesibilidad */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgb(var(--color-naranja-400-rgb) / 0.5);
+  outline-offset: 2px;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Variante: Primario */
+.btn-primario {
+  background-color: var(--btn-primario-fondo);
+  border-color: var(--btn-primario-borde);
+  color: var(--btn-primario-texto);
+}
+
+.btn-primario:hover:not(:disabled) {
+  background-color: var(--btn-primario-fondo-hover);
+  border-color: var(--btn-primario-fondo-hover);
+}
+
+.btn-primario:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+/* Variante: Secundario */
+.btn-secundario {
+  background-color: var(--btn-secundario-fondo);
+  border-color: var(--btn-secundario-borde);
+  color: var(--btn-secundario-texto);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  background-color: var(--btn-secundario-fondo-hover);
+  border-color: var(--btn-secundario-fondo-hover);
+}
+
+.btn-secundario:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+/* Variante: Terciario (outline) */
+.btn-terciario {
+  background-color: var(--btn-terciario-fondo);
+  border-color: var(--btn-terciario-borde);
+  color: var(--btn-terciario-texto);
+}
+
+.btn-terciario:hover:not(:disabled) {
+  background-color: var(--btn-terciario-fondo-hover);
+  color: var(--btn-terciario-texto-hover);
+}
+
+.btn-terciario:active:not(:disabled) {
+  opacity: 0.85;
+}
+
+/* Variante: Fantasma (ghost — sin fondo ni borde visible) */
+.btn-fantasma {
+  background-color: var(--btn-fantasma-fondo);
+  border-color: transparent;
+  color: var(--btn-fantasma-texto);
+}
+
+.btn-fantasma:hover:not(:disabled) {
+  background-color: var(--btn-fantasma-fondo-hover);
+}
+
+/* ─ Modificadores de tamaño ─── */
+.btn-sm {
+  font-size: var(--texto-cuerpo-sm);
+  padding: var(--espacio-2) var(--espacio-4);
+  border-radius: var(--radio-sm);
+}
+
+.btn-lg {
+  font-size: var(--texto-subtitulo-ui);
+  padding: var(--espacio-4) var(--espacio-8);
+  border-radius: var(--radio-lg);
+}
+
+/* ─ Modificador: ancho completo ─── */
+.btn-bloque {
+  width: 100%;
+}
+
+/* ─ Modificador: ícono solo (cuadrado) ─── */
+.btn-icono {
+  padding: var(--espacio-3);
+  aspect-ratio: 1;
+}

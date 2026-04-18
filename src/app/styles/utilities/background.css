@@ -1,0 +1,23 @@
+/*
+  UTILIDADES DE FONDO
+  ─────────────────────────────────────────────────────────────
+*/
+.fondo-pagina {
+  background-color: var(--color-fondo-pagina);
+}
+
+.fondo-tarjeta {
+  background-color: var(--color-fondo-tarjeta);
+}
+
+.fondo-atenuado {
+  background-color: var(--color-fondo-atenuado);
+}
+
+.fondo-primario {
+  background-color: var(--color-primario);
+}
+
+.fondo-acento {
+  background-color: var(--color-acento);
+}

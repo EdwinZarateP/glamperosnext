@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useVersion } from "@/context/VersionContext";
-import ChevronIcon from '@/Componentes/ui/icons/ChevronIcon';
+import ChevronIcono from '@/Componentes/ui/iconos/ChevronIcono';
 import styles from "./VersionSwitcher.module.css";
 
 interface Props {
@@ -38,7 +38,7 @@ export default function VersionSwitcher({ sectionId, labels }: Props) {
         className={styles.botonPrincipal}
       >
         {getLabel(current)}
-        <ChevronIcon open={open} />
+        <ChevronIcono open={open} />
       </button>
 
       {/* Menú desplegable */}

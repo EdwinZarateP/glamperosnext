@@ -1,0 +1,47 @@
+/* styles/globals.css */
+
+/* Variables globales */
+@import './variables.css';
+
+/* Clases globales y utilidades compartidas */
+@import './utilities/background.css';
+@import './utilities/borders.css';
+@import './utilities/buttons.css';
+@import './utilities/chips.css';
+@import './utilities/layout.css';
+@import './utilities/shadows.css';
+@import './utilities/spacing.css';
+@import './utilities/text.css';
+
+body {
+  font-family: var(--fuente-ui);
+  font-size: var(--texto-cuerpo-lg);
+  line-height: var(--interlineado-normal);
+  color: var(--color-texto-principal);
+  background-color: var(--color-fondo-pagina);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  /* Evita el resaltado azul en toques móviles */
+
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+}
+
+/* Evitar la selección de texto en toda la página */
+/* * {
+  user-select: none;
+} */
+
+.permitir-seleccion {
+  user-select: text !important;
+}
+
+/* Evitar el sombreado azul al hacer clic en botones y enlaces */
+button,
+a,
+input,
+textarea {
+  outline: none;
+}

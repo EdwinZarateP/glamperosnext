@@ -7,6 +7,7 @@ import ListadoGlampingsV2 from "@/Componentes/ListadoGlampingsPrueba/V2/ListadoG
 import ListadoGlampingsV3 from "@/Componentes/ListadoGlampingsPrueba/V3/ListadoGlampingsV3";
 import HeaderFinal from "../../Componentes/HeaderModificado";
 import "./estilos.css";
+import FooterFinal from "@/Componentes/FooterModificado";
 
 function ListadoGlampingsSection() {
   const { current } = useVersion("listado-glamings");
@@ -22,6 +23,7 @@ function Prueba() {
         <SectionWrapper sectionId="listado-glamings" labels={["Versión 1", "Versión 2", "Versión 3"]}>
           <ListadoGlampingsSection />
         </SectionWrapper>
+        <FooterFinal />
       </div>
     </VersionProvider >
   );

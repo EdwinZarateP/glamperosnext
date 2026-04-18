@@ -14,7 +14,7 @@
    ========================= */
 .headerFinal-topNav {
   /* background-color: #fff; */
-  background-color: var(--crema);
+  background-color: var(--color-crema);
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
@@ -82,7 +82,7 @@
   transition: all 0.05s ease;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   text-decoration: none;
-  font-family: var(--font-work-sans);
+  font-family: var(--font-primary);
   /* font-size: 18px; */
   font-size: 0.95rem;
   font-weight: 500;
@@ -99,7 +99,7 @@
 }
 
 .headerFinal-loginBtn {
-  font-family: var(--font-work-sans);
+  font-family: var(--font-primary);
   /* background-color: #85987f; */
   background-color: rgb(133, 152, 127);
   color: #fff;
@@ -231,7 +231,7 @@
 }
 
 .headerFinal-heroTitle {
-  font-family: var(--font-bantayog);
+  font-family: var(--font-heading);
   /* font-style: bold; */
   color: #fff;
   font-size: 50px;
@@ -293,7 +293,7 @@
   transition: background-color 0.15s ease;
   text-align: left;
   border: 3px solid rgba(51, 84, 41);
-  background-color: var(--crema);
+  background-color: var(--color-crema);
   /* background: rgba(51, 84, 41, 0.2); */
 }
 
@@ -341,18 +341,18 @@
 }
 
 .headerFinal-searchLabel {
-  font-family: var(--font-work-sans);
+  font-family: var(--font-primary);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--tierra);
+  color: var(--color-tierra);
   margin-bottom: 2px;
 }
 
 .headerFinal-searchInputText {
-  font-family: var(--font-work-sans);
+  font-family: var(--font-primary);
   font-size: 0.92rem;
   /* color: #222; */
-  color: var(--gris-suave);
+  color: var(--color-gris-suave);
   /* color: #999; */
   background: transparent;
   border: none;
@@ -365,7 +365,7 @@
 }
 
 .headerFinal-searchInputText::placeholder {
-  color: var(--gris-suave);
+  color: var(--color-gris-suave);
   /* color: #999; */
   /* font-style: italic; */
   opacity: 1;
@@ -471,7 +471,7 @@
   display: flex;
   align-items: center;
   padding: 12px;
-  font-family: var(--font-work-sans);
+  font-family: var(--font-primary);
   cursor: pointer;
   border-radius: 10px;
 }
@@ -493,8 +493,8 @@
 }
 
 .headerFinal-locationTitle {
-  font-family: var(--font-work-sans);
-  color: var(--verde-bosque);
+  font-family: var(--font-primary);
+  color: var(--color-verde-bosque);
   font-weight: 800;
   font-size: 0.95rem;
 }
@@ -583,7 +583,7 @@
    Categories
    ========================= */
 .headerFinal-categories {
-  background-color: var(--crema);
+  background-color: var(--color-crema);
   padding: 16px 0;
   /* margin-top: -140px; */
 }
@@ -631,10 +631,10 @@
 }
 
 .headerFinal-categoryName {
-  font-family: var(--font-work-sans);
+  font-family: var(--font-primary);
   font-size: 0.9rem;
   font-weight: 400;
-  color: var(--verde-bosque);
+  color: var(--color-verde-bosque);
 }
 
 /* Mobile categories */

@@ -1,0 +1,43 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(var(--color-negro-rgb) / 0.45);
+  display: grid;
+  place-items: center;
+  padding: var(--espacio-4);
+  z-index: 999;
+  animation: fadeIn var(--transicion-normal);
+}
+
+.modal {
+  background: var(--color-fondo-tarjeta);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-lg);
+  width: 100%;
+  max-width: 480px;
+  padding: var(--espacio-6);
+  animation: scaleIn var(--transicion-normal);
+  outline: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0
+  }
+
+  to {
+    opacity: 1
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1
+  }
+}

@@ -113,7 +113,7 @@ function CarruselImagenes({
 }
 
 // --- Tarjeta ---
-function TarjetaGlampingV2({ glamping }: { glamping: Glamping }) {
+function TarjetaGlamping({ glamping }: { glamping: Glamping }) {
   const [esFavorito, setEsFavorito] = useState(glamping.favorito);
 
   return (
@@ -207,7 +207,7 @@ function TarjetaGlampingV2({ glamping }: { glamping: Glamping }) {
 }
 
 // --- Componente principal ---
-export default function ListadoGlampingsV2() {
+export default function ListadoGlampings() {
   return (
     <section className={styles.seccion}>
       <div className={styles.contenedor}>
@@ -215,9 +215,9 @@ export default function ListadoGlampingsV2() {
           <h2 className={styles.titulo}>Reserva fácil y seguro. Nuestros alojamientos son 100% verificados por nuestro equipo</h2>
           <p className={styles.subtitulo}>Vive el comfort de un glamping con jacuzzi privado, piscina y desayuno incluido. ¡Desde 300 mil pesos por pareja!</p>
         </div>
-        <div className={styles.grilla}>
+        <div className={styles.cuadricula}>
           {glampingsDePrueba.map((g) => (
-            <TarjetaGlampingV2 key={g.id} glamping={g} />
+            <TarjetaGlamping key={g.id} glamping={g} />
           ))}
         </div>
       </div>

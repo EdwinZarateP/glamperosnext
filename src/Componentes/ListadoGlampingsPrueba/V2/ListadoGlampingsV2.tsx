@@ -233,9 +233,13 @@ export default function ListadoGlampings() {
         <div className={styles.encabezado}>
           <h2 className={styles.titulo}>Reserva fácil y seguro. Nuestros alojamientos son 100% verificados por nuestro equipo</h2>
           <p className={styles.subtitulo}>Vive el comfort de un glamping con jacuzzi privado, piscina y desayuno incluido. ¡Desde 300 mil pesos por pareja!</p>
+          <span className={`chip chip-secundario`}>Nuevo</span>
+          <span className={`chip chip-secundario ${styles.chipPrueba}`}>Nuevo 2</span>
         </div>
 
-        <div className={styles.grilla}>
+
+
+        <div className={styles.cuadricula}>
           {glampingsDePrueba.map((g) => (
             <TarjetaGlamping key={g.id} glamping={g} />
           ))}

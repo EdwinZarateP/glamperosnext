@@ -1,0 +1,211 @@
+/* styles/variables.css */
+
+:root {
+  /* 
+  * ============================================================
+  * 1. COLORES BASE
+  * 2. COLORES SEMÁNTICOS
+  * 3. TIPÓGRAFIA SEMÁNTICA
+  * 4. ESPACIADO (escala de 4px)
+  * 5. BORDES Y RADIOS
+  * 6. SOMBRAS
+  * 7. TRANSICIONES
+  * ============================================================
+  */
+
+  /* ====================== 1. COLORES BASE ====================== */
+
+  /* Neutros */
+  --color-blanco: #ffffff;
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f2f2f2;
+  --color-neutral-200: #e6e6e6;
+  /* fondo inactivo (--color-in-bg) */
+  --color-neutral-400: #aaaaaa;
+  /* color inactiv (--color-inactivo-color) */
+  --color-neutral-700: #4a4a4a;
+  --color-neutral-900: #1a1a1a;
+  --color-negro: #000000;
+
+  /* Cafés */
+  --color-cafe-50: #fbfbeb;
+  --color-cafe-900: rgb(90 63 29);
+  --color-cafe-950: #39250f;
+
+  /* Verdes */
+  --color-verde-100: #e0f0d7;
+  --color-verde-300: #9dce88;
+  --color-verde-600: #467d33;
+  --color-verde-800: rgb(51 84 41);
+  --color-verde-900: #2b4324;
+
+  /* Naranjas */
+  --color-naranja-100: #f8e9dc;
+  --color-naranja-400: rgb(217 123 77);
+  --color-naranja-500: #d4673b;
+  --color-naranja-600: #c65130;
+  --color-naranja-700: #a43f2a;
+
+  /* Colores en formato RGB (para usar con alpha) */
+  --color-cafe-900-rgb: 90 63 29;
+  --color-verde-800-rgb: 51 84 41;
+  --color-naranja-400-rgb: 217 123 77;
+  --color-negro-rgb: 0 0 0;
+
+  /* Estado */
+  --color-amarillo: #e120e7;
+  --color-rojo-fav: #e05252;
+
+
+  /* ====================== 2. COLORES SEMÁNTICOS ====================== */
+
+  /* Marca */
+  --color-primario: var(--color-cafe-900);
+  --color-secundario: var(--color-verde-800);
+  --color-acento: var(--color-naranja-400);
+
+  /* Texto */
+  --color-texto-principal: var(--color-neutral-900);
+  --color-texto-secundario: var(--color-neutral-700);
+  --color-texto-atenuado: var(--color-neutral-400);
+  --color-texto-inverso: var(--color-blanco);
+
+  /* Fondos */
+  --color-fondo-pagina: var(--color-neutral-50);
+  /* --color-fondo-pagina: var(--color-cafe-50); */
+  --color-fondo-tarjeta: var(--color-blanco);
+  --color-fondo-atenuado: var(--color-verde-100);
+
+  /* Bordes */
+  --color-borde: var(--color-neutral-200);
+  --color-borde-suave: var(--color-neutral-100);
+
+  /* ─ Botón primario (café) ─── */
+  --btn-primario-fondo: var(--color-cafe-900);
+  --btn-primario-fondo-hover: var(--color-cafe-950);
+  --btn-primario-borde: var(--color-cafe-900);
+  --btn-primario-texto: var(--color-blanco);
+
+  /* ─ Botón secundario (verde) ─── */
+  --btn-secundario-fondo: var(--color-verde-800);
+  --btn-secundario-fondo-hover: var(--color-verde-700);
+  --btn-secundario-borde: var(--color-verde-800);
+  --btn-secundario-texto: var(--color-blanco);
+
+  /* ─ Botón terciario (outline naranja) ─── */
+  --btn-terciario-fondo: transparent;
+  --btn-terciario-fondo-hover: var(--color-naranja-100);
+  --btn-terciario-borde: var(--color-naranja-400);
+  --btn-terciario-texto: var(--color-naranja-500);
+  --btn-terciario-texto-hover: var(--color-naranja-700);
+
+  /* ─ Botón fantasma (ghost / sin borde) ─── */
+  --btn-fantasma-fondo: transparent;
+  --btn-fantasma-fondo-hover: var(--color-neutral-100);
+  --btn-fantasma-texto: var(--color-texto-secundario);
+
+
+  /* ====================== 3. TIPÓGRAFIA SEMÁNTICA ====================== */
+
+  /* Tipografía semántica (roles) */
+  --fuente-display: var(--font-bantayog), Georgia, serif;
+  --fuente-ui: var(--font-work-sans), system-ui, sans-serif;
+
+  /* Peso tipográficos */
+  --peso-regular: 400;
+  --peso-medio: 500;
+  --peso-semibold: 600;
+
+  /*
+    Tamaños — escala MOBILE.
+    Se sobreescriben en el breakpoint ≥768px (ver abajo).
+    Los nombres reflejan el ROL semántico, no el tamaño px.
+  */
+
+  /* Fuente Display */
+  --texto-titulo: 2.25rem;
+  /* mobile: 36px  → desktop: 50px */
+  --texto-subtitulo: 1.25rem;
+  /* mobile: 20px  → desktop: 36px */
+  --texto-cuerpo-display: 0.75rem;
+  /* mobile: 12px  → desktop: 20px */
+  --texto-titulo-tarjeta: 1.25rem;
+  /* fijo: 20px */
+  --texto-subtitulo-tarjeta: 1.125rem;
+  /* fijo: 18px */
+  --texto-cuerpo-display-sm: 0.75rem;
+  /* fijo: 12px */
+
+  /* Fuente UI */
+  --texto-subtitulo-ui: 0.9375rem;
+  /* mobile: 15px  → desktop: 22px */
+  --texto-cuerpo-lg: 0.8125rem;
+  /* mobile: 13px  → desktop: 18px */
+  --texto-cuerpo-sm: 0.6875rem;
+  /* mobile: 11px  → desktop: 16px */
+  --texto-legal: 0.6875rem;
+  /* mobile: 11px  → desktop: 12px */
+
+  /* Interlineados */
+  --interlineado-apretado: 1.15;
+  --interlineado-normal: 1.5;
+  --interlineado-amplio: 1.6;
+
+
+  /* ====================== 4. ESPACIADO (escala de 4px) ====================== */
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px;
+  --espacio-5: 20px;
+  --espacio-6: 24px;
+  --espacio-8: 32px;
+  --espacio-10: 40px;
+  --espacio-12: 48px;
+  --espacio-16: 64px;
+
+
+  /* ====================== 5. BORDES Y RADIOS ====================== */
+  --radio-sm: 6px;
+  --radio-md: 10px;
+  --radio-lg: 16px;
+  --radio-xl: 24px;
+  --radio-full: 9999px;
+  /* píldoras / chips */
+
+  --borde-base: 1px solid var(--color-borde);
+
+
+  /* ====================== 6. SOMBRAS ====================== */
+  --sombra-sm: 0 1px 3px rgb(var(--color-negro-rgb) / 0.08);
+  --sombra-md: 0 4px 12px rgb(var(--color-negro-rgb) / 0.10);
+  --sombra-lg: 0 8px 24px rgb(var(--color-negro-rgb) / 0.12);
+
+
+  /* ====================== 7. TRANSICIONES ====================== */
+
+  --transicion-rapida: 150ms ease;
+  --transicion-normal: 250ms ease;
+  --transicion-lenta: 400ms ease;
+
+}
+
+/* ── Desktop overrides (tipografía) ───────────────────────── */
+@media (min-width: 768px) {
+  :root {
+    --texto-titulo: 3.125rem;
+    /* 50px */
+    --texto-subtitulo: 2.25rem;
+    /* 36px */
+    --texto-cuerpo-display: 1.25rem;
+    /* 20px */
+    --texto-subtitulo-ui: 1.375rem;
+    /* 22px */
+    --texto-cuerpo-lg: 1.125rem;
+    /* 18px */
+    --texto-cuerpo-sm: 1rem;
+    /* 16px */
+    --texto-legal: 0.75rem;
+    /* 12px */
+  }
+}

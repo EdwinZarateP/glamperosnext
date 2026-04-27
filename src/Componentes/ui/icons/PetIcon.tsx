@@ -1,16 +1,16 @@
 'use client';
 
-interface MascotaIconoProps {
+interface PetIconProps {
   disable?: boolean;
   size?: number;
   className?: string;
 }
 
-export default function MascotaIcono({
+export function PetIcon({
   // disable = false,
   size = 12,
   className,
-}: MascotaIconoProps) {
+}: PetIconProps) {
   return (
     <svg
       viewBox="0 0 570 500"

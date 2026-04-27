@@ -1,16 +1,16 @@
 'use client';
 
-interface PersonasIconoProps {
+interface PeopleIconProps {
   disable?: boolean;
   size?: number;
   className?: string;
 }
 
-export default function PersonasIcono({
+export function PeopleIcon({
   // disable = false,
   size = 12,
   className,
-}: PersonasIconoProps) {
+}: PeopleIconProps) {
   return (
     <svg
       viewBox="0 0 512 512"

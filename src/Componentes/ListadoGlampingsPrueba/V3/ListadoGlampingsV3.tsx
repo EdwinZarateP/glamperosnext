@@ -209,7 +209,7 @@ function TarjetaGlamping({ glamping }: { glamping: Glamping }) {
 // --- Componente principal ---
 export default function ListadoGlampings() {
   return (
-    <section className={styles.seccion}>
+    <section className={`${styles.seccion} ${styles.wrapper}`}>
       <div className={styles.contenedor}>
         <div className={styles.encabezado}>
           <h2 className={styles.titulo}>Reserva fácil y seguro. Nuestros alojamientos son 100% verificados por nuestro equipo</h2>

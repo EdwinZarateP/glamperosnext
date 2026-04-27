@@ -3,8 +3,8 @@
 import { useState } from "react";
 import styles from "./ListadoGlampingsV1.module.css";
 import { glampingsDePrueba } from '../glampings';
-import PersonasIcono from "@/Componentes/ui/iconos/PersonasIcono";
-import MascotaIcono from "@/Componentes/ui/iconos/MascotaIcono";
+import { PeopleIcon, PetIcon } from "@/Componentes/ui/icons";
+import { Button } from "@/Componentes/ui/Button";
 
 
 // --- Tipos ---
@@ -163,7 +163,7 @@ function TarjetaGlamping({ glamping }: { glamping: Glamping }) {
         <div className={styles.caracteristicas}>
           {/* Capacidad */}
           <span className={styles.chipInline}>
-            <PersonasIcono size={13} className={styles.chipIcono} />
+            <PeopleIcon size={13} className={styles.chipIcono} />
             {glamping.capacidadMaxima} personas
           </span>
 
@@ -171,7 +171,7 @@ function TarjetaGlamping({ glamping }: { glamping: Glamping }) {
 
           {/* Pet-friendly */}
           <span className={`${styles.chipInline} ${glamping.petFriendly ? styles.chipActivo : styles.chipInactivo}`}>
-            <MascotaIcono size={13} className={styles.chipIcono} />
+            <PetIcon size={13} className={styles.chipIcono} />
             {/* tilde de check si acepta, X si no */}
             {glamping.petFriendly ? "✔" : "✖"}
           </span>
@@ -194,6 +194,10 @@ function TarjetaGlamping({ glamping }: { glamping: Glamping }) {
   );
 }
 
+function pruebaBoton() {
+  alert("¡Botón funcionando!");
+}
+
 // --- Componente principal ---
 export default function ListadoGlampings() {
   return (
@@ -202,6 +206,17 @@ export default function ListadoGlampings() {
         <div className={styles.encabezado}>
           <h2 className={styles.titulo}>Reserva fácil y seguro. Nuestros alojamientos son 100% verificados por nuestro equipo</h2>
           <p className={styles.subtitulo}>Vive el comfort de un glamping con jacuzzi privado, piscina y desayuno incluido. ¡Desde 300 mil pesos por pareja!</p>
+          <Button onClick={pruebaBoton} size="lg" iconOnly={false} iconRight={<PeopleIcon />}>
+            Ver más glampings
+          </Button>
+          <Button onClick={pruebaBoton} variant="secundario" size="md" iconOnly={false} fullWidth={false} disabled={false}>
+            Botón secundario
+          </Button>
+          <Button onClick={pruebaBoton} variant="terciario" size="sm" iconOnly={false} fullWidth={false} disabled={false}>
+            Botón secundario
+          </Button>
+          <Button variant="peligro">Botón de Peligro</Button>
+
         </div>
         <div className={styles.cuadricula}>
           {glampingsDePrueba.map((g) => (

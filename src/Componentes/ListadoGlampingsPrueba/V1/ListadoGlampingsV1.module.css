@@ -26,7 +26,7 @@
 /* ── Sección ── */
 .seccion {
   /* background-image: url('https://cdn.wallpapersafari.com/35/64/3aHyVv.jpg'); */
-  background-color: var(--color-crema);
+  background-color: var(--color-fondo-pagina);
   padding: 2rem 2rem 5rem;
   font-family: var(--font-primary);
   color: var(--color-verde-bosque);

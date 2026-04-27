@@ -1,137 +1,293 @@
+* utilities/buttons.css */
 /*
-  BOTONES
-  ─────────────────────────────────────────────────────────────
-  Clase base .btn + modificador de variante.
-  Uso:
-    <button class="btn btn-primario">Reservar</button>
-    <button class="btn btn-secundario">Ver más</button>
-    <button class="btn btn-terciario">Saber más</button>
-    <button class="btn btn-primario btn-sm">Compacto</button>
-    <button class="btn btn-primario btn-bloque">Ancho completo</button>
-*/
+ * ============================================================
+ * UTILIDAD DE BOTONES
+ * ============================================================
+ * Clases utilitarias que consumen los tokens de
+ * styles/tokens/botones.css.
+ *
+ * Estructura:
+ *   .btn                  → base compartida
+ *   .btn-[variante]       → colores y sombra por variante
+ *   .btn-[tamaño]         → geometría (sm | lg; base es el default)
+ *   .btn-icono            → botón cuadrado solo con ícono
+ *   .btn-bloque           → ancho completo
+ *
+ * Variantes disponibles:
+ *  - Primario
+ *  - Secundario
+ *  - Terciario
+ *  - Fantasma
+ *  - Peligro
+ * ============================================================
+ */
+
+
+/* ============================================================
+   BASE — COMPARTIDA POR TODAS LAS VARIANTES
+   ============================================================ */
 
 .btn {
+  /* Layout */
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--espacio-2);
+  gap: var(--btn-gap);
+
+  /* Geometría por defecto (tamaño md) */
+  padding: var(--btn-padding-v) var(--btn-padding-h);
+  border-radius: var(--btn-radio);
+  border-width: var(--btn-borde-ancho);
+  border-style: solid;
 
   /* Tipografía */
-  font-family: var(--fuente-ui);
-  font-size: var(--texto-cuerpo-lg);
-  font-weight: var(--peso-semibold);
+  font-family: inherit;
+  font-size: var(--texto-sm);
+  font-weight: 600;
   line-height: 1;
+  letter-spacing: 0.01em;
   white-space: nowrap;
   text-decoration: none;
 
-  /* Geometría */
-  padding: var(--espacio-3) var(--espacio-6);
-  border-radius: var(--radio-md);
-  border: 1.5px solid transparent;
-
-  /* Interacción */
+  /* Comportamiento */
   cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  appearance: none;
+
+  /* Transición */
   transition:
     background-color var(--transicion-rapida),
     border-color var(--transicion-rapida),
     color var(--transicion-rapida),
+    box-shadow var(--transicion-rapida),
     opacity var(--transicion-rapida);
-
-  /* Accesibilidad */
-  -webkit-tap-highlight-color: transparent;
 }
 
+/* Focus visible — accesibilidad */
 .btn:focus-visible {
-  outline: 3px solid rgb(var(--color-naranja-400-rgb) / 0.5);
-  outline-offset: 2px;
+  outline: var(--btn-focus-outline-ancho) solid var(--btn-focus-outline-color);
+  outline-offset: var(--btn-focus-outline-offset);
 }
 
+/* Deshabilitado — compartido */
 .btn:disabled,
 .btn[aria-disabled="true"] {
-  opacity: 0.45;
+  /* opacity: var(--btn-primario-opacidad-deshabilitado); */
   cursor: not-allowed;
   pointer-events: none;
 }
 
-/* Variante: Primario */
+
+/* ============================================================
+   VARIANTE — PRIMARIO
+   ============================================================ */
+
 .btn-primario {
   background-color: var(--btn-primario-fondo);
   border-color: var(--btn-primario-borde);
   color: var(--btn-primario-texto);
+  box-shadow: var(--btn-primario-sombra);
 }
 
-.btn-primario:hover:not(:disabled) {
+.btn-primario:hover {
   background-color: var(--btn-primario-fondo-hover);
-  border-color: var(--btn-primario-fondo-hover);
+  border-color: var(--btn-primario-borde-hover);
+  color: var(--btn-primario-texto-hover);
+  box-shadow: var(--btn-primario-sombra-hover);
 }
 
-.btn-primario:active:not(:disabled) {
-  opacity: 0.85;
+.btn-primario:active {
+  background-color: var(--btn-primario-fondo-activo);
+  border-color: var(--btn-primario-borde-activo);
+  color: var(--btn-primario-texto-activo);
+  box-shadow: var(--btn-primario-sombra-activo);
 }
 
-/* Variante: Secundario */
+.btn-primario:disabled,
+.btn-primario[aria-disabled="true"] {
+  background-color: var(--btn-primario-fondo-deshabilitado);
+  border-color: var(--btn-primario-borde-deshabilitado);
+  color: var(--btn-primario-texto-deshabilitado);
+  opacity: var(--btn-primario-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — SECUNDARIO
+   ============================================================ */
+
 .btn-secundario {
   background-color: var(--btn-secundario-fondo);
   border-color: var(--btn-secundario-borde);
   color: var(--btn-secundario-texto);
+  box-shadow: var(--btn-secundario-sombra);
 }
 
-.btn-secundario:hover:not(:disabled) {
+.btn-secundario:hover {
   background-color: var(--btn-secundario-fondo-hover);
-  border-color: var(--btn-secundario-fondo-hover);
+  border-color: var(--btn-secundario-borde-hover);
+  color: var(--btn-secundario-texto-hover);
+  box-shadow: var(--btn-secundario-sombra-hover);
 }
 
-.btn-secundario:active:not(:disabled) {
-  opacity: 0.85;
+.btn-secundario:active {
+  background-color: var(--btn-secundario-fondo-activo);
+  border-color: var(--btn-secundario-borde-activo);
+  color: var(--btn-secundario-texto-activo);
+  box-shadow: var(--btn-secundario-sombra-activo);
 }
 
-/* Variante: Terciario (outline) */
+.btn-secundario:disabled,
+.btn-secundario[aria-disabled="true"] {
+  background-color: var(--btn-secundario-fondo-deshabilitado);
+  border-color: var(--btn-secundario-borde-deshabilitado);
+  color: var(--btn-secundario-texto-deshabilitado);
+  opacity: var(--btn-secundario-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — TERCIARIO
+   ============================================================ */
+
 .btn-terciario {
   background-color: var(--btn-terciario-fondo);
   border-color: var(--btn-terciario-borde);
   color: var(--btn-terciario-texto);
+  box-shadow: var(--btn-terciario-sombra);
 }
 
-.btn-terciario:hover:not(:disabled) {
+.btn-terciario:hover {
   background-color: var(--btn-terciario-fondo-hover);
+  border-color: var(--btn-terciario-borde-hover);
   color: var(--btn-terciario-texto-hover);
+  box-shadow: var(--btn-terciario-sombra-hover);
 }
 
-.btn-terciario:active:not(:disabled) {
-  opacity: 0.85;
+.btn-terciario:active {
+  background-color: var(--btn-terciario-fondo-activo);
+  border-color: var(--btn-terciario-borde-activo);
+  color: var(--btn-terciario-texto-activo);
+  box-shadow: var(--btn-terciario-sombra-activo);
 }
 
-/* Variante: Fantasma (ghost — sin fondo ni borde visible) */
+.btn-terciario:disabled,
+.btn-terciario[aria-disabled="true"] {
+  background-color: var(--btn-terciario-fondo-deshabilitado);
+  border-color: var(--btn-terciario-borde-deshabilitado);
+  color: var(--btn-terciario-texto-deshabilitado);
+  opacity: var(--btn-terciario-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — FANTASMA (ghost)
+   ============================================================ */
+
 .btn-fantasma {
   background-color: var(--btn-fantasma-fondo);
-  border-color: transparent;
+  border-color: var(--btn-fantasma-borde);
   color: var(--btn-fantasma-texto);
+  box-shadow: var(--btn-fantasma-sombra);
 }
 
-.btn-fantasma:hover:not(:disabled) {
+.btn-fantasma:hover {
   background-color: var(--btn-fantasma-fondo-hover);
+  border-color: var(--btn-fantasma-borde-hover);
+  color: var(--btn-fantasma-texto-hover);
+  box-shadow: var(--btn-fantasma-sombra-hover);
 }
 
-/* ─ Modificadores de tamaño ─── */
+.btn-fantasma:active {
+  background-color: var(--btn-fantasma-fondo-activo);
+  border-color: var(--btn-fantasma-borde-activo);
+  color: var(--btn-fantasma-texto-activo);
+  box-shadow: var(--btn-fantasma-sombra-activo);
+}
+
+.btn-fantasma:disabled,
+.btn-fantasma[aria-disabled="true"] {
+  background-color: var(--btn-fantasma-fondo-deshabilitado);
+  border-color: var(--btn-fantasma-borde-deshabilitado);
+  color: var(--btn-fantasma-texto-deshabilitado);
+  opacity: var(--btn-fantasma-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — PELIGRO (destructivo)
+   ============================================================ */
+
+.btn-peligro {
+  background-color: var(--btn-peligro-fondo);
+  border-color: var(--btn-peligro-borde);
+  color: var(--btn-peligro-texto);
+  box-shadow: var(--btn-peligro-sombra);
+}
+
+.btn-peligro:hover {
+  background-color: var(--btn-peligro-fondo-hover);
+  border-color: var(--btn-peligro-borde-hover);
+  color: var(--btn-peligro-texto-hover);
+  box-shadow: var(--btn-peligro-sombra-hover);
+}
+
+.btn-peligro:active {
+  background-color: var(--btn-peligro-fondo-activo);
+  border-color: var(--btn-peligro-borde-activo);
+  color: var(--btn-peligro-texto-activo);
+  box-shadow: var(--btn-peligro-sombra-activo);
+}
+
+.btn-peligro:disabled,
+.btn-peligro[aria-disabled="true"] {
+  background-color: var(--btn-peligro-fondo-deshabilitado);
+  border-color: var(--btn-peligro-borde-deshabilitado);
+  color: var(--btn-peligro-texto-deshabilitado);
+  opacity: var(--btn-peligro-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   TAMAÑOS
+   ============================================================ */
+
+/* Pequeño */
 .btn-sm {
-  font-size: var(--texto-cuerpo-sm);
-  padding: var(--espacio-2) var(--espacio-4);
-  border-radius: var(--radio-sm);
+  padding: var(--btn-padding-v-sm) var(--btn-padding-h-sm);
+  border-radius: var(--btn-radio-sm);
+  font-size: var(--texto-xs);
 }
 
+/* Grande */
 .btn-lg {
-  font-size: var(--texto-subtitulo-ui);
-  padding: var(--espacio-4) var(--espacio-8);
-  border-radius: var(--radio-lg);
+  padding: var(--btn-padding-v-lg) var(--btn-padding-h-lg);
+  border-radius: var(--btn-radio-lg);
+  font-size: var(--texto-base);
 }
 
-/* ─ Modificador: ancho completo ─── */
+
+/* ============================================================
+   MODIFICADORES ESTRUCTURALES
+   ============================================================ */
+
+/* Ancho completo */
 .btn-bloque {
   width: 100%;
+  display: flex;
 }
 
-/* ─ Modificador: ícono solo (cuadrado) ─── */
+/* Solo ícono — cuadrado */
 .btn-icono {
-  padding: var(--espacio-3);
+  padding: var(--btn-padding-v);
   aspect-ratio: 1;
+}
+
+.btn-icono.btn-sm {
+  padding: var(--btn-padding-v-sm);
+}
+
+.btn-icono.btn-lg {
+  padding: var(--btn-padding-v-lg);
 }

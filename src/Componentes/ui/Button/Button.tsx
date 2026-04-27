@@ -1,68 +1,81 @@
+/* Componentes/ui/Button.tsx */
 import React from 'react';
 import styles from './Button.module.css';
 import { ButtonProps } from './Button.types';
 
-export const Button = React.forwardRef<
-  HTMLButtonElement,
-  ButtonProps
->((props, ref) => {
-  const {
-    children,
-    variant = 'primario',
-    size = 'md',
-    fullWidth = false,
-    iconOnly = false,
-    loading = false,
-    iconLeft,
-    iconRight,
-    asChild = false,
-    className = '',
-    disabled,
-    ...rest
-  } = props;
+/* ============================================================
+   HELPER — composición de clases
+   ============================================================ */
 
-  const isDisabled = disabled || loading;
-
-  const classNames = [
+function buildClassName(
+  variant: string,
+  size: string,
+  fullWidth: boolean,
+  iconOnly: boolean,
+  loading: boolean,
+  className: string,
+): string {
+  return [
     styles.btn,
     styles[variant],
-    styles[size],
-    fullWidth && styles.fullWidth,
-    iconOnly && styles.iconOnly,
+    size !== 'md' && styles[size],
+    fullWidth && styles.bloque,
+    iconOnly && styles.icono,
+    loading && styles.cargando,
     className,
   ]
     .filter(Boolean)
     .join(' ');
+}
 
-  const content = (
-    <>
-      {loading && <span className={styles.loader} />}
 
-      <span className={`${styles.content} ${loading ? styles.hidden : ''}`}>
-        {iconLeft && <span>{iconLeft}</span>}
-        {children}
-        {iconRight && <span>{iconRight}</span>}
-      </span>
-    </>
+/* ============================================================
+   COMPONENTE BUTTON
+   Siempre renderiza <button>. Para navegación usa ButtonLink.
+   ============================================================ */
+
+export function Button({
+  children,
+  variant = 'primario',
+  size = 'md',
+  fullWidth = false,
+  iconOnly = false,
+  loading = false,
+  iconLeft,
+  iconRight,
+  className = '',
+  disabled,
+  ...rest
+}: ButtonProps) {
+  const isDisabled = disabled || loading;
+
+  const rootClass = buildClassName(
+    variant, size, fullWidth, iconOnly, loading, className,
   );
-
-  // 🔥 asChild (para Link o <a>)
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children, {
-      className: `${classNames} ${children.props.className || ''}`,
-    });
-  }
 
   return (
     <button
-      ref={ref}
-      className={classNames}
+      className={rootClass}
       disabled={isDisabled}
+      aria-busy={loading || undefined}
+      aria-disabled={isDisabled || undefined}
       {...rest}
     >
-      {content}
+      {iconLeft && (
+        <span className={styles.iconoSlot} aria-hidden="true">
+          {iconLeft}
+        </span>
+      )}
+
+      {!iconOnly && children && (
+        <span className={styles.texto}>{children}</span>
+      )}
+
+      {iconRight && (
+        <span className={styles.iconoSlot} aria-hidden="true">
+          {iconRight}
+        </span>
+      )}
     </button>
   );
-});
-
-Button.displayName = 'Button';
+}

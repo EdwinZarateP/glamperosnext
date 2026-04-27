@@ -1,0 +1,198 @@
+/* styles/tokens/botones.css */
+
+:root {
+
+  /*
+ * ============================================================
+ * TOKENS DE COMPONENTE — BOTONES
+ * ============================================================
+ * Estos tokens consumen los colores base de variables.css.
+ * No usar valores directos aquí — siempre referenciar tokens base.
+ *
+ * Patrón de nomenclatura:
+ * --btn-[variante]-[propiedad]-[estado?]
+ * ============================================================
+ */
+
+
+  /* ======================
+   BOTÓN PRIMARIO (café)
+   ====================== */
+
+  /* Fondo */
+  --btn-primario-fondo: var(--color-cafe-900);
+  --btn-primario-fondo-hover: var(--color-blanco);
+  --btn-primario-fondo-activo: var(--color-cafe-950);
+  --btn-primario-fondo-deshabilitado: var(--color-cafe-900);
+
+  /* Borde */
+  --btn-primario-borde: var(--color-blanco-transparente);
+  --btn-primario-borde-hover: var(--color-cafe-900);
+  --btn-primario-borde-activo: var(--color-cafe-950);
+  --btn-primario-borde-deshabilitado: transparent;
+
+  /* Texto */
+  --btn-primario-texto: var(--color-blanco);
+  --btn-primario-texto-hover: var(--color-cafe-900);
+  --btn-primario-texto-activo: var(--color-blanco);
+  --btn-primario-texto-deshabilitado: var(--color-blanco);
+
+  /* Sombra */
+  --btn-primario-sombra: none;
+  --btn-primario-sombra-hover: var(--sombra-md);
+  --btn-primario-sombra-activo: none;
+
+  /* Opacidad */
+  --btn-primario-opacidad-deshabilitado: 0.45;
+
+
+  /* ======================
+   BOTÓN SECUNDARIO (verde)
+   ====================== */
+
+  /* Fondo */
+  --btn-secundario-fondo: var(--color-verde-800);
+  --btn-secundario-fondo-hover: var(--color-blanco);
+  --btn-secundario-fondo-activo: var(--color-verde-950);
+  --btn-secundario-fondo-deshabilitado: var(--color-verde-800);
+
+  /* Borde */
+  --btn-secundario-borde: var(--color-blanco-transparente);
+  --btn-secundario-borde-hover: var(--color-verde-800);
+  --btn-secundario-borde-activo: var(--color-verde-950);
+  --btn-secundario-borde-deshabilitado: transparent;
+
+  /* Texto */
+  --btn-secundario-texto: var(--color-blanco);
+  --btn-secundario-texto-hover: var(--color-verde-800);
+  --btn-secundario-texto-activo: var(--color-blanco);
+  --btn-secundario-texto-deshabilitado: var(--color-blanco);
+
+  /* Sombra */
+  --btn-secundario-sombra: none;
+  --btn-secundario-sombra-hover: var(--sombra-md);
+  --btn-secundario-sombra-activo: none;
+
+  /* Opacidad */
+  --btn-secundario-opacidad-deshabilitado: 0.45;
+
+
+  /* ======================
+   BOTÓN TERCIARIO (outline naranja)
+   ====================== */
+
+  /* Fondo */
+  --btn-terciario-fondo: var(--color-blanco);
+  --btn-terciario-fondo-hover: var(--color-naranja-400);
+  --btn-terciario-fondo-activo: var(--color-naranja-600);
+  --btn-terciario-fondo-deshabilitado: var(--color-blanco);
+
+  /* Borde */
+  --btn-terciario-borde: var(--color-naranja-400);
+  --btn-terciario-borde-hover: transparent;
+  --btn-terciario-borde-activo: var(--color-naranja-600);
+  --btn-terciario-borde-deshabilitado: transparent;
+
+  /* Texto */
+  --btn-terciario-texto: var(--color-naranja-400);
+  --btn-terciario-texto-hover: var(--color-blanco);
+  --btn-terciario-texto-activo: var(--color-naranja-600);
+  --btn-terciario-texto-deshabilitado: var(--color-naranja-400);
+
+  /* Sombra */
+  --btn-terciario-sombra: none;
+  --btn-terciario-sombra-hover: none;
+  --btn-terciario-sombra-activo: none;
+
+  /* Opacidad */
+  --btn-terciario-opacidad-deshabilitado: 0.45;
+
+
+  /* ======================
+   BOTÓN FANTASMA (ghost)
+   ====================== */
+
+  /* Fondo */
+  --btn-fantasma-fondo: transparent;
+  --btn-fantasma-fondo-hover: var(--color-neutral-100);
+  --btn-fantasma-fondo-activo: var(--color-neutral-200);
+  --btn-fantasma-fondo-deshabilitado: transparent;
+
+  /* Borde */
+  --btn-fantasma-borde: transparent;
+  --btn-fantasma-borde-hover: transparent;
+  --btn-fantasma-borde-activo: transparent;
+  --btn-fantasma-borde-deshabilitado: transparent;
+
+  /* Texto */
+  --btn-fantasma-texto: var(--color-texto-secundario);
+  --btn-fantasma-texto-hover: var(--color-texto-principal);
+  --btn-fantasma-texto-activo: var(--color-texto-principal);
+  --btn-fantasma-texto-deshabilitado: var(--color-texto-atenuado);
+
+  /* Sombra */
+  --btn-fantasma-sombra: none;
+  --btn-fantasma-sombra-hover: none;
+  --btn-fantasma-sombra-activo: none;
+
+  /* Opacidad */
+  --btn-fantasma-opacidad-deshabilitado: 0.45;
+
+
+  /* ======================
+   BOTÓN PELIGRO (destructivo)
+   ====================== */
+
+  /* Fondo */
+  --btn-peligro-fondo: var(--color-rojo-fav);
+  --btn-peligro-fondo-hover: var(--color-blanco);
+  --btn-peligro-fondo-activo: var(--color-peligro);
+  --btn-peligro-fondo-deshabilitado: var(--color-rojo-fav);
+
+  /* Borde */
+  --btn-peligro-borde: var(--color-rojo-fav);
+  --btn-peligro-borde-hover: var(--color-rojo-fav);
+  --btn-peligro-borde-activo: var(--color-peligro);
+  --btn-peligro-borde-deshabilitado: var(--color-rojo-fav);
+
+  /* Texto */
+  --btn-peligro-texto: var(--color-blanco);
+  --btn-peligro-texto-hover: var(--color-rojo-fav);
+  --btn-peligro-texto-activo: var(--color-peligro);
+  --btn-peligro-texto-deshabilitado: var(--color-blanco);
+
+  /* Sombra */
+  --btn-peligro-sombra: none;
+  --btn-peligro-sombra-hover: var(--sombra-md);
+  --btn-peligro-sombra-activo: none;
+
+  /* Opacidad */
+  --btn-peligro-opacidad-deshabilitado: 0.45;
+
+
+  /* ======================
+   FOCUS (compartido entre variantes)
+   ====================== */
+  --btn-focus-outline-color: rgb(var(--color-naranja-400-rgb) / 0.5);
+  --btn-focus-outline-ancho: 3px;
+  --btn-focus-outline-offset: 2px;
+
+
+  /* ======================
+   GEOMETRÍA (compartida entre variantes)
+   ====================== */
+  --btn-radio: var(--radio-md);
+  --btn-radio-sm: var(--radio-sm);
+  --btn-radio-lg: var(--radio-lg);
+
+  --btn-padding-v: var(--espacio-3);
+  --btn-padding-h: var(--espacio-6);
+  --btn-padding-v-sm: var(--espacio-2);
+  --btn-padding-h-sm: var(--espacio-4);
+  --btn-padding-v-lg: var(--espacio-4);
+  --btn-padding-h-lg: var(--espacio-8);
+
+  --btn-gap: var(--espacio-2);
+  --btn-borde-ancho: 1.5px;
+
+}

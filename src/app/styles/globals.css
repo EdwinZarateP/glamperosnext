@@ -1,9 +1,14 @@
 /* styles/globals.css */
 
-/* Variables globales */
+/* 1. Tokens base */
 @import './variables.css';
 
-/* Clases globales y utilidades compartidas */
+/* 2. Tokens de componente — consumen variables base */
+@import './tokens/buttons.css';
+/* @import './tokens/inputs.css'; */
+/* @import './tokens/cards.css'; */
+
+/* 3. Utilidades — consumen tokens y variables */
 @import './utilities/background.css';
 @import './utilities/borders.css';
 @import './utilities/buttons.css';
@@ -12,6 +17,7 @@
 @import './utilities/shadows.css';
 @import './utilities/spacing.css';
 @import './utilities/text.css';
+
 
 body {
   font-family: var(--fuente-ui);

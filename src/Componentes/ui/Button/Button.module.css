@@ -1,27 +1,357 @@
-/* Loader simple */
-.loader {
-  width: 16px;
-  height: 16px;
+/* src/Componentes/ui/Button/Button.module.css */
+
+/*
+ * ============================================================
+ * MÓDULO CSS — COMPONENTE BUTTON
+ * ============================================================
+ * Consume directamente los tokens de
+ * styles/tokens/botones.css (globales).
+ *
+ * Variantes disponibles:
+ *  - Primario
+ *  - Secundario
+ *  - Terciario
+ *  - Fantasma
+ *  - Peligro
+ *
+ * Uso esperado en Button.tsx:
+ *   import styles from './Button.module.css'
+ *   <Button className={`${styles.btn} ${styles[variante]} ${styles[tamaño]}`} />
+ * ============================================================
+ */
+
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+.btn {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--btn-gap);
+
+  /* Geometría base (md) */
+  padding: var(--btn-padding-v) var(--btn-padding-h);
+  border-radius: var(--btn-radio);
+  border-width: var(--btn-borde-ancho);
+  border-style: solid;
+
+  /* Tipografía */
+  font-family: inherit;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+
+  /* Comportamiento */
+  cursor: pointer;
+  user-select: none;
+  vertical-align: middle;
+  appearance: none;
+
+  /* Transición */
+  transition:
+    background-color var(--transicion-rapida),
+    border-color var(--transicion-rapida),
+    color var(--transicion-rapida),
+    box-shadow var(--transicion-rapida),
+    opacity var(--transicion-rapida);
+}
+
+.btn:focus-visible {
+  outline: var(--btn-focus-outline-ancho) solid var(--btn-focus-outline-color);
+  outline-offset: var(--btn-focus-outline-offset);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+/* ============================================================
+   SLOTS INTERNOS
+   ============================================================ */
+
+/* Wrapper de texto — permite animar opacity en estado cargando */
+.texto {
+  display: inline-flex;
+  align-items: center;
+  transition: opacity 150ms ease;
+}
+
+/* Wrapper de ícono SVG — controla tamaño y alineación */
+.iconoSlot {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 1.125em;
+  /* escala con el font-size del botón */
+  height: 1.125em;
+}
+
+.iconoSlot svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ============================================================
+   VARIANTE — PRIMARIO (café)
+   ============================================================ */
+
+.primario {
+  background-color: var(--btn-primario-fondo);
+  border-color: var(--btn-primario-borde);
+  color: var(--btn-primario-texto);
+  box-shadow: var(--btn-primario-sombra);
+}
+
+.primario:hover {
+  background-color: var(--btn-primario-fondo-hover);
+  border-color: var(--btn-primario-borde-hover);
+  color: var(--btn-primario-texto-hover);
+  box-shadow: var(--btn-primario-sombra-hover);
+}
+
+.primario:active {
+  background-color: var(--btn-primario-fondo-activo);
+  border-color: var(--btn-primario-borde-activo);
+  color: var(--btn-primario-texto-activo);
+  box-shadow: var(--btn-primario-sombra-activo);
+}
+
+.primario:disabled,
+.primario[aria-disabled="true"] {
+  background-color: var(--btn-primario-fondo-deshabilitado);
+  border-color: var(--btn-primario-borde-deshabilitado);
+  color: var(--btn-primario-texto-deshabilitado);
+  opacity: var(--btn-primario-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — SECUNDARIO
+   ============================================================ */
+
+.secundario {
+  background-color: var(--btn-secundario-fondo);
+  border-color: var(--btn-secundario-borde);
+  color: var(--btn-secundario-texto);
+  box-shadow: var(--btn-secundario-sombra);
+}
+
+.secundario:hover {
+  background-color: var(--btn-secundario-fondo-hover);
+  border-color: var(--btn-secundario-borde-hover);
+  color: var(--btn-secundario-texto-hover);
+  box-shadow: var(--btn-secundario-sombra-hover);
+}
+
+.secundario:active {
+  background-color: var(--btn-secundario-fondo-activo);
+  border-color: var(--btn-secundario-borde-activo);
+  color: var(--btn-secundario-texto-activo);
+  box-shadow: var(--btn-secundario-sombra-activo);
+}
+
+.secundario:disabled,
+.secundario[aria-disabled="true"] {
+  background-color: var(--btn-secundario-fondo-deshabilitado);
+  border-color: var(--btn-secundario-borde-deshabilitado);
+  color: var(--btn-secundario-texto-deshabilitado);
+  opacity: var(--btn-secundario-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — TERCIARIO
+   ============================================================ */
+
+.terciario {
+  background-color: var(--btn-terciario-fondo);
+  border-color: var(--btn-terciario-borde);
+  color: var(--btn-terciario-texto);
+  box-shadow: var(--btn-terciario-sombra);
+}
+
+.terciario:hover {
+  background-color: var(--btn-terciario-fondo-hover);
+  border-color: var(--btn-terciario-borde-hover);
+  color: var(--btn-terciario-texto-hover);
+  box-shadow: var(--btn-terciario-sombra-hover);
+}
+
+.terciario:active {
+  background-color: var(--btn-terciario-fondo-activo);
+  border-color: var(--btn-terciario-borde-activo);
+  color: var(--btn-terciario-texto-activo);
+  box-shadow: var(--btn-terciario-sombra-activo);
+}
+
+.terciario:disabled,
+.terciario[aria-disabled="true"] {
+  background-color: var(--btn-terciario-fondo-deshabilitado);
+  border-color: var(--btn-terciario-borde-deshabilitado);
+  color: var(--btn-terciario-texto-deshabilitado);
+  opacity: var(--btn-terciario-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — FANTASMA (ghost)
+   ============================================================ */
+
+.fantasma {
+  background-color: var(--btn-fantasma-fondo);
+  border-color: var(--btn-fantasma-borde);
+  color: var(--btn-fantasma-texto);
+  box-shadow: var(--btn-fantasma-sombra);
+}
+
+.fantasma:hover {
+  background-color: var(--btn-fantasma-fondo-hover);
+  border-color: var(--btn-fantasma-borde-hover);
+  color: var(--btn-fantasma-texto-hover);
+  box-shadow: var(--btn-fantasma-sombra-hover);
+}
+
+.fantasma:active {
+  background-color: var(--btn-fantasma-fondo-activo);
+  border-color: var(--btn-fantasma-borde-activo);
+  color: var(--btn-fantasma-texto-activo);
+  box-shadow: var(--btn-fantasma-sombra-activo);
+}
+
+.fantasma:disabled,
+.fantasma[aria-disabled="true"] {
+  background-color: var(--btn-fantasma-fondo-deshabilitado);
+  border-color: var(--btn-fantasma-borde-deshabilitado);
+  color: var(--btn-fantasma-texto-deshabilitado);
+  opacity: var(--btn-fantasma-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   VARIANTE — PELIGRO (destructivo)
+   ============================================================ */
+
+.peligro {
+  background-color: var(--btn-peligro-fondo);
+  border-color: var(--btn-peligro-borde);
+  color: var(--btn-peligro-texto);
+  box-shadow: var(--btn-peligro-sombra);
+}
+
+.peligro:hover {
+  background-color: var(--btn-peligro-fondo-hover);
+  border-color: var(--btn-peligro-borde-hover);
+  color: var(--btn-peligro-texto-hover);
+  box-shadow: var(--btn-peligro-sombra-hover);
+}
+
+.peligro:active {
+  background-color: var(--btn-peligro-fondo-activo);
+  border-color: var(--btn-peligro-borde-activo);
+  color: var(--btn-peligro-texto-activo);
+  box-shadow: var(--btn-peligro-sombra-activo);
+}
+
+.peligro:disabled,
+.peligro[aria-disabled="true"] {
+  background-color: var(--btn-peligro-fondo-deshabilitado);
+  border-color: var(--btn-peligro-borde-deshabilitado);
+  color: var(--btn-peligro-texto-deshabilitado);
+  opacity: var(--btn-peligro-opacidad-deshabilitado);
+}
+
+
+/* ============================================================
+   TAMAÑOS
+   ============================================================ */
+
+/* md es el default en .btn — no necesita clase extra */
+
+.sm {
+  padding: var(--btn-padding-v-sm) var(--btn-padding-h-sm);
+  border-radius: var(--btn-radio-sm);
+  font-size: var(--texto-xs);
+}
+
+.lg {
+  padding: var(--btn-padding-v-lg) var(--btn-padding-h-lg);
+  border-radius: var(--btn-radio-lg);
+  font-size: var(--texto-base);
+}
+
+
+/* ============================================================
+   MODIFICADORES ESTRUCTURALES
+   ============================================================ */
+
+.bloque {
+  width: 100%;
+  display: flex;
+}
+
+/* Solo ícono — cuadrado, sin texto */
+.icono {
+  padding: var(--btn-padding-v);
+  aspect-ratio: 1 / 1;
+}
+
+.icono.sm {
+  padding: var(--btn-padding-v-sm);
+}
+
+.icono.lg {
+  padding: var(--btn-padding-v-lg);
+}
+
+
+/* ============================================================
+   ESTADO DE CARGA
+   ============================================================
+   Se usa clase .cargando en el root (.btn) en vez de un
+   elemento extra fuera del flujo, evitando saltos de layout.
+   El spinner se genera con ::after sobre el root.
+   ============================================================ */
+
+.cargando {
+  position: relative;
+  color: transparent !important;
+  cursor: wait;
+  pointer-events: none;
+}
+
+/* Oculta el contenido visible pero mantiene dimensiones */
+.cargando .texto,
+.cargando .iconoSlot {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Spinner centrado sobre el botón */
+.cargando::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 1em;
+  height: 1em;
   border: 2px solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: btn-girar 600ms linear infinite;
 }
 
-@keyframes spin {
+@keyframes btn-girar {
   to {
     transform: rotate(360deg);
   }
-}
-
-/* Contenido interno */
-.content {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--espacio-2);
-}
-
-/* Ocultar contenido cuando loading */
-.hidden {
-  visibility: hidden;
 }

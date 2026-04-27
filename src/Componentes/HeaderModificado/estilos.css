@@ -14,7 +14,7 @@
    ========================= */
 .headerFinal-topNav {
   /* background-color: #fff; */
-  background-color: var(--color-crema);
+  background-color: var(--color-fondo-pagina);
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
@@ -293,12 +293,12 @@
   transition: background-color 0.15s ease;
   text-align: left;
   border: 3px solid rgba(51, 84, 41);
-  background-color: var(--color-crema);
+  background-color: var(--color-fondo-pagina);
   /* background: rgba(51, 84, 41, 0.2); */
 }
 
 .headerFinal-searchItem:hover {
-  background-color: rgba(255, 255, 255, 1);
+  background-color: var(--color-blanco);
 }
 
 .headerFinal-searchItemActive {
@@ -583,7 +583,7 @@
    Categories
    ========================= */
 .headerFinal-categories {
-  background-color: var(--color-crema);
+  background-color: var(--color-fondo-pagina);
   padding: 16px 0;
   /* margin-top: -140px; */
 }
@@ -603,7 +603,7 @@
   content: "";
   display: block;
   height: 1px;
-  background: rgba(51, 84, 41, 0.5);
+  background: var(--color-verde-transparente);
   margin-top: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
